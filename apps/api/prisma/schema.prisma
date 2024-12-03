@@ -10,12 +10,207 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Sample {
-  id        Int      @id @default(autoincrement())
-  name      String
-  code      String   @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+// generator client {
+//   provider = "prisma-client-js"
+// }
 
-  @@map("samples") // if you want to use snake_case format
+// datasource db {
+//   provider  = "postgresql"
+//   url       = env("DATABASE_URL")
+//   directUrl = env("DIRECT_URL")
+// }
+
+model Users {
+  id                  String        @id @default(uuid())
+  email               String        @unique
+  password            String
+  firstName           String
+  lastName            String
+  birtDate            String
+  phoneNumber         String        @db.Text
+  profilePicture      String
+  isVerified          Boolean
+  verifyCode          String
+  isGoogleRegister    Boolean
+  forgotPasswordToken String
+  createdAt           DateTime
+  updatedAt           DateTime
+  deletedAt           DateTime
+  order               Order[]
+  userAddress         UserAddress[]
+
+  @@map("users")
+}
+
+model UserAddress {
+  id          Int      @id @default(autoincrement())
+  addressName String
+  city        String
+  province    String
+  country     String
+  zipCode     String
+  latitude    Float
+  longitude   Float
+  createdAt   DateTime
+  updatedAt   DateTime
+  deletedAt   DateTime
+  usersId     String?
+
+  Users Users? @relation(fields: [usersId], references: [id])
+
+  @@map("usersAddress")
+}
+
+// model Drivers {
+//   id                  String   @id @default(uuid())
+//   email               String   @unique
+//   password            String
+//   firstName           String
+//   lastName            String
+//   birtDate            String
+//   phoneNumber         String   @db.Text
+//   identityNumber      String   @db.Text
+//   motorcycleType      String
+//   plateNumber         String
+//   profilePicture      String
+//   isVerified          Boolean
+//   verifyCode          String
+//   isGoogleRegister    Boolean
+//   forgotPasswordToken String
+//   createdAt           DateTime
+//   updatedAt           DateTime
+//   deletedAt           DateTime
+
+//   order Order[]
+
+//   @@map("drivers")
+// }
+
+model Stores {
+  id        String   @id @default(uuid())
+  storeName String
+  address   String
+  city      String
+  province  String
+  country   String
+  zipCode   String
+  latitude  Float
+  longitude Float
+  createdAt DateTime
+  updatedAt DateTime
+  deletedAt DateTime
+
+  worker Worker[]
+  order  Order[]
+
+  @@map("stores")
+}
+
+model Worker {
+  id                  String  @id @default(uuid())
+  email               String  @unique
+  password            String
+  workerRole          Role
+  firstName           String
+  lastName            String
+  phoneNumber         String  @db.Text
+  profilePicture      String  @db.Text
+  identityNumber      String? @db.Text
+  motorcycleType      String?
+  plateNumber         String?
+  changePasswordToken String  @db.Text
+
+  createdAt DateTime
+  updatedAt DateTime
+  deletedAt DateTime
+  storesId  String?
+
+  Stores Stores? @relation(fields: [storesId], references: [id])
+
+  @@map("worker")
+}
+
+model Order {
+  id             String    @id @default(uuid())
+  orderType      OrderType
+  totalPrice     Int
+  discount       Float
+  isDiscountUsed Boolean
+  deliveryFee    Int
+  paymentProof   String
+  isPaid         Boolean
+  createdAt      DateTime
+  updatedAt      DateTime
+  deletedAt      DateTime
+
+  orderStatus OrderStatus[]
+  orderDetail OrderDetail[]
+  driversId   String?
+  storesId    String?
+  usersId     String?
+
+  // Drivers Drivers? @relation(fields: [driversId], references: [id])
+  Stores Stores? @relation(fields: [storesId], references: [id])
+  Users  Users?  @relation(fields: [usersId], references: [id])
+
+  @@map("order")
+}
+
+model OrderDetail {
+  id        Int      @id @default(autoincrement())
+  quantity  Int
+  price     Int
+  weight    Int
+  createdAt DateTime
+  updatedAt DateTime
+  deletedAt DateTime
+  orderId   String?
+
+  Order Order? @relation(fields: [orderId], references: [id])
+
+  @@map("orderDetail")
+}
+
+model OrderStatus {
+  id      Int     @id @default(autoincrement())
+  status  Status
+  orderId String?
+
+  createdAt DateTime
+  updatedAt DateTime
+  deletedAt DateTime
+
+  Order Order? @relation(fields: [orderId], references: [id])
+
+  @@map("orderStatus")
+}
+
+enum Status {
+  AWAITING_DRIVER_PICKUP
+  DRIVER_TO_OUTLET
+  DRIVER_ARRIVED_AT_OUTLET
+
+  IN_WASHING_PROCESS
+  IN_IRONING_PROCESS
+  IN_PACKING_PROCESS
+  AWAITING_PAYMENT
+  PAYMENT_DONE
+
+  DRIVER_TO_CUSTOMER
+  DRIVER_DELIVERED_LAUNDRY
+}
+
+enum OrderType {
+  WASH_ONLY
+  IRON_ONLY
+  WASH_AND_IRON
+}
+
+enum Role {
+  SUPER_ADMIN
+  OUTLET_ADMIN
+  WASHING_WORKER
+  IRONING_WORKER
+  PACKING_WORKER
+  DRIVER
 }
