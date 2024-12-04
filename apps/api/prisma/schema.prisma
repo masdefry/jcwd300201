@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -9,16 +6,6 @@ datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
 }
-
-// generator client {
-//   provider = "prisma-client-js"
-// }
-
-// datasource db {
-//   provider  = "postgresql"
-//   url       = env("DATABASE_URL")
-//   directUrl = env("DIRECT_URL")
-// }
 
 model Users {
   id                  String        @id @default(uuid())
@@ -33,61 +20,40 @@ model Users {
   verifyCode          String
   isGoogleRegister    Boolean
   forgotPasswordToken String
-  createdAt           DateTime
-  updatedAt           DateTime
-  deletedAt           DateTime
+  isDiscountUsed      Boolean       @default(false)
   order               Order[]
   userAddress         UserAddress[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("users")
 }
 
 model UserAddress {
-  id          Int      @id @default(autoincrement())
-  addressName String
-  city        String
-  province    String
-  country     String
-  zipCode     String
-  latitude    Float
-  longitude   Float
-  createdAt   DateTime
-  updatedAt   DateTime
-  deletedAt   DateTime
-  usersId     String?
+  id            Int     @id @default(autoincrement())
+  addressName   String
+  addressDetail String
+  city          String
+  province      String
+  country       String
+  zipCode       String
+  latitude      Float
+  longitude     Float
+  usersId       String?
 
   Users Users? @relation(fields: [usersId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("usersAddress")
 }
 
-// model Drivers {
-//   id                  String   @id @default(uuid())
-//   email               String   @unique
-//   password            String
-//   firstName           String
-//   lastName            String
-//   birtDate            String
-//   phoneNumber         String   @db.Text
-//   identityNumber      String   @db.Text
-//   motorcycleType      String
-//   plateNumber         String
-//   profilePicture      String
-//   isVerified          Boolean
-//   verifyCode          String
-//   isGoogleRegister    Boolean
-//   forgotPasswordToken String
-//   createdAt           DateTime
-//   updatedAt           DateTime
-//   deletedAt           DateTime
-
-//   order Order[]
-
-//   @@map("drivers")
-// }
-
 model Stores {
-  id        String   @id @default(uuid())
+  id        String @id
   storeName String
   address   String
   city      String
@@ -96,12 +62,13 @@ model Stores {
   zipCode   String
   latitude  Float
   longitude Float
-  createdAt DateTime
-  updatedAt DateTime
-  deletedAt DateTime
 
   worker Worker[]
   order  Order[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("stores")
 }
@@ -118,57 +85,85 @@ model Worker {
   identityNumber      String? @db.Text
   motorcycleType      String?
   plateNumber         String?
-  changePasswordToken String  @db.Text
-
-  createdAt DateTime
-  updatedAt DateTime
-  deletedAt DateTime
-  storesId  String?
+  changePasswordToken String? @db.Text
+  storesId            String?
 
   Stores Stores? @relation(fields: [storesId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("worker")
 }
 
 model Order {
-  id             String    @id @default(uuid())
-  orderType      OrderType
-  totalPrice     Int
-  discount       Float
-  isDiscountUsed Boolean
-  deliveryFee    Int
-  paymentProof   String
-  isPaid         Boolean
-  createdAt      DateTime
-  updatedAt      DateTime
-  deletedAt      DateTime
+  id           String  @id
+  totalPrice   Int
+  totalWeight  Int
+  discount     Float
+  deliveryFee  Int
+  paymentProof String
+  isPaid       Boolean
 
-  orderStatus OrderStatus[]
-  orderDetail OrderDetail[]
   driversId   String?
   storesId    String?
   usersId     String?
+  orderTypeId Int?
 
-  // Drivers Drivers? @relation(fields: [driversId], references: [id])
-  Stores Stores? @relation(fields: [storesId], references: [id])
-  Users  Users?  @relation(fields: [usersId], references: [id])
+  orderStatus OrderStatus[]
+  orderDetail OrderDetail[]
+
+  Stores    Stores?    @relation(fields: [storesId], references: [id])
+  Users     Users?     @relation(fields: [usersId], references: [id])
+  OrderType OrderType? @relation(fields: [orderTypeId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("order")
 }
 
-model OrderDetail {
-  id        Int      @id @default(autoincrement())
-  quantity  Int
-  price     Int
-  weight    Int
-  createdAt DateTime
-  updatedAt DateTime
-  deletedAt DateTime
-  orderId   String?
+model OrderType {
+  id    Int    @id @default(autoincrement())
+  Type  String
+  Price Int
 
-  Order Order? @relation(fields: [orderId], references: [id])
+  order Order[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("orderType")
+}
+
+model OrderDetail {
+  id      Int     @id @default(autoincrement())
+  orderId String?
+
+  Order      Order?    @relation(fields: [orderId], references: [id])
+  ItemName   ItemName? @relation(fields: [itemNameId], references: [id])
+  itemNameId Int?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("orderDetail")
+}
+
+model ItemName {
+  id          Int           @id @default(autoincrement())
+  itemName    String
+  orderDetail OrderDetail[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("itemName")
 }
 
 model OrderStatus {
@@ -176,9 +171,9 @@ model OrderStatus {
   status  Status
   orderId String?
 
-  createdAt DateTime
-  updatedAt DateTime
-  deletedAt DateTime
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   Order Order? @relation(fields: [orderId], references: [id])
 
@@ -198,12 +193,6 @@ enum Status {
 
   DRIVER_TO_CUSTOMER
   DRIVER_DELIVERED_LAUNDRY
-}
-
-enum OrderType {
-  WASH_ONLY
-  IRON_ONLY
-  WASH_AND_IRON
 }
 
 enum Role {

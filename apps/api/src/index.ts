@@ -3,6 +3,7 @@ import cors from 'cors'
 import router from './router'
 import dotenv from 'dotenv'
 import { dbConnect } from './connection'
+import { portConnect } from './utils/asciiText/dbConnect'
 
 dotenv.config()
 const port: string | undefined = process.env.PORT
@@ -39,5 +40,5 @@ dbConnect()
 
 /* listen on port 5000 */
 app.listen(port, () => {
-    console.log(`on port ${5000}`)
+    console.log(portConnect)
 })

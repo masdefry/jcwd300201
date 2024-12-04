@@ -1,10 +1,12 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import { Ubuntu } from 'next/font/google';
 import './globals.css';
-import { Header } from '@/components/Header';
-import { Footer } from '@/components/Footer';
+// import { Footer } from '@/components/Footer';
 import TanstackProviders from '@/providers/tanstackProviders';
-import HOCLoading from '@/providers/hocLoading';
+import Header from '@/components/core/navbar'
+import Footer from '@/components/core/footer'
+// import HOCLoading from '@/providers/hocLoading';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -13,16 +15,23 @@ export const metadata: Metadata = {
   description: 'Welcome to Clean & Click',
 };
 
+const ubuntu = Ubuntu({
+  subsets: ['latin'],
+  weight: ['400', '500', '700'],
+  variable: '--font-ubuntu',
+});
+
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={ubuntu.className}>
 
         <TanstackProviders>
           <Header />
-          <HOCLoading>
-            {children}
-          </HOCLoading>
+          {/* <HOCLoading> */}
+          {children}
+          {/* </HOCLoading> */}
           <Footer />
         </TanstackProviders>
 
