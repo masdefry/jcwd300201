@@ -76,6 +76,7 @@ function LocationPicker({
 }
 
 export default function editStore() {
+    // eslint-disable-next-line react-hooks/rules-of-hooks
     const [position, setPosition] = useState({ lat: -6.200000, lng: 106.816666 });
 
     const getCurrentLocation = (setFieldValue: any) => {

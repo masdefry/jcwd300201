@@ -10,16 +10,16 @@ datasource db {
 model Users {
   id                  String        @id @default(uuid())
   email               String        @unique
+  role                String
   password            String
   firstName           String
   lastName            String
-  birtDate            String
   phoneNumber         String        @db.Text
   profilePicture      String
   isVerified          Boolean
-  verifyCode          String
+  verifyCode          String?
   isGoogleRegister    Boolean
-  forgotPasswordToken String
+  forgotPasswordToken String?
   isDiscountUsed      Boolean       @default(false)
   order               Order[]
   userAddress         UserAddress[]
@@ -42,6 +42,8 @@ model UserAddress {
   latitude      Float
   longitude     Float
   usersId       String?
+
+  order Order[]
 
   Users Users? @relation(fields: [usersId], references: [id])
 
@@ -88,6 +90,8 @@ model Worker {
   changePasswordToken String? @db.Text
   storesId            String?
 
+  orderStatus OrderStatus[]
+
   Stores Stores? @relation(fields: [storesId], references: [id])
 
   createdAt DateTime  @default(now())
@@ -103,13 +107,16 @@ model Order {
   totalWeight  Int
   discount     Float
   deliveryFee  Int
-  paymentProof String
+  userAddress  String
+  paymentProof String?
   isPaid       Boolean
+  notes        String?
 
-  driversId   String?
-  storesId    String?
-  usersId     String?
-  orderTypeId Int?
+  driversId     String?
+  storesId      String?
+  usersId       String?
+  orderTypeId   Int?
+  userAddressId Int?
 
   orderStatus OrderStatus[]
   orderDetail OrderDetail[]
@@ -118,9 +125,10 @@ model Order {
   Users     Users?     @relation(fields: [usersId], references: [id])
   OrderType OrderType? @relation(fields: [orderTypeId], references: [id])
 
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  deletedAt   DateTime?
+  UserAddress UserAddress? @relation(fields: [userAddressId], references: [id])
 
   @@map("order")
 }
@@ -140,16 +148,17 @@ model OrderType {
 }
 
 model OrderDetail {
-  id      Int     @id @default(autoincrement())
-  orderId String?
-
-  Order      Order?    @relation(fields: [orderId], references: [id])
-  ItemName   ItemName? @relation(fields: [itemNameId], references: [id])
+  id         Int     @id @default(autoincrement())
+  orderId    String?
   itemNameId Int?
+  quantity   Int?
+  Order      Order?  @relation(fields: [orderId], references: [id])
 
   createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  updatedAt DateTime  @updatedAt
+
+  ItemName ItemName? @relation(fields: [itemNameId], references: [id])
 
   @@map("orderDetail")
 }
@@ -167,15 +176,17 @@ model ItemName {
 }
 
 model OrderStatus {
-  id      Int     @id @default(autoincrement())
-  status  Status
-  orderId String?
+  id       Int     @id @default(autoincrement())
+  status   Status
+  orderId  String?
+  workerId String?
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  Order Order? @relation(fields: [orderId], references: [id])
+  Order  Order?  @relation(fields: [orderId], references: [id])
+  Worker Worker? @relation(fields: [workerId], references: [id])
 
   @@map("orderStatus")
 }

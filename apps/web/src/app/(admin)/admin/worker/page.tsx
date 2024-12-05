@@ -79,7 +79,7 @@ export default function Worker() {
                                                     </AlertDialogTrigger>
                                                     <AlertDialogContent>
                                                         <AlertDialogHeader>
-                                                            <AlertDialogTitle>Hapus "Nama Outlet"?</AlertDialogTitle>
+                                                            <AlertDialogTitle>Hapus &quot;Nama Outlet&quot;?</AlertDialogTitle>
                                                             <AlertDialogDescription>
                                                                 Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
                                                             </AlertDialogDescription>
@@ -127,7 +127,7 @@ export default function Worker() {
                                                     </AlertDialogTrigger>
                                                     <AlertDialogContent>
                                                         <AlertDialogHeader>
-                                                            <AlertDialogTitle>Hapus "Nama Outlet"?</AlertDialogTitle>
+                                                            <AlertDialogTitle>Hapus &quot;Nama Outlet&quot;?</AlertDialogTitle>
                                                             <AlertDialogDescription>
                                                                 Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
                                                             </AlertDialogDescription>
@@ -174,7 +174,7 @@ export default function Worker() {
                                                     </AlertDialogTrigger>
                                                     <AlertDialogContent>
                                                         <AlertDialogHeader>
-                                                            <AlertDialogTitle>Hapus "Nama Outlet"?</AlertDialogTitle>
+                                                            <AlertDialogTitle>Hapus &quot;Nama Outlet&quot;?</AlertDialogTitle>
                                                             <AlertDialogDescription>
                                                                 Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
                                                             </AlertDialogDescription>
