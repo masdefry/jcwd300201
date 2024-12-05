@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+.fade-enter {
+  opacity: 0;
+}
+
+.fade-enter-active {
+  opacity: 1;
+  transition: opacity 1s ease-in-out;
+}
+
+.fade-exit {
+  opacity: 1;
+}
+
+.fade-exit-active {
+  opacity: 0;
+  transition: opacity 1s ease-in-out;
+}
+
+
 /* :root {
   --max-width: 1100px;
   --border-radius: 12px;

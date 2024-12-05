@@ -57,25 +57,6 @@ export default function Outlet() {
                                     <FaEdit />
                                 </button>
 
-                                <AlertDialog>
-                                    <AlertDialogTrigger asChild>
-                                        <div className="flex items-center space-x-2 px-2 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                            <FaTrashAlt />
-                                        </div>
-                                    </AlertDialogTrigger>
-                                    <AlertDialogContent>
-                                        <AlertDialogHeader>
-                                            <AlertDialogTitle>Hapus "Nama Outlet"?</AlertDialogTitle>
-                                            <AlertDialogDescription>
-                                                Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
-                                            </AlertDialogDescription>
-                                        </AlertDialogHeader>
-                                        <AlertDialogFooter>
-                                            <AlertDialogCancel>Batal</AlertDialogCancel>
-                                            <AlertDialogAction>Hapus</AlertDialogAction>
-                                        </AlertDialogFooter>
-                                    </AlertDialogContent>
-                                </AlertDialog>
                             </div>
                         </div>
                     ))}
