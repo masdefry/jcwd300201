@@ -18,7 +18,6 @@ export default function LocationAndSearch() {
                 </SelectTrigger>
                 <SelectContent>
                     <SelectGroup>
-                        <SelectLabel>North America</SelectLabel>
                         <SelectItem value="est">Eastern Standard Time (EST)</SelectItem>
                         <SelectItem value="cst">Central Standard Time (CST)</SelectItem>
                         <SelectItem value="mst">Mountain Standard Time (MST)</SelectItem>

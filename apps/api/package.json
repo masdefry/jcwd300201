@@ -12,7 +12,7 @@
     "seed": "prisma db seed"
   },
   "prisma": {
-    "seed": "node prisma/seed.js" 
+    "seed": "node prisma/seed.js"
   },
   "author": "",
   "license": "ISC",

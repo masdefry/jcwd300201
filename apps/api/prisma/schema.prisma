@@ -36,6 +36,7 @@ model UserAddress {
   addressName   String
   addressDetail String
   city          String
+  isMain        Boolean
   province      String
   country       String
   zipCode       String
