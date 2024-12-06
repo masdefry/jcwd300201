@@ -618,7 +618,7 @@ async function main() {
         data: dataUser.map((user) => ({
             email: user.email,
             role: 'USER',
-            password:hashedPassword,
+            password: hashedPassword,
             firstName: user.firstName,
             lastName: user.lastName,
             phoneNumber: user.phoneNumber,

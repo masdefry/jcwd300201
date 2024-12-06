@@ -6,12 +6,18 @@ import { locationStore } from "@/zustand/locationStore";
 import Image from "next/image";
 import axios from "axios";
 import ButtonCustom from "@/components/core/button";
+import { useInView } from "react-intersection-observer";
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const latitude = locationStore((state) => state?.latitude)
   const longitude = locationStore((state) => state?.longitude)
   const [isFade, setIsFade] = useState<boolean>(false)
+  const { ref: clickCleanRef, inView: clickCleanTextSection } = useInView()
+  const { ref: laundryCaptionRef, inView: laundryCaptionInView } = useInView()
+  const { ref: imageLaundryCaptionRef, inView: imageCaptionInView } = useInView()
+  const { ref: whyUsRef, inView: whyUsInView } = useInView()
+  const { ref: deliveryRef, inView: deliveryInView } = useInView()
 
   const imageCarousell = [
     '/images/New Project (1).jpg',
@@ -22,6 +28,38 @@ export default function Home() {
     'Laundry made easy, just for you.',
     'Fresh laundry, delivered to you.'
   ]
+
+  const captionCarousel = [
+    'WE DO LAUNDRY FOR YOU',
+    'FRESH & CLEAN, JUST FOR YOU'
+  ]
+
+  const testimonialData = [
+    {
+      id: 1,
+      name: 'John Doe',
+      position: 'CEO, Clean&Click',
+      testimonial:
+        'Clean&Clicks service has been exceptional. The laundry is always clean, and the delivery is super quick. Highly recommend!',
+      imageSrc: 'https://randomuser.me/api/portraits/men/1.jpg',
+    },
+    {
+      id: 2,
+      name: 'Jane Smith',
+      position: 'Manager, ABC Corp',
+      testimonial:
+        'Weve been using Clean&Click for all our office laundry needs. Their professional service and timely deliveries are unmatched.',
+      imageSrc: 'https://randomuser.me/api/portraits/women/2.jpg',
+    },
+    {
+      id: 3,
+      name: 'Mark Johnson',
+      position: 'Client, Local Business',
+      testimonial:
+        'The convenience of pickup and delivery is fantastic. My clothes are always handled with care. Clean&Click is the best laundry service!',
+      imageSrc: 'https://randomuser.me/api/portraits/men/3.jpg',
+    },
+  ];
 
   const whyUsData = [
     {
@@ -64,7 +102,7 @@ export default function Home() {
   }, [])
 
   return (
-    <main className="w-full h-fit">
+    <main className="w-full h-fit pt-0 md:pt-[62px]">
 
       {/* Mobile Section */}
       {/* <section className="w-full max-w-[765px] md:hidden flex bg-gradient-to-tr from-black to-purple-900 h-screen"></section> */}
@@ -83,15 +121,9 @@ export default function Home() {
           />
           <div className={`absolute top-16 right-20 transition-opacity duration-1000 ease-in-out ${isFade ? 'opacity-0' : 'opacity-100'}`}>
             <div className="">
-              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent text-shad drop-shadow-2xl leading-tight" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>
-                WE DO
-              </h1>
-              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent drop-shadow-2xl leading-tight" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>
-                LAUNDRY
-              </h1>
-              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent drop-shadow-2xl leading-tight" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>
-                FOR YOU
-              </h1>
+              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent text-shad drop-shadow-2xl leading-tight" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>WE DO</h1>
+              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent drop-shadow-2xl leading-tight" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>LAUNDRY</h1>
+              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent drop-shadow-2xl leading-tight" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>FOR YOU</h1>
             </div>
             <div className="flex flex-col gap-2 justify-start mt-4">
               <p className="text-lg text-white font-medium" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>&quot;{captionCarousell[currentIndex]}&quot;</p>
@@ -102,24 +134,23 @@ export default function Home() {
 
         {/* Content */}
         <div className="w-full h-fit flex flex-col lg:flex-row my-2">
-          <div className="w-full lg:w-1/2 h-96 bg-white flex flex-col justify-center px-10 py-6">
-            <h1 className="text-5xl font-bold text-gray-900 mb-4">CLEAN & CLICK</h1>
-            <p className="text-lg text-gray-600 font-medium leading-relaxed">
-              Nikmati layanan laundry berkualitas dengan perhatian khusus pada setiap cucian. Kami memastikan pakaian Anda bersih, wangi, dan terawat dengan proses yang cepat dan efisien.
-            </p>
+          <div className="w-full lg:w-1/2 h-[80vh] bg-white flex flex-col justify-center px-10 py-6">
+            <h1 className={`text-5xl font-bold text-gray-900 mb-4 transition-opacity duration-1000 ease-in-out ${clickCleanTextSection ? 'opacity-100' : 'opacity-0'}`} ref={clickCleanRef}>CLEAN & CLICK</h1>
+            <p className={`text-lg text-gray-600 font-medium leading-relaxed transition-opacity duration-1000 ease-in-out ${laundryCaptionInView ? 'opacity-100' : 'opacity-0'}`} ref={laundryCaptionRef}>Nikmati layanan laundry berkualitas dengan perhatian khusus pada setiap cucian. Kami memastikan pakaian Anda bersih, wangi, dan terawat dengan proses yang cepat dan efisien.</p>
             <div className="py-5">
               <ButtonCustom btnColor="bg-orange-500 hover:bg-orange-400">O R D E R H  E R E</ButtonCustom>
             </div>
           </div>
-          <div className="w-full lg:w-1/2 h-96 bg-neutral-500 relative">
+          <div className="w-full lg:w-1/2 h-[80vh] relative">
             <Image
+              ref={imageLaundryCaptionRef}
               width={2000}
               height={2000}
               src="https://img.okezone.com/content/2022/03/16/12/2562573/ini-tips-mencuci-dengan-mesin-cuci-yang-benar-dan-hemat-XjnK5p6qex.jpg"
               alt="hero"
-              className="w-full h-96 object-cover object-top"
+              className={`w-full h-[80vh] object-cover object-top transition-opacity duration-1000 ease-in-out ${imageCaptionInView ? 'opacity-100' : 'opacity-0'}`}
             />
-            <span className="hidden lg:absolute h-96 bg-white rounded-r-full w-44 top-0"></span>
+            {/* <span className="hidden lg:absolute h-[80vh] bg-white rounded-r-full w-44 top-0"></span> */}
           </div>
         </div>
 
@@ -133,10 +164,10 @@ export default function Home() {
         </div> */}
 
         {/* Content */}
-        <div className="w-full h-fit flex my-2">
+        <div className='w-full h-fit flex my-2'>
           <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-indigo-100 px-10 lg:px-60">
-            <h2 className="text-4xl font-bold mb-14">Mengapa Kami?</h2>
-            <div className="flex flex-col md:flex-row justify-center gap-8">
+            <h2 className={`text-4xl font-bold mb-14 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} ref={whyUsRef}>Mengapa Kami?</h2>
+            <div ref={whyUsRef} className={`flex flex-col md:flex-row justify-center gap-8 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} >
               {whyUsData.map((item) => (
                 <div key={item.id} className="flex flex-col items-center">
                   <div className="bg-blue-300 rounded-full p-4 mb-4">
@@ -183,11 +214,9 @@ export default function Home() {
             </div>
             <div className="w-full h-fit">
               <div className="w-full">
-                <p className='font-semibold text-neutral-400'>Memberikan Layanan Terbaik</p>
-                <h1 className="text-2xl md:text-5xl font-extrabold text-blue-950">
-                  Layanan Pickup dan Delivery
-                </h1>
-                <p className='font-semibold text-neutral-400 py-2'>Nikmati kemudahan dalam mengirimkan barang dengan layanan Pickup dan Delivery kami. Cepat, aman, dan terpercaya, kami siap melayani Anda kapan saja dan di mana saja.</p>
+                <p className={`font-semibold text-neutral-400 transition-opacity duration-1000 ease-in-out ${deliveryInView ? 'opacity-100' : 'opacity-0'}`} ref={deliveryRef}>Memberikan Layanan Terbaik</p>
+                <h1 className={`transition-opacity duration-1000 ease-in-out ${deliveryInView ? 'opacity-100' : 'opacity-0'} text-2xl md:text-5xl font-extrabold text-blue-950`} ref={deliveryRef}>Layanan Pickup dan Delivery</h1>
+                <p className={`transition-opacity duration-1000 ease-in-out ${deliveryInView ? 'opacity-100' : 'opacity-0'} font-semibold text-neutral-400 py-2`} ref={deliveryRef}>Nikmati kemudahan dalam mengirimkan barang dengan layanan Pickup dan Delivery kami. Cepat, aman, dan terpercaya, kami siap melayani Anda kapan saja dan di mana saja.</p>
                 <div className="py-3">
                   <ButtonCustom btnColor="bg-orange-500 hover:bg-orange-400">O R D E R H E R E</ButtonCustom>
                 </div>
@@ -198,22 +227,26 @@ export default function Home() {
 
         {/* Testimonial */}
         <div className="w-full h-fit flex my-2">
-          <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-neutral-100 px-10 lg:px-60">
+          <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-neutral-100 px-10">
             <h2 className="text-4xl font-bold mb-14">Testimonial</h2>
-            <div className="flex flex-col md:flex-row justify-center gap-8">
-              {whyUsData.map((item) => (
-                <div key={item.id} className="flex flex-col items-center border">
-                  <div className="bg-blue-300 rounded-full p-4 mb-4">
+            <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+              {testimonialData.map((item) => (
+                <div
+                  key={item.id}
+                  className="w-full h-fit bg-white shadow-xl rounded-lg p-6 transform hover:scale-105 transition-all duration-300"
+                >
+                  <div className="flex justify-center mb-4">
                     <Image
-                      src={item.imageSrc}
-                      alt={item.altText}
-                      width={200}
-                      height={200}
-                      className="w-16 h-16"
+                      src={item?.imageSrc}
+                      alt={item?.name}
+                      width={100}
+                      height={100}
+                      className="w-24 h-24 rounded-full object-cover"
                     />
                   </div>
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
-                  <p className="text-gray-600">{item.description}</p>
+                  <h3 className="text-xl font-semibold text-gray-900">{item?.name}</h3>
+                  <p className="text-lg text-gray-600 mb-4">{item?.position}</p>
+                  <p className="text-gray-500">{item?.testimonial}</p>
                 </div>
               ))}
             </div>

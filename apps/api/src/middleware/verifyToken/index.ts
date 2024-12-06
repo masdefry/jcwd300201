@@ -1,9 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from 'jsonwebtoken'
-import dotenv from 'dotenv'
+import { decodeToken } from "@/utils/tokenValidation";
 
-dotenv.config()
-const jwt_secret = process.env.JWT_SECRET as string
 export const tokenValidation = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { authorization } = req.headers
@@ -11,7 +8,7 @@ export const tokenValidation = async (req: Request, res: Response, next: NextFun
 
         if (!token) throw { msg: 'Harap login terlebih dahulu', status: 406 }
 
-        const tokenVerify: any = await jwt.verify(token, jwt_secret)
+        const tokenVerify: any = await decodeToken(token)
 
         req.body.userId = tokenVerify?.data?.id
         req.body.authorizationRole = tokenVerify?.data?.role

@@ -1,3 +1,5 @@
+'use client'
+
 import HeaderMobileUser from "@/components/core/headerMobileUser";
 import {
     Select,
@@ -8,8 +10,26 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
+import { useQuery } from "@tanstack/react-query";
+import { instance } from "@/utils/axiosInstance";
+import authStore from "@/zustand/authstore";
+import axios from "axios";
 
-export default function pickupLaundry() {
+export default function PickupLaundry() {
+    const token = authStore((state) => state.token)
+
+
+
+    const { data: getOrderType, isLoading } = useQuery({
+        queryKey: ['get-order-type'],
+        queryFn: async () => {
+            const res = await instance.get('/order/type', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return res?.data?.data;
+        },
+    });
+
     return (
         <main className="w-full h-fit">
             <section className="w-full h-fit max-w-[425px] md:max-w-full md:w-full block md:hidden">
@@ -39,9 +59,17 @@ export default function pickupLaundry() {
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        <SelectItem value="1">Cuci Saja</SelectItem>
-                                        <SelectItem value="2">Setrika Saja</SelectItem>
-                                        <SelectItem value="3">Cuci dan Setrika</SelectItem>
+                                        {isLoading ? (
+                                            <SelectItem disabled value="loading">Memuat...</SelectItem>
+                                        ) : (
+                                            getOrderType
+                                                ?.filter((item: any) => item?.id && item?.Type)
+                                                .map((item: any) => (
+                                                    <SelectItem key={item.id} value={String(item.id)}>
+                                                        {item.Type}
+                                                    </SelectItem>
+                                                ))
+                                        )}
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>

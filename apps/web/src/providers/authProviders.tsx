@@ -4,20 +4,36 @@ import { ReactNode, useEffect, useState } from "react";
 import { locationStore } from '@/zustand/locationStore'
 import { useGeolocated } from "react-geolocated";
 import axios from 'axios'
+import { instance } from "@/utils/axiosInstance";
+import authStore from "@/zustand/authstore";
 
 export default function AuthProviders({ children }: { children: ReactNode }) {
     const setLocationUser = locationStore((state) => state?.setLocationUser)
     const latitude = locationStore((state) => state?.latitude)
     const longitude = locationStore((state) => state?.longitude)
+    const token = authStore((state) => state?.token)
     const [dataUser, setDataUser] = useState<string>('')
 
-    console.log(latitude)
     const { coords } = useGeolocated({
         positionOptions: {
             enableHighAccuracy: true,
         },
         userDecisionTimeout: 10000,
     });
+
+    const handleKeepAuth = async () => {
+        try {
+            const response = await instance.get('/auth/keep-auth-user', {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+
+            console.log(response)
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -27,8 +43,6 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
                         latitude: position?.coords?.latitude,
                         longitude: position?.coords?.longitude
                     })
-
-                    console.log("location>>", position);
                 },
                 (error) => {
                     console.log("??", error);
@@ -38,6 +52,12 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
             console.log("Geolocation is not supported by this browser.");
         }
     }, [coords, setLocationUser])
+
+    useEffect(() => {
+        if (token) {
+            handleKeepAuth()
+        }
+    }, [token])
 
     useEffect(() => {
         const getLocation = async (): Promise<void> => {

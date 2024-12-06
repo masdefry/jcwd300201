@@ -103,8 +103,6 @@ export default function RegisterUser() {
                     }}
                 >
 
-
-
                     <Form className='flex flex-col justify-center items-center w-full space-y-4'>
                         <div className="flex w-full gap-4 ">
                             <div id="firstName-input" className=" w-1/2">

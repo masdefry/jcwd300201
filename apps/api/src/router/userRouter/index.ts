@@ -1,11 +1,14 @@
 import { Router } from 'express'
-import { userRegister, userLogin } from '@/controllers/customerController'
-import { authCustomerValidation, authCustomerLoginValidation } from '@/middleware/validation'
+import { userRegister, userLogin, userLogout, userCreateAddress } from '@/controllers/userController'
+import { authCustomerValidation, authLoginValidation } from '@/middleware/validation'
 import { limiter } from '@/middleware/rateLimit'
+import { tokenValidation } from '@/middleware/verifyToken'
 
 const userRouter = Router()
 
 userRouter.post('/register', authCustomerValidation, limiter, userRegister)
-userRouter.post('/login', authCustomerLoginValidation, limiter, userLogin)
+userRouter.post('/login', authLoginValidation, limiter, userLogin)
+userRouter.post('/logout', tokenValidation, limiter, userLogout)
+userRouter.post('/add-address', tokenValidation, limiter, userCreateAddress)
 
 export default userRouter

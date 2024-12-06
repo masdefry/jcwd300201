@@ -3,28 +3,26 @@
 import { useState, useEffect } from "react";
 
 export default function RealTimeClock() {
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState(new Date());
 
   useEffect(() => {
-    const updateClock = () => {
-      const currentTime = new Date().toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit',
-        second: '2-digit',
-      });
-      setTime(currentTime);
-    };
+    const interval = setInterval(() => {
+      setTime(new Date());
+    }, 1000);
 
-    updateClock(); // Panggil sekali saat komponen mount
-    const interval = setInterval(updateClock, 1000); // Update setiap detik
-
-    return () => clearInterval(interval); // Bersihkan interval saat komponen unmount
+    return () => clearInterval(interval); 
   }, []);
+
+  const formattedTime = time.toLocaleTimeString('id-ID', {
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+  });
 
   return (
     <div className="text-center text-base">
       <p>Jam Sekarang:</p>
-      <p className="font-bold">{time}</p>
+      <p className="font-bold">{formattedTime}</p>
     </div>
   );
 }
