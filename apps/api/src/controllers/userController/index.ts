@@ -1,15 +1,11 @@
 import { Request, Response, NextFunction } from "express"
-import { validateEmail } from "@/middleware/validation/emailValidation"
-import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation"
 import prisma from "@/connection"
-import { hashPassword } from "@/utils/passwordHash"
 import { nanoid } from 'nanoid';
-import fs from 'fs'
-import { encodeToken } from "@/utils/tokenValidation";
-import { compile } from "handlebars";
-import { comparePassword } from "@/utils/passwordHash"
-import { transporter } from "@/utils/transporter"
 import jwt from 'jsonwebtoken'
+import { signInWithGoogleService, userRegisterService } from "@/service/userRegisterService"
+import { userLoginService } from "@/service/userLoginService"
+import { encodeToken } from "@/utils/tokenValidation";
+import { hashPassword } from "@/utils/passwordHash";
 
 const secret_key: string | undefined = process.env.JWT_SECRET as string
 export const userRegister = async (req: Request, res: Response, next: NextFunction) => {
@@ -17,45 +13,7 @@ export const userRegister = async (req: Request, res: Response, next: NextFuncti
     const { email, password, firstName, lastName, phoneNumber } = req?.body
     const verifyCode = nanoid(6)
 
-    if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
-    if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
-    const findUser = await prisma.users.findFirst({ where: { email } })
-    if (findUser) throw { msg: 'User sudah terdaftar', status: 400 }
-
-    const hashedPassword = await hashPassword(password)
-
-    const dataUser = await prisma.users.create({
-      data: {
-        email,
-        password: hashedPassword,
-        firstName,
-        lastName,
-        phoneNumber,
-        profilePicture: 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg',
-        isVerified: Boolean(false),
-        verifyCode: verifyCode,
-        isGoogleRegister: Boolean(false),
-        isDiscountUsed: Boolean(true),
-        role: 'CUSTOMER'
-      }
-    })
-
-    const setTokenUser = await encodeToken({ id: dataUser?.id, role: dataUser?.email });
-
-    const emailHTML = fs.readFileSync('./src/public/sendMail/emailVerification.html', 'utf-8');
-    let compiledHtml: any = await compile(emailHTML);
-    compiledHtml = compiledHtml({
-      firstName: firstName,
-      email: email,
-      url: `http://localhost:3000/user/verification-user/${verifyCode}-CNC-${setTokenUser}`,
-      verifCode: verifyCode
-    });
-
-    await transporter.sendMail({
-      to: email,
-      html: compiledHtml,
-      subject: 'Verification your email!'
-    })
+    await userRegisterService({ email, password, firstName, lastName, phoneNumber, verifyCode })
 
     res?.status(200).json({
       error: false,
@@ -72,28 +30,20 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
   try {
     const { email, password } = req?.body
 
-    if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
-    const findUser = await prisma.users.findFirst({ where: { email } })
-
-    if (!findUser) throw { msg: 'Email yang anda masukan salah atau tidak ada', status: 401 }
-
-    const match = await comparePassword(password, findUser?.password)
-    if (!match) throw { msg: 'Password anda salah!', status: 401 }
-
-    const token = await encodeToken({ id: findUser?.id, role: findUser?.role })
+    const dataLogin = await userLoginService({ email, password })
 
     res?.status(200).json({
       error: false,
       message: 'Berhasil login, silahkan masuk!',
       data: {
-        token,
+        token: dataLogin?.token,
         email,
-        role: findUser?.role,
-        firstName: findUser?.firstName,
-        lastName: findUser?.lastName,
-        isVerify: findUser?.isVerified,
-        profilePicture: findUser?.profilePicture,
-        phoneNumber: findUser?.isDiscountUsed
+        role: dataLogin?.findUser?.role,
+        firstName: dataLogin?.findUser?.firstName,
+        lastName: dataLogin?.findUser?.lastName,
+        isVerify: dataLogin?.findUser?.isVerified,
+        profilePicture: dataLogin?.findUser?.profilePicture,
+        phoneNumber: dataLogin?.findUser?.phoneNumber
       }
     })
   } catch (error) {
@@ -108,8 +58,6 @@ export const userLogout = async (req: Request, res: Response, next: NextFunction
     const findUser = await prisma.users.findFirst({
       where: { email }
     })
-
-    console.log(findUser, '<<<<<<<<<<')
 
     if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
 
@@ -127,6 +75,58 @@ export const userLogout = async (req: Request, res: Response, next: NextFunction
       message: 'Berhasil logout!',
       data: {}
     })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const signInWithGoogle = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { firstName, lastName, email, profilePicture } = req.body;
+    const verifyCode = nanoid(6);
+
+    const { findEmail, token } = await signInWithGoogleService({ email })
+
+    if (findEmail) {
+      res.status(200).json({
+        error: false,
+        message: 'Login menggunakan Google berhasil!',
+        data: { token }
+      })
+    } else {
+      const newUser = await prisma.users.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password: await hashPassword('@googlesign123'),
+          role: 'CUSTOMER',
+          isVerified: Boolean(true),
+          phoneNumber: 'Belum terisi',
+          profilePicture: profilePicture,
+          isDiscountUsed: true,
+          isGoogleRegister: true,
+          verifyCode
+        }
+      })
+      
+      const token = await encodeToken({ id: newUser?.id as string, role: newUser?.role as string })
+
+      res.status(201).json({
+        error: false,
+        message: 'Masuk menggunakan Google berhasil!',
+        data: {
+          token,
+          email,
+          firstName: newUser?.firstName,
+          lastName: newUser?.lastName,
+          role: newUser?.role,
+          phoneNumber: newUser?.phoneNumber,
+          profilePicture: newUser?.profilePicture,
+        }
+      })
+    }
+
   } catch (error) {
     next(error)
   }

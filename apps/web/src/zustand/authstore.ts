@@ -8,10 +8,10 @@ const authStore = create(
     firstName: '',
     lastName: '',
     email: '',
-    role: '', 
-    isVerified: false, 
-    profilePicture: '', 
-    isDiscountUsed: false, 
+    role: '',
+    isVerified: false,
+    profilePicture: '',
+    isDiscountUsed: false,
 
     setAuth: ({
       token, firstName, lastName, email, role,
@@ -22,10 +22,10 @@ const authStore = create(
     }),
 
     setKeepAuth: ({
-      token, firstName, lastName, email, role,
+      firstName, lastName, email, role,
       isVerified, profilePicture, isDiscountUsed
     }: IAuthStore) => set({
-      token, firstName, lastName, email, role,
+      firstName, lastName, email, role,
       isVerified, profilePicture, isDiscountUsed
     }),
 
@@ -41,10 +41,10 @@ const authStore = create(
     }),
   }),
 
-  {
-    name: 'authToken', 
-    partialize: (state: any) => ({ token: state.token }),
-  }),
+    {
+      name: 'authToken',
+      partialize: (state: any) => ({ token: state.token }),
+    }),
 );
 
 export default authStore;
