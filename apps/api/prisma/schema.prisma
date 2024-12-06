@@ -104,11 +104,10 @@ model Worker {
 
 model Order {
   id           String  @id
-  totalPrice   Int
-  totalWeight  Int
+  totalPrice   Int?
+  totalWeight  Int?
   discount     Float
   deliveryFee  Int
-  userAddress  String
   paymentProof String?
   isPaid       Boolean
   notes        String?

@@ -34,10 +34,11 @@ const customMarkerIcon = new L.Icon({
     iconAnchor: [12, 41],
 });
 
+
 function LocationPicker({
     setFieldValue,
     position,
-    setPosition, 
+    setPosition,  
 }: {
     setFieldValue: any;
     position: IPosition;
@@ -48,7 +49,7 @@ function LocationPicker({
             const { lat, lng } = e.latlng;
             setFieldValue("latitude", lat);
             setFieldValue("longitude", lng);
-            setPosition({ lat, lng })
+            setPosition({ lat, lng }); 
         },
     });
 
@@ -63,7 +64,7 @@ function LocationPicker({
                     const lng = e.target.getLatLng().lng;
                     setFieldValue("latitude", lat);
                     setFieldValue("longitude", lng);
-                    setPosition({ lat, lng })
+                    setPosition({ lat, lng }); 
                 },
             }}
         />
@@ -116,6 +117,8 @@ export default function Page() {
                                 province: Yup.string().required("Provinsi is required"),
                                 city: Yup.string().required("Kota is required"),
                                 zipCode: Yup.string().required("Kode Pos is required"),
+                                latitude: Yup.string().required("titik lokasi harap diisi!"),
+                                longitude: Yup.string().required("titik lokasi harap diisi!"),
                             })}
                             onSubmit={(values) => {
                                 console.log("Form Values:", values);
@@ -185,13 +188,6 @@ export default function Page() {
                                             helperText={touched.zipCode && errors.zipCode}
                                         />
 
-                                        <button
-                                            className="w-full text-white bg-green-500 py- hover:bg-green-600"
-                                            onClick={() => getCurrentLocation(setFieldValue)}
-                                            type="button"
-                                        >
-                                            Use Current Location
-                                        </button>
 
                                         <div className="mt-4 h-80">
                                             <MapContainer
@@ -203,10 +199,18 @@ export default function Page() {
                                                 <LocationPicker setFieldValue={setFieldValue} position={position} setPosition={setPosition} />
                                             </MapContainer>
                                         </div>
+                                        
+                                        <button
+                                            className="w-full text-white rounded-lg bg-sky-500 py-2 hover:bg-sky-600"
+                                            onClick={() => getCurrentLocation(setFieldValue)}
+                                            type="button"
+                                        >
+                                            Use Current Location
+                                        </button>
 
                                         <TextField
                                             id="latitude"
-                                            label="Latitude"
+                                            label=""
                                             name="latitude"
                                             value={values.latitude}
                                             disabled
@@ -216,7 +220,7 @@ export default function Page() {
 
                                         <TextField
                                             id="longitude"
-                                            label="Longitude"
+                                            label=""
                                             name="longitude"
                                             value={values.longitude}
                                             disabled

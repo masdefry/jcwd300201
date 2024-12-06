@@ -131,3 +131,100 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
     next(error)
   }
 }
+
+export const userCreateAddress = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { addressName,
+      addressDetail,
+      province,
+      city,
+      zipCode,
+      latitude,
+      longitude,
+      userId,
+      country = "Indonesia" } = req.body
+
+    const hasMainAddress = await prisma.userAddress.findFirst({
+      where: {
+        usersId: userId,
+        isMain: true,
+      },
+    });
+
+    const isMain = !hasMainAddress;
+
+    const newAddress = await prisma.userAddress.create({
+      data: {
+        addressName,
+        addressDetail,
+        province,
+        city,
+        zipCode,
+        latitude: parseFloat(latitude),
+        longitude: parseFloat(longitude),
+        isMain,
+        country,
+        usersId: userId,
+      },
+    });
+
+    res.status(201).json({
+      error: false,
+      message: "Alamat berhasil ditambahkan",
+      data: newAddress,
+    });
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const userEditAddress = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { addressId } = req.params;
+    const {
+      addressName,
+      addressDetail,
+      province,
+      city,
+      zipCode,
+      latitude,
+      longitude,
+      country,
+    } = req.body;
+
+    const existingAddress = await prisma.userAddress.findUnique({
+      where: { id: parseInt(addressId) },
+    });
+
+    if (!existingAddress) {
+      return res.status(404).json({
+        success: false,
+        message: "Address not found",
+      });
+    }
+
+    const updatedAddress = await prisma.userAddress.update({
+      where: { id: parseInt(addressId) },
+      data: {
+        addressName,
+        addressDetail,
+        province,
+        city,
+        zipCode,
+        latitude: latitude ? parseFloat(latitude) : undefined,
+        longitude: longitude ? parseFloat(longitude) : undefined,
+        country,
+      },
+    });
+
+    res.status(200).json({
+      error: false,
+      message: "Alamat anda berhasil di-update!",
+      data: updatedAddress,
+    });
+
+  } catch (error) {
+    next(error)
+  }
+}
