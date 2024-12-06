@@ -7,7 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { instance } from "@/utils/axiosInstance";
-import { ILoginUser } from "./type";
+import { ILoginGoogleUser, ILoginUser } from "./type";
 import * as Yup from "yup";
 import authStore from "@/zustand/authstore";
 import { useToast } from "@/hooks/use-toast";
@@ -75,12 +75,48 @@ export default function LoginUser() {
         }
     })
 
+    const { mutate: signInWithGoogle } = useMutation({
+        mutationFn: async ({ firstName, lastName, email, profilePicture }: ILoginGoogleUser) => {
+            return await instance.post('/user/sign-w-google', {
+                firstName, lastName, email, profilePicture
+            })
+        },
+        onSuccess: (res) => {
+            setToken({
+                token: res?.data?.data?.token,
+                firstName: res?.data?.data?.firstName,
+                lastName: res?.data?.data?.lastName,
+                email: res?.data?.data?.email,
+                role: res?.data?.data?.role,
+                isVerified: res?.data?.data?.isVerified,
+                profilePicture: res?.data?.data?.profilePicture,
+                isDiscountUsed: res?.data?.data?.isDiscountUsed,
+            })
+            
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
+            })
+
+            window.location.href = '/'
+            console.log(res)
+        },
+        onError: (err) => {
+            console.log(err)
+        }
+    })
 
     const { mutate: loginWithGoogle } = useMutation({
         mutationFn: async () => {
             return await signInWithPopup(auth, provider)
         },
         onSuccess: (res) => {
+            signInWithGoogle({
+                firstName: res?.user?.displayName?.split(' ')[0] as string,
+                lastName: res?.user?.displayName?.split(' ')[1] as string,
+                email: res?.user?.email as string,
+                profilePicture: res?.user?.photoURL as string
+            })
             console.log(res)
         },
         onError: (err) => {

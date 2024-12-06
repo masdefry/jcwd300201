@@ -1,17 +1,11 @@
 import { Request, Response, NextFunction } from "express"
-import { validateEmail } from "@/middleware/validation/emailValidation"
-import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation"
 import prisma from "@/connection"
-import { hashPassword } from "@/utils/passwordHash"
 import { nanoid } from 'nanoid';
-import fs from 'fs'
-import { encodeToken } from "@/utils/tokenValidation";
-import { compile } from "handlebars";
-import { comparePassword } from "@/utils/passwordHash"
-import { transporter } from "@/utils/transporter"
 import jwt from 'jsonwebtoken'
-import { userRegisterService } from "@/service/userRegisterService"
+import { signInWithGoogleService, userRegisterService } from "@/service/userRegisterService"
 import { userLoginService } from "@/service/userLoginService"
+import { encodeToken } from "@/utils/tokenValidation";
+import { hashPassword } from "@/utils/passwordHash";
 
 const secret_key: string | undefined = process.env.JWT_SECRET as string
 export const userRegister = async (req: Request, res: Response, next: NextFunction) => {
@@ -19,14 +13,7 @@ export const userRegister = async (req: Request, res: Response, next: NextFuncti
     const { email, password, firstName, lastName, phoneNumber } = req?.body
     const verifyCode = nanoid(6)
 
-    await userRegisterService({
-      email,
-      password,
-      firstName,
-      lastName,
-      phoneNumber,
-      verifyCode
-    })
+    await userRegisterService({ email, password, firstName, lastName, phoneNumber, verifyCode })
 
     res?.status(200).json({
       error: false,
@@ -93,6 +80,57 @@ export const userLogout = async (req: Request, res: Response, next: NextFunction
   }
 }
 
+export const signInWithGoogle = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { firstName, lastName, email, profilePicture } = req.body;
+    const verifyCode = nanoid(6);
+
+    const { findEmail, token } = await signInWithGoogleService({ email })
+
+    if (findEmail) {
+      res.status(200).json({
+        error: false,
+        message: 'Login menggunakan Google berhasil!',
+        data: { token }
+      })
+    } else {
+      const newUser = await prisma.users.create({
+        data: {
+          firstName,
+          lastName,
+          email,
+          password: await hashPassword('@googlesign123'),
+          role: 'CUSTOMER',
+          isVerified: Boolean(true),
+          phoneNumber: 'Belum terisi',
+          profilePicture: profilePicture,
+          isDiscountUsed: true,
+          isGoogleRegister: true,
+          verifyCode
+        }
+      })
+      
+      const token = await encodeToken({ id: newUser?.id as string, role: newUser?.role as string })
+
+      res.status(201).json({
+        error: false,
+        message: 'Masuk menggunakan Google berhasil!',
+        data: {
+          token,
+          email,
+          firstName: newUser?.firstName,
+          lastName: newUser?.lastName,
+          role: newUser?.role,
+          phoneNumber: newUser?.phoneNumber,
+          profilePicture: newUser?.profilePicture,
+        }
+      })
+    }
+
+  } catch (error) {
+    next(error)
+  }
+}
 
 export const userCreateAddress = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -143,7 +181,7 @@ export const userCreateAddress = async (req: Request, res: Response, next: NextF
 
 export const userEditAddress = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { addressId } = req.params; 
+    const { addressId } = req.params;
     const {
       addressName,
       addressDetail,

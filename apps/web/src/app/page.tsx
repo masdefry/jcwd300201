@@ -155,15 +155,6 @@ export default function Home() {
         </div>
 
         {/* Content */}
-        {/* <div className="w-full h-fit flex my-2">
-          <div className="w-full h-96 bg-cyan-300"></div>
-          <div className="w-full h-96 flex flex-col gap-2">
-            <div className="w-full h-full bg-green-500"></div>
-            <div className="w-full h-full bg-pink-800"></div>
-          </div>
-        </div> */}
-
-        {/* Content */}
         <div className='w-full h-fit flex my-2'>
           <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-indigo-100 px-10 lg:px-60">
             <h2 className={`text-4xl font-bold mb-14 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} ref={whyUsRef}>Mengapa Kami?</h2>

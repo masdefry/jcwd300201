@@ -1,5 +1,5 @@
 'use client'
-import HeaderMobile from "@/components/core/headerMobile"
+import HeaderMobileUser from "@/components/core/headerMobileUser";
 import Link from "next/link"
 import { FaArrowLeft } from 'react-icons/fa';
 import TextField from '@mui/material/TextField';
@@ -13,9 +13,9 @@ import * as Yup from "yup";
 import { FormControl } from "@mui/material";
 import { FormikHelpers } from "formik";
 
-interface StoreFormValues {
-    storeName: string
-    address: string
+interface AddressFormValues {
+    addressName: string
+    addressDetail : string
     province: string
     city: string
     zipCode: string
@@ -38,7 +38,7 @@ const customMarkerIcon = new L.Icon({
 function LocationPicker({
     setFieldValue,
     position,
-    setPosition,  
+    setPosition, 
 }: {
     setFieldValue: any;
     position: IPosition;
@@ -95,16 +95,16 @@ export default function Page() {
     return (
         <>
             <main className="w-full h-fit">
-                <section className="w-full h-fit"> 
-                    <HeaderMobile />
+                <section className="w-full h-fit">
+                    <HeaderMobileUser/>
                     <main className="mx-8">
                         <section className="flex gap-2 items-center bg-white w-full z-50 font-bold  fixed pt-2 mt-14 text-lg border-b-2 pb-4">
-                            <Link href='/admin/settings'><FaArrowLeft /></Link> EDIT OUTLET
+                            <Link href='/users/settings/address'><FaArrowLeft /></Link> EDIT ALAMAT
                         </section>
                         <Formik
                             initialValues={{
-                                storeName: "",
-                                address: "",
+                                addressName: "",
+                                addressDetail: "",
                                 province: "",
                                 city: "",
                                 zipCode: "",
@@ -112,11 +112,11 @@ export default function Page() {
                                 longitude: "",
                             }}
                             validationSchema={Yup.object({
-                                storeName: Yup.string().required("Nama Toko is required"),
-                                address: Yup.string().required("Alamat is required"),
-                                province: Yup.string().required("Provinsi is required"),
-                                city: Yup.string().required("Kota is required"),
-                                zipCode: Yup.string().required("Kode Pos is required"),
+                                addressName: Yup.string().required("Nama Alamat harap diisi!"),
+                                addressDetail: Yup.string().required("Alamat harap diisi!"),
+                                province: Yup.string().required("Provinsi harap diisi!"),
+                                city: Yup.string().required("Kota harap diisi!"),
+                                zipCode: Yup.string().required("Kode Pos harap diisi!"),
                                 latitude: Yup.string().required("titik lokasi harap diisi!"),
                                 longitude: Yup.string().required("titik lokasi harap diisi!"),
                             })}
@@ -129,28 +129,28 @@ export default function Page() {
                                     <div className="py-36 flex gap-4 flex-wrap justify-center flex-col ">
 
                                         <TextField
-                                            id="storeName"
-                                            name="storeName"
-                                            label="Nama Toko"
-                                            value={values.storeName}
+                                            id="addressName"
+                                            name="addressName"
+                                            label="Nama Alamat"
+                                            value={values.addressName}
                                             onChange={handleChange}
-                                            placeholder="CnC - Jakarta "
+                                            placeholder="Rumah "
                                             size="small"
                                             fullWidth
-                                            error={touched.storeName && Boolean(errors.storeName)}
-                                            helperText={touched.storeName && errors.storeName}
+                                            error={touched.addressName && Boolean(errors.addressName)}
+                                            helperText={touched.addressName && errors.addressName}
                                         />
                                         <TextField
                                             id="address"
                                             name="address"
                                             label="Alamat"
-                                            value={values.address}
+                                            value={values.addressDetail}
                                             onChange={handleChange}
                                             placeholder="Jl. Rancak Banai no.76"
                                             size="small"
                                             fullWidth
-                                            error={touched.address && Boolean(errors.address)}
-                                            helperText={touched.address && errors.address}
+                                            error={touched.addressDetail && Boolean(errors.addressDetail)}
+                                            helperText={touched.addressDetail && errors.addressDetail}
                                         />
                                         <TextField
                                             id="province"
@@ -199,9 +199,9 @@ export default function Page() {
                                                 <LocationPicker setFieldValue={setFieldValue} position={position} setPosition={setPosition} />
                                             </MapContainer>
                                         </div>
-                                        
+
                                         <button
-                                            className="w-full text-white rounded-lg bg-sky-500 py-2 hover:bg-sky-600"
+                                            className="w-full text-white rounded-lg bg-orange-500 py-2 hover:bg-orange-600"
                                             onClick={() => getCurrentLocation(setFieldValue)}
                                             type="button"
                                         >
@@ -230,7 +230,7 @@ export default function Page() {
 
                                         <ButtonCustom
                                             width="w-full"
-                                            btnColor="bg-sky-500 hover:bg-sky-600"
+                                            btnColor="bg-orange-500 hover:bg-orange-600"
                                             txtColor="text-white"
                                             type="submit"
                                         >

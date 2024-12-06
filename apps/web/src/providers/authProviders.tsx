@@ -12,6 +12,7 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
     const latitude = locationStore((state) => state?.latitude)
     const longitude = locationStore((state) => state?.longitude)
     const token = authStore((state) => state?.token)
+    const setKeepAuth = authStore((state) => state?.setKeepAuth)
     const [dataUser, setDataUser] = useState<string>('')
 
     const { coords } = useGeolocated({
@@ -28,6 +29,19 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
                     Authorization: `Bearer ${token}`
                 }
             })
+
+            if(response?.data?.data?.role == 'CUSTOMER') {
+                setKeepAuth({
+                    email: response?.data?.data?.email,
+                    firstName: response?.data?.data?.firstName,
+                    isDiscountUsed: response?.data?.data?.isDiscountUsed,
+                    isVerify: response?.data?.data?.isVerify,
+                    lastName: response?.data?.data?.lastName,
+                    profilePicture: response?.data?.data?.profilePicture,
+                    role: response?.data?.data?.role
+                })
+            }
+
 
             console.log(response)
         } catch (error) {

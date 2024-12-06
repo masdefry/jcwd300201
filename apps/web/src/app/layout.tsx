@@ -2,12 +2,10 @@ import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Ubuntu } from 'next/font/google';
 import './globals.css';
-// import { Footer } from '@/components/Footer';
 import TanstackProviders from '@/providers/tanstackProviders';
 import Header from '@/components/core/navbar'
 import Footer from '@/components/core/footer'
 import AuthProviders from '@/providers/authProviders'
-// import HOCLoading from '@/providers/hocLoading';
 import { Toaster } from "@/components/ui/toaster"
 
 

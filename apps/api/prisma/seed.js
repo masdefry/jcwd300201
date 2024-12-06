@@ -488,8 +488,6 @@ const dataUser = [
     },
 ]
 
-
-
 async function main() {
     await prisma.stores.createMany({
         data: dataStore.map((store) => ({

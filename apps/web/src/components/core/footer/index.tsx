@@ -8,7 +8,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 export default function Footer() {
   const pathname = usePathname()
-  const [activeIndex, setActiveIndex] = useState<number | null>(null); // Track which icon is clicked
+  const [activeIndex, setActiveIndex] = useState<number | null>(null); 
 
   const handleClick = (index: number) => {
     setActiveIndex(index);
