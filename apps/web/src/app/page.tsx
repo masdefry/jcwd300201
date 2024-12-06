@@ -67,19 +67,19 @@ export default function Home() {
     <main className="w-full h-fit">
 
       {/* Mobile Section */}
-      <section className="w-full max-w-[765px] md:hidden flex bg-gradient-to-tr from-black to-purple-900 h-screen"></section>
+      {/* <section className="w-full max-w-[765px] md:hidden flex bg-gradient-to-tr from-black to-purple-900 h-screen"></section> */}
 
       {/* Web Section */}
-      <section className="w-full h-fit py-5 md:flex flex-col hidden">
+      <section className="w-full h-fit py-5 md:flex flex-col">
 
         {/* Hero */}
-        <div className="w-full h-[80vh] my-2 relative bg-white">
+        <div className="w-full h-[50vh] lg:h-[80vh] my-2 relative bg-white">
           <Image
             width={2000}
             height={2000}
             src={imageCarousell[currentIndex]}
             alt="hero"
-            className={`w-full h-[80vh] object-cover bg-white transition-opacity duration-1000 ease-in-out ${isFade ? 'opacity-0' : 'opacity-100'}`}
+            className={`w-full h-[50vh] lg:h-[80vh] object-left lg:object-center object-cover bg-white transition-opacity duration-1000 ease-in-out ${isFade ? 'opacity-0' : 'opacity-100'}`}
           />
           <div className={`absolute top-16 right-20 transition-opacity duration-1000 ease-in-out ${isFade ? 'opacity-0' : 'opacity-100'}`}>
             <div className="">
@@ -101,7 +101,7 @@ export default function Home() {
         </div>
 
         {/* Content */}
-        <div className="w-full h-fit flex my-2">
+        <div className="w-full h-fit flex flex-col lg:flex-row my-2">
           <div className="w-full lg:w-1/2 h-96 bg-white flex flex-col justify-center px-10 py-6">
             <h1 className="text-5xl font-bold text-gray-900 mb-4">CLEAN & CLICK</h1>
             <p className="text-lg text-gray-600 font-medium leading-relaxed">
@@ -119,7 +119,7 @@ export default function Home() {
               alt="hero"
               className="w-full h-96 object-cover object-top"
             />
-            <span className="absolute h-96 bg-white rounded-r-full w-44 top-0"></span>
+            <span className="hidden lg:absolute h-96 bg-white rounded-r-full w-44 top-0"></span>
           </div>
         </div>
 
@@ -134,8 +134,7 @@ export default function Home() {
 
         {/* Content */}
         <div className="w-full h-fit flex my-2">
-          <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-indigo-100 px-60">
-            {/* Mengapa Kami? */}
+          <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-indigo-100 px-10 lg:px-60">
             <h2 className="text-4xl font-bold mb-14">Mengapa Kami?</h2>
             <div className="flex flex-col md:flex-row justify-center gap-8">
               {whyUsData.map((item) => (
@@ -159,26 +158,26 @@ export default function Home() {
 
 
         {/* Delivery Content */}
-        <div className="w-full h-fit flex my-2">
-          <div className="w-full h-fit flex justify-center items-center gap-5">
-            <div className="w-[80vw] relative h-fit flex justify-end">
-              <div className="w-[250px] h-fit text-black text-center">
+        <div className="w-full h-fit flex my-2 px-10 lg:px-0">
+          <div className="w-full h-fit flex flex-col lg:flex-row justify-center items-center gap-5">
+            <div className="w-[65vw] lg:w-[80vw] relative h-fit flex justify-end">
+              <div className="w-[150px] lg:w-[250px] h-fit text-black text-center">
                 <Image
-                  width={2000}
-                  height={2000}
+                  width={1000}
+                  height={1000}
                   src='/images/basic-map.png'
                   alt="delivery"
-                  className="w-[250px] h-fit object-cover animate-fade-right"
+                  className="w-[150px] lg:w-[250px] h-fit object-cover animate-fade-right"
 
                 />
               </div>
-              <div className="absolute left-[120px] bottom-0 w-[230px] h-fit text-black text-center">
+              <div className="absolute left-[30px] lg:left-[120px] bottom-0 w-[130px] lg:w-[230px] h-fit text-black text-center">
                 <Image
-                  width={2000}
-                  height={2000}
+                  width={1000}
+                  height={1000}
                   src='/images/basic-map.png'
                   alt="delivery"
-                  className="w-[230px] h-fit object-cover animate-fade-right"
+                  className="w-[130px] lg:w-[230px] h-fit object-cover animate-fade-right"
                 />
               </div>
             </div>
@@ -199,8 +198,7 @@ export default function Home() {
 
         {/* Testimonial */}
         <div className="w-full h-fit flex my-2">
-          <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-neutral-100 px-60">
-            {/* Mengapa Kami? */}
+          <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-neutral-100 px-10 lg:px-60">
             <h2 className="text-4xl font-bold mb-14">Testimonial</h2>
             <div className="flex flex-col md:flex-row justify-center gap-8">
               {whyUsData.map((item) => (

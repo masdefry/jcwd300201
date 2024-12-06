@@ -36,6 +36,7 @@ model UserAddress {
   addressName   String
   addressDetail String
   city          String
+  isMain        Boolean
   province      String
   country       String
   zipCode       String
@@ -103,11 +104,10 @@ model Worker {
 
 model Order {
   id           String  @id
-  totalPrice   Int
-  totalWeight  Int
+  totalPrice   Int?
+  totalWeight  Int?
   discount     Float
   deliveryFee  Int
-  userAddress  String
   paymentProof String?
   isPaid       Boolean
   notes        String?

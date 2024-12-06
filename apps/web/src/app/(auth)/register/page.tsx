@@ -82,7 +82,7 @@ export default function RegisterUser() {
                     }}
 
                     validationSchema={Yup.object({
-                        email: Yup.string().required('Harap email organizer diisi terlebih dahulu'),
+                        email: Yup.string().required('Email harap diisi!'),
                         firstName: Yup.string().required('Nama harap diisi!'),
                         lastName: Yup.string().required("Nama harap diisi!"),
                         password: Yup.string().min(8,

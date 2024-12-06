@@ -31,15 +31,23 @@ export default function LoginUser() {
     })
 
     return (
-        <main className="h-screen w-screen bg-[url('https://images.template.net/110814/animated-water-background-ns1so.jpg')] bg-cover bg-center flex justify-center items-center">
+        <main
+            className="h-screen w-screen flex justify-center items-center"
+            style={{
+                backgroundImage: "url('https://images.template.net/110814/animated-water-background-ns1so.jpg')",
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+            }}
+        >
             <div className="bg-white/70 backdrop-blur-sm p-8 rounded-lg shadow-lg w-full max-w-md">
-               <div className="w-full flex justify-center items-center">
-                <Image
-                    src="/images/logo.png"
-                    alt='logo'
-                    width={150}
-                    height={150}
-                    className="flex justify-center"
+                <div className="w-full flex justify-center items-center">
+                    <Image
+                        src="/images/logo.png"
+                        alt='logo'
+                        width={150}
+                        height={150}
+                        className="flex justify-center"
+                        priority
                     />
                 </div>
 
@@ -50,7 +58,7 @@ export default function LoginUser() {
                     }}
                     onSubmit={(values) => {
                         console.log(values);
-                        handleLoginUser({email:values.email, password:values.password})
+                        handleLoginUser({ email: values.email, password: values.password })
                     }}
                 >
                     <Form className="flex flex-col justify-center items-center w-full space-y-4">
