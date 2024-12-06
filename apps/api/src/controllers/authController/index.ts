@@ -34,22 +34,7 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
                 role: findAdmin?.workerRole,
                 firstName: findAdmin?.firstName,
                 lastName: findAdmin?.lastName,
-                profilePicture: findUser?.profilePicture,
-
-                /**Sementara gini dulu */
-
-                // email               String  @unique
-                // password            String
-                // workerRole          Role
-                // firstName           String
-                // lastName            String
-                // phoneNumber         String  @db.Text
-                // profilePicture      String  @db.Text
-                // identityNumber      String? @db.Text
-                // motorcycleType      String?
-                // plateNumber         String?
-                // changePasswordToken String? @db.Text
-                // storesId            String?
+                profilePicture: findAdmin?.profilePicture,
             } : {}
         })
         

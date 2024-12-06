@@ -105,7 +105,7 @@ export default function Home() {
     <main className="w-full h-fit pt-0 md:pt-[62px]">
 
       {/* Mobile Section */}
-      {/* <section className="w-full max-w-[765px] md:hidden flex bg-gradient-to-tr from-black to-purple-900 h-screen"></section> */}
+      <section className="w-full max-w-[765px] md:hidden flex bg-gradient-to-tr from-black to-purple-900 h-screen"></section>
 
       {/* Web Section */}
       <section className="w-full h-fit py-5 md:flex flex-col">
@@ -153,15 +153,6 @@ export default function Home() {
             {/* <span className="hidden lg:absolute h-[80vh] bg-white rounded-r-full w-44 top-0"></span> */}
           </div>
         </div>
-
-        {/* Content */}
-        {/* <div className="w-full h-fit flex my-2">
-          <div className="w-full h-96 bg-cyan-300"></div>
-          <div className="w-full h-96 flex flex-col gap-2">
-            <div className="w-full h-full bg-green-500"></div>
-            <div className="w-full h-full bg-pink-800"></div>
-          </div>
-        </div> */}
 
         {/* Content */}
         <div className='w-full h-fit flex my-2'>

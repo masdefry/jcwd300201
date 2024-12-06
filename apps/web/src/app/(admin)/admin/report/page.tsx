@@ -11,8 +11,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { locationStore } from "@/zustand/locationStore";
 
 export default function Page() {
-    const cek = locationStore((state) => state?.longitude)
-    console.log(cek)
+    const longitude = locationStore((state) => state?.longitude)
     
     return (
         <main className="max-w-[425px] md:max-w-full md:w-full h-fit">

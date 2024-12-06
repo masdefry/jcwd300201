@@ -1,5 +1,3 @@
-// import { PrismaClient } from '@prisma/client'
-// import bcrypt from 'bcrypt'
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
 
@@ -65,61 +63,6 @@ const dataStore = [
         latitude: 3.5952,
         longitude: 98.6722
     },
-    // {
-    //     id: 6,
-    //     storeName: 'CnC - Yogyakarta',
-    //     address: 'Jl. Malioboro No. 12',
-    //     city: 'Yogyakarta',
-    //     province: 'DI Yogyakarta',
-    //     country: 'Indonesia',
-    //     zipCode: '55271',
-    //     latitude: -7.7956,
-    //     longitude: 110.3695
-    // },
-    // {
-    //     id: 7,
-    //     storeName: 'CnC - Bali',
-    //     address: 'Jl. Sunset Road No. 56',
-    //     city: 'Denpasar',
-    //     province: 'Bali',
-    //     country: 'Indonesia',
-    //     zipCode: '80361',
-    //     latitude: -8.6500,
-    //     longitude: 115.2167
-    // },
-    // {
-    //     id: 8,
-    //     storeName: 'CnC - Makassar',
-    //     address: 'Jl. Andi Pangerang No. 78',
-    //     city: 'Makassar',
-    //     province: 'Sulawesi Selatan',
-    //     country: 'Indonesia',
-    //     zipCode: '90115',
-    //     latitude: -5.1478,
-    //     longitude: 119.4328
-    // },
-    // {
-    //     id: 9,
-    //     storeName: 'CnC - Semarang',
-    //     address: 'Jl. Pemuda No. 101',
-    //     city: 'Semarang',
-    //     province: 'Jawa Tengah',
-    //     country: 'Indonesia',
-    //     zipCode: '50135',
-    //     latitude: -7.0055,
-    //     longitude: 110.4381
-    // },
-    // {
-    //     id: 10,
-    //     storeName: 'CnC - Palembang',
-    //     address: 'Jl. Pahlawan No. 67',
-    //     city: 'Palembang',
-    //     province: 'Sumatera Selatan',
-    //     country: 'Indonesia',
-    //     zipCode: '30125',
-    //     latitude: -2.9978,
-    //     longitude: 104.7750
-    // },
 ]
 
 const dataWorker = [
@@ -544,41 +487,6 @@ const dataUser = [
         isDiscountUsed: false,
     },
 ]
-
-
-// const dataOrder = [
-//     {
-//         id: "TRXCNC-2024030401",
-//         totalPrice: 50000,
-//         totalWeight: 4,
-//         discount: 0,
-//         deliveryFee: 15000,
-//         paymentProof: "",
-//         isPaid: false,
-//         storesId: "1",
-//         orderTypeId: 3,
-//     }
-// ]
-
-// const detailOrder = [
-//     {
-//         orderId: "TRXCNC-2024030401",
-//         itemNameId: 1,  
-//     },
-//     {
-//         orderId: "TRXCNC-2024030401",
-//         itemNameId: 2,  
-//     },
-//     {
-//         orderId: "TRXCNC-2024030401",
-//         itemNameId: 2, 
-//     },
-//     {
-//         orderId: "TRXCNC-2024030401",
-//         itemNameId: 3,
-//         createdAt: new Date(),
-//     },
-// ]
 
 async function main() {
     await prisma.stores.createMany({

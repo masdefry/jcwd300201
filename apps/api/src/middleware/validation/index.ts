@@ -9,7 +9,7 @@ export const authCustomerValidation = [
     body('phoneNumber').isString().escape()
 ]
 
-export const authCustomerLoginValidation = [
+export const authLoginValidation = [
     body(['email', 'password']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('email').isString().escape(),
     body('password').isString().escape(),

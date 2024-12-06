@@ -26,9 +26,7 @@ export default function Header() {
 
   const { mutate: handleLogout, isPending } = useMutation({
     mutationFn: async () => {
-      return await instance.post('/user/logout', {
-        email: 'pybijily@cyclelove.cc' // ganti jan lupa
-      }, {
+      return await instance.post('/user/logout', { email }, {
         headers: {
           Authorization: `Bearer ${token}`
         }
@@ -72,20 +70,17 @@ export default function Header() {
 
         {/* web */}
         <div className="w-full hidden lg:flex justify-center">
-          <div className="hidden md:flex space-x-8 text-black">
-            <Link href='/' className={`hover:border-b hover:text-neutral-700 cursor-pointer ${pathname == '/' ? 'font-bold border-b' : ''}`}>Home</Link>
-            <Link href='/' className={`hover:border-b hover:text-neutral-700 cursor-pointer ${pathname == '/about' ? 'font-bold border-b' : ''}`}>About</Link>
-            <Link href='/' className={`hover:border-b hover:text-neutral-700 cursor-pointer ${pathname == '/services' ? 'font-bold border-b' : ''}`}>Services</Link>
-            <Link href='/' className={`hover:border-b hover:text-neutral-700 cursor-pointer ${pathname == '/contact' ? 'font-bold border-b' : ''}`}>Contact</Link>
+          <div className="hidden md:flex space-x-8 text-neutral-500 font-bold">
+            <Link href='/' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/' ? 'font-bold border-b text-neutral-600' : ''}`}>Home</Link>
+            <Link href='/about' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/about' ? 'font-bold border-b text-neutral-600' : ''}`}>About</Link>
+            <Link href='/' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/services' ? 'font-bold border-b text-neutral-600' : ''}`}>Services</Link>
+            <Link href='/' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/contact' ? 'font-bold border-b text-neutral-600' : ''}`}>Contact</Link>
           </div>
         </div>
         {!token ? (
           <div className="w-full hidden lg:flex justify-end space-x-4">
             <Link href='/user/login'>
-              <ButtonCustom btnColor="bg-orange-500 hover:bg-orange-400">Sign Up</ButtonCustom>
-            </Link>
-            <Link href='/user/login'>
-              <ButtonCustom btnColor="bg-orange-500 hover:bg-orange-400">Sign In</ButtonCustom>
+              <ButtonCustom btnColor="bg-orange-500 hover:bg-orange-400">Gabung Sekarang</ButtonCustom>
             </Link>
           </div>
         ) : (

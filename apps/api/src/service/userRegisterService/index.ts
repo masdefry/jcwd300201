@@ -8,16 +8,20 @@ import fs from 'fs'
 import { compile } from "handlebars"
 import { IRegisterBody } from "./types"
 
-export const userRegisterService = async({
+export const userRegisterService = async ({
     email,
     password,
     firstName,
     lastName,
     phoneNumber,
     verifyCode,
-}: IRegisterBody)=> {
+}: IRegisterBody) => {
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
+
+    const findEmailInWorker = await prisma.worker.findFirst({ where: { email } })
+    if (findEmailInWorker) throw { msg: 'User sudah terdaftar', status: 400 }
+
     const findUser = await prisma.users.findFirst({ where: { email } })
     if (findUser) throw { msg: 'User sudah terdaftar', status: 400 }
 
@@ -55,4 +59,20 @@ export const userRegisterService = async({
         html: compiledHtml,
         subject: 'Verification your email!'
     })
+}
+
+export const signInWithGoogleService = async ({ email }: { email: string }) => {
+    const findEmailInWorker = await prisma.worker.findFirst({
+        where: { email }
+    })
+
+    if (findEmailInWorker) throw { msg: 'Email sudah terpakai', status: 401 }
+
+    const findEmail = await prisma.users.findFirst({
+        where: { email }
+    })
+
+    const token = await encodeToken({ id: findEmail?.id as string, role: findEmail?.role as string })
+
+    return { findEmail, token }
 }
