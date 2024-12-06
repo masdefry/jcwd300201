@@ -34,15 +34,11 @@ const customMarkerIcon = new L.Icon({
     iconAnchor: [12, 41],
 });
 
-// function LocationPicker({ setFieldValue, position }) {
-//     console.log(position)
-//     return position === null ? null : <Marker position={position} icon={customMarkerIcon} />;
-// }
 
 function LocationPicker({
     setFieldValue,
     position,
-    setPosition, // Add setPosition as a prop
+    setPosition, 
 }: {
     setFieldValue: any;
     position: IPosition;
@@ -53,7 +49,7 @@ function LocationPicker({
             const { lat, lng } = e.latlng;
             setFieldValue("latitude", lat);
             setFieldValue("longitude", lng);
-            setPosition({ lat, lng }); // Update position state using setPosition
+            setPosition({ lat, lng }); 
         },
     });
 
@@ -68,7 +64,7 @@ function LocationPicker({
                     const lng = e.target.getLatLng().lng;
                     setFieldValue("latitude", lat);
                     setFieldValue("longitude", lng);
-                    setPosition({ lat, lng }); // Update position state using setPosition
+                    setPosition({ lat, lng }); 
                 },
             }}
         />

@@ -75,17 +75,6 @@ export default function LoginUser() {
         }
     })
 
-    // const { mutate: signInWithGoogle } = useMutation({
-    //     mutationFn: async () => {
-
-    //     },
-    //     onSuccess: (res) => {
-    //         console.log(res)
-    //     }, 
-    //     onError: (err) => {
-    //         console.log(err)
-    //     }
-    // })
 
     const { mutate: loginWithGoogle } = useMutation({
         mutationFn: async () => {

@@ -38,7 +38,7 @@ const customMarkerIcon = new L.Icon({
 function LocationPicker({
     setFieldValue,
     position,
-    setPosition, // Add setPosition as a prop
+    setPosition,
 }: {
     setFieldValue: any;
     position: IPosition;
@@ -71,8 +71,7 @@ function LocationPicker({
     ) : null;
 }
 
-export default function editStore() {
-    // eslint-disable-next-line react-hooks/rules-of-hooks
+export default function EditStore() {
     const [position, setPosition] = useState({ lat: -6.200000, lng: 106.816666 });
 
     const getCurrentLocation = (setFieldValue: any) => {

@@ -42,7 +42,7 @@ const customMarkerIcon = new L.Icon({
 function LocationPicker({
     setFieldValue,
     position,
-    setPosition, // Add setPosition as a prop
+    setPosition, 
 }: {
     setFieldValue: any;
     position: IPosition;
@@ -136,12 +136,12 @@ export default function AddAddress() {
         },
     });
     const { data: cities, isLoading: citiesLoading } = useQuery({
-        queryKey: ['get-city', selectedProvince], // Include selectedProvince in the queryKey
+        queryKey: ['get-city', selectedProvince],  
         queryFn: async () => {
             const res = await instance.get('/order/city', { params: { province_id: selectedProvince } });
             return res.data.rajaongkir.results;
         },
-        enabled: !!selectedProvince, // Only fetch cities if a province is selected
+        enabled: !!selectedProvince, 
     });
 
     return (
@@ -173,7 +173,6 @@ export default function AddAddress() {
                                 longitude: Yup.string().required("titik lokasi harap diisi!"),
                             })}
                             onSubmit={(values) => {
-                                // console.log("Form Values:", values),
                                 addUserAddress({
                                     addressName: values.addressName,
                                     addressDetail: values.addressDetail,

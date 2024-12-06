@@ -72,8 +72,6 @@ export const userLogout = async (req: Request, res: Response, next: NextFunction
       where: { email }
     })
 
-    console.log(findUser, '<<<<<<<<<<')
-
     if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
 
     const { authorization } = req.headers
