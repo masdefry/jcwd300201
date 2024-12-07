@@ -10,7 +10,7 @@ import { instance } from "@/utils/axiosInstance";
 import { ILoginGoogleUser, ILoginUser } from "./type";
 import * as Yup from "yup";
 import authStore from "@/zustand/authstore";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/hooks/use-toast";
 import ButtonCustom from "@/components/core/button";
 import Cookies from 'js-cookie'
 import CryptoJS from 'crypto-js'
@@ -53,7 +53,7 @@ export default function LoginUser() {
 
             toast({
                 description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
 
             const role = CryptoJS.AES.encrypt(res?.data?.data?.role, secret_key_crypto).toString()
@@ -95,7 +95,7 @@ export default function LoginUser() {
             
             toast({
                 description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
 
             window.location.href = '/'
@@ -221,6 +221,7 @@ export default function LoginUser() {
                 </Formik>
 
                 <div className="flex flex-col gap-2 py-3">
+                    
                     {/* login ke google */}
                     <ButtonCustom
                         onClick={loginWithGoogle}
@@ -237,7 +238,7 @@ export default function LoginUser() {
                             <Link href='/user/register'>Register</Link>
                         </div>
                         <Link
-                            href={'/event-organizer/forgot-password'}
+                            href={'/user/forgot-password'}
                             className="text-sm text-blue-500 hover:underline"
                         >
                             Lupa kata sandi?

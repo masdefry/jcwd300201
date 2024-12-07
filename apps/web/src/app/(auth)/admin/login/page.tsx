@@ -7,25 +7,65 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import { instance } from "@/utils/axiosInstance";
-import { ILoginUser } from "./type"
+import authStore from "@/zustand/authstore";
+import { useToast } from "@/components/hooks/use-toast";
+import ButtonCustom from "@/components/core/button";
+import Cookies from 'js-cookie'
+import CryptoJS from 'crypto-js'
+import { loginAdminValidation } from "@/features/adminLogin/schemas";
 
+const secret_key_crypto = process.env.NEXT_PUBLIC_CRYPTO_SECRET_KEY || ''
 export default function LoginUser() {
+    const { toast } = useToast()
+    const setToken = authStore((state) => state?.setAuth)
     const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
 
+    /* handle password visible */
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible);
     };
 
-    const { mutate: handleLoginUser } = useMutation({
-        mutationFn: async ({ email, password }: ILoginUser) => {
-            return await instance.post('/user/login', {
-                email, password
-            })
+    const { mutate: handleLoginAdmin, isPending } = useMutation({
+        mutationFn: async ({ email, password }: { email: string, password: string }) => {
+            return await instance.post('/admin/login', { email, password })
         },
         onSuccess: (res) => {
+            setToken({
+                token: res?.data?.data?.token,
+                firstName: res?.data?.data?.firstName,
+                lastName: res?.data?.data?.lastName,
+                email: res?.data?.data?.email,
+                role: res?.data?.data?.role,
+                isVerified: res?.data?.data?.isVerified,
+                profilePicture: res?.data?.data?.profilePicture,
+                isDiscountUsed: res?.data?.data?.isDiscountUsed,
+            })
+
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+
+            const role = CryptoJS.AES.encrypt(res?.data?.data?.role, secret_key_crypto).toString()
+
+            Cookies.set('__rolx', role)
+            Cookies.set('__toksed', res?.data?.data?.token)
+
+            setIsDisabledSucces(true)
+
+            if(res?.data?.data?.role == 'SUPER_ADMIN') {
+                window.location.href = '/admin/dashboard'
+            } else {
+                window.location.href = '/admin/dashboard'
+            }
             console.log(res)
         },
-        onError: (err) => {
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
             console.log(err)
         }
     })
@@ -37,8 +77,7 @@ export default function LoginUser() {
                 backgroundImage: "url('https://images.template.net/110814/animated-water-background-ns1so.jpg')",
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
-            }}
-        >
+            }}>
             <div className="bg-white/70 backdrop-blur-sm p-8 rounded-lg shadow-lg w-full max-w-md">
                 <div className="w-full flex justify-center items-center">
                     <Image
@@ -56,14 +95,17 @@ export default function LoginUser() {
                         email: '',
                         password: '',
                     }}
+                    validationSchema={loginAdminValidation}
+
                     onSubmit={(values) => {
                         console.log(values);
-                        handleLoginUser({ email: values.email, password: values.password })
+                        handleLoginAdmin({ email: values.email, password: values.password })
                     }}
                 >
                     <Form className="flex flex-col justify-center items-center w-full space-y-4">
+
                         {/* Email Input */}
-                        <div id="emailOrganizer-input" className="w-full">
+                        <div id="emailAdmin-input" className="w-full">
                             <div className="flex gap-5 items-center">
                                 <label className="text-sm lg:text-base">
                                     Email<span className="text-red-500">*</span>
@@ -109,28 +151,29 @@ export default function LoginUser() {
                         </div>
 
                         {/* Submit Button */}
-                        <button
+                        <ButtonCustom
+                            disabled={isPending || isDisabledSucces}
                             type="submit"
-                            className="text-yellow-300 disabled:text-neutral-800 disabled:bg-neutral-300 w-full rounded-lg font-bold py-2 text-sm bg-blue-500 hover:bg-blue-600 transition-all duration-300"
-                        >
-                            Login
-                        </button>
-
-                        {/* Checkbox and Forgot Password Link */}
-                        <div className="flex w-full justify-between items-center">
-                            <div className="flex items-center">
-                                <input type="checkbox" name="checkbox" id="checkbox" />
-                                <h1 className="pl-3 text-sm md:text-base">Ingat saya</h1>
-                            </div>
-                            <Link
-                                href={'/event-organizer/forgot-password'}
-                                className="text-sm md:text-base text-blue-500 hover:underline"
-                            >
-                                Lupa kata sandi?
-                            </Link>
-                        </div>
+                            btnColor="bg-blue-600 hover:bg-blue-500"
+                            width="w-full"
+                        >Masuk</ButtonCustom>
                     </Form>
                 </Formik>
+
+                <div className="flex flex-col gap-2 py-3">
+                    <div className="flex w-full justify-between items-center">
+                        <div className="flex items-center gap-1 text-sm">
+                            <h1 className="">Belum memiliki akun?</h1>
+                            <Link href='/user/register'>Register</Link>
+                        </div>
+                        <Link
+                            href={'/user/forgot-password'}
+                            className="text-sm text-blue-500 hover:underline"
+                        >
+                            Lupa kata sandi?
+                        </Link>
+                    </div>
+                </div>
             </div>
         </main >
     );
