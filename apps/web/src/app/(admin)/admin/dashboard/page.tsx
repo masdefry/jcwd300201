@@ -82,15 +82,6 @@ export default function Page() {
 
             {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
-                <section className="w-full h-fit flex">
-                    <div className="grid grid-cols-3 w-full gap-2">
-                        {Array.from({ length: 3 }).map((_, i) => (
-                            <div key={i} className={`w-full rounded-xl p-5 h-32 bg-neutral-400`}>
-                                <h1 className="text-white">{i}</h1>
-                            </div>
-                        ))}
-                    </div>
-                </section>
                 <section className="w-full h-full rounded-xl flex gap-2">
                     <div className="w-full rounded-xl h-full flex items-center bg-orange-500 p-5">
                         <div className="w-full h-fit">
