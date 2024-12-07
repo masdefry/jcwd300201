@@ -59,7 +59,7 @@ export default function Page() {
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
                 {/* // pengaturan akun, pengaturan outlet, pengaturan item laundry, ganti password */}
 
-                <section className="w-full flex p-4 rounded-xl h-full bg-white">
+                <section className="w-full flex flex-col p-4 rounded-xl h-full bg-white">
                     <div className="flex flex-col w-full gap-5">
                         <div className="w-full py-4 bg-orange-500 px-14 rounded-xl">
                             <h1 className="font-bold text-white">Pengaturan</h1>
@@ -75,6 +75,9 @@ export default function Page() {
                                 </div>
                             </Link>
                         ))}
+                    </div>
+                    <div className="w-full py-3">
+                        <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
                     </div>
                 </section>
                 <section className="w-1/2 rounded-xl h-full flex flex-col gap-2">
