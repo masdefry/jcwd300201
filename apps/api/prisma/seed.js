@@ -585,6 +585,7 @@ async function main() {
 
     const createdUsers = await Promise.all(userPromises);
 
+
     const firstUserId = createdUsers[0].id;
 
     const userAddresses = dataUserAddress.map((address) => ({
@@ -611,9 +612,7 @@ async function main() {
         })),
         skipDuplicates: true,
     });
-
-
-
+  
     console.log("Data seeded successfully.");
 }
 
