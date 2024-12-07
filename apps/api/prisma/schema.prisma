@@ -103,10 +103,10 @@ model Worker {
 }
 
 model Order {
-  id           String  @id
+  id           String  @id @default(uuid())
   totalPrice   Int?
   totalWeight  Int?
-  discount     Float
+  discount     Float?
   deliveryFee  Int
   paymentProof String?
   isPaid       Boolean

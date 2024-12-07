@@ -140,15 +140,35 @@ export const findNearestStore = async (req: Request, res: Response,next: NextFun
 
 export const requestPickUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.body
+    const { totalPrice, deliveryFee, storesId, userId, orderTypeId, userAddressId } = req.body
 
+    const newOrder = await prisma.order.create({
+      data: {
+        totalPrice,
+        deliveryFee,
+        storesId,
+        usersId: userId,
+        orderTypeId: parseInt(orderTypeId),
+        userAddressId,
+        isPaid: false,
+      },
+    });
+
+    await prisma.orderStatus.create({
+      data: {
+        status: "AWAITING_DRIVER_PICKUP",
+        orderId: newOrder.id,
+      },
+    });
+
+    res.status(201).json({
+      error:false,
+      message: "Order dan status order berhasil ditambahkan!",
+      order: newOrder,
+    });
   } catch (error) {
-
+    next(error)
   }
-}
-
-
-
-
+};
 
 

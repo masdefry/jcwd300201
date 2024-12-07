@@ -15,21 +15,47 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
-import axios from "axios";
+import { IOrderType, IRequestPickup } from './type';
+import { useMutation } from '@tanstack/react-query';
+import { useToast } from '@/components/hooks/use-toast';
+
 
 const validationSchema = Yup.object({
-    deliveryFee: Yup.number().required('Estimasi Ongkos Kirim is required').positive('Must be positive').integer('Must be an integer'),
-    storesId: Yup.string().required('Store ID is required'),
-    orderTypeId: Yup.string().required('Order type is required'),
-    userAddressId: Yup.string().required('User address is required'),
+    deliveryFee: Yup.number().required().positive().integer(),
+    storesId: Yup.string().required(),
+    orderTypeId: Yup.string().required('Silahkan pilih tipe laundry'),
+    userAddressId: Yup.string().required(),
 });
 
 export default function PickupLaundry() {
     const token = authStore((state) => state.token)
+    const { toast } = useToast()
 
+    const { mutate: handlePickupRequest } = useMutation({
+        mutationFn: async ({ deliveryFee, storesId, orderTypeId, userAddressId }:IRequestPickup) => {
+            return await instance.post(
+                '/order/request-pickup',
+                { deliveryFee, storesId, orderTypeId, userAddressId }, 
+                { headers: { Authorization: `Bearer ${token}` } } 
+            );
+        },
+        onSuccess: (res) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            console.log(res)
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+            console.log(err)
+        }
+    })
 
-
-    const { data: getOrderType, isLoading: getOrderTypeLoading } = useQuery({
+    const { data: getOrderType, isLoading: getOrderTypeLoading } = useQuery<IOrderType[]>({
         queryKey: ['get-order-type'],
         queryFn: async () => {
             const res = await instance.get('/order/type');
@@ -76,8 +102,15 @@ export default function PickupLaundry() {
                                 orderTypeId: '', 
                                 userAddressId: getMainAddress ? getMainAddress.id : '',
                             }}
+                            validationSchema={validationSchema}
                             onSubmit={async (values) => {
                                 console.log(values);
+                                handlePickupRequest({
+                                    deliveryFee:values.deliveryFee,
+                                    storesId: values.storesId,
+                                    orderTypeId: values.orderTypeId,
+                                    userAddressId: values.userAddressId,
+                                })
                             }}
                         >
                             {({ isSubmitting }) => (
