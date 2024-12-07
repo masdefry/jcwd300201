@@ -7,6 +7,10 @@ import { transporter } from "@/utils/transporter"
 import fs from 'fs'
 import { compile } from "handlebars"
 import { IRegisterBody } from "./types"
+import dotenv from 'dotenv'
+
+dotenv.config()
+const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
 export const userRegisterService = async ({
     email,
@@ -34,7 +38,7 @@ export const userRegisterService = async ({
             firstName,
             lastName,
             phoneNumber,
-            profilePicture: 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg',
+            profilePicture: profilePict,
             isVerified: Boolean(false),
             verifyCode: verifyCode,
             isGoogleRegister: Boolean(false),

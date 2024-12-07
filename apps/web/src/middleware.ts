@@ -19,6 +19,7 @@ export const middleware = (req: NextRequest) => {
     if (role && role != 'SUPER_ADMIN' && tokenUser && pathname.startsWith('/admin')) {
         return NextResponse.redirect(new URL('/', req.url))
     }
+    console.log(role)
 
     if (!role && !tokenUser && pathname.startsWith('/admin') && pathname != '/admin/login') {
         return NextResponse.redirect(new URL('/', req.url))

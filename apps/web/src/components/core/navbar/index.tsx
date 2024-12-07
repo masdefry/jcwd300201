@@ -67,7 +67,7 @@ export default function Header() {
   })
 
   return (
-    <nav className={`w-full h-fit fixed z-20 ${pathname == '/admin/login' || pathname == '/user/login' || pathname == '/user/register' || pathname.startsWith('/admin') ? 'md:hidden' : 'md:block hidden'}`}>
+    <nav className={`w-full h-fit fixed z-20 ${pathname == '/admin/login' || pathname == '/user/login' || pathname == '/user/register' || pathname.startsWith('/admin') ? 'hidden' : ''}`}>
       <div className="w-full h-fit bg-white border-b flex items-center px-10 py-3 z-50 relative">
         <div className="w-full flex justify-start">
           <div className="w-fit h-16">

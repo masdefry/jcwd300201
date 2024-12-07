@@ -6,6 +6,10 @@ import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValida
 import { hashPassword } from "@/utils/passwordHash"
 import { encodeToken } from "@/utils/tokenValidation"
 import { ICreateWorkerService } from "./types"
+import dotenv from 'dotenv'
+
+dotenv.config()
+const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
 /* *login admin */
 export const adminLoginService = async ({ email, password }: ILoginBody) => {
@@ -64,7 +68,7 @@ export const createWorkerService = async ({
                 workerRole,
                 identityNumber,
                 storesId,
-                profilePicture: 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'
+                profilePicture: profilePict
             }
         })
         const token = await encodeToken({ id: dataWorker?.id, role: dataWorker?.workerRole })
