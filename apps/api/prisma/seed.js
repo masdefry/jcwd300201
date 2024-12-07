@@ -502,6 +502,43 @@ const dataUser = [
         forgotPasswordToken: "68asd684a",
         isDiscountUsed: false,
     },
+    {
+        email: "gaga@gmail.com",
+        firstName: "gaga",
+        lastName: "gugu",
+        phoneNumber: "085632343489",
+        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        isVerified: true,
+        verifyCode: "sd486aa",
+        isGoogleRegister: false,
+        forgotPasswordToken: "68asd684a",
+        isDiscountUsed: false,
+    },
+]
+
+const dataUserAddress = [
+    {
+        addressName: "Rumah",
+        addressDetail: "Jl. Kebangsaan no.23",
+        city: "Tangerang",
+        isMain: true,
+        province: "Banten",
+        country: "Indonesia",
+        zipCode: "15123",
+        latitude: -6.23348808466673,
+        longitude: 106.6331260189041,
+    },
+    {
+        addressName: "Kantor",
+        addressDetail: "Jl. Makmur no.23",
+        city: "Jakarta",
+        isMain: true,
+        province: "Banten",
+        country: "Indonesia",
+        zipCode: "15123",
+        latitude: -6.2088,
+        longitude: 106.8466,
+    },
 ]
 
 const dataUserAddress = [
@@ -585,6 +622,7 @@ async function main() {
 
     const createdUsers = await Promise.all(userPromises);
 
+
     const firstUserId = createdUsers[0].id;
 
     const userAddresses = dataUserAddress.map((address) => ({
@@ -611,9 +649,7 @@ async function main() {
         })),
         skipDuplicates: true,
     });
-
-
-
+  
     console.log("Data seeded successfully.");
 }
 
