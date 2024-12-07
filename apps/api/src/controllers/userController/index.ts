@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express"
 import prisma from "@/connection"
 import { nanoid } from 'nanoid';
 import jwt from 'jsonwebtoken'
-import { signInWithGoogleService, userRegisterService } from "@/service/userRegisterService"
-import { userLoginService } from "@/service/userLoginService"
+import { signInWithGoogleService, userRegisterService } from "@/service/userService"
+import { userLoginService } from "@/service/userService"
 import { encodeToken } from "@/utils/tokenValidation";
 import { hashPassword } from "@/utils/passwordHash";
 

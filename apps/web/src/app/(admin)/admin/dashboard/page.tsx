@@ -11,7 +11,7 @@ const iconButtons = [
     { icon: GrUserWorker, label: "Data Pekerja" },
 ];
 
-export default function AdminDashboard() {
+export default function Page() {
     return (
         <main className="w-full h-fit">
            <section className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">

@@ -182,7 +182,7 @@ export default function Home() {
         {/* Delivery Content */}
         <div className="w-full h-fit flex my-2 px-10 lg:px-0">
           <div className="w-full h-fit flex flex-col lg:flex-row justify-center items-center gap-5">
-            <div className="w-[65vw] lg:w-[80vw] relative h-fit flex justify-end">
+            <div className="w-[65vw] lg:w-[80vw] relative h-fit flex justify-center">
               <div className="w-[150px] lg:w-[250px] h-fit text-black text-center">
                 <Image
                   width={1000}
