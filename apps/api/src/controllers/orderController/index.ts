@@ -2,14 +2,16 @@ import prisma from "@/connection"
 import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 
-
-export const requestPickUp = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { userId } = req.body
-
-  } catch (error) {
-
-  }
+interface Store {
+  id: string;
+  storeName: string;
+  address: string;
+  city: string;
+  province: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+  distance: number;
 }
 
 export const getOrderType = async (req: Request, res: Response, next: NextFunction) => {
@@ -36,11 +38,16 @@ export const getProvince = async (req: Request, res: Response, next: NextFunctio
         key: 'b4b88bdd2e2065e365b688c79ebc550c'
       }
     });
-    res.json(response.data);
+    res.status(200).json({
+      error: false,
+      message: "Data provinsi berhasil  didapat!",
+      data: response.data
+    });
   } catch (error) {
-    res.status(500).send('Terjadi Error');
+    next(error)
   }
 }
+
 export const getCity = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { province_id } = req.query as { province_id?: string };
@@ -50,8 +57,98 @@ export const getCity = async (req: Request, res: Response, next: NextFunction) =
         key: 'b4b88bdd2e2065e365b688c79ebc550c'
       }
     });
-    res.json(response.data);
+    res.status(200).json({
+      error: false,
+      message: "Data kota berhasil  didapat!",
+      data: response.data
+    });
   } catch (error) {
-    res.status(500).send('Terjadi Error');
+    next(error)
   }
 }
+
+
+export const findNearestStore = async (req: Request, res: Response,next: NextFunction) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'User ID is required' });
+  }
+
+  try {
+    const userAddress = await prisma.userAddress.findFirst({
+      where: {
+        usersId: userId,
+        isMain: true
+      }
+    });
+
+    if (!userAddress) {
+      return res.status(404).json({ error: 'Alamat utama tidak ditemukan' });
+    }
+
+    const { latitude: userLatitude, longitude: userLongitude } = userAddress;
+
+    const nearestStores = await prisma.$queryRaw<{
+      id: number;
+      storeName: string;
+      address: string;
+      city: string;
+      province: string;
+      country: string;
+      latitude: number;
+      longitude: number;
+      distance: number;
+    }[]>`
+      SELECT 
+          id, 
+          storeName, 
+          address,
+          city,
+          province,
+          country,
+          latitude,
+          longitude,
+          (
+              6371 * acos(
+                  cos(radians(${userLatitude})) * cos(radians(latitude)) * 
+                  cos(radians(longitude) - radians(${userLongitude})) + 
+                  sin(radians(${userLatitude})) * sin(radians(latitude))
+              )
+          ) AS distance
+      FROM stores
+      HAVING distance <= 5
+      ORDER BY distance ASC
+      LIMIT 1;
+    `;
+
+    if (nearestStores.length === 0) {
+      return res.status(404).json({ error: 'Tidak ada toko Laundry kami di dekat anda' });
+    }
+
+    res.status(200).json({
+      error: false,
+      message: "Data store terdekat berhasil  didapat!",
+      data: nearestStores
+    });
+  } catch (error) {
+    next(error)
+  }
+};
+
+
+
+export const requestPickUp = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body
+
+  } catch (error) {
+
+  }
+}
+
+
+
+
+
+

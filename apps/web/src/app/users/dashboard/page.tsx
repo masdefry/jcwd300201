@@ -5,13 +5,10 @@ import { MdOutlineStickyNote2 } from "react-icons/md";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { FiPlus } from "react-icons/fi";
-import { LuPackageCheck } from "react-icons/lu";
-
 
 const iconButtons = [
     { icon: FiPlus, label: "Request Pick Up" },
-    { icon: LuPackageCheck, label: "Tracking Pesanan" },
-    { icon: IoSearchSharp, label: "Check Harga" },
+    { icon: IoSearchSharp, label: "Tracking Pesanan" },
 ];
 
 export default function UserDashboard() {

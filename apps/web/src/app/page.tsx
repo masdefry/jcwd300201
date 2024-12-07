@@ -105,7 +105,7 @@ export default function Home() {
     <main className="w-full h-fit pt-0 md:pt-[62px]">
 
       {/* Mobile Section */}
-      <section className="w-full max-w-[765px] md:hidden flex bg-gradient-to-tr from-black to-purple-900 h-screen"></section>
+      {/* <section className="w-full max-w-[765px] md:hidden flex bg-gradient-to-tr from-black to-purple-900 h-screen"></section> */}
 
       {/* Web Section */}
       <section className="w-full h-fit py-5 md:flex flex-col">

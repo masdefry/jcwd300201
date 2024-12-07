@@ -38,7 +38,7 @@ const customMarkerIcon = new L.Icon({
 function LocationPicker({
     setFieldValue,
     position,
-    setPosition,
+    setPosition, 
 }: {
     setFieldValue: any;
     position: IPosition;
@@ -71,7 +71,7 @@ function LocationPicker({
     ) : null;
 }
 
-export default function EditStore() {
+export default function Page() {
     const [position, setPosition] = useState({ lat: -6.200000, lng: 106.816666 });
 
     const getCurrentLocation = (setFieldValue: any) => {

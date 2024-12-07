@@ -109,7 +109,7 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
           verifyCode
         }
       })
-      
+
       const token = await encodeToken({ id: newUser?.id as string, role: newUser?.role as string })
 
       res.status(201).json({
@@ -228,3 +228,51 @@ export const userEditAddress = async (req: Request, res: Response, next: NextFun
     next(error)
   }
 }
+
+
+export const getAllUserAddresses = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body;
+
+    const addresses = await prisma.userAddress.findMany({
+      where: {
+        usersId: userId,
+      },
+    });
+
+    if (addresses.length === 0) throw { msg: 'User belum menambahkan alamat', status: 404 }
+
+    res.status(201).json({
+      error: false,
+      message: "Alamat berhasil ditambahkan",
+      data: addresses,
+    });
+
+  } catch (error) {
+    next(error)
+  }
+};
+
+
+export const getUserMainAddress = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body;
+    const mainAddress = await prisma.userAddress.findFirst({
+      where: {
+        usersId: userId,
+        isMain: true,
+      },
+    });
+
+    if (!mainAddress) throw { msg: "Alamat utama tidak ditemukan" }
+
+    res.status(201).json({
+      error: false,
+      message: "Alamat berhasil ditambahkan",
+      data: mainAddress,
+    });
+  } catch (error) {
+    next(error)
+  }
+};
+

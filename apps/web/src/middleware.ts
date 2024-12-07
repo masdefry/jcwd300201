@@ -16,11 +16,11 @@ export const middleware = (req: NextRequest) => {
         return NextResponse.redirect(new URL('/', req.url))
     }
 
-    if(role && role != 'SUPER_ADMIN' && tokenUser && pathname.startsWith('/admin')) {
+    if (role && role != 'SUPER_ADMIN' && tokenUser && pathname.startsWith('/admin')) {
         return NextResponse.redirect(new URL('/', req.url))
     }
 
-    if(!role && !tokenUser && pathname.startsWith('/admin') && pathname != '/admin/login') {
+    if (!role && !tokenUser && pathname.startsWith('/admin') && pathname != '/admin/login') {
         return NextResponse.redirect(new URL('/', req.url))
     }
 
