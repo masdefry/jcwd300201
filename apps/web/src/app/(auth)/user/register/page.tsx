@@ -7,7 +7,7 @@ import { FaEye, FaEyeSlash } from "react-icons/fa";
 import { useMutation } from "@tanstack/react-query";
 import { instance } from "@/utils/axiosInstance";
 import { IRegisterUser } from "./types";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/hooks/use-toast";
 import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
 
@@ -24,7 +24,7 @@ export default function RegisterUser() {
         onSuccess: (res) => {
             toast({
                 description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
             setIsDisabledSucces(true)
             console.log(res)

@@ -5,9 +5,8 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
     try {
         const { userId, authorizationRole } = req.body
 
-        console.log(authorizationRole)
-        let findUser;
-        let findAdmin;
+        let findUser
+        let findAdmin
         
         if (authorizationRole == 'CUSTOMER') {
             findUser = await prisma.users.findFirst({

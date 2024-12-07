@@ -1,5 +1,6 @@
 import prisma from "@/connection";
-import { adminLoginService } from "@/service/adminLoginService";
+import { adminLoginService } from "@/service/adminService/index";
+import { createWorkerService } from "@/service/adminService/index";
 import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken'
 
@@ -7,7 +8,6 @@ const secret_key: string | undefined = process.env.JWT_SECRET as string
 export const adminLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body
-
         const { findAdmin, token } = await adminLoginService({ email, password })
 
         res?.status(200).json({
@@ -53,6 +53,33 @@ export const adminLogout = async (req: Request, res: Response, next: NextFunctio
             message: 'Berhasil logout!',
             data: {}
         })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const createWorker = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email, firstName, lastName, phoneNumber, workerRole, identityNumber, storesId, motorcycleType, plateNumber } = req.body
+
+        await createWorkerService({
+            email,
+            firstName,
+            lastName,
+            phoneNumber,
+            workerRole,
+            identityNumber,
+            storesId,
+            motorcycleType,
+            plateNumber
+        })
+
+        res.status(201).json({
+            error: false,
+            message: 'Berhasil membuat data, silahkan login',
+            data: {}
+        })
+
     } catch (error) {
         next(error)
     }

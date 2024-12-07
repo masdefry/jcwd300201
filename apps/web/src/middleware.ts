@@ -12,13 +12,17 @@ export const middleware = (req: NextRequest) => {
         role = CryptoJS.AES.decrypt(roleUser, secret_key).toString(CryptoJS.enc.Utf8)
     }
 
-    if (role && tokenUser && (pathname === '/user/login' || pathname === '/user/register')) {
+    if (role && tokenUser && (pathname === '/user/login' || pathname === '/user/register' || pathname === '/admin/login' || pathname === '/admin/register')) {
+        return NextResponse.redirect(new URL('/', req.url))
+    }
+
+    if(role && role != 'SUPER_ADMIN' && tokenUser && pathname.startsWith('/admin')) {
+        return NextResponse.redirect(new URL('/', req.url))
+    }
+
+    if(!role && !tokenUser && pathname.startsWith('/admin') && pathname != '/admin/login') {
         return NextResponse.redirect(new URL('/', req.url))
     }
 
     return NextResponse.next()
-}
-
-export const config = {
-    matcher: ['/user/login', '/user/register']
 }
