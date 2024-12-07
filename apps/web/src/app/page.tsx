@@ -103,14 +103,7 @@ export default function Home() {
 
   return (
     <main className="w-full h-fit pt-0 md:pt-[62px]">
-
-      {/* Mobile Section */}
-      {/* <section className="w-full max-w-[765px] md:hidden flex bg-gradient-to-tr from-black to-purple-900 h-screen"></section> */}
-
-      {/* Web Section */}
       <section className="w-full h-fit py-5 md:flex flex-col">
-
-        {/* Hero */}
         <div className="w-full h-[50vh] lg:h-[80vh] my-2 relative bg-white">
           <Image
             width={2000}
@@ -132,7 +125,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Content */}
         <div className="w-full h-fit flex flex-col lg:flex-row my-2">
           <div className="w-full lg:w-1/2 h-[80vh] bg-white flex flex-col justify-center px-10 py-6">
             <h1 className={`text-5xl font-bold text-gray-900 mb-4 transition-opacity duration-1000 ease-in-out ${clickCleanTextSection ? 'opacity-100' : 'opacity-0'}`} ref={clickCleanRef}>CLEAN & CLICK</h1>
@@ -150,11 +142,9 @@ export default function Home() {
               alt="hero"
               className={`w-full h-[80vh] object-cover object-top transition-opacity duration-1000 ease-in-out ${imageCaptionInView ? 'opacity-100' : 'opacity-0'}`}
             />
-            {/* <span className="hidden lg:absolute h-[80vh] bg-white rounded-r-full w-44 top-0"></span> */}
           </div>
         </div>
 
-        {/* Content */}
         <div className='w-full h-fit flex my-2'>
           <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-indigo-100 px-10 lg:px-60">
             <h2 className={`text-4xl font-bold mb-14 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} ref={whyUsRef}>Mengapa Kami?</h2>
@@ -179,7 +169,6 @@ export default function Home() {
         </div>
 
 
-        {/* Delivery Content */}
         <div className="w-full h-fit flex my-2 px-10 lg:px-0">
           <div className="w-full h-fit flex flex-col lg:flex-row justify-center items-center gap-5">
             <div className="w-[65vw] lg:w-[80vw] relative h-fit flex justify-center">
@@ -216,7 +205,6 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Testimonial */}
         <div className="w-full h-fit flex my-2">
           <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-neutral-100 px-10">
             <h2 className="text-4xl font-bold mb-14">Testimonial</h2>

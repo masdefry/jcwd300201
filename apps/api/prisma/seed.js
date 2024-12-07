@@ -490,6 +490,43 @@ const dataUser = [
         forgotPasswordToken: "68asd684a",
         isDiscountUsed: false,
     },
+    {
+        email: "gaga@gmail.com",
+        firstName: "gaga",
+        lastName: "gugu",
+        phoneNumber: "085632343489",
+        profilePicture: profilePict,
+        isVerified: true,
+        verifyCode: "sd486aa",
+        isGoogleRegister: false,
+        forgotPasswordToken: "68asd684a",
+        isDiscountUsed: false,
+    },
+]
+
+const dataUserAddress = [
+    {
+        addressName: "Rumah",
+        addressDetail: "Jl. Kebangsaan no.23",
+        city: "Tangerang",
+        isMain: true,
+        province: "Banten",
+        country: "Indonesia",
+        zipCode: "15123",
+        latitude: -6.23348808466673,
+        longitude: 106.6331260189041,
+    },
+    {
+        addressName: "Kantor",
+        addressDetail: "Jl. Makmur no.23",
+        city: "Jakarta",
+        isMain: true,
+        province: "Banten",
+        country: "Indonesia",
+        zipCode: "15123",
+        latitude: -6.2088,
+        longitude: 106.8466,
+    },
 ]
 
 async function main() {
@@ -509,6 +546,7 @@ async function main() {
     });
 
     const hashedPassword = await hashPassword("12312312");
+
     await prisma.worker.createMany({
         data: dataWorker.map((worker) => ({
             email: worker.email,
@@ -526,25 +564,38 @@ async function main() {
         skipDuplicates: true,
     });
 
-    const users = await prisma.users.createMany({
-        data: dataUser.map((user) => ({
-            email: user.email,
-            role: 'USER',
-            password: hashedPassword,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phoneNumber: user.phoneNumber,
-            profilePicture: user.profilePicture,
-            isVerified: user.isVerified,
-            verifyCode: user.verifyCode,
-            isGoogleRegister: user.isGoogleRegister,
-            forgotPasswordToken: user.forgotPasswordToken,
-            isDiscountUsed: user.isDiscountUsed,
-        })),
+    const userPromises = dataUser.map((user) =>
+        prisma.users.create({
+            data: {
+                email: user.email,
+                role: 'USER',
+                password: hashedPassword,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                phoneNumber: user.phoneNumber,
+                profilePicture: user.profilePicture,
+                isVerified: user.isVerified,
+                verifyCode: user.verifyCode,
+                isGoogleRegister: user.isGoogleRegister,
+                forgotPasswordToken: user.forgotPasswordToken,
+                isDiscountUsed: user.isDiscountUsed,
+            },
+        })
+    );
+
+    const createdUsers = await Promise.all(userPromises);
+
+    const firstUserId = createdUsers[0].id;
+
+    const userAddresses = dataUserAddress.map((address) => ({
+        ...address,
+        usersId: firstUserId, 
+    }));
+
+    await prisma.userAddress.createMany({
+        data: userAddresses,
         skipDuplicates: true,
     });
-
-
 
     await prisma.itemName.createMany({
         data: dataItem.map((item) => ({
@@ -556,10 +607,10 @@ async function main() {
     await prisma.orderType.createMany({
         data: dataOrderType.map((item) => ({
             Type: item.type,
-            Price: item.price
+            Price: item.price,
         })),
         skipDuplicates: true,
-    })
+    });
 
 
 

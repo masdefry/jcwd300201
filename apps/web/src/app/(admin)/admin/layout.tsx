@@ -7,6 +7,8 @@ import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import { FaArrowLeft, FaArrowRight, FaCartArrowDown, FaDashcube, FaHouseDamage, FaIceCream, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 
+const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
+
 export default function Layout({ children }: { children: ReactNode }) {
     const [isClose, setIsClose] = useState<boolean>(false)
     const profilePicture = authStore((state) => state?.profilePicture)
@@ -24,11 +26,11 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="h-fit py-10 gap-5 flex justify-start px-5 items-center w-full">
                     <div className="w-12 h-12 rounded-full">
                         <Image
-                            src={profilePicture ? profilePicture : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'}
+                            src={profilePicture ? profilePicture : profilePict}
                             width={600}
                             height={600}
                             alt="user-profile"
-                            className="w-12 h-12 rounded-full border-[1px] border-white"
+                            className="w-12 h-12 object-cover rounded-full border-[1px] border-white"
                         />
                     </div>
                     <div className="flex flex-col text-base text-neutral-700">

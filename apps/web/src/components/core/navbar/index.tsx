@@ -15,6 +15,8 @@ import { FaTimes } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import MenuCustom from "../menu";
 
+const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
+
 export default function Header() {
   const token = authStore((state) => state?.token)
   const email = authStore((state) => state?.email)
@@ -101,7 +103,7 @@ export default function Header() {
                 height={400}
                 className="w-10 h-10 object-cover rounded-full"
                 alt='profile'
-                src={profilePicture ? profilePicture : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'}
+                src={profilePicture ? profilePicture : profilePict}
               />
             </span>
           </div>
@@ -124,7 +126,7 @@ export default function Header() {
                     height={400}
                     className="w-10 h-10 object-cover rounded-full"
                     alt='profile'
-                    src={profilePicture ? profilePicture : 'https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg'}
+                    src={profilePicture ? profilePicture : profilePict}
                   />
                   <h1 className="text-neutral-400 text-xl font-semibold">Hello, {nameUser && nameUser?.length > 8 ? nameUser?.slice(0, 8) : nameUser}!</h1>
                 </div>
