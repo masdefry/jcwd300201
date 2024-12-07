@@ -73,7 +73,7 @@ export default function PickupLaundry() {
                             initialValues={{
                                 deliveryFee: getNearestStore && getNearestStore[0] ? (Math.ceil(getNearestStore[0]?.distance) * 8000) : 0,
                                 storesId: getNearestStore && getNearestStore[0] ? getNearestStore[0]?.id : '',
-                                orderTypeId: '',
+                                orderTypeId: '', 
                                 userAddressId: getMainAddress ? getMainAddress.id : '',
                             }}
                             onSubmit={async (values) => {

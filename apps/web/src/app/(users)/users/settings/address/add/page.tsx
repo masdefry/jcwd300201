@@ -10,7 +10,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { useToast } from "@/hooks/use-toast";
+import { useToast } from "@/components/hooks/use-toast";
 import { instance } from "@/utils/axiosInstance";
 import { useMutation } from "@tanstack/react-query";
 import { IAddressDetail } from "./types";
@@ -223,8 +223,8 @@ export default function AddAddress() {
                                                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     const selectedValue = e.target.value;
                                                     setFieldValue("province", selectedValue);
-                                                    setSelectedProvince(selectedValue); // No issue here because it's triggered outside Formik rendering
-                                                    setFieldValue("city", ""); // Reset city when province changes
+                                                    setSelectedProvince(selectedValue);
+                                                    setFieldValue("city", "");
                                                 }}
                                             >
                                                 <option value="">Pilih Provinsi</option>
@@ -232,7 +232,7 @@ export default function AddAddress() {
                                                     <option disabled>Loading...</option>
                                                 ) : (
                                                     provinces?.map((province: any) => (
-                                                        <option key={province.province_id} value={province.province_id}>
+                                                        <option key={province.province_id} value={province.province}>
                                                             {province.province}
                                                         </option>
                                                     ))
@@ -243,9 +243,7 @@ export default function AddAddress() {
                                             )}
                                         </div>
 
-                                        {/* City Dropdown */}
                                         <div>
-                                            {/* <label htmlFor="city">Kota</label> */}
                                             <Field
                                                 as="select"
                                                 id="city"
@@ -262,7 +260,7 @@ export default function AddAddress() {
                                                     <option disabled>Loading...</option>
                                                 ) : (
                                                     cities?.map((city: any) => (
-                                                        <option key={city.city_id} value={city.city_id}>
+                                                        <option key={city.city_id} value={city.city_name}>
                                                             {city.city_name}
                                                         </option>
                                                     ))
