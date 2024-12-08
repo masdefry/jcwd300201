@@ -7,15 +7,18 @@ import { hashPassword } from "@/utils/passwordHash"
 import { encodeToken } from "@/utils/tokenValidation"
 import { ICreateWorkerService } from "./types"
 import dotenv from 'dotenv'
+import fs from 'fs'
+import { compile } from "handlebars"
+import { transporter } from "@/utils/transporter"
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
 /* *login admin */
 export const adminLoginService = async ({ email, password }: ILoginBody) => {
-    
+
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
-    
+
     const findAdmin = await prisma.worker.findFirst({
         where: { email }
     })
@@ -39,46 +42,61 @@ export const createWorkerService = async ({
     workerRole,
     identityNumber,
     storesId,
-    motorcycleType, 
+    motorcycleType,
     plateNumber
 }: ICreateWorkerService) => {
-    if(!phoneNumberValidation(identityNumber)) throw { msg: 'Harap memasukan format angka pada nomor identitas anda', status: 400 }
+    if (!phoneNumberValidation(identityNumber)) throw { msg: 'Harap memasukan format angka pada nomor identitas anda', status: 400 }
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email yang benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap memasukan format angka pada nomor telepon anda', status: 400 }
 
-    const findWorker = await prisma.worker.findFirst({
-        where: { email }
-    })
-
-    const findEmailInUser = await prisma.users.findFirst({
-        where: { email }
-    })
+    const findWorker = await prisma.worker.findFirst({ where: { email } })
+    const findEmailInUser = await prisma.users.findFirst({ where: { email } })
 
     if (findWorker) throw { msg: 'Email sudah terpakai!', status: 401 }
     if (findEmailInUser) throw { msg: 'Email sudah terpakai!', status: 401 }
 
     await prisma.$transaction(async (tx) => {
-        const dataWorker = await tx.worker.create({
-            data: {
-                email,
-                password: await hashPassword('worker123'),
-                firstName,
-                lastName,
-                phoneNumber,
-                workerRole,
-                identityNumber,
-                storesId,
-                profilePicture: profilePict
-            }
-        })
-        const token = await encodeToken({ id: dataWorker?.id, role: dataWorker?.workerRole })
+        let dataWorker: any
+        let token: string
 
-        if (motorcycleType && plateNumber) {
-            await tx.worker.update({
-                where: { id: dataWorker?.id },
-                data: { motorcycleType, plateNumber }
+        if (workerRole != 'DRIVER') {
+            dataWorker = await tx.worker.create({
+                data: {
+                    email,
+                    password: await hashPassword('worker123'),
+                    firstName,
+                    lastName,
+                    phoneNumber,
+                    workerRole,
+                    identityNumber,
+                    storesId,
+                    profilePicture: profilePict
+                }
+            })
+
+        } else {
+            if (!motorcycleType || !plateNumber) throw { msg: 'Harap diisi terlebih dahulu', status: 400 }
+            if (motorcycleType?.length < 2) throw { msg: 'Masukan tipe motor anda dengan benar, setidaknya lebih dari 2 huruf', status: 400 }
+            if (plateNumber?.length < 4) throw { msg: 'Masukan plat motor anda dengan benar, setidaknya lebih dari 4 huruf', status: 400 }
+
+            dataWorker = await tx.worker.create({
+                data: {
+                    email,
+                    password: await hashPassword('worker123'),
+                    firstName,
+                    lastName,
+                    phoneNumber,
+                    workerRole,
+                    identityNumber,
+                    storesId,
+                    profilePicture: profilePict,
+                    motorcycleType,
+                    plateNumber
+                }
             })
         }
+
+        token = await encodeToken({ id: dataWorker?.id, role: dataWorker?.workerRole })
 
         await tx.worker.update({
             where: { id: dataWorker?.id },
@@ -86,5 +104,19 @@ export const createWorkerService = async ({
                 changePasswordToken: token
             }
         })
+        
+        const emailHtml = fs.readFileSync('./src/public/sendMail/emailChangePasswordWorker.html', 'utf-8')
+        let compiledHtml: any = compile(emailHtml)
+        compiledHtml = compiledHtml({
+            email: email,
+            url: `http://localhost:3000/worker/reset-password/${token}`
+        })
+    
+        transporter.sendMail({
+            to: email,
+            html: compiledHtml,
+            subject: 'Reset password anda terlebih dahulu'
+        })
     })
+
 }

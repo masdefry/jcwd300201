@@ -37,9 +37,8 @@ export default function LoginUser() {
                 lastName: res?.data?.data?.lastName,
                 email: res?.data?.data?.email,
                 role: res?.data?.data?.role,
-                isVerified: res?.data?.data?.isVerified,
-                profilePicture: res?.data?.data?.profilePicture,
-                isDiscountUsed: res?.data?.data?.isDiscountUsed,
+                totalWorker: res?.data?.data?.totalWorker,
+                productLaundry: res?.data?.data?.productLaundry
             })
 
             toast({
@@ -57,8 +56,9 @@ export default function LoginUser() {
             if(res?.data?.data?.role == 'SUPER_ADMIN') {
                 window.location.href = '/admin/dashboard'
             } else {
-                window.location.href = '/admin/dashboard'
+                window.location.href = '/worker/dashboard'
             }
+            
             console.log(res)
         },
         onError: (err: any) => {

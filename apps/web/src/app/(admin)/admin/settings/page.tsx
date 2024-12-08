@@ -4,9 +4,13 @@ import ButtonCustom from "@/components/core/button";
 import { RiShutDownLine } from "react-icons/ri";
 import HeaderMobile from "@/components/core/headerMobile";
 import { FaUser, FaStore, FaClock, FaCut, FaTags, FaTruck, FaCashRegister, FaUsers, FaReceipt, FaHome, FaClipboardList, FaChartBar, FaCog } from 'react-icons/fa';
-import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import { instance } from "@/utils/axiosInstance";
+import Cookies from 'js-cookie'
+import { toast } from "@/components/hooks/use-toast";
+import { useState } from "react";
 
 const settingsItems = [
     { name: 'Pengaturan Akun', description: 'Ubah password akun anda', icon: FaUser },
@@ -19,12 +23,42 @@ const settingsItems = [
 ];
 
 export default function Page() {
-    const name = authStore((state) => state?.name)
+    const token = authStore((state) => state?.token)
+    const email = authStore((state) => state?.email)
+    const resetAuth = authStore((state) => state?.resetAuth)
+    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
+
+    const { mutate: handleLogoutAdmin, isPending } = useMutation({
+        mutationFn: async () => {
+            return await instance.post('/admin/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
+        },
+        onSuccess: (res) => {
+            Cookies.remove('__rolx')
+            Cookies.remove('__toksed')
+            resetAuth()
+
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+
+            setIsDisabledSucces(true)
+
+            window.location.href = '/admin/login'
+            console.log(res)
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            console.log(err)
+        }
+    })
 
     return (
         <>
             <main className="w-full h-fit">
-                {/* w-full h-fit md:hidden block md:max-w-full max-w-[425px] */}
                 <section className="w-full h-fit max-w-[425px] md:max-w-full md:w-full block md:hidden">
                     <HeaderMobile />
                     <main className="mx-8">
@@ -77,7 +111,7 @@ export default function Page() {
                         ))}
                     </div>
                     <div className="w-full py-3">
-                        <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
+                        <ButtonCustom onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
                     </div>
                 </section>
                 <section className="w-1/2 rounded-xl h-full flex flex-col gap-2">

@@ -6,6 +6,8 @@ import { FaWhatsapp, FaStore } from "react-icons/fa";
 import { MdOutlineStickyNote2 } from "react-icons/md";
 import Image from "next/image";
 import authStore from "@/zustand/authstore";
+import { useEffect, useState } from "react";
+import { BsCalendar2Range } from "react-icons/bs";
 
 const iconButtons = [
     { icon: FaStore, label: "Data Outlet" },
@@ -16,6 +18,23 @@ const iconButtons = [
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
+    const totalWorker = authStore((state) => state?.totalWorker)
+    const productLaundry = authStore((state) => state?.productLaundry)
+    const [isDate, setIsDate] = useState<number>(0)
+    const [isDay, setIsDay] = useState<number>(0)
+
+    const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+
+    useEffect(() => {
+        const date = new Date()
+        const isDateNow = date.getDate()
+        const isDayNow = date.getDay()
+
+        setIsDate(isDateNow)
+        setIsDay(isDayNow)
+
+    }, [])
+
     return (
         <>
             <main className="w-full h-fit">
@@ -102,16 +121,42 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="w-full rounded-xl h-full space-y-2">
-                        <div className="flex w-full h-full gap-2">
-                            <div className="w-full h-full bg-white rounded-xl">
-                                <div className="p-3">
-                                    <h1 className="font-bold text-xl text-neutral-700 pb-2">Total Pekerja</h1>
+                        <div className="flex flex-col w-full h-full gap-2">
+                            <div className="flex w-full h-full gap-2">
+                                <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg p-3">
+                                    <div className="flex justify-between items-center">
+                                        <h1 className="font-bold text-lg">Total Pekerja</h1>
+                                        <div className="p-2 bg-blue-900 rounded-lg">
+                                            <svg
+                                                xmlns="http://www.w3.org/2000/svg"
+                                                className="h-6 w-6 text-white"
+                                                viewBox="0 0 20 20"
+                                                fill="currentColor"
+                                            >
+                                                <path
+                                                    d="M10 2a6 6 0 100 12 6 6 0 000-12zM2 18a7 7 0 0114 0H2z"
+                                                />
+                                            </svg>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-center">
+                                        <h1 className="font-bold text-3xl">{totalWorker ? totalWorker : '0'}</h1>
+                                    </div>
+                                </div>
+
+                                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg p-6">
+                                    <div className="flex flex-col gap-3 justify-center items-center w-full">
+                                        <div className="flex gap-2 items-center text-3xl">
+                                            <span><BsCalendar2Range /> </span>
+                                            <h1>{isDate}</h1>
+                                        </div>
+                                        <h1 className="font-bold text-xl">{isDayArr[isDay]}</h1>
+                                    </div>
                                 </div>
                             </div>
-                            <div className="w-full h-full bg-white rounded-xl">
-                                <div className="p-3">
-                                    <h1 className="font-bold text-xl text-neutral-700 pb-2">Produk Laundry</h1>
-                                </div>
+
+                            <div className="flex w-full h-full gap-2 bg-white rounded-xl">
+
                             </div>
                         </div>
                     </div>

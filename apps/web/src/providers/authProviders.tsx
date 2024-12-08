@@ -30,7 +30,8 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
                 }
             })
 
-            if(response?.data?.data?.role == 'CUSTOMER') {
+            if (response?.data?.data?.role == 'CUSTOMER') {
+                console.log('trigger cust')
                 setKeepAuth({
                     email: response?.data?.data?.email,
                     firstName: response?.data?.data?.firstName,
@@ -39,6 +40,16 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
                     lastName: response?.data?.data?.lastName,
                     profilePicture: response?.data?.data?.profilePicture,
                     role: response?.data?.data?.role
+                })
+            } else if (response?.data?.data?.role == 'SUPER_ADMIN') {
+                console.log('trigger', response?.data?.data?.totalWorker)
+                setKeepAuth({
+                    firstName: response?.data?.data?.firstName,
+                    lastName: response?.data?.data?.lastName,
+                    profilePicture: response?.data?.data?.profilePicture,
+                    role: response?.data?.data?.role,
+                    totalWorker: response?.data?.data?.totalWorker,
+                    productLaundry: response?.data?.data?.productLaundry
                 })
             } else {
                 setKeepAuth({
