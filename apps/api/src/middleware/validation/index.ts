@@ -16,10 +16,12 @@ export const authLoginValidation = [
 ]
 
 export const createWorkerValidation = [
-    body(['email', 'firstName', 'lastName', 'phoneNumber', 'identityNumber']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body(['email', 'firstName', 'lastName', 'phoneNumber', 'identityNumber', 'storesId', 'workerRole']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('email').isString().escape(),
     body('firstName').isString().escape(),
     body('lastName').isString().escape(),
     body('phoneNumber').isString().escape(),
-    body('identityNumber').isString().escape()
+    body('identityNumber').isString().escape(),
+    body('storesId').isString().escape(),
+    body('workerRole').isString().escape(),
 ]

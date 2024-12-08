@@ -7,15 +7,20 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
 
         let findUser
         let findAdmin
-        
+        let findWorker
+        let itemLaundry
+
         if (authorizationRole == 'CUSTOMER') {
             findUser = await prisma.users.findFirst({
                 where: { id: userId, role: 'CUSTOMER' }
             })
         } else {
             findAdmin = await prisma.worker.findFirst({
-                where: { id: userId, workerRole: authorizationRole }
+                where: { id: userId, workerRole: authorizationRole },
             })
+
+            findWorker = await prisma.worker.findMany()
+            itemLaundry = await prisma.itemName.findMany()
         }
 
         res.status(200).json({
@@ -29,14 +34,21 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
                 isVerify: findUser?.isVerified,
                 profilePicture: findUser?.profilePicture,
                 isDiscountUsed: findUser?.isDiscountUsed
-            } : authorizationRole != 'CUSTOMER' ? {
+            } : authorizationRole == 'SUPER_ADMIN' ? {
+                role: findAdmin?.workerRole,
+                firstName: findAdmin?.firstName,
+                lastName: findAdmin?.lastName,
+                profilePicture: findAdmin?.profilePicture,
+                totalWorker: findWorker!.length,
+                productLaundry: itemLaundry!.length
+            } : authorizationRole !== 'CUSTOMER' && authorizationRole !== 'SUPER_ADMIN' ? {
                 role: findAdmin?.workerRole,
                 firstName: findAdmin?.firstName,
                 lastName: findAdmin?.lastName,
                 profilePicture: findAdmin?.profilePicture,
             } : {}
         })
-        
+
     } catch (error) {
         next(error)
     }

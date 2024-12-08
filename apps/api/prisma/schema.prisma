@@ -56,7 +56,7 @@ model UserAddress {
 }
 
 model Stores {
-  id        String @id
+  id        String @id @default(uuid())
   storeName String
   address   String
   city      String
