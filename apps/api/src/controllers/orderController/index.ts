@@ -122,9 +122,9 @@ export const findNearestStore = async (req: Request, res: Response,next: NextFun
       LIMIT 1;
     `;
 
-    if (nearestStores.length === 0) {
-      return res.status(404).json({ error: 'Tidak ada toko Laundry kami di dekat anda' });
-    }
+    // if (nearestStores.length === 0) {
+    //   return res.status(404).json({ error: 'Tidak ada toko Laundry kami di dekat anda' });
+    // }
 
     res.status(200).json({
       error: false,

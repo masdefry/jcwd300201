@@ -18,7 +18,7 @@ import authStore from "@/zustand/authstore";
 import { IOrderType, IRequestPickup } from './type';
 import { useMutation } from '@tanstack/react-query';
 import { useToast } from '@/components/hooks/use-toast';
-
+import { useState } from 'react';
 
 const validationSchema = Yup.object({
     deliveryFee: Yup.number().required().positive().integer(),
@@ -74,6 +74,15 @@ export default function PickupLaundry() {
         },
     });
 
+    const { data: getAllAddress, isLoading: getAllAddressLoading } = useQuery({
+        queryKey: ['get-main-address'],
+        queryFn: async () => {
+            const res = await instance.get('/user/all-address', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return res?.data?.data;
+        },
+    });
     const { data: getNearestStore, isLoading: getNearestStoreLoading } = useQuery({
         queryKey: ['get-nearest-store'],
         queryFn: async () => {
@@ -85,6 +94,8 @@ export default function PickupLaundry() {
     });
     if (getNearestStore == undefined) return <div></div>
     if (getMainAddress == undefined) return <div></div>
+
+
 
     return (
         <main className="w-full h-fit">
