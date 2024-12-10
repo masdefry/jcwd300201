@@ -67,21 +67,32 @@ export const getCity = async (req: Request, res: Response, next: NextFunction) =
   }
 }
 
-
 export const findNearestStore = async (req: Request, res: Response,next: NextFunction) => {
-  const { userId } = req.body;
-
-  if (!userId) {
-    return res.status(400).json({ error: 'User ID is required' });
-  }
-
+  
   try {
-    const userAddress = await prisma.userAddress.findFirst({
-      where: {
-        usersId: userId,
-        isMain: true
-      }
-    });
+    const { userId } = req.body;
+    const {address} = req.query
+  
+    if (!userId) {
+      return res.status(400).json({ error: 'User ID is required' });
+    }
+
+    let userAddress;
+    if (address) {
+      userAddress = await prisma.userAddress.findFirst({
+        where: {
+          usersId: userId,
+          id: Number(address)
+        } 
+      });  
+    } else {
+      userAddress = await prisma.userAddress.findFirst({
+        where: {
+          usersId: userId,
+          isMain: true
+        } 
+      })
+    }
 
     if (!userAddress) {
       return res.status(404).json({ error: 'Alamat utama tidak ditemukan' });

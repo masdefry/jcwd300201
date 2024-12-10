@@ -1,11 +1,15 @@
 const { PrismaClient } = require('@prisma/client');
 const bcrypt = require('bcrypt');
+const dotenv = require('dotenv')
 
 const prisma = new PrismaClient()
+dotenv.config()
 const hashPassword = async (password) => {
     const saltRound = 10;
     return await bcrypt.hash(password, saltRound);
 };
+
+const profilePict = process.env.PROFILE_PICTURE
 
 const dataStore = [
     {
@@ -72,7 +76,7 @@ const dataWorker = [
         firstName: 'Super',
         lastName: 'Saia',
         phoneNumber: '08123123124',
-        profilePicture: 'https://images.ctfassets.net/h6goo9gw1hh6/2sNZtFAWOdP1lmQ33VwRN3/24e953b920a9cd0ff2e1d587742a2472/1-intro-photo-final.jpg?w=1200&h=992&fl=progressive&q=70&fm=jpg',
+        profilePicture: profilePict,
         identityNumber: '302138124',
         storesId: 1
     },
@@ -82,7 +86,7 @@ const dataWorker = [
         firstName: "Budi",
         lastName: "Santoso",
         phoneNumber: "081234567890",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567890",
         storesId: 1
     },
@@ -92,7 +96,7 @@ const dataWorker = [
         firstName: "Siti",
         lastName: "Aminah",
         phoneNumber: "081234567891",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567891",
         storesId: 1
     },
@@ -102,7 +106,7 @@ const dataWorker = [
         firstName: "Joko",
         lastName: "Pratama",
         phoneNumber: "081234567892",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567892",
         storesId: 1
     },
@@ -112,7 +116,7 @@ const dataWorker = [
         firstName: "Ani",
         lastName: "Wijaya",
         phoneNumber: "081234567893",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567893",
         storesId: 1
     },
@@ -122,7 +126,7 @@ const dataWorker = [
         firstName: "Ahmad",
         lastName: "Subroto",
         phoneNumber: "081234567894",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567894",
         motorcycleType: 'Ninja 4 tak',
         plateNumber: "B 666 DEV",
@@ -134,7 +138,7 @@ const dataWorker = [
         firstName: "Budi",
         lastName: "Santoso",
         phoneNumber: "081234567890",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567890",
         storesId: 5
     },
@@ -144,7 +148,7 @@ const dataWorker = [
         firstName: "Siti",
         lastName: "Aminah",
         phoneNumber: "081234567891",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567891",
         storesId: 5
     },
@@ -154,7 +158,7 @@ const dataWorker = [
         firstName: "Joko",
         lastName: "Pratama",
         phoneNumber: "081234567892",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567892",
         storesId: 5
     },
@@ -164,7 +168,7 @@ const dataWorker = [
         firstName: "Ani",
         lastName: "Wijaya",
         phoneNumber: "081234567893",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567893",
         storesId: 5
     },
@@ -174,7 +178,7 @@ const dataWorker = [
         firstName: "Ahmad",
         lastName: "Subroto",
         phoneNumber: "081234567894",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "1234567894",
         motorcycleType: 'Ninja 4 tak',
         plateNumber: "B 666 DEV",
@@ -186,7 +190,7 @@ const dataWorker = [
         firstName: "Rina",
         lastName: "Saputra",
         phoneNumber: "081245678900",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "2014567890",
         storesId: 2,
     },
@@ -196,7 +200,7 @@ const dataWorker = [
         firstName: "Yudi",
         lastName: "Kusuma",
         phoneNumber: "081245678901",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "2014567891",
         storesId: 2,
     },
@@ -206,7 +210,7 @@ const dataWorker = [
         firstName: "Sari",
         lastName: "Andini",
         phoneNumber: "081245678902",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "2014567892",
         storesId: 2,
     },
@@ -216,7 +220,7 @@ const dataWorker = [
         firstName: "Bambang",
         lastName: "Wijaya",
         phoneNumber: "081245678903",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "2014567893",
         storesId: 2,
     },
@@ -226,7 +230,7 @@ const dataWorker = [
         firstName: "Dedi",
         lastName: "Pratama",
         phoneNumber: "081245678904",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "2014567894",
         motorcycleType: "Vario 125",
         plateNumber: "B 1234 ABC",
@@ -238,7 +242,7 @@ const dataWorker = [
         firstName: "Dewi",
         lastName: "Lestari",
         phoneNumber: "081345678900",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "3014567890",
         storesId: 3,
     },
@@ -248,7 +252,7 @@ const dataWorker = [
         firstName: "Eko",
         lastName: "Susanto",
         phoneNumber: "081345678901",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "3014567891",
         storesId: 3,
     },
@@ -258,7 +262,7 @@ const dataWorker = [
         firstName: "Lina",
         lastName: "Wulandari",
         phoneNumber: "081345678902",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "3014567892",
         storesId: 3,
     },
@@ -268,7 +272,7 @@ const dataWorker = [
         firstName: "Anton",
         lastName: "Rahman",
         phoneNumber: "081345678903",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "3014567893",
         storesId: 3,
     },
@@ -278,7 +282,7 @@ const dataWorker = [
         firstName: "Rizky",
         lastName: "Aditya",
         phoneNumber: "081345678904",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "3014567894",
         motorcycleType: "Beat Street",
         plateNumber: "B 5678 DEF",
@@ -290,7 +294,7 @@ const dataWorker = [
         firstName: "Rani",
         lastName: "Haryanto",
         phoneNumber: "081445678900",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "4014567890",
         storesId: 4,
     },
@@ -300,7 +304,7 @@ const dataWorker = [
         firstName: "Fajar",
         lastName: "Santoso",
         phoneNumber: "081445678901",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "4014567891",
         storesId: 4,
     },
@@ -310,7 +314,7 @@ const dataWorker = [
         firstName: "Nia",
         lastName: "Anggraini",
         phoneNumber: "081445678902",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "4014567892",
         storesId: 4,
     },
@@ -320,7 +324,7 @@ const dataWorker = [
         firstName: "Hendra",
         lastName: "Gunawan",
         phoneNumber: "081445678903",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "4014567893",
         storesId: 4,
     },
@@ -330,7 +334,7 @@ const dataWorker = [
         firstName: "Agus",
         lastName: "Putra",
         phoneNumber: "081445678904",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "4014567894",
         motorcycleType: "Mio M3",
         plateNumber: "B 6789 GHI",
@@ -342,7 +346,7 @@ const dataWorker = [
         firstName: "Mira",
         lastName: "Kartika",
         phoneNumber: "081545678900",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "5014567890",
         storesId: 5,
     },
@@ -352,7 +356,7 @@ const dataWorker = [
         firstName: "Deni",
         lastName: "Supriyadi",
         phoneNumber: "081545678901",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "5014567891",
         storesId: 5,
     },
@@ -362,7 +366,7 @@ const dataWorker = [
         firstName: "Fira",
         lastName: "Widyaningrum",
         phoneNumber: "081545678902",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "5014567892",
         storesId: 5,
     },
@@ -372,7 +376,7 @@ const dataWorker = [
         firstName: "Bayu",
         lastName: "Pangestu",
         phoneNumber: "081545678903",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "5014567893",
         storesId: 5,
     },
@@ -382,7 +386,7 @@ const dataWorker = [
         firstName: "Iqbal",
         lastName: "Hakim",
         phoneNumber: "081545678904",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         identityNumber: "5014567894",
         motorcycleType: "NMAX",
         plateNumber: "B 8901 JKL",
@@ -479,7 +483,7 @@ const dataUser = [
         firstName: "Jonathan",
         lastName: "Ezter",
         phoneNumber: "085632325489",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
+        profilePicture: profilePict,
         isVerified: true,
         verifyCode: "sd486aa",
         isGoogleRegister: false,
@@ -491,8 +495,8 @@ const dataUser = [
         firstName: "gaga",
         lastName: "gugu",
         phoneNumber: "085632343489",
-        profilePicture: "https://st2.depositphotos.com/5682790/10456/v/450/depositphotos_104564156-stock-illustration-male-user-icon.jpg",
         isVerified: true,
+        profilePicture: profilePict,
         verifyCode: "sd486aa",
         isGoogleRegister: false,
         forgotPasswordToken: "68asd684a",
@@ -516,7 +520,7 @@ const dataUserAddress = [
         addressName: "Kantor",
         addressDetail: "Jl. Makmur no.23",
         city: "Jakarta",
-        isMain: true,
+        isMain: false,
         province: "Banten",
         country: "Indonesia",
         zipCode: "15123",
@@ -560,9 +564,11 @@ async function main() {
         skipDuplicates: true,
     });
 
-    const userPromises = dataUser.map((user) =>
-        prisma.users.create({
-            data: {
+    const userPromises = dataUser.map(async (user) => {
+        return prisma.users.upsert({
+            where: { email: user.email },
+            update: {}, // Leave empty to skip updates if user exists
+            create: {
                 email: user.email,
                 role: 'USER',
                 password: hashedPassword,
@@ -576,10 +582,11 @@ async function main() {
                 forgotPasswordToken: user.forgotPasswordToken,
                 isDiscountUsed: user.isDiscountUsed,
             },
-        })
-    );
+        });
+    });
 
     const createdUsers = await Promise.all(userPromises);
+
 
     const firstUserId = createdUsers[0].id;
 
@@ -607,7 +614,7 @@ async function main() {
         })),
         skipDuplicates: true,
     });
-
+  
     console.log("Data seeded successfully.");
 }
 

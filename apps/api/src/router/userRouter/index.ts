@@ -12,7 +12,7 @@ userRouter.post('/login', authLoginValidation, expressValidatorErrorHandling, li
 userRouter.post('/sign-w-google', authLoginValidation, expressValidatorErrorHandling, limiter, signInWithGoogle)
 userRouter.post('/logout', tokenValidation, limiter, userLogout)
 userRouter.post('/add-address', tokenValidation, limiter, userCreateAddress)
-userRouter.get('/all-address', tokenValidation, limiter, getAllUserAddresses)
-userRouter.get('/main-address', tokenValidation, limiter, getUserMainAddress)
+userRouter.get('/all-address', tokenValidation, getAllUserAddresses)
+userRouter.get('/main-address', tokenValidation, getUserMainAddress)
 
 export default userRouter

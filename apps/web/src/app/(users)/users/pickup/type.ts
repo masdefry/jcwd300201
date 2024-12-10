@@ -13,3 +13,10 @@ export interface IRequestPickup{
     orderTypeId: string;
     userAddressId:number
 }
+export interface IAddress{
+    id: string;
+    addressName: string;
+    addressDetail: string;
+    city: string;
+    province:string
+}

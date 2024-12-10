@@ -12,21 +12,23 @@ const authStore = create(
     isVerified: false,
     profilePicture: '',
     isDiscountUsed: false,
+    totalWorker: null,
+    productLaundry: null,
 
     setAuth: ({
       token, firstName, lastName, email, role,
-      isVerified, profilePicture, isDiscountUsed,
+      isVerified, profilePicture, isDiscountUsed, totalWorker, productLaundry,
     }: IAuthStore) => set({
       token, firstName, lastName, email, role,
-      isVerified, profilePicture, isDiscountUsed
+      isVerified, profilePicture, isDiscountUsed, totalWorker, productLaundry
     }),
 
     setKeepAuth: ({
       firstName, lastName, email, role,
-      isVerified, profilePicture, isDiscountUsed
+      isVerified, profilePicture, isDiscountUsed, totalWorker, productLaundry
     }: IAuthStore) => set({
       firstName, lastName, email, role,
-      isVerified, profilePicture, isDiscountUsed
+      isVerified, profilePicture, isDiscountUsed, totalWorker, productLaundry
     }),
 
     resetAuth: () => set({
@@ -38,6 +40,8 @@ const authStore = create(
       isVerified: false,
       profilePicture: '',
       isDiscountUsed: false,
+      totalWorker: null,
+      productLaundry: null
     }),
   }),
 

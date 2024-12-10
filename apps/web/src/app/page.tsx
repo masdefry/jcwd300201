@@ -145,7 +145,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className='w-full h-fit flex my-2'>
+        <div className='w-full h-fit flex mt-2'>
           <div className="w-full h-fit py-20 text-black flex flex-col items-center text-center bg-indigo-100 px-10 lg:px-60">
             <h2 className={`text-4xl font-bold mb-14 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} ref={whyUsRef}>Mengapa Kami?</h2>
             <div ref={whyUsRef} className={`flex flex-col md:flex-row justify-center gap-8 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} >
@@ -169,9 +169,9 @@ export default function Home() {
         </div>
 
 
-        <div className="w-full h-fit flex my-2 px-10 lg:px-0">
+        <div className="w-full h-fit flex px-10 lg:px-0 bg-indigo-100">
           <div className="w-full h-fit flex flex-col lg:flex-row justify-center items-center gap-5">
-            <div className="w-[65vw] lg:w-[80vw] relative h-fit flex justify-center">
+            <div className="w-[65vw] lg:w-[80vw] py-10 relative h-fit flex justify-center">
               <div className="w-[150px] lg:w-[250px] h-fit text-black text-center">
                 <Image
                   width={1000}

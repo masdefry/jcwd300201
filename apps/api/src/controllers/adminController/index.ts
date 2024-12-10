@@ -84,3 +84,34 @@ export const createWorker = async (req: Request, res: Response, next: NextFuncti
         next(error)
     }
 }
+
+export const getAllWorker = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { search } = req.query
+
+        let findWorker
+        if (search) {
+            findWorker = await prisma.worker.findMany({
+                where: {
+                    OR: [
+                        { firstName: { contains: search as string } },
+                        { lastName: { contains: search as string } },
+                        { email: { contains: search as string } }
+                    ]
+                }
+            })
+        } else {
+            findWorker = await prisma.worker.findMany()
+        }
+
+        if (findWorker?.length === 0) throw { msg: 'Data pekerja tidak tersedia', status: 404 }
+
+        res.status(200).json({
+            error: false,
+            message: 'Berhasil mendapatkan data pekerja',
+            data: findWorker
+        })
+    } catch (error) {
+        next(error)
+    }
+}

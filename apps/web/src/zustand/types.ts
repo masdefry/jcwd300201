@@ -7,5 +7,6 @@ export interface IAuthStore {
     isVerified: boolean, 
     profilePicture: string, 
     isDiscountUsed: boolean, 
-
+    totalWorker: number | null, 
+    productLaundry: number | null
 }
