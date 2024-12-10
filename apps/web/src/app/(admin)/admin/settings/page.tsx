@@ -11,41 +11,51 @@ import { instance } from "@/utils/axiosInstance";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { useState } from "react";
+import Image from "next/image";
+import { FaIdCard, FaVoicemail } from "react-icons/fa6";
+import ListCustom from "@/components/core/listSettings";
+import { ConfirmAlert } from "@/components/core/confirmAlert";
 
-const settingsItems = [
-    { name: 'Pengaturan Akun', description: 'Ubah password akun anda', icon: FaUser },
-    { name: 'Pengaturan Outlet', description: 'Tambah, ubah, hapus outlet laundry', icon: FaStore },
-    { name: 'Pengaturan Layanan', description: 'Tambah, ubah, hapus layanan', icon: FaCut },
-    { name: 'Pengaturan Antar-Jemput', description: 'Tambah, ubah, hapus antar-jemput', icon: FaTruck },
-    { name: 'Pengaturan Kasir', description: 'Atur, tambah, ubah, hapus kasir', icon: FaCashRegister },
-    { name: 'Pengaturan Pelanggan', description: 'Tambah, ubah, hapus pelanggan', icon: FaUsers },
-    { name: 'Pengaturan Nota', description: 'Atur tampilan nota', icon: FaReceipt },
-];
-
+const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Page() {
     const token = authStore((state) => state?.token)
     const email = authStore((state) => state?.email)
+    const name = authStore((state) => state?.firstName)
+    const profilePicture = authStore((state) => state?.profilePicture)
     const resetAuth = authStore((state) => state?.resetAuth)
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
+    const [isLogoutSuccess, setIsLogoutSuccess] = useState<boolean>(false)
+
+    const settingsItems = [
+        { name: 'Pengaturan Akun', description: 'Ubah password akun anda', icon: FaUser },
+        { name: 'Pengaturan Outlet', description: 'Tambah, ubah, hapus outlet laundry', icon: FaStore },
+        { name: 'Pengaturan Layanan', description: 'Tambah, ubah, hapus layanan', icon: FaCut },
+        { name: 'Pengaturan Antar-Jemput', description: 'Tambah, ubah, hapus antar-jemput', icon: FaTruck },
+        { name: 'Pengaturan Kasir', description: 'Atur, tambah, ubah, hapus kasir', icon: FaCashRegister },
+        { name: 'Pengaturan Pelanggan', description: 'Tambah, ubah, hapus pelanggan', icon: FaUsers },
+        { name: 'Pengaturan Nota', description: 'Atur tampilan nota', icon: FaReceipt },
+    ];
 
     const { mutate: handleLogoutAdmin, isPending } = useMutation({
         mutationFn: async () => {
-            return await instance.post('/admin/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
+                return await instance.post('/admin/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
         },
         onSuccess: (res) => {
-            Cookies.remove('__rolx')
-            Cookies.remove('__toksed')
-            resetAuth()
+            if (res) {
+                Cookies.remove('__rolx')
+                Cookies.remove('__toksed')
+                resetAuth()
 
-            toast({
-                description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
+                toast({
+                    description: res?.data?.message,
+                    className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+                })
 
-            setIsDisabledSucces(true)
+                setIsDisabledSucces(true)
 
-            window.location.href = '/admin/login'
-            console.log(res)
+                window.location.href = '/admin/login'
+                console.log(res)
+            }
         },
         onError: (err: any) => {
             toast({
@@ -91,33 +101,45 @@ export default function Page() {
 
             {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
-                {/* // pengaturan akun, pengaturan outlet, pengaturan item laundry, ganti password */}
-
                 <section className="w-full flex flex-col p-4 rounded-xl h-full bg-white">
                     <div className="flex flex-col w-full gap-5">
                         <div className="w-full py-4 bg-orange-500 px-14 rounded-xl">
                             <h1 className="font-bold text-white">Pengaturan</h1>
                         </div>
                         {settingsItems?.map((set, i) => (
-                            <Link href={'/'} className='w-full py-2 px-4 border-b bg-white rounded-xl' key={i}>
-                                <div className="flex justify-between items-center">
-                                    <div className="flex items-center gap-5 text-neutral-700">
-                                        <set.icon />
-                                        <h1>{set?.name}</h1>
-                                    </div>
-                                    <div className="w-2 h-2 rounded-full bg-green-700"></div>
-                                </div>
-                            </Link>
+                            <ListCustom key={i} url='/' caption={set.name}><set.icon /></ListCustom>
                         ))}
                     </div>
                     <div className="w-full py-3">
-                        <ButtonCustom onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
+                        <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()}>
+                            <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
+                        </ConfirmAlert>
                     </div>
                 </section>
                 <section className="w-1/2 rounded-xl h-full flex flex-col gap-2">
-                    <div className='w-full h-full bg-white rounded-xl'>
+                    <div className='w-full h-full bg-white rounded-xl flex flex-col gap-2'>
                         <div className="w-full h-fit py-3 bg-orange-500 rounded-t-xl px-4">
                             <h1 className="font-bold text-base text-white flex items-center gap-3"><FaUser /> Pengaturan Akun</h1>
+                        </div>
+                        <div className="w-full h-full bg-white rounded-xl flex flex-col gap-2 px-2 pt-3">
+                            <div className="w-full flex px-3 items-center gap-4">
+                                <div className="w-12 h-12 rounded-full">
+                                    <Image
+                                        src={profilePicture ? profilePicture : profilePict}
+                                        width={600}
+                                        height={600}
+                                        alt="user-profile"
+                                        className="w-12 h-12 object-cover rounded-full border-[1px] border-white"
+                                    />
+                                </div>
+                                <div className="text-black flex flex-col">
+                                    <h1 className="font-semibold">{name && name?.length > 9 ? name?.slice(0, 9) : name || 'Admin'}</h1>
+                                    <h1 className="italic text-[9px] text-neutral-500">{email || 'admin@cnc.com'}</h1>
+                                </div>
+                            </div>
+                            <ListCustom caption={name || 'Admin'} url="/" border='border-none'><FaIdCard /></ListCustom>
+                            <ListCustom caption={email || 'admin@cnc.com'} url="/" border='border-none'><FaVoicemail /></ListCustom>
+                            <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-white" txtColor="text-neutral-700 border" py="py-1">Edit</ButtonCustom>
                         </div>
                     </div>
                     <div className='w-full h-full bg-white rounded-xl'>

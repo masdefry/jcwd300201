@@ -19,11 +19,34 @@ export const middleware = (req: NextRequest) => {
     if (role && role != 'SUPER_ADMIN' && tokenUser && pathname.startsWith('/admin')) {
         return NextResponse.redirect(new URL('/', req.url))
     }
+
+    if (role && role != 'OUTLET_ADMIN' && tokenUser && pathname.startsWith('/worker/admin-outlet')) {
+        return NextResponse.redirect(new URL('/', req.url))
+    }
+    
+    if (role && role != 'WASHING_WORKER' && tokenUser && pathname.startsWith('/worker/washing-worker')) {
+        return NextResponse.redirect(new URL('/', req.url))
+    }
+
+    if (role && role != 'IRONING_WORKER' && tokenUser && pathname.startsWith('/worker/ironing-worker')) {
+        return NextResponse.redirect(new URL('/', req.url))
+    }
+
+    if (role && role != 'DRIVER' && tokenUser && pathname.startsWith('/worker/driver')) {
+        return NextResponse.redirect(new URL('/', req.url))
+    }
+    
+    if (role && role != 'PACKING_WORKER' && tokenUser && pathname.startsWith('/worker/packing-worker')) {
+        return NextResponse.redirect(new URL('/', req.url))
+    }
+
     console.log(role)
 
     if (!role && !tokenUser && pathname.startsWith('/admin') && pathname != '/admin/login') {
         return NextResponse.redirect(new URL('/', req.url))
     }
+
+
 
     return NextResponse.next()
 }

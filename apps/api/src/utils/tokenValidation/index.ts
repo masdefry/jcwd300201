@@ -8,15 +8,15 @@ interface IToken {
     id: string,
     role: string
     storesId?: string
+    expiresIn?: string
 }
 
 /* Set Token */
-export const encodeToken = async ({ id, role, storesId }: IToken) => {
+export const encodeToken = async ({ id, role, storesId, expiresIn = '24h' }: IToken) => {
     if (storesId) {
-        return await jwt.sign(
-            { data: { id, role, storesId } }, secret_key, { expiresIn: '24h' })
+        return await jwt.sign({ data: { id, role, storesId } }, secret_key, { expiresIn: expiresIn })
     } else {
-        return await jwt.sign({ data: { id, role } }, secret_key, { expiresIn: '24h' })
+        return await jwt.sign({ data: { id, role } }, secret_key, { expiresIn: expiresIn })
     }
 }
 

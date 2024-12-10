@@ -3,16 +3,8 @@
 import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
 import { FaArrowLeft } from "react-icons/fa"
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
-
-import {
-    CardContent,
-} from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { CardContent } from "@/components/ui/card"
 import LocationAndSearch from "@/features/workerData/components/locationAndSearch"
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import ProcessAndSortDate from "@/features/order/components/processAndSortDate"

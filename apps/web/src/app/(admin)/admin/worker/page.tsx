@@ -273,6 +273,7 @@ export default function Page() {
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Phone Number</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Profile Picture</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Worker Role</th>
+                                        <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -293,6 +294,7 @@ export default function Page() {
                                                         className="h-12 w-12 rounded-full object-cover"
                                                     />
                                                 </td>
+                                                <td className="py-1 px-6 text-sm text-gray-600 break-words">{worker?.workerRole}</td>
                                                 <td className="py-1 px-6 text-sm text-gray-600 break-words">{worker?.workerRole}</td>
                                             </tr>
                                         ))

@@ -4,16 +4,20 @@ import { nanoid } from 'nanoid';
 import jwt from 'jsonwebtoken'
 import { signInWithGoogleService, userRegisterService } from "@/service/userService"
 import { userLoginService } from "@/service/userService"
-import { encodeToken } from "@/utils/tokenValidation";
+import { decodeToken, encodeToken } from "@/utils/tokenValidation";
 import { hashPassword } from "@/utils/passwordHash";
+import fs from 'fs'
+import { compile } from "handlebars";
 
 const secret_key: string | undefined = process.env.JWT_SECRET as string
 export const userRegister = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { email, password, firstName, lastName, phoneNumber } = req?.body
+    const { email, firstName, lastName, phoneNumber } = req?.body
     const verifyCode = nanoid(6)
 
-    await userRegisterService({ email, password, firstName, lastName, phoneNumber, verifyCode })
+    console.log(email)
+
+    await userRegisterService({ email, firstName, lastName, phoneNumber, verifyCode })
 
     res?.status(200).json({
       error: false,
@@ -279,6 +283,69 @@ export const getUserMainAddress = async (req: Request, res: Response, next: Next
   }
 };
 
+export const resendSetPassword = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body
 
+    const findUser = await prisma.users.findFirst({
+      where: { email }
+    })
 
+    if (!findUser) throw { msg: 'User tidak terdaftar', status: 401 }
 
+    const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '1h' })
+
+    const emailFile = fs.readFileSync('./src/public/sendMail/email.html', 'utf-8')
+    let compiledHtml: any = compile(emailFile)
+    compiledHtml = compiledHtml({
+      email,
+      url: `http://localhost:3000/user/set-password/${token}`
+    })
+
+    await prisma.users.update({
+      where: { id: findUser?.id },
+      data: { forgotPasswordToken: token }
+    })
+
+    res.status(200).json({
+      error: false,
+      message: 'Harap cek email anda secara berkala',
+      data: {}
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const setPasswordUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, password } = req.body
+    const { authorization } = req.headers
+
+    const token = authorization?.split(' ')[1]
+    const findUser = await prisma.users.findFirst({ where: { id: userId } })
+
+    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
+    if (token != findUser?.forgotPasswordToken) throw { msg: 'Link sudah tidak berlaku', status: 400 }
+
+    const hashedPassword = await hashPassword(password)
+
+    await prisma.users.update({
+      data: {
+        password: hashedPassword,
+        isVerified: true,
+        forgotPasswordToken: null
+      },
+      where: { id: userId }
+    })
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil, silahkan masuk',
+      data: {}
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}

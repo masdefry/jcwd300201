@@ -20,19 +20,21 @@ export default function Page() {
     const name = authStore((state) => state?.firstName)
     const totalWorker = authStore((state) => state?.totalWorker)
     const productLaundry = authStore((state) => state?.productLaundry)
-    const [isDate, setIsDate] = useState<number>(0)
+    const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
 
     const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
     useEffect(() => {
         const date = new Date()
-        const isDateNow = date.getDate()
         const isDayNow = date.getDay()
+        const isDateNow = date.getDate()
+        const isMonth = date.getMonth()
+        const isYear = date.getFullYear()
 
-        setIsDate(isDateNow)
+        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        setIsDate(newDateFormat)
         setIsDay(isDayNow)
-
     }, [])
 
     return (
@@ -144,15 +146,21 @@ export default function Page() {
                                     </div>
                                 </div>
 
-                                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg p-6">
-                                    <div className="flex flex-col gap-3 justify-center items-center w-full">
-                                        <div className="flex gap-2 items-center text-3xl">
-                                            <span><BsCalendar2Range /> </span>
-                                            <h1>{isDate}</h1>
+                                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-700 text-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-300">
+                                    <div className="flex flex-col gap-4 justify-center items-center w-full">
+                                        <div className="flex gap-3 items-center text-xl font-semibold">
+                                            <span className="text-white bg-blue-700 rounded-full p-2">
+                                                <BsCalendar2Range />
+                                            </span>
+                                            <h1 className="tracking-wide">{isDate || '00/00/0000'}</h1>
                                         </div>
-                                        <h1 className="font-bold text-xl">{isDayArr[isDay]}</h1>
+
+                                        <h1 className="font-bold text-xl uppercase tracking-wide bg-blue-600 px-4 py-2 rounded-md shadow-md">
+                                            {isDayArr[isDay]}
+                                        </h1>
                                     </div>
                                 </div>
+
                             </div>
 
                             <div className="flex w-full h-full gap-2 bg-white rounded-xl">
