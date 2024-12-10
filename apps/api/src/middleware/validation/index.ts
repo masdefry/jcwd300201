@@ -1,9 +1,8 @@
 import { body } from "express-validator";
 
 export const authCustomerValidation = [
-    body(['email', 'password', 'firstName', 'lastName', 'phoneNumber']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body(['email', 'firstName', 'lastName', 'phoneNumber']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('email').isString().escape(),
-    body('password').isString().isLength({ min: 6 }).withMessage('Password harus memiliki minimal 6 karakter!').escape(),
     body('firstName').isString().escape(),
     body('lastName').isString().escape(),
     body('phoneNumber').isString().escape()
@@ -24,4 +23,13 @@ export const createWorkerValidation = [
     body('identityNumber').isString().escape(),
     body('storesId').isString().escape(),
     body('workerRole').isString().escape(),
+]
+
+export const resendSetPasswordValidation = [
+    body(['email']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('email').isString().escape(),
+]
+export const setPasswordValidation = [
+    body(['password']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('password').isString().escape(),
 ]

@@ -31,7 +31,8 @@ export const adminLogin = async (req: Request, res: Response, next: NextFunction
 
 export const adminLogout = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email } = req.body
+        const { email, storesId } = req.body
+        console.log(storesId, '<<<<<<<<<<<')
 
         const findAdmin = await prisma.worker.findFirst({
             where: { email }
@@ -87,7 +88,7 @@ export const createWorker = async (req: Request, res: Response, next: NextFuncti
 
 export const getAllWorker = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { search } = req.query
+        const { search, sort } = req.query
 
         let findWorker
         if (search) {
@@ -100,10 +101,14 @@ export const getAllWorker = async (req: Request, res: Response, next: NextFuncti
                     ]
                 }
             })
+        } else if (sort && sort === 'SUPER_ADMIN') {
+            findWorker = await prisma.worker.findMany({
+                where: { workerRole: 'SUPER_ADMIN' }
+            })
         } else {
             findWorker = await prisma.worker.findMany()
         }
-
+        
         if (findWorker?.length === 0) throw { msg: 'Data pekerja tidak tersedia', status: 404 }
 
         res.status(200).json({

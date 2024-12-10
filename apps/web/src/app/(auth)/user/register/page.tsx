@@ -10,24 +10,28 @@ import { IRegisterUser } from "./types";
 import { useToast } from "@/components/hooks/use-toast";
 import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function RegisterUser() {
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
+    const router = useRouter()
     const { toast } = useToast()
 
     const { mutate: handleRegister, isPending } = useMutation({
-        mutationFn: async ({ email, password, firstName, lastName, phoneNumber }: IRegisterUser) => {
-            return await instance.post('/user/register', {
-                email, password, firstName, lastName, phoneNumber
-            })
+        mutationFn: async ({ email, firstName, lastName, phoneNumber }: IRegisterUser) => {
+            return await instance.post('/user/register', { email, firstName, lastName, phoneNumber })
         },
         onSuccess: (res) => {
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
+
             setIsDisabledSucces(true)
             console.log(res)
+
+            router.push('/user/login')
         },
         onError: (err: any) => {
             toast({
@@ -37,15 +41,6 @@ export default function RegisterUser() {
             console.log(err)
         }
     })
-    const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
-    const [confirmationPasswordVisible, setConfirmationPasswordVisible] = useState<boolean>(false);
-
-    const togglePasswordVisibility = () => {
-        setPasswordVisible(!passwordVisible);
-    };
-    const togglePasswordConfirmationVisibility = () => {
-        setConfirmationPasswordVisible(!confirmationPasswordVisible);
-    };
 
     return (
 
@@ -76,7 +71,6 @@ export default function RegisterUser() {
                         email: '',
                         firstName: '',
                         lastName: '',
-                        password: '',
                         confirmPassword: '',
                         phoneNumber: '',
                     }}
@@ -85,11 +79,7 @@ export default function RegisterUser() {
                         email: Yup.string().required('Email harap diisi!'),
                         firstName: Yup.string().required('Nama harap diisi!'),
                         lastName: Yup.string().required("Nama harap diisi!"),
-                        password: Yup.string().min(8,
-                            'Password minimal 8 huruf'
-                        ).required('Password harap diisi!'),
-                        confirmPassword: Yup.string()
-                            .oneOf([Yup.ref('password'), ''], 'Password tidak sama'),
+                        phoneNumber: Yup.string().required('Nomor telepon harap diisi!')
                     })}
 
                     onSubmit={(values) => {
@@ -97,7 +87,6 @@ export default function RegisterUser() {
                             email: values.email,
                             firstName: values.firstName,
                             lastName: values.lastName,
-                            password: values.password,
                             phoneNumber: values.phoneNumber,
                         })
                     }}
@@ -160,60 +149,6 @@ export default function RegisterUser() {
                                 type="email"
                             />
                         </div>
-                        <div className="flex gap-4 w-full">
-                            <div id="password-input" className="relative w-1/2">
-                                <div className="flex gap-5 items-center">
-                                    <label>
-                                        Password <span className="text-red-500">*</span>
-                                    </label>
-                                </div>
-                                <Field
-                                    name="password"
-                                    className=" w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-yellow-400 text-sm pr-10"
-                                    placeholder="******"
-                                    type={passwordVisible ? 'text' : 'password'}
-                                />
-                                <span
-                                    className="absolute  right-3 transform -translate-y-7 flex items-center cursor-pointer text-gray-500"
-                                    onClick={togglePasswordVisibility}
-                                >
-                                    {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-                                </span>
-                                <div className="h-2">
-                                    <ErrorMessage
-                                        name="password"
-                                        component="div"
-                                        className="text-red-500 text-xs mt-1"
-                                    />
-                                </div>
-                            </div>
-                            <div id="confirmPassword-input" className="relative w-1/2">
-                                <div className="flex gap-5 items-center">
-                                    <label>
-                                        Confirm Password <span className="text-red-500">*</span>
-                                    </label>
-                                </div>
-                                <Field
-                                    name="confirmPassword"
-                                    className=" w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-yellow-400 text-sm pr-10"
-                                    placeholder="******"
-                                    type={confirmationPasswordVisible ? 'text' : 'password'}
-                                />
-                                <span
-                                    className="absolute  right-3 transform -translate-y-7 flex items-center cursor-pointer text-gray-500"
-                                    onClick={togglePasswordConfirmationVisibility}
-                                >
-                                    {confirmationPasswordVisible ? <FaEye /> : <FaEyeSlash />}
-                                </span>
-                                <div className="h-2">
-                                    <ErrorMessage
-                                        name="confirmPassword"
-                                        component="div"
-                                        className="text-red-500 text-xs mt-1"
-                                    />
-                                </div>
-                            </div>
-                        </div>
                         <div id="phoneNumber-input" className=" w-full">
                             <div className="flex gap-5 items-center">
                                 <label>
@@ -238,11 +173,22 @@ export default function RegisterUser() {
                             btnColor="bg-blue-600 hover:bg-blue-500"
                             width="w-full"
                         >Daftar</ButtonCustom>
-                        {/* <button disabled={isPending || isDisabledSucces} type="submit" className="z-50 disabled:bg-neutral-400 text-yellow-300 w-full text-lg rounded-lg font-bold py-2 mb-6 bg-blue-500 hover:bg-blue-600 transition-all duration-300 ">
-                            Daftar
-                        </button> */}
                     </Form>
                 </Formik>
+                <div className="flex flex-col gap-2 w-full my-2">
+                    <div className="flex w-full justify-between items-center">
+                        <div className="flex items-center gap-1 text-sm">
+                            <h1 className="">Sudah memiliki akun?</h1>
+                            <Link href='/user/login' className='text-blue-500 hover:text-blue-700'>Login</Link>
+                        </div>
+                        <Link
+                            href={'/user/forgot-password'}
+                            className="text-sm text-blue-500 hover:underline"
+                        >
+                            Lupa kata sandi?
+                        </Link>
+                    </div>
+                </div>
             </section>
 
         </main>

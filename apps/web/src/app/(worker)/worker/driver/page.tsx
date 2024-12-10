@@ -1,3 +1,5 @@
+'use client'
+
 import { IoAddCircleSharp, IoSearchSharp, IoPersonSharp } from "react-icons/io5";
 import { GrUserWorker } from "react-icons/gr";
 import { FaWhatsapp, FaStore } from "react-icons/fa";
@@ -5,7 +7,7 @@ import { MdOutlineStickyNote2 } from "react-icons/md";
 import Image from "next/image";
 import { Separator } from "@/components/ui/separator";
 import { FiPlus } from "react-icons/fi";
-import { LuPackageCheck,  } from "react-icons/lu";
+import { LuPackageCheck, } from "react-icons/lu";
 import { GrNotes } from "react-icons/gr";
 
 
@@ -14,7 +16,7 @@ const iconButtons = [
     { icon: GrNotes, label: "Data Pesanan" },
 ];
 
-export default function DriverDashboard() {
+export default function Page() {
     return (
         <main className="w-full h-fit">
             <section className="w-full h-fit md:hidden block md:max-w-full">

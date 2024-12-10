@@ -4,7 +4,7 @@ import Image from "next/image";
 import ButtonCustom from "../button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaBurger, FaSpaghettiMonsterFlying, FaUserGear } from "react-icons/fa6";
+import { FaBurger, FaDashcube, FaSpaghettiMonsterFlying, FaUserGear } from "react-icons/fa6";
 import { useState } from "react";
 import authStore from "@/zustand/authstore";
 import { instance } from "@/utils/axiosInstance";
@@ -14,6 +14,9 @@ import { useMutation } from "@tanstack/react-query";
 import { FaTimes } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import MenuCustom from "../menu";
+import { IoAlbumsOutline } from "react-icons/io5";
+import { LuContact } from "react-icons/lu";
+import { ConfirmAlert } from "../confirmAlert";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 
@@ -39,29 +42,37 @@ export default function Header() {
 
   const { mutate: handleLogout, isPending } = useMutation({
     mutationFn: async () => {
-      return await instance.post('/user/logout', { email }, {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
+      if (role === 'CUSTOMER') {
+        return await instance.post('/user/logout', { email }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+      } else {
+        return await instance.post('/admin/logout', { email }, {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+      }
     },
     onSuccess: (res) => {
-      Cookies.remove('__rolx')
-      Cookies.remove('__toksed')
-      resetAuth()
+      if (res) {
+        toast({
+          description: res?.data?.message,
+          className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+        })
 
-      toast({
-        description: res?.data?.message,
-        className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-      })
-
-      setIsDisabledSucces(true)
-      if (res?.data?.data?.role == 'CUSTOMER') {
         window.location.href = '/'
-      } else {
-        window.location.href = '/admin/login'
+
+        Cookies.remove('__rolx')
+        Cookies.remove('__toksed')
+        resetAuth()
+
+        setIsDisabledSucces(true)
+
+        console.log(res)
       }
-      console.log(res)
     },
     onError: (err) => {
       console.log(err)
@@ -69,7 +80,8 @@ export default function Header() {
   })
 
   return (
-    <nav className={`w-full h-fit fixed z-20 ${pathname == '/admin/login' || pathname == '/user/login' || pathname == '/user/register' || pathname.startsWith('/admin') ? 'hidden' : ''}`}>
+    <nav className={`w-full h-fit fixed z-20 ${pathname == '/admin/login' || pathname == '/user/login'
+      || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') ? 'hidden' : ''}`}>
       <div className="w-full h-fit bg-white border-b flex items-center px-10 py-3 z-50 relative">
         <div className="w-full flex justify-start">
           <div className="w-fit h-16">
@@ -90,8 +102,8 @@ export default function Header() {
           <div className="hidden md:flex space-x-8 text-neutral-500 font-bold">
             <Link href='/' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/' ? 'font-bold border-b text-neutral-600' : ''}`}>Home</Link>
             <Link href='/about' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/about' ? 'font-bold border-b text-neutral-600' : ''}`}>About</Link>
-            <Link href='/' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/services' ? 'font-bold border-b text-neutral-600' : ''}`}>Services</Link>
-            <Link href='/' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/contact' ? 'font-bold border-b text-neutral-600' : ''}`}>Contact</Link>
+            <Link href='/service' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/services' ? 'font-bold border-b text-neutral-600' : ''}`}>Services</Link>
+            <Link href='/contact' className={`hover:border-b hover:text-neutral-600 cursor-pointer ${pathname == '/contact' ? 'font-bold border-b text-neutral-600' : ''}`}>Contact</Link>
           </div>
         </div>
         {!!token ? (
@@ -134,16 +146,20 @@ export default function Header() {
                   <FaTimes />
                 </button>
               </div>
-              <p className="text-xs pb-5">Accounts</p>
+              <p className="text-xs pb-5">Menu</p>
               <div className="flex flex-col gap-5">
-                <MenuCustom navigation="Profile"><FaUserGear /></MenuCustom>
-                <MenuCustom navigation="Settings"><BsGearFill /></MenuCustom>
-                <ButtonCustom disabled={isPending || isDisabledSucces} width="w-full" onClick={handleLogout} btnColor="bg-orange-500 hover:bg-orange-400">Logout</ButtonCustom>
+                <MenuCustom url='/' navigation="Dashboard"><FaDashcube /></MenuCustom>
+                <MenuCustom url='/' navigation="Profile"><FaUserGear /></MenuCustom>
+                <MenuCustom url='/' navigation="About"><IoAlbumsOutline /></MenuCustom>
+                <MenuCustom url='/' navigation="Contact"><LuContact /></MenuCustom>
               </div>
-            </div>
-            <div className="w-full h-1/2 z-20">
-              <div className="w-full flex items-end py-4 justify-center h-full">
-                <p>&copy; 2024. All Right Reserved.</p>
+              <p className="text-xs py-5">Profile</p>
+              <div className="flex flex-col gap-5">
+                <MenuCustom url='/' navigation="Profile"><FaUserGear /></MenuCustom>
+                <MenuCustom url='/' navigation="Settings"><BsGearFill /></MenuCustom>
+                <ConfirmAlert caption="logout" onClick={() => handleLogout()}>
+                  <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
+                </ConfirmAlert>
               </div>
             </div>
           </aside>}
@@ -156,16 +172,7 @@ export default function Header() {
           </span>
         </div>
       </div>
-
-
-
-      {
-        isNavOpen ?
-          <div className="w-full h-44 bg-purple-900 z-30">
-
-          </div>
-          : ''
-      }
+      {isNavOpen ? <div className="w-full h-44 bg-purple-900 z-30"> </div> : ''}
 
     </nav >
   )

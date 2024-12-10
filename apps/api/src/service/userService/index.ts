@@ -31,30 +31,22 @@ export const userLoginService = async ({ email, password }: ILoginBody) => {
 }
 
 /* *register */
-export const userRegisterService = async ({
-    email,
-    password,
-    firstName,
-    lastName,
-    phoneNumber,
-    verifyCode,
-}: IRegisterBody) => {
+export const userRegisterService = async ({ email, firstName, lastName, phoneNumber, verifyCode }: IRegisterBody) => {
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
 
     const findEmailInWorker = await prisma.worker.findFirst({ where: { email } })
     if (findEmailInWorker) throw { msg: 'User sudah terdaftar', status: 400 }
 
+
     const findUser = await prisma.users.findFirst({ where: { email } })
     if (findUser) throw { msg: 'User sudah terdaftar', status: 400 }
-
-    const hashedPassword = await hashPassword(password)
 
     const dataUser = await prisma.users.create({
         data: {
             email,
-            password: hashedPassword,
             firstName,
+            password: await hashPassword('12312312'),
             lastName,
             phoneNumber,
             profilePicture: profilePict,
@@ -66,21 +58,24 @@ export const userRegisterService = async ({
         }
     })
 
-    const setTokenUser = await encodeToken({ id: dataUser?.id, role: dataUser?.email });
+    const setTokenUser = await encodeToken({ id: dataUser?.id, role: dataUser?.email, expiresIn: '1h' })
 
-    const emailHTML = fs.readFileSync('./src/public/sendMail/emailVerification.html', 'utf-8');
-    let compiledHtml: any = await compile(emailHTML);
+    const emailHTML = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
+    let compiledHtml: any = compile(emailHTML)
     compiledHtml = compiledHtml({
-        firstName: firstName,
         email: email,
-        url: `http://localhost:3000/user/verification-user/${verifyCode}-CNC-${setTokenUser}`,
-        verifCode: verifyCode
-    });
+        url: `http://localhost:3000/user/set-password/${setTokenUser}`,
+    })
 
     await transporter.sendMail({
         to: email,
         html: compiledHtml,
-        subject: 'Verification your email!'
+        subject: 'Verification your account!'
+    })
+
+    await prisma.users.update({
+        where: { id: dataUser?.id },
+        data: { forgotPasswordToken: setTokenUser }
     })
 }
 

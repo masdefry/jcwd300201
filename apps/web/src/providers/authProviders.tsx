@@ -49,14 +49,16 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
                     profilePicture: response?.data?.data?.profilePicture,
                     role: response?.data?.data?.role,
                     totalWorker: response?.data?.data?.totalWorker,
-                    productLaundry: response?.data?.data?.productLaundry
+                    productLaundry: response?.data?.data?.productLaundry,
+                    email: response?.data?.data?.email
                 })
             } else {
                 setKeepAuth({
                     firstName: response?.data?.data?.firstName,
                     lastName: response?.data?.data?.lastName,
                     profilePicture: response?.data?.data?.profilePicture,
-                    role: response?.data?.data?.role
+                    role: response?.data?.data?.role,
+                    email: response?.data?.data?.email
                 })
             }
 
