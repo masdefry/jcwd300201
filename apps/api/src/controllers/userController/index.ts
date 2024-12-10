@@ -242,6 +242,9 @@ export const getAllUserAddresses = async (req: Request, res: Response, next: Nex
       where: {
         usersId: userId,
       },
+      orderBy: {
+        isMain: 'desc',
+      },
     });
 
     if (addresses.length === 0) throw { msg: 'User belum menambahkan alamat', status: 404 }

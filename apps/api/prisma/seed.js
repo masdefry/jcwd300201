@@ -520,7 +520,7 @@ const dataUserAddress = [
         addressName: "Kantor",
         addressDetail: "Jl. Makmur no.23",
         city: "Jakarta",
-        isMain: true,
+        isMain: false,
         province: "Banten",
         country: "Indonesia",
         zipCode: "15123",
@@ -564,9 +564,11 @@ async function main() {
         skipDuplicates: true,
     });
 
-    const userPromises = dataUser.map((user) =>
-        prisma.users.create({
-            data: {
+    const userPromises = dataUser.map(async (user) => {
+        return prisma.users.upsert({
+            where: { email: user.email },
+            update: {}, // Leave empty to skip updates if user exists
+            create: {
                 email: user.email,
                 role: 'USER',
                 password: hashedPassword,
@@ -580,8 +582,8 @@ async function main() {
                 forgotPasswordToken: user.forgotPasswordToken,
                 isDiscountUsed: user.isDiscountUsed,
             },
-        })
-    );
+        });
+    });
 
     const createdUsers = await Promise.all(userPromises);
 
