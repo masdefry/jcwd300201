@@ -28,7 +28,7 @@ export const adminLoginService = async ({ email, password }: ILoginBody) => {
     const match = await comparePassword(password, findAdmin?.password)
     if (!match) throw { msg: 'Password anda salah!', status: 401 }
 
-    const token = await encodeToken({ id: findAdmin?.id, role: findAdmin?.workerRole })
+    const token = await encodeToken({ id: findAdmin?.id, role: findAdmin?.workerRole, storesId: findAdmin?.storesId as string })
 
     return { token, findAdmin }
 }
@@ -96,7 +96,7 @@ export const createWorkerService = async ({
             })
         }
 
-        token = await encodeToken({ id: dataWorker?.id, role: dataWorker?.workerRole })
+        token = await encodeToken({ id: dataWorker?.id, role: dataWorker?.workerRole, storesId })
 
         await tx.worker.update({
             where: { id: dataWorker?.id },
@@ -104,14 +104,14 @@ export const createWorkerService = async ({
                 changePasswordToken: token
             }
         })
-        
+
         const emailHtml = fs.readFileSync('./src/public/sendMail/emailChangePasswordWorker.html', 'utf-8')
         let compiledHtml: any = compile(emailHtml)
         compiledHtml = compiledHtml({
             email: email,
             url: `http://localhost:3000/worker/reset-password/${token}`
         })
-    
+
         transporter.sendMail({
             to: email,
             html: compiledHtml,

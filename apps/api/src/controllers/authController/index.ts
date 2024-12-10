@@ -35,6 +35,7 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
                 profilePicture: findUser?.profilePicture,
                 isDiscountUsed: findUser?.isDiscountUsed
             } : authorizationRole == 'SUPER_ADMIN' ? {
+                email: findAdmin?.email,
                 role: findAdmin?.workerRole,
                 firstName: findAdmin?.firstName,
                 lastName: findAdmin?.lastName,

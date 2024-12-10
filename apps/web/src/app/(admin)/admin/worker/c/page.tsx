@@ -1,6 +1,7 @@
 'use client'
 
 import ButtonCustom from "@/components/core/button";
+import { toast } from "@/components/hooks/use-toast";
 import { createUserValidation } from "@/features/adminCreateUser";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
@@ -40,9 +41,18 @@ export default function Page() {
             })
         },
         onSuccess: (res) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+
             console.log(res)
         },
-        onError: (err) => {
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
             console.log(err)
         }
     })

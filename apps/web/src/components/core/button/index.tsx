@@ -9,6 +9,7 @@ interface IButtonProps {
     type?: 'button' | 'submit' | 'reset'
     children: ReactNode
     rounded?: string
+    py?: string
 }
 
 export default function ButtonCustom({
@@ -18,12 +19,13 @@ export default function ButtonCustom({
     children,
     disabled,
     onClick,
+    py = 'py-2',
     rounded = 'rounded-lg',
     type }: IButtonProps) {
     return (
         <button onClick={onClick} className={`${width} 
         transform active:scale-90 active:ring-4 active:ring-white active:ring-opacity-30
-        relative overflow-hidden group transition-all duration-300 px-5 py-2 flex items-center text-center justify-center ${btnColor} ${rounded} ${txtColor}`} disabled={disabled} type={type}>
+        relative overflow-hidden group transition-all duration-300 px-5 ${py} flex items-center text-center justify-center ${btnColor} ${rounded} ${txtColor}`} disabled={disabled} type={type}>
             {children}
             <span className="absolute inset-0 w-full h-full bg-white opacity-0 transform scale-0 group-hover:opacity-30 group-hover:scale-110 transition-all duration-300 rounded-full"></span>
         </button>
