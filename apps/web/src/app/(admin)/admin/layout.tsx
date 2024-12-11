@@ -8,6 +8,7 @@ import { ReactNode, useState } from "react";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { FaArrowRight, FaCartArrowDown, FaDashcube, FaHouseDamage, FaIceCream, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { RiProfileFill } from "react-icons/ri";
+import { MdWorkHistory } from "react-icons/md";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 
@@ -47,9 +48,9 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <Link href='/admin/product' className={`w-full flex ${pathname.startsWith('/admin/product') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaCartArrowDown /> Produk Laundry</Link>
                     <Link href='/admin/worker' className={`w-full flex ${pathname.startsWith('/admin/worker') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaMoneyBillWave /> Data Pekerja</Link>
-                    <Link href='/' className={`w-full flex ${pathname == '/' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaHouseDamage /> Beranda</Link>
+                        <MdWorkHistory /> Data Pekerja</Link>
+                    <Link href='/admin/order' className={`w-full flex ${pathname.startsWith('/admin/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaMoneyBillWave /> Order List</Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">

@@ -33,3 +33,8 @@ export const setPasswordValidation = [
     body(['password']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('password').isString().escape(),
 ]
+
+export const createProductLaundryValidation = [
+    body(['itemName']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('itemName').isString().escape(),
+]
