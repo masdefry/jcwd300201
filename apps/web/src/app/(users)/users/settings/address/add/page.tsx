@@ -105,7 +105,7 @@ export default function AddAddress() {
 
     const { mutate: addUserAddress, isPending } = useMutation({
         mutationFn: async ({ addressName, addressDetail, province, city, zipCode, latitude, longitude }: IAddressDetail) => {
-            return await instance.post('/user/add-address', {
+            return await instance.post('/user/address', {
                 addressName, addressDetail, province, city, zipCode, latitude, longitude,
             },
                 { headers: { Authorization: `Bearer ${token}` } })

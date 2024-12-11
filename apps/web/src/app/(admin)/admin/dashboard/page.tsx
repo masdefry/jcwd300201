@@ -8,6 +8,7 @@ import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import { BsCalendar2Range } from "react-icons/bs";
+import ChartComponents from "@/components/core/chart";
 
 const iconButtons = [
     { icon: FaStore, label: "Data Outlet" },
@@ -103,13 +104,16 @@ export default function Page() {
 
             {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
-                <section className="w-full h-full rounded-xl flex gap-2">
+                <section className="w-full h-1/2 rounded-xl flex gap-2">
                     <div className="w-full rounded-xl h-full flex items-center bg-orange-500 p-5">
                         <div className="w-full h-fit">
                             <div className="w-fit h-fit pb-5">
                                 <h1 className='font-bold border-b text-xl text-white pb-2'>Welcome, {name && name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}!</h1>
                             </div>
-                            <p className="text-white">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
+                            <div className="w-full">
+                                <p className="text-white">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
+                                <p className="text-white py-2">{isDayArr[isDay]} {isDate || '00/00/0000'}</p>
+                            </div>
                         </div>
                         <div className="w-full h-full items-center flex justify-end">
                             <Image
@@ -148,15 +152,8 @@ export default function Page() {
 
                                 <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-700 text-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-300">
                                     <div className="flex flex-col gap-4 justify-center items-center w-full">
-                                        <div className="flex gap-3 items-center text-xl font-semibold">
-                                            <span className="text-white bg-blue-700 rounded-full p-2">
-                                                <BsCalendar2Range />
-                                            </span>
-                                            <h1 className="tracking-wide">{isDate || '00/00/0000'}</h1>
-                                        </div>
-
                                         <h1 className="font-bold text-xl uppercase tracking-wide bg-blue-600 px-4 py-2 rounded-md shadow-md">
-                                            {isDayArr[isDay]}
+                                            Total Order
                                         </h1>
                                     </div>
                                 </div>
@@ -169,7 +166,9 @@ export default function Page() {
                         </div>
                     </div>
                 </section>
-                <section className="w-full h-full bg-white rounded-xl"></section>
+                <section className="w-full h-1/2 bg-white rounded-xl p-5">
+                    <ChartComponents />
+                </section>
             </main>
         </>
     );
