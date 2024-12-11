@@ -47,6 +47,7 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
                 firstName: findAdmin?.firstName,
                 lastName: findAdmin?.lastName,
                 profilePicture: findAdmin?.profilePicture,
+                email: findAdmin?.email
             } : {}
         })
 

@@ -4,6 +4,7 @@ export interface ILoginBody {
 }
 
 export interface IRegisterBody {
+    id: string,
     email: string,
     firstName: string,
     lastName: string,

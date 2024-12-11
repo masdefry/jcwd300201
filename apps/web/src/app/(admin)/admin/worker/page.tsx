@@ -6,7 +6,6 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import HeaderMobile from "@/components/core/headerMobile"
 import { FaArrowLeft } from 'react-icons/fa';
 import Link from "next/link"
-import * as React from "react"
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
@@ -18,22 +17,27 @@ import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
 import { useDebouncedCallback } from "use-debounce";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useEffect, useState } from "react";
 
 export default function Page() {
     const params = useSearchParams()
     const currentParams = new URLSearchParams(params)
-    const [currentPage, setCurrentPage] = React.useState<number>(1)
-    const [entriesPerPage, setEntriesPerPage] = React.useState<number>(5)
-    const [searchWorker, setSearchWorker] = React.useState<string>(params.get('search') || '')
+    const [currentPage, setCurrentPage] = useState<number>(1)
+    const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
+    const [searchWorker, setSearchWorker] = useState<string>(params.get('search') || '')
+    const [sortWorker, setSortWorker] = useState<string>(params.get('sort') || '')
     const router = useRouter()
     const pathname = usePathname()
 
-    const { data: getDataWorker, refetch } = useQuery({
-        queryKey: ['get-data-worker', searchWorker],
+    const { data: getDataWorker, refetch, isFetching } = useQuery({
+        queryKey: ['get-data-worker', searchWorker, sortWorker],
         queryFn: async () => {
             const response = await instance.get('/admin/worker', {
                 params: {
-                    search: searchWorker
+                    search: searchWorker,
+                    sort: sortWorker,
+                    page: currentPage,
+                    limit: entriesPerPage
                 }
             })
 
@@ -41,30 +45,39 @@ export default function Page() {
         }
     })
 
-    const dataWorker = getDataWorker?.slice((currentPage - 1) * entriesPerPage, currentPage * entriesPerPage)
-    const totalPages = Math.ceil(getDataWorker?.length / entriesPerPage as number)
+    const dataWorker = getDataWorker?.findWorker
+    const totalPages = getDataWorker?.totalPages
 
     const handlePageChange = (page: any) => {
         setCurrentPage(page)
     }
 
-
     const debounce = useDebouncedCallback((value) => {
         setSearchWorker(value)
     }, 1000)
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (searchWorker) {
             currentParams.set('search', searchWorker)
         } else {
             currentParams.delete('search')
         }
 
+        if (sortWorker) {
+            currentParams.set('sort', sortWorker)
+        } else {
+            currentParams.delete('sort')
+        }
+
+        if(totalPages === undefined || currentPage > totalPages) {
+            setCurrentPage(1)
+        }
+
         router.push(`${pathname}?${currentParams.toString()}`)
         router.refresh()
         refetch()
 
-    }, [params, searchWorker, refetch, pathname])
+    }, [params, searchWorker, sortWorker, refetch, pathname, currentPage, totalPages, entriesPerPage])
 
     return (
         <>
@@ -238,17 +251,17 @@ export default function Page() {
                             <h1 className="font-bold text-white">Data Pekerja</h1>
                         </div>
 
-                        {/*  */}
                         <div className="w-full h-fit flex">
                             <div className="w-1/2 h-fit flex items-center">
-                                <select name="searchWorker" id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                                <select name="searchWorker" value={sortWorker} onChange={(e) => setSortWorker(e.target.value)} id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
                                     <option value="" disabled>-- Pilih Opsi --</option>
-                                    <option value="SUPER_ADMIN">Sort berdasarkan SUPER_ADMIN</option>
-                                    <option value="OUTLET_ADMIN">Sort berdasarkan OUTLET_ADMIN</option>
-                                    <option value="WASHING_WORKER">Sort berdasarkan WASHING_WORKER</option>
-                                    <option value="IRONING_WORKER">Sort berdasarkan IRONING_WORKER</option>
-                                    <option value="PACKING_WORKER">Sort berdasarkan PACKING_WORKER</option>
-                                    <option value="DRIVER">Sort berdasarkan DRIVER</option>
+                                    <option value="super_admin">Sort berdasarkan SUPER_ADMIN</option>
+                                    <option value="outlet_admin">Sort berdasarkan OUTLET_ADMIN</option>
+                                    <option value="washing_worker">Sort berdasarkan WASHING_WORKER</option>
+                                    <option value="ironing_worker">Sort berdasarkan IRONING_WORKER</option>
+                                    <option value="packing_worker">Sort berdasarkan PACKING_WORKER</option>
+                                    <option value="driver">Sort berdasarkan DRIVER</option>
+                                    <option value="">Reset</option>
                                 </select>
                             </div>
                             <div className="w-1/2 h-fit flex gap-2 justify-end">
@@ -271,36 +284,29 @@ export default function Page() {
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Email</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Phone Number</th>
-                                        <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Profile Picture</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Worker Role</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {dataWorker?.length > 0 ? (
-                                        dataWorker?.map((worker: any, i: number) => (
-                                            <tr className="hover:bg-gray-100 border-b" key={i}>
-                                                <td className="py-1 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
-                                                <td className="py-1 px-6 text-sm text-gray-600 break-words">{worker?.firstName}</td>
-                                                <td className="py-1 px-6 text-sm text-gray-600 break-words">{worker?.email}</td>
-                                                <td className="py-1 px-6 text-sm text-gray-600 break-words">{worker?.phoneNumber}</td>
-                                                <td className="py-1 px-6 text-sm text-gray-600">
-                                                    <Image
-                                                        width={500}
-                                                        height={500}
-                                                        loading="lazy"
-                                                        src={worker?.profilePicture}
-                                                        alt="Profile"
-                                                        className="h-12 w-12 rounded-full object-cover"
-                                                    />
-                                                </td>
-                                                <td className="py-1 px-6 text-sm text-gray-600 break-words">{worker?.workerRole}</td>
-                                                <td className="py-1 px-6 text-sm text-gray-600 break-words">{worker?.workerRole}</td>
-                                            </tr>
-                                        ))
+                                        dataWorker?.map((worker: any, i: number) => {
+                                            return (
+                                                <tr className="hover:bg-gray-100 border-b" key={worker?.id || i}>
+                                                    <td className="py-4 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
+                                                    <td className="py-4 px-6 text-sm text-gray-600 break-words">{worker?.firstName}</td>
+                                                    <td className="py-4 px-6 text-sm text-gray-600 break-words">{worker?.email}</td>
+                                                    <td className="py-4 px-6 text-sm text-gray-600 break-words">{worker?.phoneNumber}</td>
+                                                    <td className="py-4 px-6 text-sm text-gray-600 break-words">{worker?.workerRole}</td>
+                                                    <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
+                                                        <Link href={`/admin/worker/detail/${worker?.id}`}>View</Link>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
                                     ) : (
                                         <tr>
-                                            <td colSpan={6} className="text-center py-20 font-bold">Data tidak tersedia</td>
+                                            <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? 'Mohon tunggu...' : 'Data tidak tersedia'}</td>
                                         </tr>
                                     )}
                                 </tbody>
@@ -311,7 +317,7 @@ export default function Page() {
                                 </div>
                                 <div className="flex gap-2">
                                     <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500 disabled:bg-neutral-400" disabled={currentPage == 1} onClick={() => handlePageChange(currentPage - 1)}>Sebelumnya</ButtonCustom>
-                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500 disabled:bg-neutral-400" disabled={currentPage == totalPages} onClick={() => handlePageChange(currentPage + 1)}>Selanjutnya</ButtonCustom>
+                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500 disabled:bg-neutral-400" disabled={currentPage == totalPages || currentPage > totalPages} onClick={() => handlePageChange(currentPage + 1)}>Selanjutnya</ButtonCustom>
                                 </div>
                             </div>
                         </div>

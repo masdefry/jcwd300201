@@ -7,7 +7,6 @@ import { MdOutlineIron } from "react-icons/md";
 import { CgSmartHomeWashMachine } from "react-icons/cg";
 import { FaMotorcycle } from "react-icons/fa6";
 import { IoLocationOutline } from "react-icons/io5";
-// import RealTimeClock from "@/features/worker/components/realTimeClock";
 import { BsPerson } from "react-icons/bs";
 
 const iconButtons = [
@@ -21,35 +20,50 @@ export default function Page() {
     return (
         <>
             <main className="w-full h-fit">
-                <div className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
+                <section className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
                     <section>
-                        <Image src={'/images/New Project.webp'} alt="header"
-                            height={500} width={500} />
+                        <Image src={'/images/headerlogouser.jpg'} alt="header"
+                            height={500} width={500} className="w-full" />
                     </section>
-                    {/* Header Image */}
 
-                    {/* Location Section */}
-                    <section className="border border-gray-400 rounded-t-lg p-3 mt-4 mx-8">
-                        <div className="flex justify-center items-center">
-                            <div className="font-semibold text-gray-600 text-base">Halo, -Nama-</div>
+                    <section className="border border-gray-400 rounded-t-lg p-4 mt-4 mx-8">
+                        <div className="flex justify-between items-center">
+                            <div className="font-semibold text-gray-600">Outlet : CnC Jakarta</div>
+
                         </div>
                     </section>
 
-                    {/* Orders Section */}
-                    <section className="border border-gray-400 bg-sky-200 rounded-b-lg text-base p-4 mx-8 text-gray-700">
-                        <div className="flex justify-center items-center">
+                    <section className="border border-gray-400 bg-orange-300 rounded-b-lg text-sm p-4 mx-8 text-gray-700">
+                        <div className="flex justify-between items-stretch">
+                            <div className="text-left flex-1">
+                                <div>Pendapatan</div>
+                                <div className="font-semibold">hari ini</div>
+                                <div className="text-base">Rp0</div>
+                            </div>
 
-                            <IoLocationOutline size={30} /> Lokasi Kerja
+                            <div className="w-[1px] bg-gray-400 mx-4"></div>
 
+                            <div className="text-right flex-1">
+                                <div>Pendapatan</div>
+                                <div className="font-semibold">bulan ini</div>
+                                <div className="text-base">Rp0</div>
+                            </div>
                         </div>
-                        <div className="border-t-2 border-gray-400 mt-3 pt-3 flex justify-center">
-                            {/* <RealTimeClock/> */}
+
+                        <div className="border-t-2 border-gray-400 mt-4 pt-4 flex items-center">
+                            <div className="flex-1 flex-col text-center text-lg font-bold">
+                                <div className="text-sm font-normal">Pesanan (bulan ini)</div>
+                                <span>0</span>
+                                <span className="text-sm">order</span>
+                            </div>
+                            <div className="flex-1 flex-col text-center text-lg font-bold">
+                                <div className="text-sm font-normal">Berat (bulan ini)</div>
+                                <span>0</span>
+                                <span className="text-sm">kg</span>
+                            </div>
                         </div>
                     </section>
 
-                    <section className="flex justify-center font-bold mt-3 ">
-                        Silahkan pilih pekerjaan anda :
-                    </section>
                     <section className="bg-white mx-8 grid grid-cols-2 gap-y-6 justify-around my-6">
                         {iconButtons.map((item, index) => (
                             <button key={index} className="flex flex-col items-center space-y-1">
@@ -59,7 +73,6 @@ export default function Page() {
                         ))}
                     </section>
 
-                    {/* Help Section */}
                     <section className="bg-green-100 p-4 mx-8 mb-4 rounded-lg">
                         <div className="flex items-center space-x-2">
                             <FaWhatsapp className="text-gray-600" size={24} />
@@ -69,7 +82,7 @@ export default function Page() {
                             Chat kami di WhatsApp apabila terdapat error.
                         </div>
                     </section>
-                </div>
+                </section>
             </main>
 
             {/* Web sesi */}
@@ -81,12 +94,12 @@ export default function Page() {
                         <div className="flex flex-col w-full h-full gap-2">
                             <div className="flex w-full h-full gap-2">
                                 <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg p-3">
-                                   
+
                                 </div>
 
                                 <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-700 text-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-300">
                                     <div className="flex flex-col gap-4 justify-center items-center w-full">
-                                       
+
                                     </div>
                                 </div>
 

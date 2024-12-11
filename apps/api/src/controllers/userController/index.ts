@@ -14,10 +14,10 @@ export const userRegister = async (req: Request, res: Response, next: NextFuncti
   try {
     const { email, firstName, lastName, phoneNumber } = req?.body
     const verifyCode = nanoid(6)
+    const dateNow = Date.now() * Math.random()
+    const id = `CUST${Math.floor(dateNow)}${firstName.toLowerCase()}`
 
-    console.log(email)
-
-    await userRegisterService({ email, firstName, lastName, phoneNumber, verifyCode })
+    await userRegisterService({ id, email, firstName, lastName, phoneNumber, verifyCode })
 
     res?.status(200).json({
       error: false,
