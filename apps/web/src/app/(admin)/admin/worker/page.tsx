@@ -1,7 +1,7 @@
 'use client'
 
-import { Card, CardContent, CardFooter } from "@/components/ui/card"
-import { FaEdit, FaSearch, FaTrashAlt } from 'react-icons/fa';
+import { Card, CardContent } from "@/components/ui/card"
+import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import HeaderMobile from "@/components/core/headerMobile"
 import { FaArrowLeft } from 'react-icons/fa';
@@ -17,7 +17,8 @@ import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
 import { useDebouncedCallback } from "use-debounce";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import SearchInputCustom from "@/components/core/searchBar";
 
 export default function Page() {
     const params = useSearchParams()
@@ -69,7 +70,7 @@ export default function Page() {
             currentParams.delete('sort')
         }
 
-        if(totalPages === undefined || currentPage > totalPages) {
+        if (totalPages === undefined || currentPage > totalPages) {
             setCurrentPage(1)
         }
 
@@ -140,7 +141,6 @@ export default function Page() {
                                                 </div>
                                             </section>
                                         </CardContent>
-
                                     </Card>
                                 </TabsContent>
                                 <TabsContent value="pekerja">
@@ -265,10 +265,7 @@ export default function Page() {
                                 </select>
                             </div>
                             <div className="w-1/2 h-fit flex gap-2 justify-end">
-                                <div className="relative flex">
-                                    <input onChange={(e) => debounce(e.target.value)} type="text" className="px-3 py-2 border rounded-2xl text-sm focus:outline-none focus:outline-orange-500" placeholder="Cari pekerja.." />
-                                    <span className='absolute top-3 right-5 text-neutral-500'><FaSearch /> </span>
-                                </div>
+                                <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
                                 <Link href='/admin/worker/c'>
                                     <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 disabled:bg-neutral-400"><FaPlus /> Buat Data Pekerja</ButtonCustom>
                                 </Link>
