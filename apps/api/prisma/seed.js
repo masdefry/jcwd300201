@@ -527,6 +527,28 @@ const dataUserAddress = [
         latitude: -6.2088,
         longitude: 106.8466,
     },
+    {
+        addressName: "Rumah",
+        addressDetail: "Jl. Kebangsaan no.23",
+        city: "Tangerang",
+        isMain: true,
+        province: "Banten",
+        country: "Indonesia",
+        zipCode: "15123",
+        latitude: -6.23348808466673,
+        longitude: 106.6331260189041,
+    },
+    {
+        addressName: "Kantor",
+        addressDetail: "Jl. Makmur no.23",
+        city: "Jakarta",
+        isMain: false,
+        province: "Banten",
+        country: "Indonesia",
+        zipCode: "15123",
+        latitude: -6.2088,
+        longitude: 106.8466,
+    },
 ]
 
 async function main() {

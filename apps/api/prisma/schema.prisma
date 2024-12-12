@@ -91,7 +91,7 @@ model Worker {
   changePasswordToken String? @db.Text
   storesId            String?
 
-  orderStatus OrderStatus[]
+  orderstatus OrderStatus[]
 
   Stores Stores? @relation(fields: [storesId], references: [id])
 
@@ -112,7 +112,6 @@ model Order {
   isPaid       Boolean
   notes        String?
 
-  driversId     String?
   storesId      String?
   usersId       String?
   orderTypeId   Int?
@@ -121,14 +120,14 @@ model Order {
   orderStatus OrderStatus[]
   orderDetail OrderDetail[]
 
-  Stores    Stores?    @relation(fields: [storesId], references: [id])
-  Users     Users?     @relation(fields: [usersId], references: [id])
-  OrderType OrderType? @relation(fields: [orderTypeId], references: [id])
-
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
-  deletedAt   DateTime?
+  Stores      Stores?      @relation(fields: [storesId], references: [id])
+  Users       Users?       @relation(fields: [usersId], references: [id])
+  OrderType   OrderType?   @relation(fields: [orderTypeId], references: [id])
   UserAddress UserAddress? @relation(fields: [userAddressId], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
 
   @@map("order")
 }
