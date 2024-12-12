@@ -34,7 +34,7 @@ export default function Page() {
     const { mutate: handleCreateUser, isPending } = useMutation({
         mutationFn: async ({ email, firstName, lastName, phoneNumber, workerRole, identityNumber, storesId, motorcycleType, plateNumber
         }: ICreateUserBody) => {
-            return await instance.post('/admin/c-worker', { email, firstName, lastName, phoneNumber, workerRole, identityNumber, storesId, motorcycleType, plateNumber }, {
+            return await instance.post('/admin/worker', { email, firstName, lastName, phoneNumber, workerRole, identityNumber, storesId, motorcycleType, plateNumber }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

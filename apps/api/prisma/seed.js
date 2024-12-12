@@ -592,7 +592,7 @@ async function main() {
             update: {}, // Leave empty to skip updates if user exists
             create: {
                 email: user.email,
-                role: 'USER',
+                role: 'CUSTOMER',
                 password: hashedPassword,
                 firstName: user.firstName,
                 lastName: user.lastName,

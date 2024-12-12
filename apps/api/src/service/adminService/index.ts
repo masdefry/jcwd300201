@@ -22,7 +22,7 @@ export const adminLoginService = async ({ email, password }: ILoginBody) => {
     const findAdmin = await prisma.worker.findFirst({
         where: { email }
     })
-
+    console.log(findAdmin, '<<<<<<')
     if (!findAdmin) throw { msg: 'User admin tidak tersedia', status: 404 }
 
     const match = await comparePassword(password, findAdmin?.password)
@@ -35,6 +35,7 @@ export const adminLoginService = async ({ email, password }: ILoginBody) => {
 
 /* *admin create worker */
 export const createWorkerService = async ({
+    id,
     email,
     firstName,
     lastName,
@@ -49,10 +50,17 @@ export const createWorkerService = async ({
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email yang benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap memasukan format angka pada nomor telepon anda', status: 400 }
 
-    const findWorker = await prisma.worker.findFirst({ where: { email } })
+    const findWorker = await prisma.worker.findFirst({
+        where: {
+            OR: [
+                { email },
+                { identityNumber }
+            ]
+        }
+    })
     const findEmailInUser = await prisma.users.findFirst({ where: { email } })
 
-    if (findWorker) throw { msg: 'Email sudah terpakai!', status: 401 }
+    if (findWorker) throw { msg: 'Email atau nomor identitas sudah terpakai!', status: 401 }
     if (findEmailInUser) throw { msg: 'Email sudah terpakai!', status: 401 }
 
     await prisma.$transaction(async (tx) => {
@@ -62,6 +70,7 @@ export const createWorkerService = async ({
         if (workerRole != 'DRIVER') {
             dataWorker = await tx.worker.create({
                 data: {
+                    id,
                     email,
                     password: await hashPassword('worker123'),
                     firstName,
@@ -81,6 +90,7 @@ export const createWorkerService = async ({
 
             dataWorker = await tx.worker.create({
                 data: {
+                    id,
                     email,
                     password: await hashPassword('worker123'),
                     firstName,
@@ -105,7 +115,7 @@ export const createWorkerService = async ({
             }
         })
 
-        const emailHtml = fs.readFileSync('./src/public/sendMail/emailChangePasswordWorker.html', 'utf-8')
+        const emailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
         let compiledHtml: any = compile(emailHtml)
         compiledHtml = compiledHtml({
             email: email,

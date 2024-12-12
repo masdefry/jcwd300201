@@ -6,6 +6,7 @@ export interface ILoginBody {
 }
 
 export interface ICreateWorkerService {
+    id: string,
     email: string,
     firstName: string,
     lastName: string,

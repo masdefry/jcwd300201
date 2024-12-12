@@ -19,8 +19,9 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
 import { useToast } from "@/components/hooks/use-toast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import React, { useEffect } from 'react';
+import { Interface } from "readline";
 
 
 const validationSchema = Yup.object().shape({
@@ -42,14 +43,51 @@ const validationSchema = Yup.object().shape({
         .min(1, "At least one item is required"),
 });
 
+interface ICreateOrder {
+    id: string,
+    values: FormData
+}
+type Iitem = {
+    id: number,
+    itemName:string,
+    itemNameId: number; 
+    quantity: number;  
+    weight: number;    
+};
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
-    
+
     const { slug } = React.use(params);
 
     const token = authStore((state) => state.token);
+    const email = authStore((state) => state.email);
     console.log(token)
     const { toast } = useToast();
+
+    const { mutate: handleCreateNotaOrder, isPending } = useMutation({
+        mutationFn: async ({ email, totalWeight, totalPrice, items }: any) => {
+            return await instance.post(`/worker/order/${slug}`, { email, totalWeight, totalPrice, items }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res: any) => {
+            console.log(res)
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+        },
+        onError: (err: any) => {
+            console.log(err)
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+        }
+    })
+
 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],
@@ -100,29 +138,27 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     totalWeight: 0
                                 }}
                                 onSubmit={(values: any) => {
-                                    console.log('Submitting Form', values);
-
-                                    const fd = new FormData();
-                                    fd.append('totalPrice', values.totalPrice.toString());
-                                    fd.append('totalWeight', values.totalWeight.toString());
-
                                     const itemOrder = values.items.map((item: any) => ({
                                         itemNameId: item.itemName,
                                         quantity: item.quantity,
                                         weight: item.weight,
                                     }));
 
-                                    fd.append('items', JSON.stringify(itemOrder));
-                                    // console.log('FormData Submitted:', fd);
+                                   
+                                    handleCreateNotaOrder({
+                                        email: email,
+                                        totalWeight: values.totalWeight,
+                                        totalPrice: values.totalPrice,
+                                        items: values.items
+                                    })
                                 }}
                             >
                                 {({ values, setFieldValue }) => {
-                                    // Function to calculate totals
                                     const calculateTotals = () => {
                                         let totalWeight = 0;
                                         let totalPrice = 0;
 
-                                        values.items.forEach(item => {
+                                        values.items.forEach((item:Iitem) => {
                                             totalWeight += item.weight;
                                         });
 
@@ -143,6 +179,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     useEffect(() => {
                                         calculateTotals()
                                     }, [values.items]);
+
                                     return (
                                         <Form>
                                             {/* Customer Information */}
@@ -186,7 +223,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                         className="border border-gray-500 rounded-md p-2"
                                                     >
                                                         <option value="">Select Item</option>
-                                                        {dataItemName.map((item, index) => (
+                                                        {dataItemName?.map((item:Iitem, index:number) => (
                                                             <option key={index} value={item?.id}>
                                                                 {item?.itemName}
                                                             </option>
@@ -215,7 +252,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                         type="button"
                                                         onClick={() => {
                                                             const existingItemIndex = values.items.findIndex(
-                                                                item => item.itemName === values.itemName
+                                                                (item:Iitem) => item.itemName === values.itemName
                                                             );
 
                                                             if (existingItemIndex !== -1) {
@@ -249,8 +286,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
                                             {/* Display Items */}
                                             <div className="mt-4">
-                                                {values.items.map((item, index) => {
-                                                    const selectedItem = dataItemName.find(i => Number(i.id) === Number(item.itemName));
+                                                {values.items.map((item:Iitem, index:number) => {
+                                                    const selectedItem = dataItemName.find((i:Iitem) => Number(i.id) === Number(item.itemName));
                                                     return (
                                                         <div key={index} className="bg-blue-50 p-4 mb-2 rounded-lg">
                                                             <div className="flex justify-between items-start">
@@ -265,7 +302,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => {
-                                                                        const updatedItems = values.items.filter((_, i) => i !== index);
+                                                                        const updatedItems = values.items.filter((_:any, i:number) => i !== index);
                                                                         setFieldValue("items", updatedItems);
                                                                         calculateTotals();
                                                                     }}

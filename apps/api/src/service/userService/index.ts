@@ -31,7 +31,7 @@ export const userLoginService = async ({ email, password }: ILoginBody) => {
 }
 
 /* *register */
-export const userRegisterService = async ({ email, firstName, lastName, phoneNumber, verifyCode }: IRegisterBody) => {
+export const userRegisterService = async ({ id, email, firstName, lastName, phoneNumber, verifyCode }: IRegisterBody) => {
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
 
@@ -44,6 +44,7 @@ export const userRegisterService = async ({ email, firstName, lastName, phoneNum
 
     const dataUser = await prisma.users.create({
         data: {
+            id,
             email,
             firstName,
             password: await hashPassword('12312312'),

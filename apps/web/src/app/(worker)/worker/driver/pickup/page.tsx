@@ -5,9 +5,6 @@ import Link from "next/link"
 import { FaArrowLeft } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import LocationAndSearch from "@/features/workerData/components/locationAndSearch"
-import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import ProcessAndSortDate from "@/features/order/components/processAndSortDate"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
 import authStore from "@/zustand/authstore"
@@ -25,18 +22,6 @@ import {
 } from "@/components/ui/select"
 import { FaSearch } from 'react-icons/fa';
 import { FaWhatsapp } from "react-icons/fa";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger
-} from "@/components/ui/alert-dialog"
-import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 
@@ -137,7 +122,6 @@ export default function DriverPickUp() {
             <main className="w-full h-fit">
                 <section className="w-full h-fit">
                     <HeaderMobile />
-
                     <main className="w-full">
                         <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
                             <div className="mx-8 flex gap-2 items-center font-bold w-full">
@@ -147,10 +131,10 @@ export default function DriverPickUp() {
                         <div className="py-28 mx-4 space-y-4">
                             <Tabs defaultValue={activeTab} className="fit">
                                 <TabsList className="grid w-full grid-cols-4">
-                                    <TabsTrigger value="semua" onClick={() => setActiveTab("semua")} >Semua</TabsTrigger>
-                                    <TabsTrigger value="belumPickup" onClick={() => setActiveTab("belumPickup")} >Belum PickUp</TabsTrigger>
-                                    <TabsTrigger value="proses" onClick={() => setActiveTab("proses")}>Proses</TabsTrigger>
-                                    <TabsTrigger value="selesai" onClick={() => setActiveTab("selesai")}>Selesai</TabsTrigger>
+                                    <TabsTrigger value="semua" onClick={() => { setActiveTab("semua"); setPage(1) }} >Semua</TabsTrigger>
+                                    <TabsTrigger value="belumPickup" onClick={() => { setActiveTab("belumPickup"); setPage(1) }} >Belum PickUp</TabsTrigger>
+                                    <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }}>Proses</TabsTrigger>
+                                    <TabsTrigger value="selesai" onClick={() => { setActiveTab("selesai"); setPage(1) }}>Selesai</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
@@ -188,12 +172,20 @@ export default function DriverPickUp() {
                                                 className="flex justify-between items-center border-b py-4"
                                             >
 
-                                                <ConfirmAlert caption="melakukan pengambilan laundry pada order ini" onClick={() => handleProcessOrder(order?.id)}>
+                                                <ConfirmAlert
+                                                    colorConfirmation="green"
+                                                    caption={
+                                                    order.latestStatus === 'AWAITING_DRIVER_PICKUP'
+                                                        ? 'melakukan pengambilan laundry pada order ini'
+                                                        : order.latestStatus === 'DRIVER_TO_OUTLET'
+                                                            ? 'menyelesaikan pengiriman laundry pada order ini'
+                                                            : ''
+                                                }
+                                                    onClick={() => handleProcessOrder(order?.id)}>
                                                     <div className="flex items-center">
                                                         <div className="ml-2">
                                                             <h2 className="font-medium text-gray-900">
                                                                 {order.userFirstName} {order.userLastName}
-                                                                {order.id}
                                                             </h2>
                                                             <p className="text-xs text-gray-500">
                                                                 {order.latestStatus === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Pickup' :
