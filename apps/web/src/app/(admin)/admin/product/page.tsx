@@ -73,8 +73,8 @@ export default function Page() {
             console.log(err)
         }
     })
-    
-    const { mutate: handleDeleteItem } = useMutation({
+
+    const { mutate: handleDeleteItem, isPending: isPendingDelete } = useMutation({
         mutationFn: async (id: number) => {
             return await instance.delete(`/admin/worker/item/${id}`, {
                 headers: {
@@ -99,6 +99,35 @@ export default function Page() {
             console.log(err)
         }
     })
+
+
+    const { mutate: handleUpdateItem, isPending: isPendingUpdate } = useMutation({
+        mutationFn: async ({ id, itemName }: { id: string, itemName: string }) => {
+            return await instance.patch(`/admin/worker/item/${id}`, { itemName }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+
+            refetch()
+            console.log(res)
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            console.log(err)
+        }
+    })
+
+
 
     const getDataItem = dataItem?.findItem
     const totalPages = dataItem?.totalPage
@@ -212,6 +241,7 @@ export default function Page() {
                                     <tr>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                        <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase text-center">Tanggal dibuat</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                                     </tr>
                                 </thead>
@@ -220,11 +250,12 @@ export default function Page() {
                                         getDataItem?.map((prod: any, i: number) => {
                                             return (
                                                 <tr className="hover:bg-gray-100 border-b" key={prod?.id || i}>
-                                                    <td className="py-2 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
-                                                    <td className="py-2 px-6 text-sm text-gray-600 break-words">{prod?.itemName}</td>
-                                                    <td className="py-2 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
+                                                    <td className="py-3 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
+                                                    <td className="py-3 px-6 text-sm text-gray-600 break-words">{prod?.itemName}</td>
+                                                    <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{new Date(prod?.createdAt).toLocaleDateString()}</td>
+                                                    <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
                                                         <div className='flex gap-2'>
-                                                            <ConfirmAlert caption="menghapus data ini" description="Data akan dihapus secara permanen, harap teliti" onClick={() => handleDeleteItem(prod?.id)}>
+                                                            <ConfirmAlert disabled={isPendingDelete} caption="menghapus data ini" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => handleDeleteItem(prod?.id)}>
                                                                 <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
                                                             </ConfirmAlert>
                                                             <Dialog>
@@ -241,14 +272,13 @@ export default function Page() {
                                                                     <div className="w-full">
                                                                         <Formik
                                                                             initialValues={{
-                                                                                itemName: ''
+                                                                                itemName: prod?.itemName || ''
                                                                             }}
                                                                             validationSchema={
-                                                                                Yup.object().shape({
-                                                                                    itemName: Yup.string().min(3, 'Harap masukan nama yang valid').required('harap diisi terlebih dahulu')
-                                                                                })
+                                                                                Yup.object().shape({ itemName: Yup.string().min(3, 'Harap masukan nama yang valid').required('harap diisi terlebih dahulu') })
                                                                             }
                                                                             onSubmit={(values) => {
+                                                                                handleUpdateItem({ id: prod?.id, itemName: values?.itemName })
                                                                                 console.log(values)
                                                                             }}>
                                                                             <Form className="w-full">
@@ -259,7 +289,7 @@ export default function Page() {
                                                                                     <ErrorMessage component='div' className="text-red top-0 right-0 absolute text-xs text-red-500" name="itemName" />
                                                                                 </div>
                                                                                 <div className="py-2 w-full flex justify-end">
-                                                                                    <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 disabled:bg-neutral-400 text-sm">Ubah</ButtonCustom>
+                                                                                    <ButtonCustom disabled={isPendingUpdate} type="submit" rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 disabled:bg-neutral-400 text-sm">Ubah</ButtonCustom>
                                                                                 </div>
                                                                             </Form>
                                                                         </Formik>

@@ -17,10 +17,13 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
         } else {
             findAdmin = await prisma.worker.findFirst({
                 where: { id: userId, workerRole: authorizationRole },
+                include: {
+                    Stores: true
+                }
             })
 
-            findWorker = await prisma.worker.findMany()
-            itemLaundry = await prisma.itemName.findMany()
+            findWorker = await prisma.worker.findMany({ where: { deletedAt: null } })
+            itemLaundry = await prisma.itemName.findMany({ where: { deletedAt: null } })
         }
 
         res.status(200).json({
@@ -47,7 +50,8 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
                 firstName: findAdmin?.firstName,
                 lastName: findAdmin?.lastName,
                 profilePicture: findAdmin?.profilePicture,
-                email: findAdmin?.email
+                email: findAdmin?.email,
+                store: findAdmin?.Stores?.storeName
             } : {}
         })
 

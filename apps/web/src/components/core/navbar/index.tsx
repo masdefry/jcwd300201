@@ -157,7 +157,7 @@ export default function Header() {
               <div className="flex flex-col gap-5">
                 <MenuCustom url='/' navigation="Profile"><FaUserGear /></MenuCustom>
                 <MenuCustom url='/' navigation="Settings"><BsGearFill /></MenuCustom>
-                <ConfirmAlert caption="logout" onClick={() => handleLogout()}>
+                <ConfirmAlert disabled={isPending || isDisabledSucces} caption="logout" onClick={() => handleLogout()}>
                   <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
                 </ConfirmAlert>
               </div>

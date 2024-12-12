@@ -111,8 +111,8 @@ export default function Page() {
                         ))}
                     </div>
                     <div className="w-full py-3">
-                        <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()}>
-                            <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
+                        <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                            <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400" disabled={isPending || isDisabledSucces}>Logout</ButtonCustom>
                         </ConfirmAlert>
                     </div>
                 </section>

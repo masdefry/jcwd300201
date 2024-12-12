@@ -217,7 +217,7 @@ export const getItemName = async (req: Request, res: Response, next: NextFunctio
             })
         } else {
             findItem = await prisma.itemName.findMany({
-                where: whereClause, take, skip, orderBy: { createdAt: 'asc' }
+                where: whereClause, take, skip
             })
         }
 
@@ -272,6 +272,32 @@ export const deleteDataProductLaundry = async (req: Request, res: Response, next
         res.status(200).json({
             error: false,
             message: 'Berhasil menghapus data',
+            data: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const updateDataProductLaundry = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { itemName } = req.body
+        const { id } = req.params
+
+        const findData = await prisma.itemName.findFirst({ where: { id: Number(id) } })
+        if (!findData) throw { msg: "Data tidak tersedia", status: 404 }
+
+        const findItem = await prisma.itemName.findFirst({ where: { itemName } })
+        if (findItem) throw { msg: 'Data sudah tersedia', status: 406 }
+
+        await prisma.itemName.update({
+            data: { itemName },
+            where: { id: Number(id) }
+        })
+
+        res.status(200).json({
+            error: false,
+            message: 'Berhasil mengubah data',
             data: {}
         })
     } catch (error) {
