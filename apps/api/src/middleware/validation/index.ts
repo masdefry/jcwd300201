@@ -38,3 +38,17 @@ export const productLaundryValidation = [
     body(['itemName']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('itemName').isString().escape(),
 ]
+
+export const updateProfileWorkerValidation = [
+    body(['email', 'firstName', 'lastName', 'phoneNumber']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('email').isString().escape(),
+    body('firstName').isString().escape(),
+    body('lastName').isString().escape(),
+    body('phoneNumber').isString().escape(),
+]
+
+export const changePasswordWorkerValidation = [
+    body(['password', 'existingPassword']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('password').isString().escape(),
+    body('existingPassword').isString().escape(),
+]

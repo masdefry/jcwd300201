@@ -349,3 +349,69 @@ export const setPasswordUser = async (req: Request, res: Response, next: NextFun
     next(error)
   }
 }
+
+export const userPayment = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, userId, imageUrl, orderId } = req.body
+
+    if (imageUrl.length == 0) throw { msg: 'Gambar wajib diisi', status: 400 }
+
+    const userData = await prisma.users.findFirst({
+      where: { email }
+    })
+    if (!userData) throw { msg: "User tidak ada", status: 404 }
+
+    const paymentImage = await prisma.order.update({
+      where: {
+        id: String(orderId)
+      },
+      data: {
+        paymentProof: imageUrl,
+        isPaid: true
+      }
+    })
+    if (!paymentImage) throw { msg: "Bukti pembayaran tidak valid", status: 404 }
+
+    const orderStatus = await prisma.orderStatus.create({
+      data: {
+        status: 'PAYMENT_DONE',
+        orderId: String(orderId),
+        workerId: userId,
+      }
+    })
+    if (!orderStatus) throw { msg: "Order status tidak berhasil dibuat, silahkan coba lagi", status: 404 }
+
+  } catch (error) {
+    next(error)
+  }
+
+}
+
+export const confirmOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, userId, orderId } = req.body
+
+
+    const userData = await prisma.users.findFirst({
+      where: {
+        email,
+        id: userId
+      }
+    })
+    if (!userData) throw { msg: "User tidak ada", status: 404 }
+
+    
+    const orderStatus = await prisma.orderStatus.create({
+      data: {
+        status: 'PAYMENT_DONE',
+        orderId: String(orderId),
+        workerId: userId,
+      }
+    })
+    if (!orderStatus) throw { msg: "Order status tidak berhasil dibuat, silahkan coba lagi", status: 404 }
+
+  } catch (error) {
+    next(error)
+  }
+
+}

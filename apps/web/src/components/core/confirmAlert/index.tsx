@@ -13,7 +13,7 @@ import { IConfirmAlert } from "./types"
 
 export function ConfirmAlert({ caption, btnConfrimCaption = 'Konfirmasi', btnCancelCaption = 'Batal',
     description = 'Anda akan keluar dari aplikasi. Pastikan semua perubahan telah disimpan sebelum melanjutkan.',
-    disabled, children, onClick }: IConfirmAlert) {
+    children, onClick, colorConfirmation = 'red', disabled, type='submit' }: IConfirmAlert) {
 
     return (
         <AlertDialog>
@@ -29,7 +29,7 @@ export function ConfirmAlert({ caption, btnConfrimCaption = 'Konfirmasi', btnCan
                 </AlertDialogHeader>
                 < AlertDialogFooter >
                     <AlertDialogCancel>{btnCancelCaption}</AlertDialogCancel>
-                    <AlertDialogAction className="bg-red-600 hover:bg-red-700" onClick={onClick} disabled={disabled}>{btnConfrimCaption}</AlertDialogAction>
+                    <AlertDialogAction disabled={disabled} type={type} className={`bg-${colorConfirmation}-600 hover:bg-${colorConfirmation}-700`} onClick={onClick}>{btnConfrimCaption}</AlertDialogAction>
                 </AlertDialogFooter>
             </AlertDialogContent>
         </AlertDialog>

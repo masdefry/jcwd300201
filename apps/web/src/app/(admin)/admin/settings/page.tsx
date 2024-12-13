@@ -125,7 +125,7 @@ export default function Page() {
                             <div className="w-full flex px-3 items-center gap-4">
                                 <div className="w-12 h-12 rounded-full">
                                     <Image
-                                        src={profilePicture ? profilePicture : profilePict}
+                                    src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
                                         width={600}
                                         height={600}
                                         alt="user-profile"

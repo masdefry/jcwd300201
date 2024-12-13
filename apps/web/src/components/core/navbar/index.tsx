@@ -115,7 +115,7 @@ export default function Header() {
                 height={400}
                 className="w-10 h-10 object-cover rounded-full"
                 alt='profile'
-                src={profilePicture ? profilePicture : profilePict}
+                src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
               />
             </span>
           </div>
@@ -138,7 +138,7 @@ export default function Header() {
                     height={400}
                     className="w-10 h-10 object-cover rounded-full"
                     alt='profile'
-                    src={profilePicture ? profilePicture : profilePict}
+                    src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
                   />
                   <h1 className="text-neutral-400 text-xl font-semibold">Hello, {nameUser && nameUser?.length > 8 ? nameUser?.slice(0, 8) : nameUser}!</h1>
                 </div>
