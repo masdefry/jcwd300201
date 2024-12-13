@@ -100,6 +100,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         },
     });
 
+    console.log(dataOrderNote)
+
     const { data: dataItemName, isLoading: dataItemNameLoading } = useQuery({
         queryKey: ['get-data-item'],
         queryFn: async () => {

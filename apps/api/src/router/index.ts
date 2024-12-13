@@ -1,4 +1,5 @@
 import { Router } from "express";
+import express from 'express'
 import userRouter from "@/router/userRouter"
 import authRouter from "./authRouter";
 import adminRouter from "./adminRouter";
@@ -7,6 +8,7 @@ import storeRouter from "./storeRouter";
 import workerRouter from "./workerRouter";
 
 const router = Router()
+router.use('*/images', express.static('src/public/images'))
 
 router.use('/user', userRouter)
 router.use('/auth', authRouter)

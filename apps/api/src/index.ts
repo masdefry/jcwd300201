@@ -4,6 +4,7 @@ import router from './router'
 import dotenv from 'dotenv'
 import { dbConnect } from './connection'
 import { portConnect } from './utils/asciiText/dbConnect'
+import fs from 'fs'
 
 dotenv.config()
 const port: string | undefined = process.env.PORT
@@ -29,6 +30,13 @@ interface IError extends Error {
 }
 
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
+    const imagesUpload: any = req.files /**set multer error */
+    if (imagesUpload?.images?.length != 0 || imagesUpload?.images?.length != undefined) {
+        imagesUpload?.images?.forEach((img: any) => {
+            fs.rmSync(`${img?.path}`)
+        });
+    }
+
     res.status(error?.status || 500).json({
         error: true,
         message: error?.msg || error?.message /* *Sementara, ganti jadi something went wrong */,

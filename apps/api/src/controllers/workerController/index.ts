@@ -2,7 +2,16 @@ import prisma from "@/connection";
 import { Prisma } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
 import { Status } from "@prisma/client";
+import { validateEmail } from "@/middleware/validation/emailValidation";
+import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation";
+import fs from 'fs'
+import { comparePassword, hashPassword } from "@/utils/passwordHash";
+import dotenv from 'dotenv'
 
+dotenv.config()
+const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
+
+// get order driver
 export const getOrdersForDriver = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId, authorizationRole, storesId } = req.body;
@@ -27,7 +36,7 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
 
     if (!worker) throw { msg: "Driver tidak tersedia", status: 404 }
 
-    const statusFilter :any=
+    const statusFilter: any =
       tab === 'AWAITING_DRIVER_PICKUP'
         ? ['AWAITING_DRIVER_PICKUP']
         : tab === 'DRIVER_TO_OUTLET'
@@ -49,12 +58,12 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
               { Users: { firstName: { contains: search as string } } },
               { Users: { lastName: { contains: search as string } } },
               { Users: { phoneNumber: { contains: search as string } } },
-            ],  
-          }  
+            ],
+          }
           : {},
-        orderType ? { orderType: { Type: { equals: orderType as string } } } : {},  
-      ].filter((condition) => Object.keys(condition).length > 0),  
-    };  
+        orderType ? { orderType: { Type: { equals: orderType as string } } } : {},
+      ].filter((condition) => Object.keys(condition).length > 0),
+    };
 
 
     let orderBy: Prisma.OrderOrderByWithRelationInput;
@@ -83,7 +92,7 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
       orderBy,
       include: {
         Users: true,
-        UserAddress :true,
+        UserAddress: true,
         orderStatus: {
           orderBy: { createdAt: 'desc' },
           take: 1,
@@ -97,9 +106,9 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
     });
 
     const filteredOrders = orders.filter(order => {
-      const latestStatus = order.orderStatus[0]?.status; 
-      return statusFilter.includes(latestStatus); 
-      
+      const latestStatus = order.orderStatus[0]?.status;
+      return statusFilter.includes(latestStatus);
+
     });
 
     const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
@@ -131,6 +140,8 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
   }
 };
 
+
+// acc order for driver
 export const acceptOrder = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
@@ -188,6 +199,7 @@ export const acceptOrder = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
+// acc order outlet
 export const acceptOrderOutlet = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
@@ -244,24 +256,7 @@ export const acceptOrderOutlet = async (req: Request, res: Response, next: NextF
   }
 };
 
-
-export const getItemName = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const itemName = await prisma.itemName.findMany({
-      where: {
-        deletedAt: null
-      }
-    });
-    res.status(200).json({
-      error: false,
-      message: "Data berhasil didapat!",
-      data: itemName
-    });
-  } catch (error) {
-    next(error);
-
-  }
-}
+// get nota order
 export const getOrderNote = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
@@ -314,24 +309,23 @@ export const getOrderNote = async (req: Request, res: Response, next: NextFuncti
     next(error)
   }
 }
+
+// getordernotedetail
 export const getOrderNoteDetail = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
     const { id } = req.params
     const { userId, authorizationRole, storesId } = req.body;
 
-    const worker = await prisma.worker.findUnique({
+    const worker = await prisma.worker.findFirst({
       where: {
         id: userId,
         workerRole: authorizationRole,
         storesId: storesId
-
       }
     });
 
-    if (!worker) {
-      return res.status(404).json({ message: "Driver not found" });
-    }
+    if (!worker) throw { msg: 'Data worker tidak tersedia', status: 404 }
 
     const order = await prisma.order.findMany({
       where: {
@@ -343,12 +337,9 @@ export const getOrderNoteDetail = async (req: Request, res: Response, next: Next
         UserAddress: true,
         OrderType: true,
       },
+    })
 
-    });
-
-    if (!order) {
-      return res.status(404).json({ error: "Order tidak ditemukan" });
-    }
+    if (!order) throw { msg: 'Order tidak ditemukan', status: 404 }
 
     res.status(200).json({
       error: false,
@@ -360,7 +351,7 @@ export const getOrderNoteDetail = async (req: Request, res: Response, next: Next
   }
 }
 
-
+// createorder
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
@@ -413,6 +404,113 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       orderStatus: orderStatus,
     });
 
+  } catch (error) {
+    next(error)
+  }
+}
+
+// updateProfile Worker
+export const updateProfileWorker = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const imageUploaded: any = req.files
+    const { userId, email, phoneNumber, firstName, lastName } = req.body
+    const findUser = await prisma.worker.findFirst({ where: { id: userId } })
+    const findEmail = await prisma.worker.findFirst({ where: { email } })
+
+    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
+    if (findEmail && findEmail?.email !== findUser?.email) throw { msg: 'Email sudah terpakai', status: 401 }
+    if (!validateEmail(email)) throw { msg: 'Harap masukan email dengan format yang valid', status: 401 }
+    if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan nomor telepon dengan format nomor', status: 401 }
+    if (email === findUser?.email && firstName === findUser?.firstName && lastName === findUser?.lastName && phoneNumber === findUser?.phoneNumber && (imageUploaded?.images?.length === 0 || imageUploaded?.images?.length === undefined)) throw { msg: 'Data tidak ada yang dirubah', status: 400 }
+
+    const dataImage: string[] = imageUploaded?.images?.map((img: any) => {
+      return img?.filename
+    })
+
+    const newDataWorker = await prisma.worker.update({
+      where: { id: userId },
+      data: { firstName, lastName, email, phoneNumber, profilePicture: dataImage?.length > 0 ? dataImage[0] : findUser?.profilePicture }
+    })
+
+    if (!findUser?.profilePicture.includes('https://') && newDataWorker?.profilePicture !== findUser?.profilePicture) { /** ini bersikap sementara karna default value profilePict itu dari google / berupa https:// */
+      fs.rmSync(`src/public/images/${findUser?.profilePicture}`) /**sedangkan ini menghapus directory membaca folder public/images akan menyebabkan error */
+    }
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil mengubah data',
+      data: {}
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// get single data worker
+export const getSingleDataWorker = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body
+
+    const findWorker = await prisma.worker.findFirst({
+      where: { id: userId }
+    })
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil mendapatkan data',
+      data: findWorker
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+// change password worker
+export const changePasswordWorker = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, password, existingPassword } = req?.body
+
+    const findWorker = await prisma.worker.findFirst({ where: { id: userId } })
+    const compareOldPassword = await comparePassword(existingPassword, findWorker?.password as string)
+
+    if (!compareOldPassword) throw { msg: 'Password lama anda salah', status: 401 }
+
+    const hashedPassword = await hashPassword(password)
+    await prisma.worker.update({
+      where: { id: userId },
+      data: { password: hashedPassword }
+    })
+
+    res.status(200).json({
+      error: false,
+      message: 'Password berhasil dirubah',
+      data: {}
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+// delete foto profile worker
+export const deleteProfilePictureWorker = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body
+
+    const findWorker = await prisma.worker.findFirst({ where: { id: userId } })
+    if (!findWorker) throw { msg: 'Data tidak tersedia', status: 404 }
+
+    await prisma.worker.update({
+      where: { id: userId },
+      data: { profilePicture: profilePict }
+    })
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil menghapus foto profil',
+      data: {}
+    })
+    
   } catch (error) {
     next(error)
   }

@@ -11,21 +11,13 @@ import authStore from "@/zustand/authstore"
 import { useState, useEffect } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FaSearch } from 'react-icons/fa';
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 
-export default function DriverPickUp() {
+export default function Page() {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -120,7 +112,7 @@ export default function DriverPickUp() {
     return (
         <>
             <main className="w-full h-fit">
-                <section className="w-full h-fit">
+                <section className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
                     <HeaderMobile />
                     <main className="w-full">
                         <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
@@ -175,12 +167,12 @@ export default function DriverPickUp() {
                                                 <ConfirmAlert
                                                     colorConfirmation="green"
                                                     caption={
-                                                    order.latestStatus === 'AWAITING_DRIVER_PICKUP'
-                                                        ? 'melakukan pengambilan laundry pada order ini'
-                                                        : order.latestStatus === 'DRIVER_TO_OUTLET'
-                                                            ? 'menyelesaikan pengiriman laundry pada order ini'
-                                                            : ''
-                                                }
+                                                        order.latestStatus === 'AWAITING_DRIVER_PICKUP'
+                                                            ? 'melakukan pengambilan laundry pada order ini'
+                                                            : order.latestStatus === 'DRIVER_TO_OUTLET'
+                                                                ? 'menyelesaikan pengiriman laundry pada order ini'
+                                                                : ''
+                                                    }
                                                     onClick={() => handleProcessOrder(order?.id)}>
                                                     <div className="flex items-center">
                                                         <div className="ml-2">
@@ -230,6 +222,17 @@ export default function DriverPickUp() {
                             </Tabs>
                         </div>
                     </main>
+                </section>
+            </main>
+
+            {/* web ssi */}
+            <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
+                <section className="w-full flex flex-col p-4 rounded-xl h-full bg-white">
+                    <div className="flex flex-col w-full gap-5">
+                        <div className="w-full py-4 bg-orange-500 px-14 rounded-xl">
+                            <h1 className="font-bold text-white">Pickup Request</h1>
+                        </div>
+                    </div>
                 </section>
             </main>
         </>

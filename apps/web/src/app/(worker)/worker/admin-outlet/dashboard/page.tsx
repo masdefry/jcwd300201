@@ -1,55 +1,85 @@
 'use client'
 
+import { IoAddCircleSharp, IoSearchSharp, IoPersonSharp } from "react-icons/io5";
+import { GrUserWorker } from "react-icons/gr";
 import { FaWhatsapp, FaStore } from "react-icons/fa";
-import { MdOutlineStickyNote2 } from "react-icons/md";
+import { MdDashboard, MdOutlineStickyNote2 } from "react-icons/md";
 import Image from "next/image";
-import { MdOutlineIron } from "react-icons/md";
-import { CgSmartHomeWashMachine } from "react-icons/cg";
-import { FaMotorcycle } from "react-icons/fa6";
-import { IoLocationOutline } from "react-icons/io5";
-// import RealTimeClock from "@/features/worker/components/realTimeClock";
-import { BsPerson } from "react-icons/bs";
+import authStore from "@/zustand/authstore";
+import { useEffect, useState } from "react";
+import ChartComponents from "@/components/core/chart";
+import { FaFirstOrderAlt } from "react-icons/fa6";
 
 const iconButtons = [
-    { icon: BsPerson, label: "Admin Outlet" },
-    { icon: CgSmartHomeWashMachine, label: "Cuci" },
-    { icon: MdOutlineIron, label: "Setrika" },
-    { icon: FaMotorcycle, label: "Driver" },
+    { icon: FaStore, label: "Data Outlet" },
+    { icon: IoSearchSharp, label: "Cari Pesanan" },
+    { icon: IoPersonSharp, label: "Data Pelanggan" },
+    { icon: GrUserWorker, label: "Data Pekerja" },
 ];
 
 export default function Page() {
+    const name = authStore((state) => state?.firstName)
+    const totalWorker = authStore((state) => state?.totalWorker)
+    const productLaundry = authStore((state) => state?.productLaundry)
+    const store = authStore((state) => state?.store)
+    const [isDate, setIsDate] = useState<string>('')
+    const [isDay, setIsDay] = useState<number>(0)
+
+    const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+
+    useEffect(() => {
+        const date = new Date()
+        const isDayNow = date.getDay()
+        const isDateNow = date.getDate()
+        const isMonth = date.getMonth()
+        const isYear = date.getFullYear()
+
+        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        setIsDate(newDateFormat)
+        setIsDay(isDayNow)
+    }, [])
+
     return (
         <>
             <main className="w-full h-fit">
-                <div className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
+                <section className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
                     <section>
                         <Image src={'/images/New Project.webp'} alt="header"
                             height={500} width={500} />
                     </section>
-                    {/* Header Image */}
 
                     {/* Location Section */}
-                    <section className="border border-gray-400 rounded-t-lg p-3 mt-4 mx-8">
-                        <div className="flex justify-center items-center">
-                            <div className="font-semibold text-gray-600 text-base">Halo, -Nama-</div>
+                    <section className="border border-gray-400 rounded-t-lg p-4 mt-4 mx-8">
+                        <div className="flex justify-between items-center">
+                            <div className="font-semibold text-gray-600">CnC Jakarta</div>
+                            <button className="text-sm flex items-center border rounded-lg border-gray-400 p-2 gap-1">
+                                Tambah Lokasi <IoAddCircleSharp />
+                            </button>
                         </div>
                     </section>
 
                     {/* Orders Section */}
-                    <section className="border border-gray-400 bg-sky-200 rounded-b-lg text-base p-4 mx-8 text-gray-700">
-                        <div className="flex justify-center items-center">
-
-                            <IoLocationOutline size={30} /> Lokasi Kerja
-
+                    <section className="border border-gray-400 bg-sky-200 rounded-b-lg text-sm p-4 mx-8 text-gray-700">
+                        <div className="flex justify-between">
+                            <div className="flex items-center gap-1">
+                                <MdOutlineStickyNote2 size={20} /> Pesanan Hari Ini
+                            </div>
+                            <div className="font-semibold text-right">
+                                <div>Rp0</div>
+                                <div>0 pesanan</div>
+                            </div>
                         </div>
-                        <div className="border-t-2 border-gray-400 mt-3 pt-3 flex justify-center">
-                            {/* <RealTimeClock/> */}
+                        <div className="border-t-2 border-gray-400 mt-4 pt-4 flex">
+                            <div className="flex-1 text-center text-lg font-bold">
+                                0 <span className="text-sm">kg</span>
+                            </div>
+                            <div className="flex-1 text-center text-lg font-bold">
+                                0 <span className="text-sm">pcs</span>
+                            </div>
                         </div>
                     </section>
 
-                    <section className="flex justify-center font-bold mt-3 ">
-                        Silahkan pilih pekerjaan anda :
-                    </section>
+                    {/* Icon Buttons Section */}
                     <section className="bg-white mx-8 grid grid-cols-2 gap-y-6 justify-around my-6">
                         {iconButtons.map((item, index) => (
                             <button key={index} className="flex flex-col items-center space-y-1">
@@ -69,27 +99,56 @@ export default function Page() {
                             Chat kami di WhatsApp apabila terdapat error.
                         </div>
                     </section>
-                </div>
+
+                </section>
             </main>
 
             {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
-                <section className="w-full h-full rounded-xl flex gap-2">
+                <section className="w-full h-1/2 rounded-xl flex gap-2">
                     <div className="w-full rounded-xl h-full flex items-center bg-orange-500 p-5">
+                        <div className="w-full h-fit">
+                            <div className="w-fit h-fit pb-5">
+                                <h1 className='font-bold border-b text-xl text-white pb-2'>Welcome, {name && name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}!</h1>
+                            </div>
+                            <div className="w-full">
+                                <p className="text-white">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
+                                <p className="text-white pt-2">{isDayArr[isDay]} {isDate || '00/00/0000'}</p>
+                            </div>
+                        </div>
+                        <div className="w-full h-full items-center flex justify-end">
+                            <Image
+                                className="h-[80%] w-fit"
+                                width={500}
+                                height={500}
+                                loading="lazy"
+                                alt="logo"
+                                src={'/images/charr.png'}
+                            />
+                        </div>
                     </div>
                     <div className="w-full rounded-xl h-full space-y-2">
                         <div className="flex flex-col w-full h-full gap-2">
                             <div className="flex w-full h-full gap-2">
-                                <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg p-3">
-                                   
-                                </div>
-
-                                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-700 text-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-300">
-                                    <div className="flex flex-col gap-4 justify-center items-center w-full">
-                                       
+                                <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg relative">
+                                    <div className="absolute top-[30%] opacity-60 flex items-center gap-2">
+                                        <MdDashboard className="text-6xl" />
+                                        <div className="flex items-center gap-3">
+                                            <h1 className="font-bold text-3xl text-center">{totalWorker ? totalWorker : '0'}</h1>
+                                            <p className="font-bold text-2xl">Pekerja</p>
+                                        </div>
                                     </div>
                                 </div>
 
+                                <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg relative">
+                                    <div className="absolute top-[30%] left-2 opacity-60 flex items-center gap-2">
+                                        <FaFirstOrderAlt className="text-6xl" />
+                                        <div className="flex items-center gap-3">
+                                            <h1 className="font-bold text-3xl text-center">{totalWorker ? totalWorker : '0'}</h1>
+                                            <p className="font-bold text-2xl">Order</p>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="flex w-full h-full gap-2 bg-white rounded-xl">
@@ -98,7 +157,9 @@ export default function Page() {
                         </div>
                     </div>
                 </section>
-                <section className="w-full h-full bg-white rounded-xl"></section>
+                <section className="w-full h-1/2 bg-white rounded-xl p-5">
+                    <ChartComponents />
+                </section>
             </main>
         </>
     );

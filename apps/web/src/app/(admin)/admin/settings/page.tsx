@@ -111,8 +111,8 @@ export default function Page() {
                         ))}
                     </div>
                     <div className="w-full py-3">
-                        <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()}>
-                            <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
+                        <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                            <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400" disabled={isPending || isDisabledSucces}>Logout</ButtonCustom>
                         </ConfirmAlert>
                     </div>
                 </section>
@@ -125,7 +125,7 @@ export default function Page() {
                             <div className="w-full flex px-3 items-center gap-4">
                                 <div className="w-12 h-12 rounded-full">
                                     <Image
-                                        src={profilePicture ? profilePicture : profilePict}
+                                    src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
                                         width={600}
                                         height={600}
                                         alt="user-profile"
