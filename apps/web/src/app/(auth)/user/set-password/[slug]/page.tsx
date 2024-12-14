@@ -28,12 +28,17 @@ export default function Page({ params }: { params: Promise<IParamsType> }) {
 
     const { toast } = useToast()
     const setToken = authStore((state) => state?.setAuth)
-    const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
+    const [passwordVisible, setPasswordVisible] = useState<boolean>(false)
+    const [confirmPasswordVisible, setConfirmPasswordVisible] = useState<boolean>(false)
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
 
     /* handle password visible */
     const togglePasswordVisibility = () => {
         setPasswordVisible(!passwordVisible)
+    }
+
+    const toggleConfirmPasswordVisibility = () => {
+        setConfirmPasswordVisible(!confirmPasswordVisible)
     }
 
     const { mutate: handleSetPassword, isPending } = useMutation({
@@ -142,13 +147,13 @@ export default function Page({ params }: { params: Promise<IParamsType> }) {
                                 name="confirmPassword"
                                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-yellow-400 text-sm pr-10"
                                 placeholder="******"
-                                type={passwordVisible ? 'text' : 'password'}
+                                type={confirmPasswordVisible ? 'text' : 'password'}
                             />
                             <span
                                 className="absolute right-3 transform -translate-y-7 flex items-center cursor-pointer text-gray-500"
-                                onClick={togglePasswordVisibility}
+                                onClick={toggleConfirmPasswordVisibility}
                             >
-                                {passwordVisible ? <FaEye /> : <FaEyeSlash />}
+                                {confirmPasswordVisible ? <FaEye /> : <FaEyeSlash />}
                             </span>
                         </div>
 

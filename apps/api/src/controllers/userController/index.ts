@@ -8,6 +8,7 @@ import { decodeToken, encodeToken } from "@/utils/tokenValidation";
 import { hashPassword } from "@/utils/passwordHash";
 import fs from 'fs'
 import { compile } from "handlebars";
+import { transporter } from "@/utils/transporter";
 
 const secret_key: string | undefined = process.env.JWT_SECRET as string
 export const userRegister = async (req: Request, res: Response, next: NextFunction) => {
@@ -21,7 +22,7 @@ export const userRegister = async (req: Request, res: Response, next: NextFuncti
 
     res?.status(200).json({
       error: false,
-      message: 'Berhasil membuat akun, silahkan login!',
+      message: 'Berhasil membuat akun, silahkan verifikasi email untuk login!',
       data: {}
     })
 
@@ -350,6 +351,40 @@ export const setPasswordUser = async (req: Request, res: Response, next: NextFun
   }
 }
 
+export const forgotPasswordUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email } = req.body
+
+    const findUser = await prisma.users.findFirst({ where: { email } })
+    if (!findUser) throw { msg: 'Email yang anda masukan tidak valid atau user tidak tersedia', status: 404 }
+
+    const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '5m' })
+    const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
+    let compiledHtml: any = compile(readEmailHtml)
+    compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
+
+    await transporter.sendMail({
+      to: email,
+      subject: 'Atur ulang kata sandi',
+      html: compiledHtml
+    })
+
+    await prisma.users.update({
+      where: { id: findUser?.id },
+      data: { forgotPasswordToken: token }
+    })
+
+    res.status(200).json({
+      error: false,
+      message: 'Harap cek email anda secara berkala',
+      data: {}
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const userPayment = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, userId, imageUrl, orderId } = req.body
@@ -400,7 +435,7 @@ export const confirmOrder = async (req: Request, res: Response, next: NextFuncti
     })
     if (!userData) throw { msg: "User tidak ada", status: 404 }
 
-    
+
     const orderStatus = await prisma.orderStatus.create({
       data: {
         status: 'PAYMENT_DONE',

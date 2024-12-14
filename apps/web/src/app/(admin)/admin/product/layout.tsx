@@ -2,7 +2,7 @@ import { Metadata } from "next";
 import { ReactNode } from "react";
 
 export const metadata: Metadata = {
-    title: 'Clean & Click | Product Laundry',
+    title: 'Clean & Click | Produk Laundry',
     description: 'Welcome to Clean & Click',
 }
 

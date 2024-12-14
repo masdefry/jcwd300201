@@ -128,7 +128,7 @@ export default function LoginUser() {
                             </div>
                             <Field
                                 name="email"
-                                className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-yellow-400 text-sm pr-10"
+                                className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10"
                                 placeholder="example@gmail.com"
                                 type="email"
                             />
@@ -148,7 +148,7 @@ export default function LoginUser() {
                             </div>
                             <Field
                                 name="password"
-                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-yellow-400 text-sm pr-10"
+                                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10"
                                 placeholder="******"
                                 type={passwordVisible ? 'text' : 'password'}
                             />

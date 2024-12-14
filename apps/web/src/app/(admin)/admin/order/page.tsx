@@ -256,7 +256,7 @@ export default function Page() {
                             <div className="w-1/2 h-fit flex gap-2 justify-end">
                                 <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
                                 <Link href='/admin/worker/c'>
-                                    <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 disabled:bg-neutral-400"><FaPlus /> Buat Data Pekerja</ButtonCustom>
+                                    <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
                                 </Link>
                             </div>
                         </div>
@@ -296,10 +296,10 @@ export default function Page() {
                                     <h1 className="text-neutral-400">Page {currentPage} of {totalPages || '0'}</h1>
                                 </div>
                                 <div className="flex gap-2">
-                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500 disabled:bg-neutral-400"
+                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
                                         disabled={currentPage == 1} onClick={() => handlePageChange(currentPage - 1)}
                                     >Sebelumnya</ButtonCustom>
-                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500 disabled:bg-neutral-400"
+                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
                                         disabled={currentPage == totalPages || currentPage > totalPages} onClick={() => handlePageChange(currentPage + 1)}
                                     >Selanjutnya</ButtonCustom>
                                 </div>
