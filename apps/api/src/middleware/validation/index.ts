@@ -29,6 +29,12 @@ export const resendSetPasswordValidation = [
     body(['email']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('email').isString().escape(),
 ]
+
+export const forgotPasswordUserValidation = [
+    body(['email']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('email').isString().escape(),
+]
+
 export const setPasswordValidation = [
     body(['password']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('password').isString().escape(),

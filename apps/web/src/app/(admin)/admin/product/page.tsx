@@ -191,7 +191,7 @@ export default function Page() {
                                 <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
                                 <Dialog>
                                     <DialogTrigger asChild>
-                                        <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 disabled:bg-neutral-400"><FaPlus /> Buat Data Produk</ButtonCustom>
+                                        <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Produk</ButtonCustom>
                                     </DialogTrigger>
                                     <DialogContent className="sm:max-w-[425px]">
                                         <DialogHeader>
@@ -222,7 +222,7 @@ export default function Page() {
                                                         <ErrorMessage component='div' className="text-red top-0 right-0 absolute text-xs text-red-500" name="itemName" />
                                                     </div>
                                                     <div className="py-2 w-full flex justify-end">
-                                                        <ButtonCustom disabled={isPending} type="submit" rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 disabled:bg-neutral-400 text-sm">Tambah</ButtonCustom>
+                                                        <ButtonCustom disabled={isPending} type="submit" rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 text-sm">Tambah</ButtonCustom>
                                                     </div>
                                                 </Form>
                                             </Formik>
@@ -241,7 +241,7 @@ export default function Page() {
                                     <tr>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
-                                        <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase text-center">Tanggal dibuat</th>
+                                        <th className="py-3 px-6 text-sm font-bold text-gray-600 uppercase text-center">Tanggal dibuat</th>
                                         <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                                     </tr>
                                 </thead>
@@ -289,7 +289,7 @@ export default function Page() {
                                                                                     <ErrorMessage component='div' className="text-red top-0 right-0 absolute text-xs text-red-500" name="itemName" />
                                                                                 </div>
                                                                                 <div className="py-2 w-full flex justify-end">
-                                                                                    <ButtonCustom disabled={isPendingUpdate} type="submit" rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 disabled:bg-neutral-400 text-sm">Ubah</ButtonCustom>
+                                                                                    <ButtonCustom disabled={isPendingUpdate} type="submit" rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 text-sm">Ubah</ButtonCustom>
                                                                                 </div>
                                                                             </Form>
                                                                         </Formik>
@@ -313,10 +313,10 @@ export default function Page() {
                                     <h1 className="text-neutral-400">Page {currentPage} of {totalPages || '0'}</h1>
                                 </div>
                                 <div className="flex gap-2">
-                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500 disabled:bg-neutral-400"
+                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
                                         disabled={currentPage == 1} onClick={() => handlePageChange(currentPage - 1)}
                                     >Sebelumnya</ButtonCustom>
-                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500 disabled:bg-neutral-400"
+                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
                                         disabled={currentPage == totalPages || currentPage > totalPages} onClick={() => handlePageChange(currentPage + 1)}
                                     >Selanjutnya</ButtonCustom>
                                 </div>

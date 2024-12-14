@@ -1,21 +1,28 @@
 'use client'
 
+import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
-import { CgProfile } from "react-icons/cg";
-import { FaArrowLeft, FaArrowRight, FaCartArrowDown, FaDashcube, FaHouseDamage, FaIceCream, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
-import { RiProfileFill } from "react-icons/ri";
+import Cookies from 'js-cookie'
+import { FaDashcube, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
+import { toast } from "@/components/hooks/use-toast";
+import { ConfirmAlert } from "@/components/core/confirmAlert";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
-
 export default function Layout({ children }: { children: ReactNode }) {
     const [isClose, setIsClose] = useState<boolean>(false)
     const profilePicture = authStore((state) => state?.profilePicture)
     const role = authStore((state) => state?.role)
     const name = authStore((state) => state?.firstName)
+    const email = authStore((state) => state?.email)
+    const token = authStore((state) => state?.token)
+    const resetAuth = authStore((state) => state?.resetAuth)
+    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
     const router = useRouter()
     const pathname = usePathname()
     const handleCloseSideBar = () => {
@@ -31,6 +38,36 @@ export default function Layout({ children }: { children: ReactNode }) {
     }
 
     const dashboardUrl = dashboardMenuUrl[role] || ''
+
+    const { mutate: handleLogoutAdmin, isPending } = useMutation({
+        mutationFn: async () => {
+            return await instance.post('/admin/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
+        },
+        onSuccess: (res) => {
+            if (res) {
+                Cookies.remove('__rolx')
+                Cookies.remove('__toksed')
+                resetAuth()
+
+                toast({
+                    description: res?.data?.message,
+                    className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+                })
+
+                setIsDisabledSucces(true)
+
+                window.location.href = '/admin/login'
+                console.log(res)
+            }
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            console.log(err)
+        }
+    })
 
     return (
         <main className="w-full h-fit md:h-screen md:flex flex-none">
@@ -51,28 +88,24 @@ export default function Layout({ children }: { children: ReactNode }) {
                     </div>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Menu</h1>
-                <div className="w-full h-full flex flex-col gap-4">
+                <div className="w-full h-fit pb-3 flex flex-col gap-4">
                     <Link href={dashboardUrl} className={`w-full flex 
                         ${Object.values(dashboardMenuUrl).includes(pathname) ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
-                    <Link href={role == 'OUTLET_ADMIN' ?  '/worker/admin-outlet/nota-order' : '/'} className={`w-full flex ${pathname == '/admin/features' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaCartArrowDown /> {role == 'OUTLET_ADMIN' ? 'Nota Order' : role === 'DRIVER' ? 'Delivery Request' : 'Menu Order'}</Link>
-                    <Link href='/admin/worker' className={`w-full flex ${pathname.startsWith('/admin/worker') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaMoneyBillWave />  {role == 'OUTLET_ADMIN' ? 'History Order' : role === 'DRIVER' ? 'Pickup Request' : 'Menu Order'}</Link>
-                    <Link href='/' className={`w-full ${pathname.startsWith('/worker/driver') ? 'hidden' : 'flex'} ${pathname == '/admin/category' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaHouseDamage /> {role == 'OUTLET_ADMIN' ? 'Resolve Order' : 'Menu Order'}</Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">
-                    <Link href='/admin/settings' className={`w-full flex ${pathname == '/admin/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/worker/washing-worker/settings' className={`w-full flex ${pathname == '/worker/driver/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>
-                    <span className={`w-full  cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
-                        <RiProfileFill /> Profile</span>
+                    <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                        <span className={`w-full cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
+                            <FaSignOutAlt /> Logout</span>
+                    </ConfirmAlert>
                 </div>
             </section>
             <section className="w-full h-fit md:h-screen md:bg-white md:px-1 md:py-1 relative">
                 <span onClick={handleCloseSideBar} className="absolute cursor-pointer hover:shadow-xl top-14 left-14 z-20 text-white">
-                    {isClose ? <FaArrowRight /> : <FaArrowLeft />}
+                    {isClose ? <GoSidebarCollapse /> : <GoSidebarExpand />}
                 </span>
                 {children}
             </section>

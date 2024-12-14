@@ -19,7 +19,7 @@ model Users {
   isVerified          Boolean
   verifyCode          String?
   isGoogleRegister    Boolean
-  forgotPasswordToken String?       @db.LongText
+  forgotPasswordToken String?       @db.VarChar(300)
   isDiscountUsed      Boolean       @default(false)
   order               Order[]
   userAddress         UserAddress[]

@@ -4,7 +4,7 @@ import { NextFunction, Request, Response } from "express";
 import { Status } from "@prisma/client";
 import { validateEmail } from "@/middleware/validation/emailValidation";
 import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation";
-import fs from 'fs'
+import fs, { rmSync } from 'fs'
 import { comparePassword, hashPassword } from "@/utils/passwordHash";
 import dotenv from 'dotenv'
 
@@ -472,8 +472,8 @@ export const changePasswordWorker = async (req: Request, res: Response, next: Ne
 
     const findWorker = await prisma.worker.findFirst({ where: { id: userId } })
     const compareOldPassword = await comparePassword(existingPassword, findWorker?.password as string)
-
     if (!compareOldPassword) throw { msg: 'Password lama anda salah', status: 401 }
+    if (existingPassword === password) throw { msg: 'Harap masukan password yang berbeda', status: 401 }
 
     const hashedPassword = await hashPassword(password)
     await prisma.worker.update({
@@ -505,12 +505,16 @@ export const deleteProfilePictureWorker = async (req: Request, res: Response, ne
       data: { profilePicture: profilePict }
     })
 
+    if (!findWorker?.profilePicture?.includes(profilePict)) {
+      rmSync(`src/public/images/${findWorker?.profilePicture}`)
+    }
+
     res.status(200).json({
       error: false,
       message: 'Berhasil menghapus foto profil',
       data: {}
     })
-    
+
   } catch (error) {
     next(error)
   }

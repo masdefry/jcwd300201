@@ -14,8 +14,6 @@ import { useEffect, useState } from "react";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 
-
-
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
     { icon: CgSmartHomeWashMachine, label: "Cuci" },
@@ -26,9 +24,6 @@ const iconButtons = [
 export default function Page() {
     const [date, setDate] = useState<Date | undefined>(new Date())
     const name = authStore((state) => state?.firstName)
-    const totalWorker = authStore((state) => state?.totalWorker)
-    const productLaundry = authStore((state) => state?.productLaundry)
-    const store = authStore((state) => state?.store)
     const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
 
@@ -45,6 +40,7 @@ export default function Page() {
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
+
     return (
         <>
             <main className="w-full h-fit">

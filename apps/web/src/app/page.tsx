@@ -114,12 +114,12 @@ export default function Home() {
           />
           <div className={`absolute top-16 right-20 transition-opacity duration-1000 ease-in-out ${isFade ? 'opacity-0' : 'opacity-100'}`}>
             <div className="">
-              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent text-shad drop-shadow-2xl leading-tight" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>WE DO</h1>
-              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent drop-shadow-2xl leading-tight" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>LAUNDRY</h1>
-              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent drop-shadow-2xl leading-tight" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>FOR YOU</h1>
+              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent text-shad drop-shadow-2xl leading-tight" /* style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }} */>{currentIndex === 1 ? 'LAUNDRY' : 'WE DO'}</h1>
+              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent drop-shadow-2xl leading-tight" /* style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }} */>{currentIndex === 1 ? 'MADE EASY' : 'LAUNDRY'}</h1>
+              <h1 className="text-6xl md:text-8xl font-extrabold bg-gradient-to-r from-white via-white to-gray-300 bg-clip-text text-transparent drop-shadow-2xl leading-tight" /* style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }} */>{currentIndex === 1 ? 'FOR YOU' : 'FOR YOU'}</h1>
             </div>
             <div className="flex flex-col gap-2 justify-start mt-4">
-              <p className="text-lg text-white font-medium" style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }}>&quot;{captionCarousell[currentIndex]}&quot;</p>
+              <p className="text-lg text-white font-medium" /* style={{ color: 'white', textShadow: '3px 3px 8px rgba(0, 0, 0, 0.5)' }} */>&quot;{captionCarousell[currentIndex]}&quot;</p>
               <ButtonCustom btnColor="bg-orange-500 hover:bg-orange-400">O R D E R H E R E</ButtonCustom>
             </div>
           </div>

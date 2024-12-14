@@ -1,14 +1,19 @@
 'use client'
 
+import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
-import { CgProfile } from "react-icons/cg";
-import { FaArrowLeft, FaArrowRight, FaCartArrowDown, FaDashcube, FaHouseDamage, FaIceCream, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import Cookies from 'js-cookie'
+import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { RiProfileFill } from "react-icons/ri";
+import { toast } from "@/components/hooks/use-toast";
+import ButtonCustom from "@/components/core/button";
+import { ConfirmAlert } from "@/components/core/confirmAlert";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Layout({ children }: { children: ReactNode }) {
@@ -16,6 +21,10 @@ export default function Layout({ children }: { children: ReactNode }) {
     const profilePicture = authStore((state) => state?.profilePicture)
     const role = authStore((state) => state?.role)
     const name = authStore((state) => state?.firstName)
+    const email = authStore((state) => state?.email)
+    const token = authStore((state) => state?.token)
+    const resetAuth = authStore((state) => state?.resetAuth)
+    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
     const router = useRouter()
     const pathname = usePathname()
     const handleCloseSideBar = () => {
@@ -31,6 +40,36 @@ export default function Layout({ children }: { children: ReactNode }) {
     }
 
     const dashboardUrl = dashboardMenuUrl[role] || ''
+
+    const { mutate: handleLogoutAdmin, isPending } = useMutation({
+        mutationFn: async () => {
+            return await instance.post('/admin/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
+        },
+        onSuccess: (res) => {
+            if (res) {
+                Cookies.remove('__rolx')
+                Cookies.remove('__toksed')
+                resetAuth()
+
+                toast({
+                    description: res?.data?.message,
+                    className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+                })
+
+                setIsDisabledSucces(true)
+
+                window.location.href = '/admin/login'
+                console.log(res)
+            }
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            console.log(err)
+        }
+    })
 
     return (
         <main className="w-full h-fit md:h-screen md:flex flex-none">
@@ -64,8 +103,10 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="w-full h-full flex flex-col gap-4">
                     <Link href='/worker/driver/settings' className={`w-full flex ${pathname == '/worker/driver/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>
-                    <span className={`w-full  cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
-                        <RiProfileFill /> Profile</span>
+                    <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                        <span className={`w-full cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
+                            <FaSignOutAlt /> Logout</span>
+                    </ConfirmAlert>
                 </div>
             </section>
             <section className="w-full h-fit md:h-screen md:bg-white md:px-1 md:py-1 relative">
