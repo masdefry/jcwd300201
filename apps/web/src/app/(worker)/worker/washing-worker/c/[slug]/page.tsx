@@ -1,14 +1,4 @@
 'use client'
-
-import { FaWhatsapp, FaStore } from "react-icons/fa";
-import { MdOutlineStickyNote2 } from "react-icons/md";
-import Image from "next/image";
-import { MdOutlineIron } from "react-icons/md";
-import { CgSmartHomeWashMachine } from "react-icons/cg";
-import { FaMotorcycle } from "react-icons/fa6";
-import { IoLocationOutline } from "react-icons/io5";
-// import RealTimeClock from "@/features/worker/components/realTimeClock";
-import { BsPerson } from "react-icons/bs";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import HeaderMobile from "@/components/core/headerMobile"
@@ -20,8 +10,17 @@ import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
 import { useToast } from "@/components/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { Interface } from "readline";
+import {
+    Dialog,
+    DialogTrigger,
+    DialogContent,
+    DialogHeader,
+    DialogFooter,
+    DialogTitle,
+    DialogDescription,
+} from "@/components/ui/dialog";
 
 
 const validationSchema = Yup.object().shape({
@@ -60,33 +59,11 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { slug } = React.use(params);
 
     const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
-    console.log(token)
+    const emails = authStore((state) => state.email);
     const { toast } = useToast();
+    const [showDialog, setShowDialog] = useState(false); 
+    const [dialogNotes, setDialogNotes] = useState("");
 
-    const { mutate: handleCreateNotaOrder, isPending } = useMutation({
-        mutationFn: async ({ email, totalWeight, totalPrice, items }: any) => {
-            return await instance.post(`/worker/order/${slug}`, { email, totalWeight, totalPrice, items }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-        },
-        onSuccess: (res: any) => {
-            console.log(res)
-            toast({
-                description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
-        },
-        onError: (err: any) => {
-            console.log(err)
-            toast({
-                description: err?.response?.data?.message,
-                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
-            })
-        }
-    })
 
 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
@@ -95,28 +72,70 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             const res = await instance.get(`/worker/detail-order-note/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res?.data?.data, 'ordernote');
+            console.log(dataOrderNote)
             return res?.data?.data;
         },
     });
 
-    console.log(dataOrderNote)
+    const { data: dataOrderDetail, isLoading: dataOrderDetailLoading } = useQuery({
+        queryKey: ['get-detail-item'],
+        queryFn: async () => {
+            const res = await instance.get(`/worker/order-detail/${slug}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return res?.data?.data;
+        },
+    });
 
     const { data: dataItemName, isLoading: dataItemNameLoading } = useQuery({
         queryKey: ['get-data-item'],
         queryFn: async () => {
-            const res = await instance.get('/worker/item', {
+            const res = await instance.get('/worker/item-name/', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res, 'itemname');
             return res?.data?.data;
         },
     });
 
+    const { mutate: handleStatusOrder } = useMutation({
+        mutationFn: async ({ email, notes}: any) => {
+            return await instance.post(`/worker/washing-process/${slug}`, { email, notes}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res: any) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+        }
+    })
 
+
+    const compareData = (frontendItems: any[], backendItems: any[]) => {
+        if (!backendItems || backendItems.length !== frontendItems.length) return false;
+
+        return frontendItems.every((item) =>
+            backendItems.some(
+                (backendItem) =>
+                    String(backendItem.itemNameId) === item.itemNameId &&
+                    backendItem.quantity === item.quantity
+            )
+        );
+    };
 
     if (dataOrderNote == undefined) return <div></div>
     if (isFetching) return <div></div>
+
+
     return (
         <>
             <main className="w-full h-fit">
@@ -135,52 +154,33 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     items: [],
                                     itemName: '',
                                     quantity: 1,
-                                    weight: 0.1,
-                                    totalPrice: 0,
-                                    totalWeight: 0
+                                    notes: '',
                                 }}
                                 onSubmit={(values: any) => {
                                     const itemOrder = values.items.map((item: any) => ({
                                         itemNameId: item.itemName,
                                         quantity: item.quantity,
-                                        weight: item.weight,
                                     }));
+                                    const isDataMatching = compareData(itemOrder, dataOrderDetail);
+                                    console.log(isDataMatching)
+                                    if (isDataMatching) {
+                                        handleStatusOrder({ email:emails, notes:values.notes})
+                                    } else {
+                                        const initialNotes = values.items
+                                            .map((item: any) => {
+                                                const itemDetails = dataItemName.find((data: any) => Number(data.id) === Number(item.itemName));
+                                                return `Item: ${itemDetails?.itemName}, Quantity: ${item.quantity}`;
+                                            })
+                                            .join("\n");
 
 
-                                    handleCreateNotaOrder({
-                                        email: email,
-                                        totalWeight: values.totalWeight,
-                                        totalPrice: values.totalPrice,
-                                        items: values.items
-                                    })
+                                        setDialogNotes(initialNotes);
+                                        setShowDialog(true);
+                                    }
+                               
                                 }}
                             >
                                 {({ values, setFieldValue }) => {
-                                    const calculateTotals = () => {
-                                        let totalWeight = 0;
-                                        let totalPrice = 0;
-
-                                        values.items.forEach((item: Iitem) => {
-                                            totalWeight += item.weight;
-                                        });
-
-                                        totalWeight = Math.floor(totalWeight * 2) / 2;
-
-                                        if (totalWeight % 1 >= 0.5) {
-                                            totalWeight = Math.ceil(totalWeight);
-                                        }
-
-                                        totalPrice = totalWeight * dataOrderNote[0].OrderType?.Price;
-
-                                        setFieldValue("totalWeight", totalWeight);
-                                        setFieldValue("totalPrice", totalPrice);
-
-                                    };
-
-                                    // eslint-disable-next-line react-hooks/rules-of-hooks
-                                    useEffect(() => {
-                                        calculateTotals()
-                                    }, [values.items]);
 
                                     return (
                                         <Form>
@@ -241,14 +241,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                             className="border border-gray-500 rounded-md p-2"
                                                             min="1"
                                                         />
-                                                        <Field
-                                                            name="weight"
-                                                            type="number"
-                                                            placeholder="Weight (kg)"
-                                                            className="border border-gray-500 rounded-md p-2"
-                                                            step="0.1"
-                                                            min="0.1"
-                                                        />
+
                                                     </div>
                                                     <button
                                                         type="button"
@@ -260,7 +253,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                             if (existingItemIndex !== -1) {
                                                                 const updatedItems = [...values.items];
                                                                 updatedItems[existingItemIndex].quantity += values.quantity;
-                                                                updatedItems[existingItemIndex].weight += values.weight;
                                                                 setFieldValue("items", updatedItems);
                                                             } else {
                                                                 setFieldValue("items", [
@@ -268,16 +260,12 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                                     {
                                                                         itemName: values.itemName,
                                                                         quantity: values.quantity,
-                                                                        weight: values.weight,
                                                                     },
                                                                 ]);
                                                             }
 
                                                             setFieldValue("itemName", "");
                                                             setFieldValue("quantity", 1);
-                                                            setFieldValue("weight", 0.1);
-
-                                                            calculateTotals();
                                                         }}
                                                         className="bg-blue-500 text-white rounded-md p-3 mt-4"
                                                     >
@@ -298,7 +286,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                                         {selectedItem ? selectedItem.itemName : 'Item not found'}
                                                                     </h3>
                                                                     <p className="text-gray-600 mt-1">
-                                                                        Quantity: {item.quantity}, Weight: {item.weight} kg
+                                                                        Quantity: {item.quantity},
                                                                     </p>
                                                                 </div>
                                                                 <button
@@ -306,7 +294,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                                     onClick={() => {
                                                                         const updatedItems = values.items.filter((_: any, i: number) => i !== index);
                                                                         setFieldValue("items", updatedItems);
-                                                                        calculateTotals();
                                                                     }}
                                                                     className="text-red-500"
                                                                 >
@@ -318,11 +305,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 })}
                                             </div>
 
-                                            {/* Display Totals */}
-                                            <div className="mt-4">
-                                                <p>Total Weight: {values.totalWeight} kg</p>
-                                                <p>Total Price: Rp{values.totalPrice}</p>
-                                            </div>
 
                                             <button
                                                 type="submit"
@@ -334,6 +316,40 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     );
                                 }}
                             </Formik>
+                            <Dialog open={showDialog} onOpenChange={setShowDialog}>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Konfirmasi Outlet Admin</DialogTitle>
+                                        <DialogDescription>
+                                            Terjadi perbedaan antara data barang yang diberikan oleh admin outlet dan data anda, silahkan laporkan ke admin outlet:
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <textarea
+                                        value={dialogNotes}
+                                        onChange={(e) => setDialogNotes(e.target.value)}
+                                        className="w-full p-2 border rounded-md mt-4"
+                                        placeholder="Add notes or comments..."
+                                        rows={6}
+                                    />
+                                    <DialogFooter>
+                                        <button
+                                            onClick={() => {
+                                                setShowDialog(false);
+                                                console.log("Final notes:", dialogNotes);
+                                            }}
+                                            className="bg-green-500 text-white rounded-md p-2"
+                                        >
+                                            Lapor
+                                        </button>
+                                        <button
+                                            onClick={() => setShowDialog(false)}
+                                            className="bg-gray-500 text-white rounded-md p-2"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </DialogFooter>
+                                </DialogContent>
+                            </Dialog>
                         </section>
                     </main>
                 </section>

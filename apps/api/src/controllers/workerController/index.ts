@@ -11,6 +11,38 @@ import dotenv from 'dotenv'
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
+
+export const getListItem = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body;
+    const worker = await prisma.worker.findFirst({
+      where: {
+        id: userId,
+      },
+      select: { storesId: true },
+    });
+
+    if (!worker) throw { msg: "Driver tidak tersedia", status: 404 }
+
+
+    const dataItem = await prisma.itemName.findMany({
+      where: {
+        deletedAt: null
+      }
+    })
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: 
+        dataItem
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+
 // get order driver
 export const getOrdersForDriver = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -20,7 +52,6 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
       limit_data = '5',
       search = '',
       sort = 'date-asc',
-      orderType = '',
       tab = ''
     } = req.query;
 
@@ -61,7 +92,6 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
             ],
           }
           : {},
-        orderType ? { orderType: { Type: { equals: orderType as string } } } : {},
       ].filter((condition) => Object.keys(condition).length > 0),
     };
 
@@ -83,6 +113,10 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
           firstName: 'desc',
         },
       };
+    } else if (sort === 'order-id-asc') {
+      orderBy = { id: 'asc' };
+    } else if (sort === 'order-id-desc') {
+      orderBy = { id: 'desc' };
     } else {
       orderBy = { createdAt: 'desc' };
     }
@@ -117,22 +151,13 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
 
     const totalPage = Math.ceil(totalCount / Number(limit_data));
 
-    const ordersWithDetails = paginatedOrders.map((order) => ({
-      ...order,
-      userFirstName: order.Users?.firstName || null,
-      userLastName: order.Users?.lastName || null,
-      userPhoneNumber: order.Users?.phoneNumber || null,
-      userAddress: order.UserAddress || null,
-      latestStatus: order.orderStatus[0]?.status || null,
-      orderType: order.OrderType?.Type || null,
-    }));
 
     res.status(200).json({
       error: false,
       message: "Order berhasil didapatkan!",
       data: {
         totalPage,
-        orders: ordersWithDetails,
+        orders: paginatedOrders,
       },
     });
   } catch (error) {
@@ -325,7 +350,9 @@ export const getOrderNoteDetail = async (req: Request, res: Response, next: Next
       }
     });
 
-    if (!worker) throw { msg: 'Data worker tidak tersedia', status: 404 }
+
+    if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 }
+
 
     const order = await prisma.order.findMany({
       where: {
@@ -351,7 +378,159 @@ export const getOrderNoteDetail = async (req: Request, res: Response, next: Next
   }
 }
 
+
+
+
+export const getOrderItemDetail = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+
+    const listItem = await prisma.orderDetail.findMany({
+      where: {
+        orderId
+      }
+    })
+
+    const DetailListItem = listItem.map(item => ({
+      itemNameId: item.itemNameId,
+      quantity: item.quantity,
+    }));
+
+    res.status(200).json({
+      error: false,
+      message: 'Detail item order berhasil didapatkan',
+      data: DetailListItem
+    });
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getOrdersForWashing = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storesId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = ''
+    } = req.query;
+
+    const offset = Number(limit_data) * (Number(page) - 1);
+
+    const worker = await prisma.worker.findUnique({
+      where: {
+        id: userId,
+        workerRole: authorizationRole,
+      },
+      select: { storesId: true },
+    });
+
+    if (!worker) throw { msg: "Driver tidak tersedia", status: 404 }
+
+    const statusFilter: any =
+      tab === 'AWAITING_PAYMENT'
+        ? ['AWAITING_PAYMENT']
+        : tab === 'IN_WASHING_PROCESS'
+          ? ['IN_WASHING_PROCESS']
+          : tab === 'IN_IRONING_PROCESS'
+            ? ['IN_IRONING_PROCESS']
+            : ['AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS']; // Default to all statuses if no tab is selected
+
+    const whereConditions: Prisma.OrderWhereInput = {
+      storesId,
+      orderStatus: {
+        some: { status: { in: statusFilter } },
+      },
+      AND: [
+        search
+          ? {
+            OR: [
+              { id: { contains: search as string } },
+              { Users: { firstName: { contains: search as string } } },
+              { Users: { lastName: { contains: search as string } } },
+              { Users: { phoneNumber: { contains: search as string } } },
+            ],
+          }
+          : {},
+      ].filter((condition) => Object.keys(condition).length > 0),
+    };
+
+
+    let orderBy: Prisma.OrderOrderByWithRelationInput;
+    if (sort === 'date-asc') {
+      orderBy = { createdAt: 'asc' };
+    } else if (sort === 'date-desc') {
+      orderBy = { createdAt: 'desc' };
+    } else if (sort === 'name-asc') {
+      orderBy = {
+        Users: {
+          firstName: 'asc',
+        },
+      };
+    } else if (sort === 'name-desc') {
+      orderBy = {
+        Users: {
+          firstName: 'desc',
+        },
+      };
+    } else if (sort === 'order-id-asc') {
+      orderBy = { id: 'asc' };
+    } else if (sort === 'order-id-desc') {
+      orderBy = { id: 'desc' };
+    } else {
+      orderBy = { createdAt: 'desc' };
+    }
+
+    const orders = await prisma.order.findMany({
+      where: whereConditions,
+      orderBy,
+      include: {
+        Users: true,
+        UserAddress: true,
+        orderStatus: {
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+        OrderType: {
+          select: {
+            Type: true,
+          },
+        },
+      },
+    });
+
+    const filteredOrders = orders.filter(order => {
+      const latestStatus = order.orderStatus[0]?.status;
+      return statusFilter.includes(latestStatus) && latestStatus !== 'PAYMENT_DONE'
+
+    });
+
+    const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
+
+    const totalCount = filteredOrders.length;
+
+    const totalPage = Math.ceil(totalCount / Number(limit_data));
+
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
 // createorder
+
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
@@ -369,6 +548,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       data: {
         totalWeight: totalWeight,
         totalPrice: totalPrice,
+        isProcessed: true
       },
     });
 
@@ -408,6 +588,342 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     next(error)
   }
 }
+
+
+export const washingProcess = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId, notes } = req.body
+    const findWorker = await prisma.worker.findFirst({
+      where: { email }
+    })
+
+    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+
+    let updatedOrder = null;
+    if (notes) {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          notes,
+          isSolved: false,
+          isProcessed: false
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+      return res.status(201).json({
+        error: false,
+        message: "Approval request terhadap admin telah diajukan!",
+        data: {
+          order: updatedOrder,
+        },
+      });
+
+
+    } else {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          isProcessed: true,
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+
+      if (!updatedOrder.isSolved) {
+        throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
+      }
+
+      const existingStatus = await prisma.orderStatus.findFirst({
+        where: {
+          orderId: String(orderId),
+          status: 'AWAITING_PAYMENT',
+        },
+      });
+
+      if (!existingStatus) {
+        throw { msg: "Order tidak dapat diproses karena belum dibuat nota order oleh oulet admin", status: 400 };
+      }
+
+      const orderStatus = await prisma.orderStatus.create({
+        data: {
+          status: 'IN_WASHING_PROCESS',
+          orderId: String(orderId),
+          workerId: userId,
+        },
+      });
+      if (!orderStatus) throw { msg: "data order status gagal dibuat", status: 404 }
+
+      res.status(200).json({
+        error: false,
+        message: "Order berhasil diupdate!",
+        data: {
+          orderStatus,
+        },
+      });
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const washingProcessDone = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const findWorker = await prisma.worker.findFirst({
+      where: { email }
+    })
+
+    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+
+
+    const orderStatus = await prisma.orderStatus.create({
+      data: {
+        status: 'IN_IRONING_PROCESS',
+        orderId: String(orderId),
+        workerId: userId,
+      },
+    });
+    if (!orderStatus) throw { msg: "data order status gagal dibuat", status: 404 }
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        orderStatus,
+      },
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const ironingProcess = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId, notes } = req.body
+    const findWorker = await prisma.worker.findFirst({
+      where: { email }
+    })
+
+    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+
+    let updatedOrder = null;
+    if (notes) {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          notes,
+          isSolved: false,
+          isProcessed: false
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+      return res.status(201).json({
+        error: false,
+        message: "Approval request terhadap admin telah diajukan!",
+        data: {
+          order: updatedOrder,
+        },
+      });
+
+
+    } else {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          isProcessed: true,
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+
+      if (!updatedOrder.isSolved) {
+        throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
+      }
+
+      const existingStatus = await prisma.orderStatus.findFirst({
+        where: {
+          orderId: String(orderId),
+          status: 'IN_IRONING_PROCESS',
+        },
+      });
+
+      if (!existingStatus) {
+        throw { msg: "Order tidak dapat diproses karena belum dibuat nota order oleh oulet admin", status: 400 };
+      }
+
+      res.status(200).json({
+        error: false,
+        message: "Order berhasil diupdate!",
+      });
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const ironingProcessDone = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const findWorker = await prisma.worker.findFirst({
+      where: { email }
+    })
+
+    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+
+
+    const orderStatus = await prisma.orderStatus.create({
+      data: {
+        status: 'IN_PACKING_PROCESS',
+        orderId: String(orderId),
+        workerId: userId,
+      },
+    });
+    if (!orderStatus) throw { msg: "data order status gagal dibuat", status: 404 }
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        orderStatus,
+      },
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const packingProcess = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId, notes } = req.body
+    const findWorker = await prisma.worker.findFirst({
+      where: { email }
+    })
+
+    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+
+    let updatedOrder = null;
+    if (notes) {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          notes,
+          isSolved: false,
+          isProcessed: false
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+      return res.status(201).json({
+        error: false,
+        message: "Approval request terhadap admin telah diajukan!",
+        data: {
+          order: updatedOrder,
+        },
+      });
+
+
+    } else {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          isProcessed: true,
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+
+      if (!updatedOrder.isSolved) {
+        throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
+      }
+
+      const existingStatus = await prisma.orderStatus.findFirst({
+        where: {
+          orderId: String(orderId),
+          status: 'IN_PACKING_PROCESS',
+        },
+      });
+
+      if (!existingStatus) {
+        throw { msg: "Order tidak dapat diproses karena belum dibuat nota order oleh oulet admin", status: 400 };
+      }
+
+      res.status(200).json({
+        error: false,
+        message: "Order berhasil diupdate!",
+      });
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const packingProcessDone = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const findWorker = await prisma.worker.findFirst({
+      where: { email }
+    })
+
+    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+
+
+    const orderStatus = await prisma.orderStatus.create({
+      data: {
+        status: 'AWAITING_DRIVER_PICKUP',
+        orderId: String(orderId),
+        workerId: userId,
+      },
+    });
+
+    if (!orderStatus) throw { msg: "data order status gagal dibuat", status: 404 }
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        orderStatus,
+      },
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
 
 // updateProfile Worker
 export const updateProfileWorker = async (req: Request, res: Response, next: NextFunction) => {
