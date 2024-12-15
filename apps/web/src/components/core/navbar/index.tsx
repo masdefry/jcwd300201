@@ -4,14 +4,14 @@ import Image from "next/image";
 import ButtonCustom from "../button";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaBurger, FaDashcube, FaSpaghettiMonsterFlying, FaUserGear } from "react-icons/fa6";
+import { FaBurger, FaDashcube, FaRug, FaShoePrints, FaSpaghettiMonsterFlying, FaSprayCan, FaTag, FaUserGear } from "react-icons/fa6";
 import { useState } from "react";
 import authStore from "@/zustand/authstore";
 import { instance } from "@/utils/axiosInstance";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { FaTimes } from "react-icons/fa";
+import { FaHandHoldingWater, FaLaughWink, FaTimes, FaTshirt } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import MenuCustom from "../menu";
 import { IoAlbumsOutline } from "react-icons/io5";
@@ -31,15 +31,11 @@ export default function Header() {
   const [isNavOpen, setIsNavOpen] = useState<boolean>(false)
   const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
   const [showSideBarMenu, setShowSideBarMenu] = useState<boolean>(false)
+  const [isService, setIsService] = useState<boolean>(false)
   const pathname = usePathname()
 
-  const handleOpenNav = () => {
-    setIsNavOpen(!isNavOpen)
-  }
-
-  const handleOpenMenuUser = () => {
-    setShowSideBarMenu(!showSideBarMenu)
-  }
+  const handleOpenNav = () => setIsNavOpen(!isNavOpen)
+  const handleOpenMenuUser = () => setShowSideBarMenu(!showSideBarMenu)
 
   const { mutate: handleLogout, isPending } = useMutation({
     mutationFn: async () => {
@@ -81,7 +77,7 @@ export default function Header() {
   })
 
   return (
-    <nav className={`w-full h-fit fixed z-20 ${pathname == '/admin/login' || pathname == '/user/login'
+    <nav className={`w-full h-fit fixed bg-white z-20 ${pathname == '/admin/login' || pathname == '/user/login'
       || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/forgot-password') ? 'hidden' : ''}`}>
       <div className="w-full h-fit bg-white border-b flex justify-between items-center px-10 py-3 z-50 relative">
         <div className="w-fit h-16">
@@ -98,18 +94,31 @@ export default function Header() {
 
         {/* web */}
         <div className="hidden md:flex items-center space-x-8 text-neutral-500 font-bold">
-          <Link href='/' className={`hover:border-b hover:text-neutral-600 cursor-pointer text-lg ${pathname == '/' ? 'font-bold border-b text-neutral-600' : ''}`}>Beranda</Link>
-          <Link href='/about-us' className={`hover:border-b hover:text-neutral-600 cursor-pointer text-lg ${pathname.startsWith('/about-us') ? 'font-bold border-b text-neutral-600' : ''}`}>Tentang kami</Link>
-          <button className={`hover:border-b flex hover:text-neutral-600 cursor-pointer items-center text-lg ${pathname == '/services' ? 'font-bold border-b text-neutral-600' : ''}`}>Services <MdArrowDropDown className="text-[25px]"/></button>
-          <Link href='/contact' className={`hover:border-b hover:text-neutral-600 cursor-pointer text-lg ${pathname == '/contact' ? 'font-bold border-b text-neutral-600' : ''}`}>Kontak</Link>
+          <Link href='/' className={`hover:border-b-2 hover:border-orange-500 hover:text-neutral-600 cursor-pointer text-lg ${pathname == '/' ? 'font-bold border-b-2 border-b-orange-500 text-neutral-600' : ''}`}>Beranda</Link>
+          <Link href='/about-us' className={`hover:border-b-2 hover:border-orange-500 hover:text-neutral-600 cursor-pointer text-lg ${pathname.startsWith('/about-us') ? 'font-bold border-b-2 border-b-orange-500 text-neutral-600' : ''}`}>Tentang kami</Link>
+          <div className="relative z-0"
+            onMouseEnter={() => setIsService(true)}
+            onMouseLeave={() => setIsService(false)}>
+            <button className={`hover:border-b-2 hover:border-orange-500 flex hover:text-neutral-600 cursor-pointer items-center text-lg ${isService ? 'font-bold border-b-2 border-b-orange-500 text-neutral-600' : ''}`}>Layanan <MdArrowDropDown className="text-[25px]" /></button>
+            {isService && (
+              <span className="w-[300px] absolute h-fit z-0 pt-3 right-0 top-6">
+                <div className="border w-full h-fit pb-8 pt-4 px-4 space-y-5 bg-white rounded-b-2xl shadow-md">
+                  <MenuCustom url="/wash-dry" navigation="Layanan Mencuci"><FaTshirt /></MenuCustom>
+                  <MenuCustom url="/wash-iron" navigation="Layanan Setrika"><FaHandHoldingWater /></MenuCustom>
+                  <MenuCustom url="/dry-cleaning" navigation="Mencuci dan Setrika"><FaSprayCan /></MenuCustom>
+                </div>
+              </span>
+            )}
+          </div>
+          <Link href='/contact' className={`hover:border-b-2 hover:border-orange-500 hover:text-neutral-600 cursor-pointer text-lg ${pathname == '/contact' ? 'font-bold border-b-2 border-b-orange-500 text-neutral-600' : ''}`}>Kontak</Link>
           {!!token ? (
             <div className="hidden lg:flex space-x-4">
-              <span onClick={handleOpenMenuUser} className="w-10 h-10 cursor-pointer rounded-full">
+              <span onClick={handleOpenMenuUser} className="w-11 h-11 cursor-pointer rounded-full">
                 <Image
                   title={`Hello, ${nameUser}`}
                   width={400}
                   height={400}
-                  className="w-10 h-10 object-cover rounded-full"
+                  className="w-11 h-11 object-cover border-[1px] border-gray-200 rounded-full"
                   alt='profile'
                   src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
                 />
@@ -133,7 +142,7 @@ export default function Header() {
                     title={`Hello, ${nameUser}`}
                     width={400}
                     height={400}
-                    className="w-10 h-10 object-cover rounded-full"
+                    className="w-10 h-10 border-[1px] border-gray-200 object-cover rounded-full"
                     alt='profile'
                     src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
                   />

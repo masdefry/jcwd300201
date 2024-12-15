@@ -1,9 +1,12 @@
 import nodemailer from 'nodemailer'
+import dotenv from 'dotenv'
+
+dotenv.config()
 export const transporter = nodemailer.createTransport({
-    service: 'gmail',
+    service: process.env.TRANSPORTER_PROVIDER_SERVICE,
     auth: {
-        user: 'tiketbox88@gmail.com',
-        pass: 'huobxyafyutvorwm' 
+        user: process.env.TRANSPORTER_EMAIL_USER,
+        pass: process.env.TRANSPORTER_PASSWORD_USER 
     },
     tls: {
         rejectUnauthorized: false
