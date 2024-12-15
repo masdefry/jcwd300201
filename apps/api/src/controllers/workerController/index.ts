@@ -11,6 +11,7 @@ import dotenv from 'dotenv'
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
+
 export const getListItem = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.body;
@@ -39,6 +40,7 @@ export const getListItem = async (req: Request, res: Response, next: NextFunctio
     next(error)
   }
 }
+
 
 
 // get order driver
@@ -348,7 +350,9 @@ export const getOrderNoteDetail = async (req: Request, res: Response, next: Next
       }
     });
 
+
     if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 }
+
 
     const order = await prisma.order.findMany({
       where: {
@@ -373,6 +377,7 @@ export const getOrderNoteDetail = async (req: Request, res: Response, next: Next
     next(error)
   }
 }
+
 
 
 
@@ -522,6 +527,9 @@ export const getOrdersForWashing = async (req: Request, res: Response, next: Nex
     next(error);
   }
 };
+
+
+// createorder
 
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -915,6 +923,7 @@ export const packingProcessDone = async (req: Request, res: Response, next: Next
     next(error)
   }
 }
+
 
 // updateProfile Worker
 export const updateProfileWorker = async (req: Request, res: Response, next: NextFunction) => {
