@@ -1,13 +1,18 @@
 'use client'
 
 import { FaWhatsapp, FaStore } from "react-icons/fa";
-import { MdOutlineStickyNote2 } from "react-icons/md";
+import { MdDashboard, MdOutlineStickyNote2 } from "react-icons/md";
 import Image from "next/image";
 import { MdOutlineIron } from "react-icons/md";
 import { CgSmartHomeWashMachine } from "react-icons/cg";
-import { FaMotorcycle } from "react-icons/fa6";
+import { FaFirstOrderAlt, FaMotorcycle } from "react-icons/fa6";
 import { IoLocationOutline } from "react-icons/io5";
 import { BsPerson } from "react-icons/bs";
+import ChartComponents from "@/components/core/chart";
+import authStore from "@/zustand/authstore";
+import { useEffect, useState } from "react";
+import * as React from "react"
+import { Calendar } from "@/components/ui/calendar"
 
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
@@ -17,6 +22,25 @@ const iconButtons = [
 ];
 
 export default function Page() {
+    const [date, setDate] = useState<Date | undefined>(new Date())
+    const name = authStore((state) => state?.firstName)
+    const [isDate, setIsDate] = useState<string>('')
+    const [isDay, setIsDay] = useState<number>(0)
+
+    const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
+
+    useEffect(() => {
+        const date = new Date()
+        const isDayNow = date.getDay()
+        const isDateNow = date.getDate()
+        const isMonth = date.getMonth()
+        const isYear = date.getFullYear()
+
+        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        setIsDate(newDateFormat)
+        setIsDay(isDayNow)
+    }, [])
+
     return (
         <>
             <main className="w-full h-fit">
@@ -87,31 +111,43 @@ export default function Page() {
 
             {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
-                <section className="w-full h-full rounded-xl flex gap-2">
+                <section className="w-full h-1/2 rounded-xl flex gap-2">
                     <div className="w-full rounded-xl h-full flex items-center bg-orange-500 p-5">
+                        <div className="w-full h-fit">
+                            <div className="w-fit h-fit pb-5">
+                                <h1 className='font-bold border-b text-xl text-white pb-2'>Welcome, {name && name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}!</h1>
+                            </div>
+                            <div className="w-full">
+                                <p className="text-white">Pantau tugas harian dan status pengiriman Anda dengan mudah.</p>
+                                <p className="text-white pt-2">{isDayArr[isDay]} {isDate || '00/00/0000'}</p>
+                            </div>
+                        </div>
+                        <div className="w-full h-full items-center flex justify-end">
+                            <Image
+                                className="h-[80%] w-fit"
+                                width={500}
+                                height={500}
+                                loading="lazy"
+                                alt="logo"
+                                src={'/images/charr.png'}
+                            />
+                        </div>
                     </div>
-                    <div className="w-full rounded-xl h-full space-y-2">
-                        <div className="flex flex-col w-full h-full gap-2">
-                            <div className="flex w-full h-full gap-2">
-                                <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg p-3">
-
-                                </div>
-
-                                <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-r from-blue-500 via-indigo-500 to-blue-700 text-white rounded-2xl shadow-xl p-8 hover:shadow-2xl transition-shadow duration-300">
-                                    <div className="flex flex-col gap-4 justify-center items-center w-full">
-
-                                    </div>
-                                </div>
-
-                            </div>
-
-                            <div className="flex w-full h-full gap-2 bg-white rounded-xl">
-
-                            </div>
+                    <div className="w-full rounded-xl h-full gap-2 flex items-center">
+                        <div className="w-1/2 h-full rounded-xl bg-white"></div>
+                        <div className="w-1/2 h-full bg-white rounded-xl">
+                            <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={setDate}
+                                className="rounded-md"
+                            />
                         </div>
                     </div>
                 </section>
-                <section className="w-full h-full bg-white rounded-xl"></section>
+                <section className="w-full h-1/2 bg-white rounded-xl p-5">
+                    <ChartComponents />
+                </section>
             </main>
         </>
     );

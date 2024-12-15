@@ -7,16 +7,16 @@ export interface IOrderType {
     deletedAt?: string | null;
 }
 
-export interface IRequestPickup{
+export interface IRequestPickup {
     deliveryFee: number;
     storesId: string;
     orderTypeId: string;
-    userAddressId:number
+    userAddressId: number
 }
-export interface IAddress{
+export interface IAddress {
     id: string;
     addressName: string;
     addressDetail: string;
     city: string;
-    province:string
+    province: string
 }

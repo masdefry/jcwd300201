@@ -27,14 +27,15 @@ export default function Page() {
     const [isLogoutSuccess, setIsLogoutSuccess] = useState<boolean>(false)
 
     const settingsItems = [
-        { name: 'Pengaturan Akun', description: 'Ubah password akun anda', icon: FaUser },
-        { name: 'Pengaturan Outlet', description: 'Tambah, ubah, hapus outlet laundry', icon: FaStore },
-        { name: 'Pengaturan Layanan', description: 'Tambah, ubah, hapus layanan', icon: FaCut },
-        { name: 'Pengaturan Antar-Jemput', description: 'Tambah, ubah, hapus antar-jemput', icon: FaTruck },
-        { name: 'Pengaturan Kasir', description: 'Atur, tambah, ubah, hapus kasir', icon: FaCashRegister },
-        { name: 'Pengaturan Pelanggan', description: 'Tambah, ubah, hapus pelanggan', icon: FaUsers },
-        { name: 'Pengaturan Nota', description: 'Atur tampilan nota', icon: FaReceipt },
+        { name: 'Pengaturan Akun', description: 'Ubah password akun anda', icon: FaUser, url: '/admin/settings/account' },
+        { name: 'Pengaturan Outlet', description: 'Tambah, ubah, hapus outlet laundry', icon: FaStore, url: '/admin/settings/outlet' },
+        { name: 'Pengaturan Layanan', description: 'Tambah, ubah, hapus layanan', icon: FaCut, url: '/admin/settings/service' },
+        { name: 'Pengaturan Antar-Jemput', description: 'Tambah, ubah, hapus antar-jemput', icon: FaTruck, url: '/admin/settings/pickup' },
+        { name: 'Pengaturan Kasir', description: 'Atur, tambah, ubah, hapus kasir', icon: FaCashRegister, url: '/admin/settings/cashier' },
+        { name: 'Pengaturan Pelanggan', description: 'Tambah, ubah, hapus pelanggan', icon: FaUsers, url: '/admin/settings/customer' },
+        { name: 'Pengaturan Nota', description: 'Atur tampilan nota', icon: FaReceipt, url: '/admin/settings/receipt' },
     ];
+    
 
     const { mutate: handleLogoutAdmin, isPending } = useMutation({
         mutationFn: async () => {
@@ -107,12 +108,12 @@ export default function Page() {
                             <h1 className="font-bold text-white">Pengaturan</h1>
                         </div>
                         {settingsItems?.map((set, i) => (
-                            <ListCustom key={i} url='/' caption={set.name}><set.icon /></ListCustom>
+                            <ListCustom key={i} url={set?.url} caption={set.name}><set.icon /></ListCustom>
                         ))}
                     </div>
                     <div className="w-full py-3">
-                        <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()}>
-                            <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Logout</ButtonCustom>
+                        <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                            <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-orange-500" disabled={isPending || isDisabledSucces}>Logout</ButtonCustom>
                         </ConfirmAlert>
                     </div>
                 </section>
@@ -125,7 +126,7 @@ export default function Page() {
                             <div className="w-full flex px-3 items-center gap-4">
                                 <div className="w-12 h-12 rounded-full">
                                     <Image
-                                        src={profilePicture ? profilePicture : profilePict}
+                                    src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
                                         width={600}
                                         height={600}
                                         alt="user-profile"
@@ -137,9 +138,9 @@ export default function Page() {
                                     <h1 className="italic text-[9px] text-neutral-500">{email || 'admin@cnc.com'}</h1>
                                 </div>
                             </div>
-                            <ListCustom caption={name || 'Admin'} url="/" border='border-none'><FaIdCard /></ListCustom>
-                            <ListCustom caption={email || 'admin@cnc.com'} url="/" border='border-none'><FaVoicemail /></ListCustom>
-                            <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-white" txtColor="text-neutral-700 border" py="py-1">Edit</ButtonCustom>
+                            <ListCustom caption={name || 'Admin'} url="/admin/settings/account" border='border-none'><FaIdCard /></ListCustom>
+                            <ListCustom caption={email || 'admin@cnc.com'} url="/admin/settings/account" border='border-none'><FaVoicemail /></ListCustom>
+                            <Link href='/admin/settings/account' className="w-full text-center bg-white py-1 hover:text-neutral-900 px-3 rounded-2xl text-neutral-700 border">Edit</Link>
                         </div>
                     </div>
                     <div className='w-full h-full bg-white rounded-xl'>

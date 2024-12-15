@@ -71,7 +71,7 @@ export const userRegisterService = async ({ id, email, firstName, lastName, phon
     await transporter.sendMail({
         to: email,
         html: compiledHtml,
-        subject: 'Verification your account!'
+        subject: 'Verifikasi akun dan atur ulang password anda'
     })
 
     await prisma.users.update({

@@ -7,5 +7,7 @@ export interface IConfirmAlert {
     children: ReactNode,
     onClick: () => void,
     description?: string,
-    colorConfirmation:string
+    colorConfirmation?:string,
+    disabled?: boolean,
+    type?: "button" | "submit" | "reset"
 }

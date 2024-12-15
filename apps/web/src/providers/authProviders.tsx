@@ -31,7 +31,6 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
             })
 
             if (response?.data?.data?.role == 'CUSTOMER') {
-                console.log('trigger cust')
                 setKeepAuth({
                     email: response?.data?.data?.email,
                     firstName: response?.data?.data?.firstName,
@@ -58,7 +57,8 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
                     lastName: response?.data?.data?.lastName,
                     profilePicture: response?.data?.data?.profilePicture,
                     role: response?.data?.data?.role,
-                    email: response?.data?.data?.email
+                    email: response?.data?.data?.email,
+                    store: response?.data?.data?.store
                 })
             }
 

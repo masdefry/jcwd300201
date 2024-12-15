@@ -2,7 +2,7 @@ import { ReactNode } from 'react'
 import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-    title: 'Clean & Click | Settings',
+    title: 'Clean & Click | Pengaturan',
     description: 'Welcome to Clean & Click',
 }
 

@@ -2,7 +2,7 @@
 
 import ButtonCustom from "@/components/core/button";
 import { toast } from "@/components/hooks/use-toast";
-import { createUserValidation } from "@/features/adminCreateUser";
+import { createUserValidation } from "@/features/superAdmin/schemas/createUserValidation";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -97,36 +97,36 @@ export default function Page() {
                                     <div className="flex w-full gap-2">
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="email" className="font-semibold">Email <span className="text-red-600">*</span></label>
-                                            <Field type='email' name='email' placeholder='Masukan email anda' className='w-full py-2 text-sm px-3 focus:outline-none border' />
+                                            <Field type='email' name='email' placeholder='Masukan email anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                             <ErrorMessage component='div' name="email" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                         </div>
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="phoneNumber" className="font-semibold">Nomor Telepon <span className="text-red-600">*</span></label>
-                                            <Field type='text' name='phoneNumber' placeholder='Masukan nomor telepon anda' className='w-full py-2 text-sm px-3 focus:outline-none border' />
+                                            <Field type='text' name='phoneNumber' placeholder='Masukan nomor telepon anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                             <ErrorMessage component='div' name="phoneNumber" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                         </div>
                                     </div>
                                     <div className="flex w-full gap-2">
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="firstName" className="font-semibold">Nama Depan <span className="text-red-600">*</span></label>
-                                            <Field type='text' name='firstName' placeholder='Masukan nama depan anda' className='w-full py-2 text-sm px-3 focus:outline-none border' />
+                                            <Field type='text' name='firstName' placeholder='Masukan nama depan anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                             <ErrorMessage component='div' name="firstName" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                         </div>
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="lastName" className="font-semibold">Nama Belakang <span className="text-red-600">*</span></label>
-                                            <Field type='text' name='lastName' placeholder='Masukan nama belakang anda' className='w-full py-2 text-sm px-3 focus:outline-none border' />
+                                            <Field type='text' name='lastName' placeholder='Masukan nama belakang anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                             <ErrorMessage component='div' name="lastName" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                         </div>
                                     </div>
                                     <div className="flex w-full gap-2">
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="identityNumber" className="font-semibold">Nomor identitas <span className="text-red-600">*</span></label>
-                                            <Field type='text' name='identityNumber' placeholder='Masukan nomor identitas anda' className='w-full py-2 text-sm px-3 focus:outline-none border' />
+                                            <Field type='text' name='identityNumber' placeholder='Masukan nomor identitas anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                             <ErrorMessage component='div' name="identityNumber" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                         </div>
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="storesId" className="font-semibold">Penempatan <span className="text-red-600">*</span></label>
-                                            <Field as='select' name='storesId' id='storesId' className='w-full py-2 text-sm px-3 focus:outline-none border'>
+                                            <Field as='select' name='storesId' id='storesId' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500'>
                                                 <option value="" disabled>Pilih opsi</option>
                                                 {getDataStore?.map((store: { storeId: string, storeName: string }, i: number) => (
                                                     <option value={store?.storeId} key={i}>{store?.storeName}</option>
@@ -136,7 +136,7 @@ export default function Page() {
                                         </div>
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="workerRole" className="font-semibold">Tipe pekerja <span className="text-red-600">*</span></label>
-                                            <Field as='select' name='workerRole' id='workerRole' onChange={(e: any) => setFieldValue('workerRole', e.target.value)} className='w-full py-2 text-sm px-3 focus:outline-none border'>
+                                            <Field as='select' name='workerRole' id='workerRole' onChange={(e: any) => setFieldValue('workerRole', e.target.value)} className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500'>
                                                 <option value="" disabled>Pilih opsi</option>
                                                 <option value="OUTLET_ADMIN">Admin Outlet</option>
                                                 <option value="WASHING_WORKER">Petugas Cuci</option>
@@ -151,18 +151,18 @@ export default function Page() {
                                         <div className="flex w-full gap-2">
                                             <div className="w-full flex flex-col gap-2 relative">
                                                 <label htmlFor="motorcycleType" className="font-semibold">Jenis Motor <span className="text-red-600">*</span></label>
-                                                <Field type='text' name='motorcycleType' placeholder='Masukan nama motor anda anda' className='w-full py-2 text-sm px-3 focus:outline-none border' />
+                                                <Field type='text' name='motorcycleType' placeholder='Masukan nama motor anda anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                                 {/* <ErrorMessage component='div' name="motorcycleType" className="bg-white text-red-600 absolute right-2 top-1 text-sm" /> */}
                                             </div>
                                             <div className="w-full flex flex-col gap-2 relative">
                                                 <label htmlFor="plateNumber" className="font-semibold">Nomor Plat <span className="text-red-600">*</span></label>
-                                                <Field type='text' name='plateNumber' placeholder='Masukan nomor plat anda' className='w-full py-2 text-sm px-3 focus:outline-none border' />
+                                                <Field type='text' name='plateNumber' placeholder='Masukan nomor plat anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                                 {/* <ErrorMessage component='div' name="plateNumber" className="bg-white text-red-600 absolute right-2 top-1 text-sm" /> */}
                                             </div>
                                         </div> : ''}
                                     <div className="flex w-full gap-2">
-                                        <ButtonCustom type="submit" disabled={isPending} rounded="rounded-2xl w-full" btnColor="bg-orange-500 disabled:bg-neutral-400">Buat akun</ButtonCustom>
-                                        {/* <ButtonCustom type="button" disabled={isPending} rounded="rounded-2xl w-1/3" btnColor="bg-orange-500 disabled:bg-neutral-400">Kembali</ButtonCustom> */}
+                                        <ButtonCustom type="submit" disabled={isPending} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Buat akun</ButtonCustom>
+                                        {/* <ButtonCustom type="button" disabled={isPending} rounded="rounded-2xl w-1/3" btnColor="bg-orange-500">Kembali</ButtonCustom> */}
                                     </div>
                                 </div>
                             </Form>

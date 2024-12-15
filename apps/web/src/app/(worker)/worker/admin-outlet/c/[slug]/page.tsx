@@ -49,10 +49,10 @@ interface ICreateOrder {
 }
 type Iitem = {
     id: number,
-    itemName:string,
-    itemNameId: number; 
-    quantity: number;  
-    weight: number;    
+    itemName: string,
+    itemNameId: number;
+    quantity: number;
+    weight: number;
 };
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
@@ -100,10 +100,12 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         },
     });
 
+    console.log(dataOrderNote)
+
     const { data: dataItemName, isLoading: dataItemNameLoading } = useQuery({
         queryKey: ['get-data-item'],
         queryFn: async () => {
-            const res = await instance.get('/worker/item-name/', {
+            const res = await instance.get('/worker/item', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log(res, 'itemname');
@@ -144,7 +146,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         weight: item.weight,
                                     }));
 
-                                   
+
                                     handleCreateNotaOrder({
                                         email: email,
                                         totalWeight: values.totalWeight,
@@ -158,7 +160,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         let totalWeight = 0;
                                         let totalPrice = 0;
 
-                                        values.items.forEach((item:Iitem) => {
+                                        values.items.forEach((item: Iitem) => {
                                             totalWeight += item.weight;
                                         });
 
@@ -223,7 +225,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                         className="border border-gray-500 rounded-md p-2"
                                                     >
                                                         <option value="">Select Item</option>
-                                                        {dataItemName?.map((item:Iitem, index:number) => (
+                                                        {dataItemName?.map((item: Iitem, index: number) => (
                                                             <option key={index} value={item?.id}>
                                                                 {item?.itemName}
                                                             </option>
@@ -252,7 +254,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                         type="button"
                                                         onClick={() => {
                                                             const existingItemIndex = values.items.findIndex(
-                                                                (item:Iitem) => item.itemName === values.itemName
+                                                                (item: Iitem) => item.itemName === values.itemName
                                                             );
 
                                                             if (existingItemIndex !== -1) {
@@ -286,8 +288,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
                                             {/* Display Items */}
                                             <div className="mt-4">
-                                                {values.items.map((item:Iitem, index:number) => {
-                                                    const selectedItem = dataItemName.find((i:Iitem) => Number(i.id) === Number(item.itemName));
+                                                {values.items.map((item: Iitem, index: number) => {
+                                                    const selectedItem = dataItemName.find((i: Iitem) => Number(i.id) === Number(item.itemName));
                                                     return (
                                                         <div key={index} className="bg-blue-50 p-4 mb-2 rounded-lg">
                                                             <div className="flex justify-between items-start">
@@ -302,7 +304,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                                 <button
                                                                     type="button"
                                                                     onClick={() => {
-                                                                        const updatedItems = values.items.filter((_:any, i:number) => i !== index);
+                                                                        const updatedItems = values.items.filter((_: any, i: number) => i !== index);
                                                                         setFieldValue("items", updatedItems);
                                                                         calculateTotals();
                                                                     }}

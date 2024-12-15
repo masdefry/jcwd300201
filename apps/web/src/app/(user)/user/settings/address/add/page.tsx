@@ -42,7 +42,7 @@ const customMarkerIcon = new L.Icon({
 function LocationPicker({
     setFieldValue,
     position,
-    setPosition, 
+    setPosition,
 }: {
     setFieldValue: any;
     position: IPosition;
@@ -136,12 +136,12 @@ export default function AddAddress() {
         },
     });
     const { data: cities, isLoading: citiesLoading } = useQuery({
-        queryKey: ['get-city', selectedProvince],  
+        queryKey: ['get-city', selectedProvince],
         queryFn: async () => {
             const res = await instance.get('/order/city', { params: { province_id: selectedProvince } });
             return res.data.rajaongkir.results;
         },
-        enabled: !!selectedProvince, 
+        enabled: !!selectedProvince,
     });
 
     return (
