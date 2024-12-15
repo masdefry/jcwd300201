@@ -103,14 +103,17 @@ model Worker {
 }
 
 model Order {
-  id           String  @id @default(uuid())
+  id           String   @id @default(uuid())
   totalPrice   Int?
   totalWeight  Int?
   discount     Float?
   deliveryFee  Int
   paymentProof String?
   isPaid       Boolean
-  notes        String?
+  isProcessed  Boolean?
+
+  isSolved Boolean?
+  notes    String?
 
   storesId      String?
   usersId       String?
