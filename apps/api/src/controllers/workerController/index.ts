@@ -33,7 +33,7 @@ export const getListItem = async (req: Request, res: Response, next: NextFunctio
     res.status(200).json({
       error: false,
       message: "Order berhasil didapatkan!",
-      data: 
+      data:
         dataItem
     });
   } catch (error) {
@@ -431,13 +431,8 @@ export const getOrdersForWashing = async (req: Request, res: Response, next: Nex
     if (!worker) throw { msg: "Driver tidak tersedia", status: 404 }
 
     const statusFilter: any =
-      tab === 'AWAITING_PAYMENT'
-        ? ['AWAITING_PAYMENT']
-        : tab === 'IN_WASHING_PROCESS'
-          ? ['IN_WASHING_PROCESS']
-          : tab === 'IN_IRONING_PROCESS'
-            ? ['IN_IRONING_PROCESS']
-            : ['AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS']; // Default to all statuses if no tab is selected
+      tab ? [tab]
+        : ['AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS'];
 
     const whereConditions: Prisma.OrderWhereInput = {
       storesId,
@@ -548,7 +543,8 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       data: {
         totalWeight: totalWeight,
         totalPrice: totalPrice,
-        isProcessed: true
+        isProcessed: true,
+        isSolved:true
       },
     });
 
@@ -639,7 +635,7 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
         throw { msg: "Order gagal diupdate", status: 404 };
       }
 
-      if (!updatedOrder.isSolved) {
+      if (updatedOrder.isSolved === false) {
         throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
       }
 
@@ -758,7 +754,7 @@ export const ironingProcess = async (req: Request, res: Response, next: NextFunc
         throw { msg: "Order gagal diupdate", status: 404 };
       }
 
-      if (!updatedOrder.isSolved) {
+      if (updatedOrder.isSolved === false) {
         throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
       }
 
@@ -865,7 +861,7 @@ export const packingProcess = async (req: Request, res: Response, next: NextFunc
         throw { msg: "Order gagal diupdate", status: 404 };
       }
 
-      if (!updatedOrder.isSolved) {
+      if (updatedOrder.isSolved === false) {
         throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
       }
 
