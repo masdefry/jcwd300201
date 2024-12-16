@@ -309,7 +309,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                             </div>
 
        
-                                            <div className="mt-6 bg-gray-50 rounded-lg shadow-sm p-4">
+                                            <div className="mt-5 bg-gray-50 rounded-lg shadow-sm p-4">
                                                 <p className="text-sm font-semibold text-gray-700">Ringkasan</p>
                                                 <p className="text-lg font-bold text-green-600 mt-1">Total Harga: Rp{values.totalPrice.toLocaleString('id-ID')}</p>
                                             </div>
