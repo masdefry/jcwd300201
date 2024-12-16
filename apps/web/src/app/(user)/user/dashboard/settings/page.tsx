@@ -6,8 +6,8 @@ import ContentWebSession from "@/components/core/webSessionContent";
 import ListCustom from "@/components/core/listSettings";
 
 const settingsItems = [
-    { name: 'Pengaturan Akun', description: 'Ubah profil akun anda', icon: FaUser },
-    { name: 'Pengaturan Alamat', description: 'Tambah, ubah, hapus alamat rumah', icon: FaStore },
+    { name: 'Pengaturan Akun', description: 'Ubah profil akun anda', icon: FaUser, url: '/user/dashboard/settings/account' },
+    { name: 'Pengaturan Alamat', description: 'Tambah, ubah, hapus alamat rumah', icon: FaStore, url: '/user/dashboard/home' },
 ];
 
 export default function pengaturanAdmin() {
@@ -47,7 +47,7 @@ export default function pengaturanAdmin() {
             {/* web sesi */}
             <ContentWebSession caption="Pengaturan">
                 {settingsItems?.map((set, i) => (
-                    <ListCustom key={i} url='/' caption={set.name}><set.icon /></ListCustom>
+                    <ListCustom key={i} url={set?.url} caption={set.name}><set.icon /></ListCustom>
                 ))}
             </ContentWebSession>
         </>

@@ -55,7 +55,8 @@ export const userRegisterService = async ({ id, email, firstName, lastName, phon
             verifyCode: verifyCode,
             isGoogleRegister: Boolean(false),
             isDiscountUsed: Boolean(true),
-            role: 'CUSTOMER'
+            role: 'CUSTOMER',
+            isGooglePasswordChange: Boolean(false)
         }
     })
 

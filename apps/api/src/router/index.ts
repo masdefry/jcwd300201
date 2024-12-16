@@ -6,6 +6,7 @@ import adminRouter from "./adminRouter";
 import orderRouter from "./orderRouter";
 import storeRouter from "./storeRouter";
 import workerRouter from "./workerRouter";
+import contactRouter from "./contactRouter";
 
 const router = Router()
 router.use('*/images', express.static('src/public/images'))
@@ -16,6 +17,7 @@ router.use('/admin', adminRouter)
 router.use('/order', orderRouter)
 router.use('/store', storeRouter)
 router.use('/worker', workerRouter)
+router.use('/contact', contactRouter)
 
 
 export default router

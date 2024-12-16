@@ -151,9 +151,7 @@ export default function RegisterUser() {
                         </div>
                         <div id="phoneNumber-input" className=" w-full">
                             <div className="flex gap-5 items-center">
-                                <label>
-                                    Nomor HP <span className="text-red-500">*</span>
-                                </label>
+                                <label>Nomor HP <span className="text-red-500">*</span></label>
                                 <ErrorMessage
                                     name="phoneNumber"
                                     component="div"

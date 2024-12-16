@@ -79,7 +79,7 @@ export default function Page() {
 
                                         // profile settings
                                         <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
-                                            disabledSubmitButton={isPendingUpdate} getDataWorker={getDataWorker}
+                                            disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                             handleDeleteProfilePicture={handleDeleteProfilePicture}
                                             profilePict={profilePict} setFieldValue={setFieldValue}
                                             setTempProfilePict={setTempProfilePict} tempProfilePict={tempProfilePict} />

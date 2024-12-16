@@ -7,28 +7,31 @@ import Image from "next/image";
 import { instance } from "@/utils/axiosInstance";
 import * as Yup from "yup";
 import ButtonCustom from "@/components/core/button";
+import { toast } from "@/components/hooks/use-toast";
 
 export default function LoginUser() {
-    const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
 
-    /* handle password visible */
-    const togglePasswordVisibility = () => {
-        setPasswordVisible(!passwordVisible);
-    };
-
-    // handle login user
-    const { mutate: handleLoginUser, isPending } = useMutation({
+    // handle resend email user
+    const { mutate: handleResendEmail, isPending } = useMutation({
         mutationFn: async ({ email }: { email: string }) => {
-            return await instance.post('/', {
-                email
-            })
+            return await instance.post('/user/forgot-password', { email })
         },
 
         onSuccess: (res) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+
+            setIsDisabledSucces(true)
             console.log(res)
         },
         onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
             console.log(err)
         }
     })
@@ -55,20 +58,9 @@ export default function LoginUser() {
                 </div>
 
                 <Formik
-                    initialValues={{
-                        email: '',
-                        password: '',
-                    }}
-                    validationSchema={Yup.object({
-                        email: Yup.string().required('Email harap diisi!'),
-                        password: Yup.string().min(8,
-                            'Password minimal 8 huruf'
-                        ).required('Password harap diisi!')
-                    })}
-
-                    onSubmit={(values) => {
-                        console.log(values);
-                    }}
+                    initialValues={{ email: '' }}
+                    validationSchema={Yup.object({ email: Yup.string().required('Email harap diisi!') })}
+                    onSubmit={(values) => handleResendEmail({ email: values?.email })}
                 >
                     <Form className="flex flex-col justify-center items-center w-full space-y-4">
 

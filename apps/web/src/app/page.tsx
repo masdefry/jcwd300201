@@ -11,15 +11,28 @@ import Link from "next/link";
 import { FaCalendar } from "react-icons/fa6";
 import { FaHandsWash, FaTshirt } from "react-icons/fa";
 import { GrDeliver } from "react-icons/gr";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const [isFade, setIsFade] = useState<boolean>(false)
+  const router = useRouter()
   const { ref: clickCleanRef, inView: clickCleanTextSection } = useInView()
   const { ref: laundryCaptionRef, inView: laundryCaptionInView } = useInView()
   const { ref: imageLaundryCaptionRef, inView: imageCaptionInView } = useInView()
   const { ref: whyUsRef, inView: whyUsInView } = useInView()
   const { ref: deliveryRef, inView: deliveryInView } = useInView()
+
+  const teamContent = [
+    { img: '/images/ceo.png', name: 'Andi Setiawan', position: 'CEO' },
+    { img: '/images/manager.png', name: 'Budi Santoso', position: 'Manager' },
+    { img: '/images/assisten.png', name: 'Rina Dewi', position: 'Asisten Manager' },
+    { img: '/images/worker.png', name: 'Agus Pratama', position: 'Akuntan' },
+    { img: '/images/admin-outlet.png', name: 'Hani Hanifah', position: 'Admin Outlet' },
+    { img: '/images/petugas-pencuci.png', name: 'Farel Putra', position: 'Petugas Pencuci' },
+    { img: '/images/ironing-w.png', name: 'Indri', position: 'Petugas Setrika' },
+    { img: '/images/kurir.png', name: 'Miftah', position: 'Petugas Pengantar' },
+  ]
 
   const imageCarousell = [
     '/images/people.png',
@@ -135,7 +148,7 @@ export default function Home() {
                 )}
               </div>
               <div className={`flex gap-4 mt-6 justify-center items-center ${currentIndex === 0 ? 'lg:justify-start' : 'lg:justify-start'}`}>
-                <ButtonCustom rounded="rounded-full" btnColor="bg-orange-500 hover:bg-orange-500">Pelajari Selengkapnya</ButtonCustom>
+                <ButtonCustom onClick={() => router.push('/user/dashboard/pickup')} rounded="rounded-full" btnColor="bg-orange-500 hover:bg-orange-500">Pelajari Selengkapnya</ButtonCustom>
                 <div className="flex items-center gap-2">
                   <span className="text-yellow-400 text-xl">{'⭐'.repeat(5)}</span>
                   <p className="text-gray-600 font-medium">4.8 Total Ulasan</p>
@@ -150,7 +163,7 @@ export default function Home() {
             <h1 className="text-4xl font-bold max-w-[60%] text-neutral-700 text-center border-b-[1px] border-neutral-500 pb-5">Kami hadir untuk memberikan solusi cepat dan praktis dengan <span className="text-orange-500">layanan kami</span></h1>
           </div>
           <div className="w-full py-20 h-fit flex">
-            <div className="grid grid-cols-3 w-full gap-5 px-44 ">
+            <div className="grid grid-cols-3 w-full gap-2 px-10">
               {productArr?.map((prod, i) => (
                 <Link href='/' key={i} className="w-full lg:h-[250px] rounded-2xl relative">
                   <div className="w-full lg:h-60">
@@ -159,12 +172,12 @@ export default function Home() {
                       width={500}
                       height={500}
                       alt="wash"
-                      className="rounded-t-2xl w-full lg:h-60 object-cover"
+                      className="rounded-2xl w-full lg:h-[250px] object-cover"
                     />
                   </div>
-                  <div className="absolute flex bottom-0">
-                    <div className="py-2 px-4 bg-slate-400 rounded-2xl">
-                      <h1 className="font-semibold text-sm text-orange-100">{prod?.caption}</h1>
+                  <div className="absolute flex bottom-5 py-4 px-2 inset-0 items-end">
+                    <div className="py-2 px-4 bg-white">
+                      <h1 className="font-semibold text-sm text-neutral-500">{prod?.caption}</h1>
                     </div>
                   </div>
                 </Link>
@@ -199,29 +212,6 @@ export default function Home() {
           </div>
         </div>
 
-        <div className='w-full h-fit flex'>
-          <div className="w-full h-fit py-44 text-black flex flex-col items-center text-center bg-white px-10 lg:px-60">
-            <h2 className={`text-4xl font-bold mb-14 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} ref={whyUsRef}>Mengapa Kami?</h2>
-            <div ref={whyUsRef} className={`flex flex-col md:flex-row justify-center gap-8 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} >
-              {whyUsData.map((item) => (
-                <div key={item.id} className="flex flex-col items-center">
-                  <div className="bg-blue-300 rounded-full p-4 mb-4">
-                    <Image
-                      src={item.imageSrc}
-                      alt={item.altText}
-                      width={200}
-                      height={200}
-                      className="w-16 h-16"
-                    />
-                  </div>
-                  <h3 className="text-xl font-semibold">{item.title}</h3>
-                  <p className="text-neutral-400">{item.description}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         <div className='w-full h-fit py-32 bg-gradient-to-b from-blue-100 to-blue-200 flex flex-col gap-10'>
           <div className='w-full flex justify-center items-center text-center pb-10'>
             <h1 className="font-extrabold text-4xl sm:text-5xl text-neutral-700">
@@ -247,6 +237,54 @@ export default function Home() {
               ))}
             </div>
           </div>
+        </div>
+
+        <div className='w-full h-fit flex'>
+          <div className="w-full h-fit py-44 text-black flex flex-col items-center text-center bg-white px-10 lg:px-60">
+            <h2 className={`text-4xl font-bold mb-14 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} ref={whyUsRef}>Mengapa Kami?</h2>
+            <div ref={whyUsRef} className={`flex flex-col md:flex-row justify-center gap-8 transition-opacity duration-1000 ease-in-out ${whyUsInView ? 'opacity-100' : 'opacity-0'}`} >
+              {whyUsData.map((item) => (
+                <div key={item.id} className="flex flex-col items-center">
+                  <div className="bg-blue-300 rounded-full p-4 mb-4">
+                    <Image
+                      src={item.imageSrc}
+                      alt={item.altText}
+                      width={200}
+                      height={200}
+                      className="w-16 h-16"
+                    />
+                  </div>
+                  <h3 className="text-xl font-semibold">{item.title}</h3>
+                  <p className="text-neutral-400">{item.description}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex md:flex-row flex-col w-full px-10 gap-2 h-fit bg-white">
+          <section className="w-full h-fit py-10 flex flex-col">
+            <div className="w-full p-5">
+              <h1 className="text-xl text-orange-500 font-sans font-semibold">Tim Kami</h1>
+            </div>
+            <div className="w-1/2 px-5">
+              <h1 className="text-2xl font-bold text-neutral-700">Kenali Tim Profesional Kami yang Berdedikasi untuk Layanan Laundry Terbaik</h1>
+            </div>
+
+            <div className="w-full h-fit flex justify-center items-center">
+              <div className="grid grid-cols-4 w-full gap-2 px-5 py-10">
+                {teamContent.map((team, i) => (
+                  <div key={i} className="h-[330px] relative bg-blue-300 w-full rounded-2xl">
+                    <Image width={500} height={500} alt="our-team" src={team?.img} className="w-full shadow-md h-[330px] rounded-2xl object-cover object-top" />
+                    <div className="p-4 absolute inset-0 flex flex-col items-end bottom-0 w-full justify-end">
+                      <h3 className="text-lg font-semibold text-neutral-700 bg-neutral-50 px-2">{team?.name}</h3>
+                      <p className="text-sm text-neutral-600 bg-neutral-50 px-2">{team?.position}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
         </div>
       </section>
     </main>

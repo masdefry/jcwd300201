@@ -24,9 +24,6 @@ export default function Page() {
 
     return (
         <main className="w-full h-fit flex-col pt-0 flex md:pt-[90px]">
-            <section className="w-full h-60 bg-red-400">
-
-            </section>
             <div className="flex md:flex-row flex-col w-full px-10 gap-2 h-fit bg-neutral-100">
                 <section className="h-fit md:w-1/2 w-full py-5">
                     <div className="h-fit w-full bg-white space-y-2 rounded-2xl shadow-md">
