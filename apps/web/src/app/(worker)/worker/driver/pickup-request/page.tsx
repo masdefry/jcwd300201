@@ -16,14 +16,10 @@ import { FaSearch } from 'react-icons/fa';
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
-<<<<<<< HEAD:apps/web/src/app/(worker)/worker/driver/pickup/page.tsx
 import { IoLocationSharp } from "react-icons/io5";
-
-=======
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
->>>>>>> 411a402905e6b96684e28a1cd755a30c6de588d6:apps/web/src/app/(worker)/worker/driver/pickup-request/page.tsx
 
 export default function Page() {
     const params = useSearchParams();
@@ -65,8 +61,8 @@ export default function Page() {
     });
 
     const { mutate: handleProcessOrder, isPending } = useMutation({
-        mutationFn: async (id: any) => {
-            return await instance.post(`/worker/accept-order/${id}`, { email }, {
+        mutationFn: async (slug: any) => {
+            return await instance.post(`/worker/accept-order/${slug}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -178,11 +174,11 @@ export default function Page() {
                                             >
 
                                                 <ConfirmAlert
-                                                    colorConfirmation="green"
+                                                    colorConfirmation="blue"
                                                     caption={
-                                                        order.latestStatus === 'AWAITING_DRIVER_PICKUP'
+                                                        order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
                                                             ? 'melakukan pengambilan laundry pada order ini'
-                                                            : order.latestStatus === 'DRIVER_TO_OUTLET'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
                                                                 ? 'menyelesaikan pengiriman laundry pada order ini'
                                                                 : ''
                                                     }

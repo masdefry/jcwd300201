@@ -41,15 +41,16 @@ export default function DriverPickUp() {
     const [activeTab, setActiveTab] = useState("semua");
     const limit = 5;
 
-    const { data: dataOrderAwaitingPickup, refetch, isLoading: dataOrderAwaitingPickupLoading, isError: dataOrderAwaitingPickupError } = useQuery({
+    const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput],
         queryFn: async () => {
             const tabValue =
                 activeTab === "belumDicuci" ? "AWAITING_PAYMENT" :
                     activeTab === "prosesCuci" ? "IN_WASHING_PROCESS" :
-                        activeTab === "selesai" ? "IN_IRONING_PROCESS" : "";
+                        activeTab === "selesai" ? "IN_IRONING_PROCESS" :
+                            "";
 
-            const res = await instance.get('/worker/order', {
+            const res = await instance.get('/worker/order-washing', {
                 params: {
                     page,
                     limit_data: limit,
@@ -59,6 +60,7 @@ export default function DriverPickUp() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
+            console.log(res)
             return res?.data?.data;
         },
     });
@@ -115,7 +117,7 @@ export default function DriverPickUp() {
     }, [searchInput, page, sortOption, activeTab, refetch]);
 
 
-    const totalPages = dataOrderAwaitingPickup?.totalPage || 1;
+    const totalPages = dataOrderWashingProcess?.totalPage || 1;
 
     return (
         <>
@@ -125,7 +127,7 @@ export default function DriverPickUp() {
                     <main className="w-full">
                         <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
                             <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> DRIVER PICKUP
+                                <Link href='/admin/settings'><FaArrowLeft /></Link> WASHING WORKER
                             </div>
                         </section>
                         <div className="py-28 mx-4 space-y-4">
@@ -164,9 +166,9 @@ export default function DriverPickUp() {
                                                 </SelectContent>
                                             </Select>
                                         </div>
-                                        {dataOrderAwaitingPickupLoading && <p>Loading...</p>}
-                                        {dataOrderAwaitingPickupError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                        {dataOrderAwaitingPickup?.orders?.map((order: any) => (
+                                        {dataOrderWashingProcessLoading && <p>Loading...</p>}
+                                        {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
+                                        {dataOrderWashingProcess?.orders?.map((order: any) => (
                                             <section
                                                 key={order.id}
                                                 className="flex justify-between items-center border-b py-4"
@@ -175,10 +177,10 @@ export default function DriverPickUp() {
                                                 <ConfirmAlert
                                                     colorConfirmation="green"
                                                     caption={
-                                                        order.latestStatus === 'AWAITING_DRIVER_PICKUP'
-                                                            ? 'melakukan pengambilan laundry pada order ini'
-                                                            : order.latestStatus === 'DRIVER_TO_OUTLET'
-                                                                ? 'menyelesaikan pengiriman laundry pada order ini'
+                                                        order.latestStatus === 'AWAITING_PAYMENT'
+                                                            ? 'melakukan proses cuci pada order ini'
+                                                            : order.latestStatus === 'IN_WASHING_PROCESS'
+                                                                ? 'menyelesaikan proses pada order ini'
                                                                 : ''
                                                     }
                                                     onClick={() => handleProcessOrder(order?.id)}>
@@ -188,9 +190,9 @@ export default function DriverPickUp() {
                                                                 {order.userFirstName} {order.userLastName}
                                                             </h2>
                                                             <p className="text-xs text-gray-500">
-                                                                {order.latestStatus === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Pickup' :
-                                                                    order.latestStatus === 'DRIVER_TO_OUTLET' ? 'Perjalanan Menuju Outlet' :
-                                                                        order.latestStatus === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Sampai Pada Outlet' :
+                                                                {order.latestStatus === 'AWAITING_PAYMENT' ? 'Belum Dicuci' :
+                                                                    order.latestStatus === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
+                                                                        order.latestStatus === 'IN_IRONING_PROCESS' ? 'Selesai' :
                                                                             order.latestStatus}
                                                             </p>
                                                             <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>

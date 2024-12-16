@@ -10,6 +10,7 @@ import { uploader } from '@/middleware/uploader'
 const workerRouter = Router()
 
 workerRouter.get('/order', tokenValidation, getOrdersForDriver)
+workerRouter.get('/order-washing', tokenValidation, getOrdersForWashing)
 workerRouter.get('/item', tokenValidation, getListItem)
 workerRouter.post('/accept-order/:orderId', tokenValidation, acceptOrder)
 workerRouter.get('/get-order-note/', tokenValidation, getOrderNote)
