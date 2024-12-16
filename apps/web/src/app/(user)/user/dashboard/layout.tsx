@@ -8,7 +8,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import Cookies from 'js-cookie'
-import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import { FaCartArrowDown, FaDashcube, FaHome, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { RiProfileFill } from "react-icons/ri";
 import { toast } from "@/components/hooks/use-toast";
@@ -27,7 +27,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
     const router = useRouter()
     const pathname = usePathname()
-    
+
     const handleCloseSideBar = () => setIsClose(!isClose)
     const { mutate: handleLogoutAdmin, isPending } = useMutation({
         mutationFn: async () => {
@@ -60,7 +60,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     })
 
     return (
-        <main className="w-full h-fit md:h-screen md:flex flex-none">
+        <main className="w-full h-fit md:h-screen bg-white md:flex flex-none">
             <section className={`w-3/12 h-full hidden md:flex bg-white ${isClose ? 'md:hidden' : 'animate-fade-right md:flex'} flex-col px-2 text-white`}>
                 <div className="h-fit py-10 gap-5 flex justify-start px-5 items-center w-full">
                     <div className="w-12 h-12 rounded-full">
@@ -83,6 +83,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/user/dashboard/pickup' className={`w-full flex ${pathname.startsWith('/user/dashboard/pickup') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaMoneyBillWave /> Pickup Request</Link>
+                    <Link href='/' className={`w-full flex hover:text-white text-neutral-700 hover:bg-orange-500 items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaHome /> Beranda</Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">
@@ -94,7 +96,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     </ConfirmAlert>
                 </div>
             </section>
-            <section className="w-full h-fit md:h-screen md:bg-white md:px-1 md:py-1 relative">
+            <section className="w-full h-fit md:h-screen md:bg-white bg-opacity-40 md:px-1 md:py-1 relative">
                 <span onClick={handleCloseSideBar} className="absolute cursor-pointer hover:shadow-xl top-14 left-14 z-20 text-white">
                     {isClose ? <GoSidebarCollapse /> : <GoSidebarExpand />}
                 </span>

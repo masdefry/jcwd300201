@@ -489,6 +489,7 @@ const dataUser = [
         isGoogleRegister: false,
         forgotPasswordToken: "68asd684a",
         isDiscountUsed: false,
+        isGooglePasswordChange: false
     },
     {
         email: "gaga@gmail.com",
@@ -501,6 +502,7 @@ const dataUser = [
         isGoogleRegister: false,
         forgotPasswordToken: "68asd684a",
         isDiscountUsed: false,
+        isGooglePasswordChange: false
     },
 ]
 
@@ -589,7 +591,7 @@ async function main() {
     const userPromises = dataUser.map(async (user) => {
         return prisma.users.upsert({
             where: { email: user.email },
-            update: {}, // Leave empty to skip updates if user exists
+            update: {},
             create: {
                 email: user.email,
                 role: 'CUSTOMER',
@@ -603,6 +605,7 @@ async function main() {
                 isGoogleRegister: user.isGoogleRegister,
                 forgotPasswordToken: user.forgotPasswordToken,
                 isDiscountUsed: user.isDiscountUsed,
+                isGooglePasswordChange: user.isGooglePasswordChange
             },
         });
     });

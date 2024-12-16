@@ -58,3 +58,30 @@ export const changePasswordWorkerValidation = [
     body('password').isString().escape(),
     body('existingPassword').isString().escape(),
 ]
+
+export const updateProfileUserValidation = [
+    body(['email', 'firstName', 'lastName', 'phoneNumber']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('email').isString().escape(),
+    body('firstName').isString().escape(),
+    body('lastName').isString().escape(),
+    body('phoneNumber').isString().escape(),
+]
+
+export const changePasswordUserValidation = [
+    body(['password', 'existingPassword']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('password').isString().escape(),
+    body('existingPassword').isString().escape(),
+]
+
+export const changePasswordGoogleValidation = [
+    body(['password']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('password').isString().escape(),
+]
+
+export const createContactValidation = [
+    body(['email', 'phoneNumber', 'textHelp', 'name']).notEmpty().withMessage('Harap diisi terlebih dahulu'),
+    body('email').isString().escape(),
+    body('phoneNumber').isString().escape(),
+    body('textHelp').isString().escape(),
+    body('name').isString().escape(),
+]

@@ -64,3 +64,16 @@ export const roleCheckSuperAdmin = (req: Request, res: Response, next: NextFunct
 
     next()
 }
+
+export const roleCheckCustomer = (req: Request, res: Response, next: NextFunction) => {
+    const { authorizationRole, userId } = req.body
+
+    if (authorizationRole != 'CUSTOMER') throw { msg: 'Hanya user yang bisa mengirim pesan', status: 401 }
+
+    if (authorizationRole && userId) {
+        req.body.authorizationRole = authorizationRole
+        req.body.userId = userId
+    }
+
+    next()
+}

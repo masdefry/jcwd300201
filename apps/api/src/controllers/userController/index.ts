@@ -5,11 +5,16 @@ import jwt from 'jsonwebtoken'
 import { signInWithGoogleService, userRegisterService } from "@/service/userService"
 import { userLoginService } from "@/service/userService"
 import { decodeToken, encodeToken } from "@/utils/tokenValidation";
-import { hashPassword } from "@/utils/passwordHash";
-import fs from 'fs'
+import { comparePassword, hashPassword } from "@/utils/passwordHash";
+import fs, { rmSync } from 'fs'
 import { compile } from "handlebars";
 import { transporter } from "@/utils/transporter";
+import { validateEmail } from "@/middleware/validation/emailValidation";
+import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation";
+import dotenv from 'dotenv'
 
+dotenv.config()
+const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 const secret_key: string | undefined = process.env.JWT_SECRET as string
 export const userRegister = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -96,7 +101,7 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
       res.status(200).json({
         error: false,
         message: 'Login menggunakan Google berhasil!',
-        data: { 
+        data: {
           token,
           email,
           firstName: findEmail?.firstName,
@@ -104,7 +109,7 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
           role: findEmail?.role,
           phoneNumber: findEmail?.phoneNumber,
           profilePicture: findEmail?.profilePicture,
-         }
+        }
       })
     } else {
       const newUser = await prisma.users.create({
@@ -119,6 +124,7 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
           profilePicture: profilePicture,
           isDiscountUsed: true,
           isGoogleRegister: true,
+          isGooglePasswordChange: Boolean(true),
           verifyCode
         }
       })
@@ -457,4 +463,130 @@ export const confirmOrder = async (req: Request, res: Response, next: NextFuncti
     next(error)
   }
 
+}
+
+export const getSingleDataUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body
+
+    const findUser = await prisma.users.findFirst({ where: { id: userId } })
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil mendapatkan data',
+      data: findUser
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const updateProfileUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const imageUploaded: any = req.files
+    const { userId, email, phoneNumber, firstName, lastName } = req.body
+    const findUser = await prisma.users.findFirst({ where: { id: userId } })
+    const findEmail = await prisma.users.findFirst({ where: { email } })
+
+    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
+    if (findEmail && findEmail?.email !== findUser?.email) throw { msg: 'Email sudah terpakai', status: 401 }
+    if (!validateEmail(email)) throw { msg: 'Harap masukan email dengan format yang valid', status: 401 }
+    if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan nomor telepon dengan format nomor', status: 401 }
+    if (email === findUser?.email && firstName === findUser?.firstName && lastName === findUser?.lastName && phoneNumber === findUser?.phoneNumber && (imageUploaded?.images?.length === 0 || imageUploaded?.images?.length === undefined)) throw { msg: 'Data tidak ada yang diubah', status: 400 }
+
+    const dataImage: string[] = imageUploaded?.images?.map((img: any) => {
+      return img?.filename
+    })
+
+    const newDataUser = await prisma.users.update({
+      where: { id: userId },
+      data: { firstName, lastName, email, phoneNumber, profilePicture: dataImage?.length > 0 ? dataImage[0] : findUser?.profilePicture }
+    })
+
+    if (!findUser?.profilePicture.includes('https://') && newDataUser?.profilePicture !== findUser?.profilePicture) { /** ini bersikap sementara karna default value profilePict itu dari google / berupa https:// */
+      fs.rmSync(`src/public/images/${findUser?.profilePicture}`) /**sedangkan ini menghapus directory membaca folder public/images akan menyebabkan error */
+    }
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil mengubah data',
+      data: {}
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const changePasswordUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, password, existingPassword } = req?.body
+
+    const findUser = await prisma.users.findFirst({ where: { id: userId } })
+    const compareOldPassword = await comparePassword(existingPassword, findUser?.password as string)
+    if (!compareOldPassword) throw { msg: 'Password lama anda salah', status: 401 }
+    if (existingPassword === password) throw { msg: 'Harap masukan password yang berbeda', status: 401 }
+
+    const hashedPassword = await hashPassword(password)
+    await prisma.users.update({
+      where: { id: userId },
+      data: { password: hashedPassword }
+    })
+
+    res.status(200).json({
+      error: false,
+      message: 'Password berhasil diubah',
+      data: {}
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteProfilePictureUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body
+
+    const findUser = await prisma.users.findFirst({ where: { id: userId } })
+    if (!findUser) throw { msg: 'Data tidak tersedia', status: 404 }
+
+    await prisma.users.update({
+      where: { id: userId },
+      data: { profilePicture: profilePict }
+    })
+
+    if (!findUser?.profilePicture?.includes(profilePict)) {
+      rmSync(`src/public/images/${findUser?.profilePicture}`)
+    }
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil menghapus foto profil',
+      data: {}
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const changePasswordGoogleRegister = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, password } = req.body
+    const findUser = await prisma.users.findFirst({ where: { id: userId } })
+    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
+
+    const hashed = await hashPassword(password)
+    await prisma.users.update({ where: { id: userId }, data: { password: hashed, isGooglePasswordChange: false } })
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil merubah password baru',
+      data: {}
+    })
+
+  } catch (error) {
+    next(error)
+  }
 }

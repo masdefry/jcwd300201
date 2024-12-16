@@ -76,6 +76,37 @@ export default function Header() {
     }
   })
 
+  const dashboardMenuUrl: any = {
+    SUPER_ADMIN: '/admin/dashboard',
+    OUTLET_ADMIN: '/worker/admin-outlet/dashboard',
+    WASHING_WORKER: '/worker/washing-worker/dashboard',
+    IRONING_WORKER: '/worker/ironing-worker/dashboard',
+    PACKING_WORKER: '/worker/packing-worker/dashboard',
+    DRIVER: '/worker/driver/dashboard',
+  }
+
+  const profilMenuUrl: any = {
+    SUPER_ADMIN: '/admin/settings',
+    OUTLET_ADMIN: '/worker/admin-outlet/settings',
+    WASHING_WORKER: '/worker/washing-worker/settings',
+    IRONING_WORKER: '/worker/ironing-worker/settings',
+    PACKING_WORKER: '/worker/packing-worker/settings',
+    DRIVER: '/worker/driver/settings',
+  }
+
+  const settingsMenuUrl: any = {
+    SUPER_ADMIN: '/admin/settings',
+    OUTLET_ADMIN: '/worker/admin-outlet/settings',
+    WASHING_WORKER: '/worker/washing-worker/settings',
+    IRONING_WORKER: '/worker/ironing-worker/settings',
+    PACKING_WORKER: '/worker/packing-worker/settings',
+    DRIVER: '/worker/driver/settings',
+  }
+
+  const dashboardUrl = dashboardMenuUrl[role] || ''
+  const profileUrl = profilMenuUrl[role] || ''
+  const settingsUrl = settingsMenuUrl[role] || ''
+
   return (
     <nav className={`w-full h-fit fixed bg-white z-20 ${pathname == '/admin/login' || pathname == '/user/login'
       || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/forgot-password')
@@ -135,7 +166,7 @@ export default function Header() {
         </div>
 
         {showSideBarMenu &&
-          <aside onMouseLeave={handleOpenMenuUser} className="w-4/12 text-neutral-400 animate-fade-left overflow-hidden absolute right-0 top-0 h-screen bg-white pt-8 px-6 transition-all duration-300 ease-in-out transform translate-x-0 shadow-lg z-40">
+          <aside onMouseLeave={handleOpenMenuUser} className="w-4/12 z-50 text-neutral-400 animate-fade-left overflow-hidden absolute right-0 top-0 h-screen bg-white pt-8 px-6 transition-all duration-300 ease-in-out transform translate-x-0 shadow-lg">
             <div className="w-full h-fit">
               <div className="flex justify-between items-center mb-8">
                 <div className="flex gap-2 items-center">
@@ -158,14 +189,13 @@ export default function Header() {
                 <>
                   <div className="flex flex-col gap-5">
                     <MenuCustom url='/' navigation="Beranda"><FaDashcube /></MenuCustom>
-                    <MenuCustom url='/user/profil' navigation="Profil"><FaUserGear /></MenuCustom>
+                    <MenuCustom url='/user/dashboard/home' navigation="Profil"><FaUserGear /></MenuCustom>
                     <MenuCustom url='/about-us' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
                     <MenuCustom url='/contact' navigation="Kontak"><LuContact /></MenuCustom>
                   </div>
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">
-                    <MenuCustom url='/' navigation="Profil"><FaUserGear /></MenuCustom>
-                    <MenuCustom url='/' navigation="Settings"><BsGearFill /></MenuCustom>
+                    <MenuCustom url='/user/dashboard/settings' navigation="Settings"><BsGearFill /></MenuCustom>
                     <ConfirmAlert disabled={isPending || isDisabledSucces} caption="logout" onClick={() => handleLogout()}>
                       <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
                     </ConfirmAlert>
@@ -174,15 +204,14 @@ export default function Header() {
                 :
                 <>
                   <div className="flex flex-col gap-5">
-                    <MenuCustom url={role === 'SUPER_ADMIN' ? '/admin/dashboard' : role === 'OUTLET_ADMIN' ? '/worker/admin-outlet/dashboard' : ''} navigation="Dashboard"><FaDashcube /></MenuCustom>
-                    <MenuCustom url='/' navigation="Profil"><FaUserGear /></MenuCustom>
-                    <MenuCustom url='/' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
-                    <MenuCustom url='/' navigation="Contact"><LuContact /></MenuCustom>
+                    <MenuCustom url={dashboardUrl} navigation="Dashboard"><FaDashcube /></MenuCustom>
+                    <MenuCustom url={profileUrl} navigation="Profil"><FaUserGear /></MenuCustom>
+                    <MenuCustom url='/about-us' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
+                    <MenuCustom url='/contact' navigation="Contact"><LuContact /></MenuCustom>
                   </div>
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">
-                    <MenuCustom url='/' navigation="Profil"><FaUserGear /></MenuCustom>
-                    <MenuCustom url='/' navigation="Settings"><BsGearFill /></MenuCustom>
+                    <MenuCustom url={settingsUrl} navigation="Settings"><BsGearFill /></MenuCustom>
                     <ConfirmAlert disabled={isPending || isDisabledSucces} caption="logout" onClick={() => handleLogout()}>
                       <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
                     </ConfirmAlert>

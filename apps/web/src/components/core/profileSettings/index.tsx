@@ -4,7 +4,7 @@ import { ConfirmAlert } from "../confirmAlert"
 import ButtonCustom from "../button"
 import { FaTrash } from "react-icons/fa6"
 
-export default function ProfileSettings({ tempProfilePict, getDataWorker, profilePict, isDisabledSucces, disabledProfilePhoto, disabledSubmitButton, setFieldValue, setTempProfilePict, handleDeleteProfilePicture }: any) {
+export default function ProfileSettings({ tempProfilePict, getData, profilePict, isDisabledSucces, disabledProfilePhoto, disabledSubmitButton, setFieldValue, setTempProfilePict, handleDeleteProfilePicture }: any) {
     return (
         <Form className="w-full">
             <div className="flex justify-between items-center mb-4">
@@ -24,7 +24,7 @@ export default function ProfileSettings({ tempProfilePict, getDataWorker, profil
                             height={100}
                             width={100}
                             alt="profile"
-                            src={getDataWorker?.profilePicture?.includes('https://') ? getDataWorker?.profilePicture : `http://localhost:5000/api/src/public/images/${getDataWorker?.profilePicture}` || profilePict}
+                            src={getData?.profilePicture?.includes('https://') ? getData?.profilePicture : `http://localhost:5000/api/src/public/images/${getData?.profilePicture}` || profilePict}
                             className="w-20 h-20 rounded-full object-cover border border-gray-300 shadow-sm"
                         />}
                     <div className='w-full justify-between flex'>
@@ -53,7 +53,7 @@ export default function ProfileSettings({ tempProfilePict, getDataWorker, profil
                                 </div>
                             )}
                         </div>
-                        {getDataWorker?.profilePicture !== profilePict && (
+                        {getData?.profilePicture !== profilePict && (
                             <ConfirmAlert type='button' caption='menghapus foto profil' onClick={() => handleDeleteProfilePicture()} description='Menghapus foto profil akan menghilangkan gambar yang saat ini digunakan untuk akun Anda. Apakah Anda ingin melanjutkan?'>
                                 <button type='button' disabled={disabledProfilePhoto} className='text-red-500 hover:text-red-600 flex items-center gap-1'><FaTrash className='text-sm text-red-500' /> Hapus Foto Profile</button>
                             </ConfirmAlert>
