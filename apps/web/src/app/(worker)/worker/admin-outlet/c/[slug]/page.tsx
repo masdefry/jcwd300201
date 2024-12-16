@@ -140,10 +140,10 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     totalWeight: 0
                                 }}
                                 onSubmit={(values: any) => {
+                                    console.log(values)
                                     const itemOrder = values.items.map((item: any) => ({
                                         itemNameId: item.itemName,
                                         quantity: item.quantity,
-                                        weight: item.weight,
                                     }));
 
 
@@ -156,35 +156,20 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                 }}
                             >
                                 {({ values, setFieldValue }) => {
-                                    const calculateTotals = () => {
-                                        let totalWeight = 0;
-                                        let totalPrice = 0;
-
-                                        values.items.forEach((item: Iitem) => {
-                                            totalWeight += item.weight;
-                                        });
-
-                                        totalWeight = Math.floor(totalWeight * 2) / 2;
-
-                                        if (totalWeight % 1 >= 0.5) {
-                                            totalWeight = Math.ceil(totalWeight);
-                                        }
-
-                                        totalPrice = totalWeight * dataOrderNote[0].OrderType?.Price;
-
-                                        setFieldValue("totalWeight", totalWeight);
+                                    
+                                    const calculatePrice = () => {
+                                        const pricePerKg = dataOrderNote[0].OrderType?.Price || 0;
+                                        const totalPrice = values.totalWeight * pricePerKg;
                                         setFieldValue("totalPrice", totalPrice);
-
                                     };
 
                                     // eslint-disable-next-line react-hooks/rules-of-hooks
                                     useEffect(() => {
-                                        calculateTotals()
-                                    }, [values.items]);
+                                        calculatePrice();
+                                    }, [values.totalWeight]);
 
                                     return (
                                         <Form>
-                                            {/* Customer Information */}
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="flex flex-col col-span-2">
                                                     <label className="text-sm">Customer Name</label>
@@ -216,7 +201,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     />
                                                 </div>
 
-                                                {/* Item Selection */}
                                                 <div className="flex flex-col col-span-2">
                                                     <label className="text-sm">Item</label>
                                                     <Field
@@ -241,14 +225,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                             className="border border-gray-500 rounded-md p-2"
                                                             min="1"
                                                         />
-                                                        <Field
-                                                            name="weight"
-                                                            type="number"
-                                                            placeholder="Weight (kg)"
-                                                            className="border border-gray-500 rounded-md p-2"
-                                                            step="0.1"
-                                                            min="0.1"
-                                                        />
+                                            
                                                     </div>
                                                     <button
                                                         type="button"
@@ -260,7 +237,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                             if (existingItemIndex !== -1) {
                                                                 const updatedItems = [...values.items];
                                                                 updatedItems[existingItemIndex].quantity += values.quantity;
-                                                                updatedItems[existingItemIndex].weight += values.weight;
                                                                 setFieldValue("items", updatedItems);
                                                             } else {
                                                                 setFieldValue("items", [
@@ -268,16 +244,12 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                                     {
                                                                         itemName: values.itemName,
                                                                         quantity: values.quantity,
-                                                                        weight: values.weight,
                                                                     },
                                                                 ]);
                                                             }
 
                                                             setFieldValue("itemName", "");
                                                             setFieldValue("quantity", 1);
-                                                            setFieldValue("weight", 0.1);
-
-                                                            calculateTotals();
                                                         }}
                                                         className="bg-blue-500 text-white rounded-md p-3 mt-4"
                                                     >
@@ -286,7 +258,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 </div>
                                             </div>
 
-                                            {/* Display Items */}
                                             <div className="mt-4">
                                                 {values.items.map((item: Iitem, index: number) => {
                                                     const selectedItem = dataItemName.find((i: Iitem) => Number(i.id) === Number(item.itemName));
@@ -298,7 +269,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                                         {selectedItem ? selectedItem.itemName : 'Item not found'}
                                                                     </h3>
                                                                     <p className="text-gray-600 mt-1">
-                                                                        Quantity: {item.quantity}, Weight: {item.weight} kg
+                                                                        Quantity: {item.quantity}
                                                                     </p>
                                                                 </div>
                                                                 <button
@@ -306,7 +277,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                                     onClick={() => {
                                                                         const updatedItems = values.items.filter((_: any, i: number) => i !== index);
                                                                         setFieldValue("items", updatedItems);
-                                                                        calculateTotals();
+                                                                        // calculateTotals();
                                                                     }}
                                                                     className="text-red-500"
                                                                 >
@@ -318,12 +289,31 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 })}
                                             </div>
 
-                                            {/* Display Totals */}
-                                            <div className="mt-4">
-                                                <p>Total Weight: {values.totalWeight} kg</p>
-                                                <p>Total Price: Rp{values.totalPrice}</p>
+                                            <div className="mt-4 flex items-center gap-4">
+                                                <label className="block text-sm font-medium text-gray-700">Total Berat (kg)</label>
+                                                <div className="relative mt-2">
+                                                <Field
+                                                    name="totalWeight"
+                                                    type="number"
+                                                    placeholder="Enter total weight"
+                                                    className="block w-full rounded-lg border-gray-500 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-3"
+                                                    min="1"
+                                                    step="1"
+                                                />
+                                                <ErrorMessage
+                                                    name="totalWeight"
+                                                    component="div"
+                                                    className="absolute -bottom-5 left-0 text-xs text-red-600"
+                                                />
+                                                </div>
                                             </div>
 
+       
+                                            <div className="mt-5 bg-gray-50 rounded-lg shadow-sm p-4">
+                                                <p className="text-sm font-semibold text-gray-700">Ringkasan</p>
+                                                <p className="text-lg font-bold text-green-600 mt-1">Total Harga: Rp{values.totalPrice.toLocaleString('id-ID')}</p>
+                                            </div>
+                                           
                                             <button
                                                 type="submit"
                                                 className="bg-green-500 text-white rounded-md p-3 mt-4"

@@ -22,7 +22,6 @@ import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
 import ContentWebSession from "@/components/core/webSessionContent"
 
-
 export default function Page() {
     const params = useSearchParams();
     const router = useRouter();
@@ -62,8 +61,8 @@ export default function Page() {
     });
 
     const { mutate: handleProcessOrder, isPending } = useMutation({
-        mutationFn: async (id: any) => {
-            return await instance.post(`/worker/accept-order/${id}`, { email }, {
+        mutationFn: async (slug: any) => {
+            return await instance.post(`/worker/accept-order/${slug}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -176,11 +175,11 @@ export default function Page() {
                                             >
 
                                                 <ConfirmAlert
-                                                    colorConfirmation="green"
+                                                    colorConfirmation="blue"
                                                     caption={
-                                                        order.latestStatus === 'AWAITING_DRIVER_PICKUP'
+                                                        order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
                                                             ? 'melakukan pengambilan laundry pada order ini'
-                                                            : order.latestStatus === 'DRIVER_TO_OUTLET'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
                                                                 ? 'menyelesaikan pengiriman laundry pada order ini'
                                                                 : ''
                                                     }
