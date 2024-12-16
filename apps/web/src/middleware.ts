@@ -40,10 +40,18 @@ export const middleware = (req: NextRequest) => {
         return NextResponse.redirect(new URL('/', req.url))
     }
 
+    if (role && role != 'CUSTOMER' && tokenUser && pathname.startsWith('/user/dashboard')) {
+        return NextResponse.redirect(new URL('/', req.url))
+    }
+
     console.log(role)
 
     if (!role && !tokenUser && (pathname.startsWith('/admin') || pathname.startsWith('/worker')) && pathname != '/admin/login') {
         return NextResponse.redirect(new URL('/admin/login', req.url))
+    }
+
+    if (!role && !tokenUser && (pathname.startsWith('/user/dashboard'))) {
+        return NextResponse.redirect(new URL('/user/login', req.url))
     }
 
     return NextResponse.next()

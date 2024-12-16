@@ -44,9 +44,10 @@ export default function Footer() {
         </section>
       </main>
 
-      <footer className={`w-full bottom-0 h-96 z-20 bg-orange-100 md:flex flex-col ${pathname == '/admin/login' || pathname == '/user/login'
-        || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/forgot-password') ? 'md:hidden' : ''}`}>
-        <div className="w-full h-full px-10">
+      <footer className={`w-full bottom-0 h-96 z-20 hidden bg-orange-100 md:flex flex-col ${pathname == '/admin/login' || pathname == '/user/login'
+        || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/forgot-password') 
+        || pathname.startsWith('/user/dashboard') ? 'md:hidden' : ''}`}>
+        <div className="w-full h-full px-20">
           <div className="flex w-full h-full justify-center items-center">
             <div className="grid grid-cols-4 w-full">
               <div className="space-y-2">
@@ -89,7 +90,7 @@ export default function Footer() {
                 <h1 className="text-lg font-bold text-neutral-700 pb-5">Kontak</h1>
                 <ul className="space-y-2 text-neutral-500 font-sans font-semibold">
                   <li className="flex gap-2 items-center"><FaPhone /> +62 123-4567-890</li>
-                  <li className="flex gap-2 items-center"><FaVoicemail /> info@companyxyz.com</li>
+                  <li className="flex gap-2 items-center"><FaVoicemail /> info@cleannclick.com</li>
                   <li className="flex gap-2 items-center"><FaAddressCard /> Jl. Sudirman No. 1, Jakarta</li>
                 </ul>
               </div>

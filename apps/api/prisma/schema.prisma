@@ -14,7 +14,7 @@ model Users {
   password            String
   firstName           String
   lastName            String
-  phoneNumber         String        @db.Text
+  phoneNumber         String        @db.VarChar(20)
   profilePicture      String
   isVerified          Boolean
   verifyCode          String?
@@ -83,12 +83,12 @@ model Worker {
   workerRole          Role
   firstName           String
   lastName            String
-  phoneNumber         String  @db.Text
-  profilePicture      String  @db.Text
-  identityNumber      String? @db.Text
+  phoneNumber         String  @db.VarChar(20)
+  profilePicture      String  @db.LongText
+  identityNumber      String? @db.LongText
   motorcycleType      String?
   plateNumber         String?
-  changePasswordToken String? @db.Text
+  changePasswordToken String? @db.VarChar(500)
   storesId            String?
 
   orderstatus OrderStatus[]

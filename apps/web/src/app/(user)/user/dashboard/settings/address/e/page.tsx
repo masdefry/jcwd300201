@@ -8,14 +8,13 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form } from "formik";
 import * as Yup from "yup";
-import { FormControl } from "@mui/material";
-import { FormikHelpers } from "formik";
+import ContentWebSession from "@/components/core/webSessionContent";
 
 interface AddressFormValues {
     addressName: string
-    addressDetail : string
+    addressDetail: string
     province: string
     city: string
     zipCode: string
@@ -49,7 +48,7 @@ function LocationPicker({
             const { lat, lng } = e.latlng;
             setFieldValue("latitude", lat);
             setFieldValue("longitude", lng);
-            setPosition({ lat, lng }); 
+            setPosition({ lat, lng });
         },
     });
 
@@ -64,7 +63,7 @@ function LocationPicker({
                     const lng = e.target.getLatLng().lng;
                     setFieldValue("latitude", lat);
                     setFieldValue("longitude", lng);
-                    setPosition({ lat, lng }); 
+                    setPosition({ lat, lng });
                 },
             }}
         />
@@ -96,7 +95,7 @@ export default function EditStore() {
         <>
             <main className="w-full h-fit">
                 <section className="w-full h-fit">
-                    <HeaderMobileUser/>
+                    <HeaderMobileUser />
                     <main className="mx-8">
                         <section className="flex gap-2 items-center bg-white w-full z-50 font-bold  fixed pt-2 mt-14 text-lg border-b-2 pb-4">
                             <Link href='/users/settings/address'><FaArrowLeft /></Link> EDIT ALAMAT
@@ -243,6 +242,10 @@ export default function EditStore() {
                     </main>
                 </section>
             </main>
+
+            <ContentWebSession caption="Edit Alamat">
+                <h1>Gas</h1>
+            </ContentWebSession>
         </>
     )
 }
