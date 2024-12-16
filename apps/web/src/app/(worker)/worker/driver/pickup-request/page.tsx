@@ -55,7 +55,6 @@ export default function Page() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });
@@ -162,6 +161,7 @@ export default function Page() {
                                                     <SelectItem value="name-desc">Customer Name Desc.</SelectItem>
                                                     <SelectItem value="order-id-asc">Order Id Desc.</SelectItem>
                                                     <SelectItem value="order-id-desc">Order Id Desc.</SelectItem>
+
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -186,6 +186,7 @@ export default function Page() {
                                                     <div className="flex items-center">
                                                         <div className="ml-2">
                                                             <h2 className="font-medium text-gray-900">
+
                                                                 {order?.Users?.firstName} {order?.Users?.lastName}
                                                             </h2>
                                                             <p className="text-xs text-gray-500">
@@ -193,6 +194,7 @@ export default function Page() {
                                                                     order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Perjalanan Menuju Outlet' :
                                                                         order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Sampai Pada Outlet' :
                                                                             order?.orderStatus[0]?.status}
+
                                                             </p>
                                                             <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                         </div>
@@ -203,6 +205,7 @@ export default function Page() {
                                                     <Link href={`https://www.google.com/maps/search/?api=1&query=${order?.UserAddress?.latitude},${order?.UserAddress?.longitude}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
                                                         <IoLocationSharp />
                                                     </Link>
+
                                                     <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
                                                         <FaWhatsapp />
                                                     </Link>
