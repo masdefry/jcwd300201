@@ -78,7 +78,8 @@ export default function Header() {
 
   return (
     <nav className={`w-full h-fit fixed bg-white z-20 ${pathname == '/admin/login' || pathname == '/user/login'
-      || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/forgot-password') ? 'hidden' : ''}`}>
+      || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/forgot-password')
+      || pathname.startsWith('/user/dashboard') ? 'hidden' : ''}`}>
       <div className="w-full h-fit bg-white border-b flex justify-between items-center px-10 py-3 z-50 relative">
         <div className="w-fit h-16">
           <Link href='/'>
@@ -154,27 +155,40 @@ export default function Header() {
               </div>
               <p className="text-xs pb-5">Menu</p>
               {role === 'CUSTOMER' ?
-                <div className="flex flex-col gap-5">
-                  <MenuCustom url='/' navigation="Beranda"><FaDashcube /></MenuCustom>
-                  <MenuCustom url='/user/profil' navigation="Profil"><FaUserGear /></MenuCustom>
-                  <MenuCustom url='/about-us' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
-                  <MenuCustom url='/contact' navigation="Kontak"><LuContact /></MenuCustom>
-                </div>
+                <>
+                  <div className="flex flex-col gap-5">
+                    <MenuCustom url='/' navigation="Beranda"><FaDashcube /></MenuCustom>
+                    <MenuCustom url='/user/profil' navigation="Profil"><FaUserGear /></MenuCustom>
+                    <MenuCustom url='/about-us' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
+                    <MenuCustom url='/contact' navigation="Kontak"><LuContact /></MenuCustom>
+                  </div>
+                  <p className="text-xs py-5">Profil</p>
+                  <div className="flex flex-col gap-5">
+                    <MenuCustom url='/' navigation="Profil"><FaUserGear /></MenuCustom>
+                    <MenuCustom url='/' navigation="Settings"><BsGearFill /></MenuCustom>
+                    <ConfirmAlert disabled={isPending || isDisabledSucces} caption="logout" onClick={() => handleLogout()}>
+                      <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
+                    </ConfirmAlert>
+                  </div>
+                </>
                 :
-                <div className="flex flex-col gap-5">
-                  <MenuCustom url='/' navigation="Dashboard"><FaDashcube /></MenuCustom>
-                  <MenuCustom url='/' navigation="Profil"><FaUserGear /></MenuCustom>
-                  <MenuCustom url='/' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
-                  <MenuCustom url='/' navigation="Contact"><LuContact /></MenuCustom>
-                </div>}
-              <p className="text-xs py-5">Profil</p>
-              <div className="flex flex-col gap-5">
-                <MenuCustom url='/' navigation="Profil"><FaUserGear /></MenuCustom>
-                <MenuCustom url='/' navigation="Settings"><BsGearFill /></MenuCustom>
-                <ConfirmAlert disabled={isPending || isDisabledSucces} caption="logout" onClick={() => handleLogout()}>
-                  <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
-                </ConfirmAlert>
-              </div>
+                <>
+                  <div className="flex flex-col gap-5">
+                    <MenuCustom url={role === 'SUPER_ADMIN' ? '/admin/dashboard' : role === 'OUTLET_ADMIN' ? '/worker/admin-outlet/dashboard' : ''} navigation="Dashboard"><FaDashcube /></MenuCustom>
+                    <MenuCustom url='/' navigation="Profil"><FaUserGear /></MenuCustom>
+                    <MenuCustom url='/' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
+                    <MenuCustom url='/' navigation="Contact"><LuContact /></MenuCustom>
+                  </div>
+                  <p className="text-xs py-5">Profil</p>
+                  <div className="flex flex-col gap-5">
+                    <MenuCustom url='/' navigation="Profil"><FaUserGear /></MenuCustom>
+                    <MenuCustom url='/' navigation="Settings"><BsGearFill /></MenuCustom>
+                    <ConfirmAlert disabled={isPending || isDisabledSucces} caption="logout" onClick={() => handleLogout()}>
+                      <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
+                    </ConfirmAlert>
+                  </div>
+                </>
+              }
             </div>
           </aside>}
 

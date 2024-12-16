@@ -96,7 +96,15 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
       res.status(200).json({
         error: false,
         message: 'Login menggunakan Google berhasil!',
-        data: { token }
+        data: { 
+          token,
+          email,
+          firstName: findEmail?.firstName,
+          lastName: findEmail?.lastName,
+          role: findEmail?.role,
+          phoneNumber: findEmail?.phoneNumber,
+          profilePicture: findEmail?.profilePicture,
+         }
       })
     } else {
       const newUser = await prisma.users.create({

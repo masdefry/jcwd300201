@@ -9,7 +9,7 @@ const userRouter = Router()
 
 userRouter.post('/register', authCustomerValidation, expressValidatorErrorHandling, limiter, userRegister)
 userRouter.post('/login', authLoginValidation, expressValidatorErrorHandling, limiter, userLogin)
-userRouter.post('/sign-w-google', authLoginValidation, expressValidatorErrorHandling, limiter, signInWithGoogle)
+userRouter.post('/sign-w-google', limiter, signInWithGoogle)
 userRouter.post('/logout', tokenValidation, limiter, userLogout)
 userRouter.post('/address', tokenValidation, limiter, userCreateAddress)
 userRouter.get('/all-address', tokenValidation, limiter, getAllUserAddresses)

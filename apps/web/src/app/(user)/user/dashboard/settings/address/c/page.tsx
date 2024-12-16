@@ -4,18 +4,25 @@ import Link from "next/link"
 import { FaArrowLeft } from 'react-icons/fa';
 import TextField from '@mui/material/TextField';
 import ButtonCustom from "@/components/core/button";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
-import { Formik, Form, Field, ErrorMessage } from "formik";
+import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
-import { FormControl } from "@mui/material";
-import { FormikHelpers } from "formik";
+import { useToast } from "@/components/hooks/use-toast";
+import { instance } from "@/utils/axiosInstance";
+import { useMutation } from "@tanstack/react-query";
+import { IAddressDetail } from "./types";
+import { useQuery } from "@tanstack/react-query";
+import authStore from "@/zustand/authstore";
+import { TabContext, TabList, TabPanel } from "@mui/lab";
+import { Box, Tab } from "@mui/material";
+import ContentWebSession from "@/components/core/webSessionContent";
 
 interface AddressFormValues {
     addressName: string
-    addressDetail : string
+    addressDetail: string
     province: string
     city: string
     zipCode: string
@@ -49,7 +56,7 @@ function LocationPicker({
             const { lat, lng } = e.latlng;
             setFieldValue("latitude", lat);
             setFieldValue("longitude", lng);
-            setPosition({ lat, lng }); 
+            setPosition({ lat, lng });
         },
     });
 
@@ -64,14 +71,16 @@ function LocationPicker({
                     const lng = e.target.getLatLng().lng;
                     setFieldValue("latitude", lat);
                     setFieldValue("longitude", lng);
-                    setPosition({ lat, lng }); 
+                    setPosition({ lat, lng });
                 },
             }}
         />
     ) : null;
 }
 
-export default function EditStore() {
+export default function AddAddress() {
+    const token = authStore((state) => state.token)
+    const { toast } = useToast()
     const [position, setPosition] = useState({ lat: -6.200000, lng: 106.816666 });
 
     const getCurrentLocation = (setFieldValue: any) => {
@@ -92,14 +101,56 @@ export default function EditStore() {
         }
     };
 
+
+    const { mutate: addUserAddress, isPending } = useMutation({
+        mutationFn: async ({ addressName, addressDetail, province, city, zipCode, latitude, longitude }: IAddressDetail) => {
+            return await instance.post('/user/address', {
+                addressName, addressDetail, province, city, zipCode, latitude, longitude,
+            },
+                { headers: { Authorization: `Bearer ${token}` } })
+        },
+        onSuccess: (res) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
+            })
+            console.log(res)
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+            console.log(err)
+        }
+    })
+
+    const [selectedProvince, setSelectedProvince] = useState<string | null>("");
+
+    const { data: provinces, isLoading: provincesLoading } = useQuery({
+        queryKey: ['get-province'],
+        queryFn: async () => {
+            const res = await instance.get('/order/province');
+            return res.data.rajaongkir.results
+        },
+    });
+    const { data: cities, isLoading: citiesLoading } = useQuery({
+        queryKey: ['get-city', selectedProvince],
+        queryFn: async () => {
+            const res = await instance.get('/order/city', { params: { province_id: selectedProvince } });
+            return res.data.rajaongkir.results;
+        },
+        enabled: !!selectedProvince,
+    });
+
     return (
         <>
-            <main className="w-full h-fit">
+            <main className="w-full h-fit block md:hidden">
                 <section className="w-full h-fit">
-                    <HeaderMobileUser/>
+                    <HeaderMobileUser />
                     <main className="mx-8">
                         <section className="flex gap-2 items-center bg-white w-full z-50 font-bold  fixed pt-2 mt-14 text-lg border-b-2 pb-4">
-                            <Link href='/users/settings/address'><FaArrowLeft /></Link> EDIT ALAMAT
+                            <Link href='/users/settings/address'><FaArrowLeft /></Link> TAMBAH ALAMAT
                         </section>
                         <Formik
                             initialValues={{
@@ -121,7 +172,15 @@ export default function EditStore() {
                                 longitude: Yup.string().required("titik lokasi harap diisi!"),
                             })}
                             onSubmit={(values) => {
-                                console.log("Form Values:", values);
+                                addUserAddress({
+                                    addressName: values.addressName,
+                                    addressDetail: values.addressDetail,
+                                    province: values.province,
+                                    city: values.city,
+                                    zipCode: values.zipCode,
+                                    latitude: values.latitude,
+                                    longitude: values.longitude
+                                })
                             }}
                         >
                             {({ values, setFieldValue, handleChange, errors, touched }) => (
@@ -141,8 +200,8 @@ export default function EditStore() {
                                             helperText={touched.addressName && errors.addressName}
                                         />
                                         <TextField
-                                            id="address"
-                                            name="address"
+                                            id="addressDetail"
+                                            name="addressDetail"
                                             label="Alamat"
                                             value={values.addressDetail}
                                             onChange={handleChange}
@@ -152,30 +211,64 @@ export default function EditStore() {
                                             error={touched.addressDetail && Boolean(errors.addressDetail)}
                                             helperText={touched.addressDetail && errors.addressDetail}
                                         />
-                                        <TextField
-                                            id="province"
-                                            name="province"
-                                            label="Provinsi"
-                                            value={values.province}
-                                            onChange={handleChange}
-                                            placeholder="Banten"
-                                            size="small"
-                                            fullWidth
-                                            error={touched.province && Boolean(errors.province)}
-                                            helperText={touched.province && errors.province}
-                                        />
-                                        <TextField
-                                            id="city"
-                                            name="city"
-                                            label="Kota"
-                                            value={values.city}
-                                            onChange={handleChange}
-                                            placeholder="Tangerang"
-                                            size="small"
-                                            fullWidth
-                                            error={touched.city && Boolean(errors.city)}
-                                            helperText={touched.city && errors.city}
-                                        />
+                                        <div>
+                                            {/* <label htmlFor="province">Provinsi</label> */}
+                                            <Field
+                                                as="select"
+                                                id="province"
+                                                name="province"
+                                                value={values.province}
+                                                className="border border-gray-400 rounded-md p-2 w-full"
+                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                    const selectedValue = e.target.value;
+                                                    setFieldValue("province", selectedValue);
+                                                    setSelectedProvince(selectedValue);
+                                                    setFieldValue("city", "");
+                                                }}
+                                            >
+                                                <option value="">Pilih Provinsi</option>
+                                                {provincesLoading ? (
+                                                    <option disabled>Loading...</option>
+                                                ) : (
+                                                    provinces?.map((province: any) => (
+                                                        <option key={province.province_id} value={province.province}>
+                                                            {province.province}
+                                                        </option>
+                                                    ))
+                                                )}
+                                            </Field>
+                                            {touched.province && errors.province && (
+                                                <div className="error text-red-600 text-xs">{errors.province}</div>
+                                            )}
+                                        </div>
+
+                                        <div>
+                                            <Field
+                                                as="select"
+                                                id="city"
+                                                name="city"
+                                                value={values.city}
+                                                onChange={handleChange}
+                                                disabled={!selectedProvince}
+                                                className="border border-gray-400 rounded-md p-2 w-full"
+                                            >
+                                                <option value="">
+                                                    {!selectedProvince ? "Silahkan Pilih Provinsi" : "Pilih Kota"}
+                                                </option>
+                                                {citiesLoading ? (
+                                                    <option disabled>Loading...</option>
+                                                ) : (
+                                                    cities?.map((city: any) => (
+                                                        <option key={city.city_id} value={city.city_name}>
+                                                            {city.city_name}
+                                                        </option>
+                                                    ))
+                                                )}
+                                            </Field>
+                                            {touched.city && errors.city && (
+                                                <div className="error error text-red-600 text-xs">{errors.city}</div>
+                                            )}
+                                        </div>
                                         <TextField
                                             id="zipCode"
                                             label="Kode Pos"
@@ -234,7 +327,7 @@ export default function EditStore() {
                                             txtColor="text-white"
                                             type="submit"
                                         >
-                                            Ubah
+                                            Tambah Alamat
                                         </ButtonCustom>
                                     </div>
                                 </Form>
@@ -243,6 +336,10 @@ export default function EditStore() {
                     </main>
                 </section>
             </main>
+
+            <ContentWebSession caption="Tambah Alamat">
+                <h1>gas</h1>
+            </ContentWebSession>
         </>
     )
 }
