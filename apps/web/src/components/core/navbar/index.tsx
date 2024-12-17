@@ -3,7 +3,7 @@
 import Image from "next/image";
 import ButtonCustom from "../button";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { FaBurger, FaDashcube, FaRug, FaShoePrints, FaSpaghettiMonsterFlying, FaSprayCan, FaTag, FaUserGear } from "react-icons/fa6";
 import { useState } from "react";
 import authStore from "@/zustand/authstore";
@@ -33,6 +33,7 @@ export default function Header() {
   const [showSideBarMenu, setShowSideBarMenu] = useState<boolean>(false)
   const [isService, setIsService] = useState<boolean>(false)
   const pathname = usePathname()
+  const router = useRouter()
 
   const handleOpenNav = () => setIsNavOpen(!isNavOpen)
   const handleOpenMenuUser = () => setShowSideBarMenu(!showSideBarMenu)
@@ -145,6 +146,7 @@ export default function Header() {
           <Link href='/contact' className={`hover:border-b-2 hover:border-orange-500 hover:text-neutral-600 cursor-pointer text-lg ${pathname == '/contact' ? 'font-bold border-b-2 border-b-orange-500 text-neutral-600' : ''}`}>Kontak</Link>
           {!!token ? (
             <div className="hidden lg:flex space-x-4">
+              <ButtonCustom btnColor="bg-orange-500 hover:bg-orange-400" rounded="rounded-full" onClick={() => router.push('/user/dashboard/pickup')}>Order Sekarang</ButtonCustom>
               <span onClick={handleOpenMenuUser} className="w-11 h-11 cursor-pointer rounded-full">
                 <Image
                   title={`Hello, ${nameUser}`}

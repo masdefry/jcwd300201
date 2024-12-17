@@ -15,6 +15,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import Link from "next/link";
 import HeaderMobileUser from "@/components/core/headerMobileUser";
+import ContentWebSession from "@/components/core/webSessionContent";
 
 
 const settingsItems = [
@@ -24,11 +25,11 @@ const settingsItems = [
 
 ];
 
-export default function Outlet() {
+export default function Page() {
     return (
         <>
             <HeaderMobileUser />
-            <main className="mx-8">
+            <main className="mx-8 md:hidden block">
                 <section className="flex justify-between bg-white w-full pr-14 font-bold fixed pt-16 text-lg border-b-2 pb-4">
                     <div className="flex items-center gap-2"> <Link href='/users/settings'><FaArrowLeft /></Link> Alamat</div>
                     <div> <ButtonCustom btnColor="bg-orange-500">+ Tambah Alamat</ButtonCustom> </div>
@@ -87,6 +88,10 @@ export default function Outlet() {
                     ))}
                 </div>
             </main>
+
+            <ContentWebSession caption="Alamat">
+                <h1>Gas</h1>
+            </ContentWebSession>
         </>
     );
 

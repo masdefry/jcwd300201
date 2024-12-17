@@ -12,7 +12,7 @@ import { Toaster } from "@/components/ui/toaster"
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'Clean & Click | Home',
+  title: 'Clean & Click | Beranda',
   description: 'Welcome to Clean & Click',
 };
 
