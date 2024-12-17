@@ -97,7 +97,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="w-full h-full flex flex-col gap-4">
                     <Link href='/worker/packing-worker/settings' className={`w-full flex ${pathname == '/worker/driver/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>
-                    <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                    <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
                         <span className={`w-full cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
                             <FaSignOutAlt /> Logout</span>
                     </ConfirmAlert>

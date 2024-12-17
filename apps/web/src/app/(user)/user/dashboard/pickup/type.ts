@@ -9,7 +9,7 @@ export interface IOrderType {
 
 export interface IRequestPickup {
     deliveryFee: number;
-    storesId: string;
+    outletId: string;
     orderTypeId: string;
     userAddressId: number
 }

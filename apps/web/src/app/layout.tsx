@@ -35,7 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
             <Toaster />
             {/* </HOCLoading> */}
-            <Footer />
+            {/* <Footer /> */}
           </AuthProviders>
         </TanstackProviders>
 

@@ -2,7 +2,7 @@ import prisma from "@/connection"
 import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 
-interface Store {
+interface IStore {
   id: string;
   storeName: string;
   address: string;
@@ -67,12 +67,12 @@ export const getCity = async (req: Request, res: Response, next: NextFunction) =
   }
 }
 
-export const findNearestStore = async (req: Request, res: Response,next: NextFunction) => {
-  
+export const findNearestStore = async (req: Request, res: Response, next: NextFunction) => {
+
   try {
     const { userId } = req.body;
-    const {address} = req.query
-  
+    const { address } = req.query
+
     if (!userId) {
       return res.status(400).json({ error: 'User ID is required' });
     }
@@ -83,14 +83,14 @@ export const findNearestStore = async (req: Request, res: Response,next: NextFun
         where: {
           usersId: userId,
           id: Number(address)
-        } 
-      });  
+        }
+      });
     } else {
       userAddress = await prisma.userAddress.findFirst({
         where: {
           usersId: userId,
           isMain: true
-        } 
+        }
       })
     }
 
@@ -151,13 +151,13 @@ export const findNearestStore = async (req: Request, res: Response,next: NextFun
 
 export const requestPickUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { totalPrice, deliveryFee, storesId, userId, orderTypeId, userAddressId } = req.body
-
+    const { totalPrice, deliveryFee, outletId, userId, orderTypeId, userAddressId } = req.body
+    console.log(req.body)
     const newOrder = await prisma.order.create({
       data: {
         totalPrice,
         deliveryFee,
-        storesId,
+        storesId: outletId,
         usersId: userId,
         orderTypeId: parseInt(orderTypeId),
         userAddressId,
@@ -173,7 +173,7 @@ export const requestPickUp = async (req: Request, res: Response, next: NextFunct
     });
 
     res.status(201).json({
-      error:false,
+      error: false,
       message: "Order dan status order berhasil ditambahkan!",
       order: newOrder,
     });
