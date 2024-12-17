@@ -93,11 +93,18 @@ export default function LoginUser() {
                 isDiscountUsed: res?.data?.data?.isDiscountUsed,
             })
             
+            const role = CryptoJS.AES.encrypt(res?.data?.data?.role, secret_key_crypto).toString()
+
+            Cookies.set('__rolx', role)
+            Cookies.set('__toksed', res?.data?.data?.token)
+
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
-
+            
+            /* disabled button ketika berhasil logi */
+            setIsDisabledSucces(true)
             window.location.href = '/'
             console.log(res)
         },
@@ -235,7 +242,7 @@ export default function LoginUser() {
                     <div className="flex w-full justify-between items-center">
                         <div className="flex items-center gap-1 text-sm">
                             <h1 className="">Belum memiliki akun?</h1>
-                            <Link href='/user/register'>Register</Link>
+                            <Link href='/user/register' className="text-blue-500 hover:text-blue-700">Register</Link>
                         </div>
                         <Link
                             href={'/user/forgot-password'}

@@ -8,21 +8,23 @@ datasource db {
 }
 
 model Users {
-  id                  String        @id @default(uuid())
-  email               String        @unique
-  role                String
-  password            String
-  firstName           String
-  lastName            String
-  phoneNumber         String        @db.Text
-  profilePicture      String
-  isVerified          Boolean
-  verifyCode          String?
-  isGoogleRegister    Boolean
-  forgotPasswordToken String?       @db.VarChar(300)
-  isDiscountUsed      Boolean       @default(false)
-  order               Order[]
-  userAddress         UserAddress[]
+  id                     String        @id @default(uuid())
+  email                  String        @unique
+  role                   String
+  password               String
+  firstName              String
+  lastName               String
+  phoneNumber            String        @db.VarChar(20)
+  profilePicture         String
+  isVerified             Boolean
+  verifyCode             String?
+  isGoogleRegister       Boolean
+  isGooglePasswordChange Boolean?      @default(false)
+  forgotPasswordToken    String?       @db.VarChar(300)
+  isDiscountUsed         Boolean       @default(false)
+  order                  Order[]
+  userAddress            UserAddress[]
+  contact                Contact[]
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
@@ -83,12 +85,12 @@ model Worker {
   workerRole          Role
   firstName           String
   lastName            String
-  phoneNumber         String  @db.Text
-  profilePicture      String  @db.Text
-  identityNumber      String? @db.Text
+  phoneNumber         String  @db.VarChar(20)
+  profilePicture      String  @db.LongText
+  identityNumber      String? @db.LongText
   motorcycleType      String?
   plateNumber         String?
-  changePasswordToken String? @db.Text
+  changePasswordToken String? @db.VarChar(500)
   storesId            String?
 
   orderstatus OrderStatus[]
@@ -192,6 +194,22 @@ model OrderStatus {
   Worker Worker? @relation(fields: [workerId], references: [id])
 
   @@map("orderStatus")
+}
+
+model Contact {
+  id          Int     @id @default(autoincrement())
+  name        String
+  email       String
+  phoneNumber String
+  textHelp    String  @db.VarChar(255)
+  Users       Users?  @relation(fields: [usersId], references: [id])
+  usersId     String?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("contact")
 }
 
 enum Status {
