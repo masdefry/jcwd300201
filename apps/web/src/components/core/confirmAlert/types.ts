@@ -9,5 +9,7 @@ export interface IConfirmAlert {
     description?: string,
     colorConfirmation?:string,
     disabled?: boolean,
-    type?: "button" | "submit" | "reset"
+    type?: "button" | "submit" | "reset",
+    hideButtons?: boolean
+    hideCaption?:boolean
 }

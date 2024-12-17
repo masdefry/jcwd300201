@@ -111,6 +111,7 @@ model Order {
   paymentProof String?
   isPaid       Boolean
   isProcessed  Boolean?
+  isDone       Boolean?
 
   isSolved Boolean?
   notes    String?
@@ -198,10 +199,10 @@ enum Status {
   DRIVER_TO_OUTLET
   DRIVER_ARRIVED_AT_OUTLET
 
+  AWAITING_PAYMENT
   IN_WASHING_PROCESS
   IN_IRONING_PROCESS
   IN_PACKING_PROCESS
-  AWAITING_PAYMENT
   PAYMENT_DONE
 
   DRIVER_TO_CUSTOMER

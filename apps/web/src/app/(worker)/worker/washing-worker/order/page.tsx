@@ -181,15 +181,27 @@ export default function DriverPickUp() {
                                                     colorConfirmation="blue"
                                                     caption=
                                                     {
-                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT'
-                                                            ? 'melakukan proses cuci pada order ini'
-                                                            : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
-                                                                ? 'menyelesaikan proses pada order ini'
-                                                                : ''
+                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Order ini belum disetujui oleh admin untuk dilanjutkan' :
+                                                            order?.orderStatus[0]?.status === 'AWAITING_PAYMENT ' && order?.isSolved === true
+                                                                ? 'Apakah anda yakin ingin melakukan proses cuci pada order ini?'
+                                                                : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                    ? 'Apakah anda yakin ingin menyelesaikan proses pada order ini?'
+                                                                    : ''
                                                     }
+                                                    hideButtons={order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false}
+                                                    description=
+                                                    {
+                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Silahkan hubungi admin' :
+                                                            order?.orderStatus[0]?.status === 'AWAITING_PAYMENT ' && order?.isSolved === true
+                                                                ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                    ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                    : ''
+                                                    }
+
                                                     onClick={() => {
                                                         if (order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') {
-                                                            <Link href={`/worker/washing-worker/c/${order?.id}`} />
+                                                            router.push(`/worker/washing-worker/c/${order?.id}`)
                                                         } else if (order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS') {
                                                             handleProcessWashing(order?.id);
                                                         }
@@ -202,10 +214,11 @@ export default function DriverPickUp() {
                                                                 {order?.Users?.firstName} {order?.Users?.lastName}
                                                             </h2>
                                                             <p className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' ? 'Belum Dicuci' :
-                                                                    order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
-                                                                        order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
-                                                                            order?.orderStatus[0]?.status}
+                                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
+                                                                    order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
+                                                                        order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
+                                                                            order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
+                                                                                order?.orderStatus[0]?.status}
                                                             </p>
                                                             <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                         </div>

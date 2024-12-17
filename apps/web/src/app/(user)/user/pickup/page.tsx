@@ -16,7 +16,7 @@ import { CiSquarePlus } from "react-icons/ci";
 
 const validationSchema = Yup.object({
     deliveryFee: Yup.number().required().positive().integer(),
-    storesId: Yup.string().required(),
+    outletId: Yup.string().required(),
     orderTypeId: Yup.string().required('Silahkan pilih tipe laundry'),
     userAddressId: Yup.string().required(),
 });
@@ -31,10 +31,10 @@ export default function PickupLaundry() {
     const [userAddress, setUserAddress] = useState(params.get('address') || null);
 
     const { mutate: handlePickupRequest } = useMutation({
-        mutationFn: async ({ deliveryFee, storesId, orderTypeId, userAddressId }: IRequestPickup) => {
+        mutationFn: async ({ deliveryFee, outletId, orderTypeId, userAddressId }: IRequestPickup) => {
             return await instance.post(
                 '/order/request-pickup',
-                { deliveryFee, storesId, orderTypeId, userAddressId },
+                { deliveryFee, outletId, orderTypeId, userAddressId },
                 { headers: { Authorization: `Bearer ${token}` } }
             );
         },
@@ -133,7 +133,7 @@ export default function PickupLaundry() {
                             enableReinitialize
                             initialValues={{
                                 deliveryFee: dataNearestStore && dataNearestStore[0] ? (Math.ceil(dataNearestStore[0]?.distance) * 8000) : 0,
-                                storesId: dataNearestStore && dataNearestStore[0] ? dataNearestStore[0]?.id : '',
+                                outletId: dataNearestStore && dataNearestStore[0] ? dataNearestStore[0]?.id : '',
                                 orderTypeId: '',
                                 userAddressId: !selectedAddress ? dataMainAddress?.id : selectedAddress?.id,
                             }}
@@ -142,7 +142,7 @@ export default function PickupLaundry() {
                                 console.log(values);
                                 handlePickupRequest({
                                     deliveryFee: values.deliveryFee,
-                                    storesId: values.storesId,
+                                    outletId: values.outletId,
                                     orderTypeId: values.orderTypeId,
                                     userAddressId: values.userAddressId,
                                 });

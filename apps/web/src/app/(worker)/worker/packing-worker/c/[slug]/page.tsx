@@ -99,7 +99,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
     const { mutate: handleStatusOrder } = useMutation({
         mutationFn: async ({ email, notes }: any) => {
-            return await instance.post(`/worker/washing-process/${slug}`, { email, notes }, {
+            return await instance.post(`/worker/ironing-process/${slug}`, { email, notes }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -163,7 +163,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                 onSubmit={(values: any) => {
                                     handleStatusOrder({
                                         email: emails,
-                                        notes: values.notes, 
+                                        notes: values.notes,
                                     });
                                 }}
                             >
@@ -190,9 +190,9 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                             setShowDialog(true);
                                         }
                                     }
-
                                     return (
                                         <Form>
+                                            {/* Customer Information */}
                                             <div className="grid grid-cols-2 gap-4">
                                                 <div className="flex flex-col col-span-2">
                                                     <label className="text-sm">Customer Name</label>
@@ -344,7 +344,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <DialogFooter>
                                         <button
                                             onClick={handleDialogSubmit}
-
                                             type="submit"
                                             className="bg-green-500 text-white rounded-md p-2"
                                         >

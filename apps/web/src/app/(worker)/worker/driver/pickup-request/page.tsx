@@ -177,9 +177,9 @@ export default function Page() {
                                                     colorConfirmation="blue"
                                                     caption={
                                                         order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
-                                                            ? 'melakukan pengambilan laundry pada order ini'
+                                                            ? 'Apakah anda yakin ingin melakukan pengambilan laundry pada order ini?'
                                                             : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
-                                                                ? 'menyelesaikan pengiriman laundry pada order ini'
+                                                                ? 'Apakah anda yakin ingin menyelesaikan pengiriman laundry pada order ini?'
                                                                 : ''
                                                     }
                                                     onClick={() => handleProcessOrder(order?.id)}>

@@ -41,25 +41,16 @@ export default function DriverPickUp() {
     const [activeTab, setActiveTab] = useState("semua");
     const limit = 5;
 
-    const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
+    const { data: dataOrderIroningProcess, refetch, isLoading: dataOrderIroningProcessLoading, isError: dataOrderIroningProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput],
         queryFn: async () => {
-            const tabValue =
-                activeTab === "belumDicuci" ? "AWAITING_PAYMENT" :
-                    activeTab === "belumDicuci" ? "AWAITING_PAYMENT" :
-                        activeTab === "prosesCuci" ? "IN_WASHING_PROCESS" :
-                            activeTab === "prosesSetrika" ? "IN_IRONING_PROCESS" :
-                                activeTab === "prosesPacking" ? "IN_PACKING_PROCESS" :
-                                    activeTab === "selesai" ? "IN_PACKING_PROCESS" :
-                                        "";
-
-            const res = await instance.get('/worker/order-washing', {
+            const res = await instance.get('/worker/order-ironing', {
                 params: {
                     page,
                     limit_data: limit,
                     search: searchInput || "",
                     sort: sortOption,
-                    tab: tabValue,
+                    tab: activeTab,
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -68,9 +59,9 @@ export default function DriverPickUp() {
         },
     });
 
-    const { mutate: handleProcessOrder, isPending } = useMutation({
+    const { mutate: handleProcessIroning, isPending } = useMutation({
         mutationFn: async (id: any) => {
-            return await instance.post(`/worker/accept-order/${id}`, { email }, {
+            return await instance.post(`/worker/ironing-done/${id}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -120,7 +111,7 @@ export default function DriverPickUp() {
     }, [searchInput, page, sortOption, activeTab, refetch]);
 
 
-    const totalPages = dataOrderWashingProcess?.totalPage || 1;
+    const totalPages = dataOrderIroningProcess?.totalPage || 1;
 
     return (
         <>
@@ -130,15 +121,15 @@ export default function DriverPickUp() {
                     <main className="w-full">
                         <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
                             <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> WASHING WORKER
+                                <Link href='/admin/settings'><FaArrowLeft /></Link> IRONING WORKER
                             </div>
                         </section>
                         <div className="py-28 mx-4 space-y-4">
                             <Tabs defaultValue={activeTab} className="fit">
                                 <TabsList className="grid w-full grid-cols-4">
                                     <TabsTrigger value="semua" onClick={() => { setActiveTab("semua"); setPage(1) }} >Semua</TabsTrigger>
-                                    <TabsTrigger value="belumDicuci" onClick={() => { setActiveTab("belumDicuci"); setPage(1) }} >Belum Dicuci</TabsTrigger>
-                                    <TabsTrigger value="prosesCuci" onClick={() => { setActiveTab("prosesCuci"); setPage(1) }} >Proses Cuci</TabsTrigger>
+                                    <TabsTrigger value="belumDisetrika" onClick={() => { setActiveTab("belumDisetrika"); setPage(1) }} >Belum Disetrika</TabsTrigger>
+                                    <TabsTrigger value="prosesSetrika" onClick={() => { setActiveTab("prosesSetrika"); setPage(1) }} >Proses Setrika</TabsTrigger>
                                     <TabsTrigger value="selesai" onClick={() => { setActiveTab("selesai"); setPage(1) }}>Selesai</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
@@ -166,37 +157,62 @@ export default function DriverPickUp() {
                                                     <SelectItem value="date-desc">Tanggal Desc.</SelectItem>
                                                     <SelectItem value="name-asc">Customer Name Asc.</SelectItem>
                                                     <SelectItem value="name-desc">Customer Name Desc.</SelectItem>
+                                                    <SelectItem value="order-id-asc">Order Id Desc.</SelectItem>
+                                                    <SelectItem value="order-id-desc">Order Id Desc.</SelectItem>
+
                                                 </SelectContent>
                                             </Select>
                                         </div>
-                                        {dataOrderWashingProcessLoading && <p>Loading...</p>}
-                                        {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                        {dataOrderWashingProcess?.orders?.map((order: any) => (
+                                        {dataOrderIroningProcessLoading && <p>Loading...</p>}
+                                        {dataOrderIroningProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
+                                        {dataOrderIroningProcess?.orders?.map((order: any) => (
                                             <section
                                                 key={order.id}
                                                 className="flex justify-between items-center border-b py-4"
                                             >
 
                                                 <ConfirmAlert
-                                                    colorConfirmation="green"
-                                                    caption={
-                                                        order.latestStatus === 'AWAITING_PAYMENT'
-                                                            ? 'Apakah anda yakin ingin melakukan proses cuci pada order ini?'
-                                                            : order.latestStatus === 'IN_WASHING_PROCESS'
-                                                                ? 'Apakah anda yakin ingin menyelesaikan proses pada order ini?'
-                                                                : ''
+                                                    colorConfirmation="blue"
+                                                    caption=
+                                                    {
+                                                        order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false && order?.isSolved === false
+                                                            ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
+                                                            :
+                                                            order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false && order?.isSolved === true
+                                                                ? 'Apakah anda yakin ingin melakukan proses setrika pada order ini?'
+                                                                : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
+                                                                    ? 'Apakah anda yakin ingin menyelesaikan proses setrika pada order ini?'
+                                                                    : ''
                                                     }
-                                                    onClick={() => handleProcessOrder(order?.id)}>
+                                                    description=
+                                                    {
+                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Silahkan hubungi admin' :
+                                                            order?.orderStatus[0]?.status === 'AWAITING_PAYMENT ' && order?.isSolved === true
+                                                                ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                    ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                    : ''
+                                                    }
+                                                    hideButtons={order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false}
+                                                    onClick={() => {
+                                                        if (order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false) {
+                                                            router.push(`/worker/ironing-worker/c/${order?.id}`)
+                                                        } else if (order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true) {
+                                                            handleProcessIroning(order?.id);
+                                                        }
+                                                    }}>
+
+
                                                     <div className="flex items-center">
                                                         <div className="ml-2">
                                                             <h2 className="font-medium text-gray-900">
-                                                                {order.userFirstName} {order.userLastName}
+                                                                {order?.Users?.firstName} {order?.Users?.lastName}
                                                             </h2>
                                                             <p className="text-xs text-gray-500">
-                                                                {order.latestStatus === 'AWAITING_PAYMENT' ? 'Belum Dicuci' :
-                                                                    order.latestStatus === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
-                                                                        order.latestStatus === 'IN_IRONING_PROCESS' ? 'Selesai' :
-                                                                            order.latestStatus}
+                                                                {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false ? 'Belum Disetrika' :
+                                                                    order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true ? 'Proses Setrika' :
+                                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' ? 'Selesai' :
+                                                                            order?.orderStatus[0]?.status}
                                                             </p>
                                                             <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                         </div>
