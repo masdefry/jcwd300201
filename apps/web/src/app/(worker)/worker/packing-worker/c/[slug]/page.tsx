@@ -337,7 +337,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <textarea
                                         value={dialogNotes}
                                         onChange={(e) => setDialogNotes(e.target.value)}
-                                        className="w-full p-2 border rounded-md mt-4"
+                                        className="hidden w-full p-2 border rounded-md mt-4"
                                         placeholder="Add notes or comments..."
                                         rows={6}
                                     />

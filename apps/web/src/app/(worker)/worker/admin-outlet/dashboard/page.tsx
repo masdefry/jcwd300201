@@ -8,13 +8,16 @@ import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import ChartComponents from "@/components/core/chart";
-import { FaFirstOrderAlt } from "react-icons/fa6";
+import { FaFirstOrderAlt, FaMoneyBillWave } from "react-icons/fa6";
+import { FaRegPlusSquare } from "react-icons/fa";
+import { MdOutlineReportProblem } from "react-icons/md";
+import { GrUnorderedList } from "react-icons/gr";
 
 const iconButtons = [
-    { icon: FaStore, label: "Data Outlet" },
-    { icon: IoSearchSharp, label: "Cari Pesanan" },
-    { icon: IoPersonSharp, label: "Data Pelanggan" },
-    { icon: GrUserWorker, label: "Data Pekerja" },
+    { icon: FaRegPlusSquare, label: "Create Nota Order" },
+    { icon: FaMoneyBillWave, label: "Pembayaran" },
+    { icon: GrUnorderedList, label: "Order" },
+    { icon: MdOutlineReportProblem, label: "Masalah" },
 ];
 
 export default function Page() {
