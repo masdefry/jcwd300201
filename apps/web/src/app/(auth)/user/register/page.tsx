@@ -20,7 +20,7 @@ export default function RegisterUser() {
 
     const { mutate: handleRegister, isPending } = useMutation({
         mutationFn: async ({ email, firstName, lastName, phoneNumber }: IRegisterUser) => {
-            return await instance.post('/user/register', { email, firstName, lastName, phoneNumber })
+            return await instance.post('/auth/user/register', { email, firstName, lastName, phoneNumber })
         },
         onSuccess: (res) => {
             toast({

@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-export const createTransactionTransfer = async (req: Request, res: Response, next: NextFunction) => {
+export const createTransactionMidtrans = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { userId, totalPrice, totalWeight } = req.body
 
@@ -16,7 +16,7 @@ export const createTransactionTransfer = async (req: Request, res: Response, nex
         //   isSolved Boolean?
         //   notes    String?
 
-        //   storesId      String?
+        //   storeId      String?
         //   usersId       String?
         //   orderTypeId   Int?
         //   userAddressId Int?

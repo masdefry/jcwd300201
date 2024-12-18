@@ -28,7 +28,7 @@ export default function LoginUser() {
 
     const { mutate: handleLoginAdmin, isPending } = useMutation({
         mutationFn: async ({ email, password }: { email: string, password: string }) => {
-            return await instance.post('/admin/login', { email, password })
+            return await instance.post('/auth/worker/login', { email, password })
         },
         onSuccess: (res) => {
             setToken({

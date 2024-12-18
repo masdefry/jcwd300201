@@ -21,6 +21,7 @@ import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
 import ContentWebSession from "@/components/core/webSessionContent"
+import Pagination from "@/components/core/pagination"
 
 export default function Page() {
     const params = useSearchParams();
@@ -46,7 +47,7 @@ export default function Page() {
                     activeTab === "process-pickup" ? "DRIVER_TO_OUTLET" :
                         activeTab === "arrived" ? "DRIVER_ARRIVED_AT_OUTLET" : "";
 
-            const res = await instance.get('/worker/order', {
+            const res = await instance.get('/order/order', {
                 params: {
                     page,
                     limit_data: entriesPerPage,
@@ -62,7 +63,7 @@ export default function Page() {
 
     const { mutate: handleProcessOrder, isPending } = useMutation({
         mutationFn: async (slug: any) => {
-            return await instance.post(`/worker/accept-order/${slug}`, { email }, {
+            return await instance.post(`/order/accept-order/${slug}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -214,25 +215,8 @@ export default function Page() {
                                             </section>
                                         ))}
 
-                                        <div className="flex justify-between items-center mt-4">
-                                            <button
-                                                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                                                disabled={page === 1}
-                                                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:bg-gray-100"
-                                            >
-                                                Previous
-                                            </button>
-                                            <span>
-                                                Page {page} of {totalPages}
-                                            </span>
-                                            <button
-                                                onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                                                disabled={page === totalPages}
-                                                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:bg-gray-100"
-                                            >
-                                                Next
-                                            </button>
-                                        </div>
+                                        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+
                                     </CardContent>
                                 </TabsContent>
                             </Tabs>

@@ -15,7 +15,7 @@ interface ICreateUserBody {
     phoneNumber: string,
     workerRole: string,
     identityNumber: string,
-    storesId: string,
+    storeId: string,
     motorcycleType: string,
     plateNumber: string
 }
@@ -32,9 +32,9 @@ export default function Page() {
     })
 
     const { mutate: handleCreateUser, isPending } = useMutation({
-        mutationFn: async ({ email, firstName, lastName, phoneNumber, workerRole, identityNumber, storesId, motorcycleType, plateNumber
+        mutationFn: async ({ email, firstName, lastName, phoneNumber, workerRole, identityNumber, storeId, motorcycleType, plateNumber
         }: ICreateUserBody) => {
-            return await instance.post('/admin/worker', { email, firstName, lastName, phoneNumber, workerRole, identityNumber, storesId, motorcycleType, plateNumber }, {
+            return await instance.post('/auth/worker/register', { email, firstName, lastName, phoneNumber, workerRole, identityNumber, storeId, motorcycleType, plateNumber }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -72,7 +72,7 @@ export default function Page() {
                             phoneNumber: '',
                             workerRole: '',
                             identityNumber: '',
-                            storesId: '',
+                            storeId: '',
                             motorcycleType: '',
                             plateNumber: ''
                         }}
@@ -85,7 +85,7 @@ export default function Page() {
                                 phoneNumber: values?.phoneNumber,
                                 workerRole: values?.workerRole,
                                 identityNumber: values?.identityNumber,
-                                storesId: values?.storesId,
+                                storeId: values?.storeId,
                                 motorcycleType: values?.motorcycleType,
                                 plateNumber: values?.plateNumber
                             })
@@ -125,14 +125,14 @@ export default function Page() {
                                             <ErrorMessage component='div' name="identityNumber" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                         </div>
                                         <div className="w-full flex flex-col gap-2 relative">
-                                            <label htmlFor="storesId" className="font-semibold">Penempatan <span className="text-red-600">*</span></label>
-                                            <Field as='select' name='storesId' id='storesId' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500'>
+                                            <label htmlFor="storeId" className="font-semibold">Penempatan <span className="text-red-600">*</span></label>
+                                            <Field as='select' name='storeId' id='storeId' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500'>
                                                 <option value="" disabled>Pilih opsi</option>
                                                 {getDataStore?.map((store: { storeId: string, storeName: string }, i: number) => (
                                                     <option value={store?.storeId} key={i}>{store?.storeName}</option>
                                                 ))}
                                             </Field>
-                                            <ErrorMessage component='div' name="storesId" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
+                                            <ErrorMessage component='div' name="storeId" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                         </div>
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="workerRole" className="font-semibold">Tipe pekerja <span className="text-red-600">*</span></label>

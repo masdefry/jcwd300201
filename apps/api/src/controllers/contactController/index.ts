@@ -9,8 +9,7 @@ export const createContactMessage = async (req: Request, res: Response, next: Ne
 
         if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 401 }
         if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format dengan angka', status: 401 }
-
-        await prisma.contact.create({ data: { name, email, phoneNumber, usersId: userId, textHelp } })
+        await prisma.contact.create({ data: { name, email, phoneNumber, userId: userId, textHelp } })
 
         // transporter
 

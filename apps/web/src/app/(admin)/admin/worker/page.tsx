@@ -33,7 +33,7 @@ export default function Page() {
     const { data: getDataWorker, refetch, isFetching } = useQuery({
         queryKey: ['get-data-worker', searchWorker, sortWorker],
         queryFn: async () => {
-            const response = await instance.get('/admin/worker', {
+            const response = await instance.get('/worker/all-workers', {
                 params: {
                     search: searchWorker,
                     sort: sortWorker,

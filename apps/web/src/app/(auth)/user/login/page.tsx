@@ -34,7 +34,7 @@ export default function LoginUser() {
     // handle login user
     const { mutate: handleLoginUser, isPending } = useMutation({
         mutationFn: async ({ email, password }: ILoginUser) => {
-            return await instance.post('/user/login', {
+            return await instance.post('/auth/user/login', {
                 email, password
             })
         },
@@ -77,7 +77,7 @@ export default function LoginUser() {
 
     const { mutate: signInWithGoogle } = useMutation({
         mutationFn: async ({ firstName, lastName, email, profilePicture }: ILoginGoogleUser) => {
-            return await instance.post('/user/sign-w-google', {
+            return await instance.post('/auth/user/sign-w-google', {
                 firstName, lastName, email, profilePicture
             })
         },

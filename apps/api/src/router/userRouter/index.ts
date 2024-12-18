@@ -1,6 +1,6 @@
 import { Router } from 'express'
-import { userRegister, userLogin, userLogout, signInWithGoogle, userCreateAddress, getAllUserAddresses, getUserMainAddress, resendSetPassword, setPasswordUser, forgotPasswordUser, getSingleDataUser, updateProfileUser, changePasswordUser, deleteProfilePictureUser, changePasswordGoogleRegister, userEditAddress, getSingleAddressUser } from '@/controllers/userController'
-import { authCustomerValidation, authLoginValidation, changePasswordGoogleValidation, changePasswordUserValidation, forgotPasswordUserValidation, resendSetPasswordValidation, setPasswordValidation, updateProfileUserValidation } from '@/middleware/validation'
+import { userCreateAddress, getAllUserAddresses, getUserMainAddress, resendSetPassword, setPasswordUser, forgotPasswordUser, getSingleDataUser, updateProfileUser, changePasswordUser, deleteProfilePictureUser, changePasswordGoogleRegister, userEditAddress, getSingleAddressUser } from '@/controllers/userController'
+import { authRegisterValidation, authLoginValidation, changePasswordGoogleValidation, changePasswordUserValidation, forgotPasswordUserValidation, resendSetPasswordValidation, setPasswordValidation, updateProfileUserValidation } from '@/middleware/validation'
 import { limiter } from '@/middleware/rateLimit'
 import { tokenValidation } from '@/middleware/verifyToken'
 import { expressValidatorErrorHandling } from '@/middleware/validation/errorHandlingValidator'
@@ -9,10 +9,6 @@ import { uploader } from '@/middleware/uploader'
 const userRouter = Router()
 
 // authenticate
-userRouter.post('/register', authCustomerValidation, expressValidatorErrorHandling, limiter, userRegister)
-userRouter.post('/login', authLoginValidation, expressValidatorErrorHandling, limiter, userLogin)
-userRouter.post('/sign-w-google', limiter, signInWithGoogle)
-userRouter.post('/logout', tokenValidation, limiter, userLogout)
 userRouter.post('/set-password', tokenValidation, setPasswordValidation, expressValidatorErrorHandling, limiter, setPasswordUser)
 userRouter.post('/forgot-password', forgotPasswordUserValidation, expressValidatorErrorHandling, limiter, forgotPasswordUser)
 userRouter.post('/resend-password', resendSetPasswordValidation, expressValidatorErrorHandling, limiter, resendSetPassword)

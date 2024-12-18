@@ -25,15 +25,15 @@ DROP TABLE IF EXISTS `orderdetail`;
 CREATE TABLE `orderdetail` (
   `id` int NOT NULL AUTO_INCREMENT,
   `orderId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `itemNameId` int DEFAULT NULL,
+  `laundryItemId` int DEFAULT NULL,
   `createdAt` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `updatedAt` datetime(3) NOT NULL,
   `deletedAt` datetime(3) DEFAULT NULL,
   `quantity` int DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `orderDetail_orderId_fkey` (`orderId`),
-  KEY `orderDetail_itemNameId_fkey` (`itemNameId`),
-  CONSTRAINT `orderDetail_itemNameId_fkey` FOREIGN KEY (`itemNameId`) REFERENCES `itemname` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  KEY `orderDetail_laundryItemId_fkey` (`laundryItemId`),
+  CONSTRAINT `orderDetail_laundryItemId_fkey` FOREIGN KEY (`laundryItemId`) REFERENCES `itemname` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `orderDetail_orderId_fkey` FOREIGN KEY (`orderId`) REFERENCES `order` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;

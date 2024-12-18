@@ -32,7 +32,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     const handleCloseSideBar = () => setIsClose(!isClose)
     const { mutate: handleLogoutAdmin, isPending } = useMutation({
         mutationFn: async () => {
-            return await instance.post('/user/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
+            return await instance.post('/auth/user/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
         },
         onSuccess: (res) => {
             if (res) {

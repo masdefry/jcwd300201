@@ -33,7 +33,7 @@ export default function Page() {
     const { data: dataItem, isFetching, refetch } = useQuery({
         queryKey: ['get-data-item', searchItem],
         queryFn: async () => {
-            const response = await instance.get('/admin/worker/item', {
+            const response = await instance.get('/worker/laundry-items', {
                 params: {
                     search: searchItem,
                     page: currentPage,
@@ -50,7 +50,7 @@ export default function Page() {
 
     const { mutate: createProductItem, isPending } = useMutation({
         mutationFn: async ({ itemName }: { itemName: string }) => {
-            return await instance.post('/admin/worker/item', { itemName }, {
+            return await instance.post('/worker/laundry-items', { itemName }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -76,7 +76,7 @@ export default function Page() {
 
     const { mutate: handleDeleteItem, isPending: isPendingDelete } = useMutation({
         mutationFn: async (id: number) => {
-            return await instance.delete(`/admin/worker/item/${id}`, {
+            return await instance.delete(`/worker/laundry-items/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -103,7 +103,7 @@ export default function Page() {
 
     const { mutate: handleUpdateItem, isPending: isPendingUpdate } = useMutation({
         mutationFn: async ({ id, itemName }: { id: string, itemName: string }) => {
-            return await instance.patch(`/admin/worker/item/${id}`, { itemName }, {
+            return await instance.patch(`/worker/laundry-items/${id}`, { itemName }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

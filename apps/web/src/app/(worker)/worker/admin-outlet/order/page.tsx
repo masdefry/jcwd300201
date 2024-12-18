@@ -24,6 +24,7 @@ import { FaSearch } from 'react-icons/fa';
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
+import Pagination from "@/components/core/pagination"
 
 export default function DriverPickUp() {
     const params = useSearchParams();
@@ -39,10 +40,12 @@ export default function DriverPickUp() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState("date-asc");
     const [activeTab, setActiveTab] = useState("semua");
+    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const limit = 5;
 
     const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
-        queryKey: ['get-order', page, searchInput],
+        queryKey: ['get-order', page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
             const tabValue =
                 activeTab === "belumDicuci" ? "AWAITING_PAYMENT" :
@@ -53,13 +56,15 @@ export default function DriverPickUp() {
                                     activeTab === "selesai" ? "IN_PACKING_PROCESS" :
                                         "";
 
-            const res = await instance.get('/worker/order-washing', {
+            const res = await instance.get('/order/order-washing', {
                 params: {
                     page,
                     limit_data: limit,
                     search: searchInput || "",
                     sort: sortOption,
                     tab: tabValue,
+                    dateFrom: dateFrom ?? '',
+                    dateUntil: dateUntil ?? '',
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -70,7 +75,7 @@ export default function DriverPickUp() {
 
     const { mutate: handleProcessOrder, isPending } = useMutation({
         mutationFn: async (id: any) => {
-            return await instance.post(`/worker/accept-order/${id}`, { email }, {
+            return await instance.post(`/order/accept-order/${id}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -115,9 +120,19 @@ export default function DriverPickUp() {
         } else {
             currentUrl.delete(`tab`)
         }
+        if (dateFrom) {
+            currentUrl.set(`dateFrom`, dateFrom?.toString())
+        } else {
+            currentUrl.delete(`dateFrom`)
+        }
+        if (dateUntil) {
+            currentUrl.set(`dateUntil`, dateUntil?.toString())
+        } else {
+            currentUrl.delete(`dateUntil`)
+        }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, activeTab, refetch]);
+    }, [searchInput, page, sortOption, dateFrom, dateUntil,activeTab, refetch]);
 
 
     const totalPages = dataOrderWashingProcess?.totalPage || 1;
@@ -211,25 +226,7 @@ export default function DriverPickUp() {
                                             </section>
                                         ))}
 
-                                        <div className="flex justify-between items-center mt-4">
-                                            <button
-                                                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                                                disabled={page === 1}
-                                                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:bg-gray-100"
-                                            >
-                                                Previous
-                                            </button>
-                                            <span>
-                                                Page {page} of {totalPages}
-                                            </span>
-                                            <button
-                                                onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}
-                                                disabled={page === totalPages}
-                                                className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:bg-gray-100"
-                                            >
-                                                Next
-                                            </button>
-                                        </div>
+                                        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
                                     </CardContent>
                                 </TabsContent>
                             </Tabs>

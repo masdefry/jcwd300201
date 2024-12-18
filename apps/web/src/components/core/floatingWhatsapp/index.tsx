@@ -15,7 +15,7 @@ export default function FloatingWhatsappIcon() {
 
     return (
         <div className={`
-            ${pathname == '/admin/login' || pathname == '/user/login'
+            ${pathname == '/worker/login' || pathname == '/user/login'
                 || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/resend-email')
                 || pathname.startsWith('/user/dashboard') ? 'md:hidden' : ''}
                 group fixed bottom-10 right-10 p-4 flex items-end justify-end w-auto h-auto

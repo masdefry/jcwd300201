@@ -126,11 +126,13 @@ export default function AddAddress() {
     })
 
     const [selectedProvince, setSelectedProvince] = useState<string | null>("");
-
+    console.log(selectedProvince)
+    
     const { data: provinces, isLoading: provincesLoading } = useQuery({
         queryKey: ['get-province'],
         queryFn: async () => {
             const res = await instance.get('/order/province');
+            return res?.data?.data?.rajaongkir?.results
             return res?.data?.data?.rajaongkir?.results
         },
     })
@@ -143,7 +145,6 @@ export default function AddAddress() {
         },
         enabled: !!selectedProvince,
     });
-
     return (
         <>
             <main className="w-full h-fit block md:hidden">
@@ -232,6 +233,7 @@ export default function AddAddress() {
                                                     <option disabled>Loading...</option>
                                                 ) : (
                                                     provinces?.map((province: any) => (
+                                                        <option key={province.province_id} value={province.province_id}>
                                                         <option key={province.province_id} value={province.province_id}>
                                                             {province.province}
                                                         </option>

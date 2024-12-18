@@ -41,13 +41,13 @@ export default function Header() {
   const { mutate: handleLogout, isPending } = useMutation({
     mutationFn: async () => {
       if (role === 'CUSTOMER') {
-        return await instance.post('/user/logout', { email }, {
+        return await instance.post('/auth/user/logout', { email }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
         })
       } else {
-        return await instance.post('/admin/logout', { email }, {
+        return await instance.post('/auth/worker/logout', { email }, {
           headers: {
             Authorization: `Bearer ${token}`
           }
@@ -109,7 +109,7 @@ export default function Header() {
   const settingsUrl = settingsMenuUrl[role] || ''
 
   return (
-    <nav className={`w-full h-fit fixed bg-white z-20 ${pathname == '/admin/login' || pathname == '/user/login'
+    <nav className={`w-full h-fit fixed bg-white z-20 ${pathname == '/worker/login' || pathname == '/user/login'
       || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/resend-email')
       || pathname.startsWith('/user/dashboard') ? 'hidden' : ''}`}>
       <div className="w-full h-fit bg-white border-b flex justify-between items-center px-10 py-3 z-50 relative">
