@@ -2,7 +2,7 @@ import { Router } from 'express'
 import { limiter } from '@/middleware/rateLimit'
 import { tokenValidation } from '@/middleware/verifyToken'
 import { expressValidatorErrorHandling } from '@/middleware/validation/errorHandlingValidator'
-import { acceptOrder, changePasswordWorker, createOrder, deleteProfilePictureWorker,getOrderItemDetail, getOrderNote, getOrderNoteDetail, getOrdersForDriver, getSingleDataWorker, updateProfileWorker, getOrdersForWashing, washingProcess, washingProcessDone, getListItem, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking } from '@/controllers/workerController'
+import { acceptOrder, changePasswordWorker, createOrder, deleteProfilePictureWorker, getOrderItemDetail, getOrderNote, getOrderNoteDetail, getOrdersForDriver, getSingleDataWorker, updateProfileWorker, getOrdersForWashing, washingProcess, washingProcessDone, getListItem, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/workerController'
 import { roleCheckSuperAdmin } from '@/middleware/roleCheck'
 import { changePasswordWorkerValidation, updateProfileWorkerValidation } from '@/middleware/validation'
 import { uploader } from '@/middleware/uploader'
@@ -13,6 +13,7 @@ workerRouter.get('/order', tokenValidation, getOrdersForDriver)
 workerRouter.get('/order-washing', tokenValidation, getOrdersForWashing)
 workerRouter.get('/order-ironing', tokenValidation, getOrdersForIroning)
 workerRouter.get('/order-packing', tokenValidation, getOrdersForPacking)
+workerRouter.get('/order-notes', tokenValidation, getNotes)
 workerRouter.get('/item', tokenValidation, getListItem)
 workerRouter.post('/accept-order/:orderId', tokenValidation, acceptOrder)
 workerRouter.get('/get-order-note/', tokenValidation, getOrderNote)
@@ -25,6 +26,9 @@ workerRouter.post('/ironing-process/:orderId', tokenValidation, ironingProcess)
 workerRouter.post('/ironing-done/:orderId', tokenValidation, ironingProcessDone)
 workerRouter.post('/packing-process/:orderId', tokenValidation, packingProcess)
 workerRouter.post('/packing-done/:orderId', tokenValidation, packingProcessDone)
+workerRouter.get('/history-washing/', tokenValidation, getWashingHistory)
+workerRouter.get('/history-ironing/', tokenValidation, getIroningHistory)
+workerRouter.get('/history-packing/', tokenValidation, getPackingHistory)
 workerRouter.patch('/profile', tokenValidation, uploader, limiter, updateProfileWorkerValidation, expressValidatorErrorHandling, updateProfileWorker)
 workerRouter.get('/', tokenValidation, getSingleDataWorker)
 workerRouter.patch('/change-password', tokenValidation, limiter, changePasswordWorkerValidation, expressValidatorErrorHandling, changePasswordWorker)

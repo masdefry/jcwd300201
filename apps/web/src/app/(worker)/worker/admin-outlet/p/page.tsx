@@ -11,19 +11,12 @@ import authStore from "@/zustand/authstore"
 import { useState, useEffect } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { FaSearch } from 'react-icons/fa';
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
+import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 
 export default function DriverPickUp() {
@@ -36,35 +29,32 @@ export default function DriverPickUp() {
     const token = authStore((state) => state.token);
     const email = authStore((state) => state.email);
 
+    const NotesSchema = Yup.object({
+        notes: Yup.string().required("Notes are required"), 
+    });
+
+
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState("date-asc");
-    const [activeTab, setActiveTab] = useState("semua");
+    const [activeTab, setActiveTab] = useState("bermasalah");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const limit = 5;
 
-    const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
-        queryKey: ['get-order', page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
+    const { data: dataOrderPackingProcess, refetch, isLoading: dataOrderPackingProcessLoading, isError: dataOrderPackingProcessError } = useQuery({
+        queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const tabValue =
-                activeTab === "belumDicuci" ? "AWAITING_PAYMENT" :
-                    activeTab === "belumDicuci" ? "AWAITING_PAYMENT" :
-                        activeTab === "prosesCuci" ? "IN_WASHING_PROCESS" :
-                            activeTab === "prosesSetrika" ? "IN_IRONING_PROCESS" :
-                                activeTab === "prosesPacking" ? "IN_PACKING_PROCESS" :
-                                    activeTab === "selesai" ? "IN_PACKING_PROCESS" :
-                                        "";
-
-            const res = await instance.get('/worker/order-washing', {
+            const res = await instance.get('/worker/order-notes', {
                 params: {
                     page,
                     limit_data: limit,
                     search: searchInput || "",
                     sort: sortOption,
-                    tab: tabValue,
-                    dateFrom: dateFrom ?? '',
-                    dateUntil: dateUntil ?? '',
+                    tab: activeTab,
+                    dateFrom,
+                    dateUntil,
+
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -73,9 +63,9 @@ export default function DriverPickUp() {
         },
     });
 
-    const { mutate: handleProcessOrder, isPending } = useMutation({
+    const { mutate: handleProcessPacking, isPending } = useMutation({
         mutationFn: async (id: any) => {
-            return await instance.post(`/worker/accept-order/${id}`, { email }, {
+            return await instance.post(`/worker/packing-done/${id}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -132,10 +122,10 @@ export default function DriverPickUp() {
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, dateFrom, dateUntil,activeTab, refetch]);
+    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
 
 
-    const totalPages = dataOrderWashingProcess?.totalPage || 1;
+    const totalPages = dataOrderPackingProcess?.totalPage || 1;
 
     return (
         <>
@@ -145,73 +135,83 @@ export default function DriverPickUp() {
                     <main className="w-full">
                         <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
                             <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> WASHING WORKER
+                                <Link href='/admin/settings'><FaArrowLeft /></Link> PACKING WORKER
                             </div>
                         </section>
                         <div className="py-28 mx-4 space-y-4">
                             <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-4">
-                                    <TabsTrigger value="semua" onClick={() => { setActiveTab("semua"); setPage(1) }} >Semua</TabsTrigger>
-                                    <TabsTrigger value="belumDicuci" onClick={() => { setActiveTab("belumDicuci"); setPage(1) }} >Belum Dicuci</TabsTrigger>
-                                    <TabsTrigger value="prosesCuci" onClick={() => { setActiveTab("prosesCuci"); setPage(1) }} >Proses Cuci</TabsTrigger>
-                                    <TabsTrigger value="selesai" onClick={() => { setActiveTab("selesai"); setPage(1) }}>Selesai</TabsTrigger>
+                                <TabsList className="grid w-full grid-cols-2">
+                                    <TabsTrigger value="bermasalah" onClick={() => { setActiveTab("bermasalah"); setPage(1) }} >Bermasalah</TabsTrigger>
+                                    <TabsTrigger value="selesai" onClick={() => { setActiveTab("selesai"); setPage(1) }} >Selesai</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
-                                        <div className="flex justify-between gap-1 items-center">
-                                            <div className="flex justify-between gap-1 items-center">
-                                                <div className="flex items-center justify-center">
-                                                    <div className="relative w-full max-w-md">
-                                                        <input
-                                                            type="text"
-                                                            onChange={(e) => debounce(e.target.value)}
-                                                            placeholder="Search..."
-                                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                        />
-                                                        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <Select value={sortOption} onValueChange={setSortOption}>
-                                                <SelectTrigger className="w-[150px] border rounded-md py-2 px-3">
-                                                    <SelectValue placeholder="Sort By" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="date-asc">Tanggal Asc.</SelectItem>
-                                                    <SelectItem value="date-desc">Tanggal Desc.</SelectItem>
-                                                    <SelectItem value="name-asc">Customer Name Asc.</SelectItem>
-                                                    <SelectItem value="name-desc">Customer Name Desc.</SelectItem>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                        {dataOrderWashingProcessLoading && <p>Loading...</p>}
-                                        {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                        {dataOrderWashingProcess?.orders?.map((order: any) => (
+                                        <FilterWorker
+                                            debounce={debounce}
+                                            sortOption={sortOption}
+                                            setSortOption={setSortOption}
+                                            dateFrom={dateFrom}
+                                            dateUntil={dateUntil}
+                                            setDateFrom={setDateFrom}
+                                            setDateUntil={setDateUntil}
+                                            setActiveTab={setActiveTab}
+                                            setSearchInput={setSearchInput}
+                                        />
+                                        {dataOrderPackingProcessLoading && <p>Loading...</p>}
+                                        {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
+                                        {dataOrderPackingProcess?.orders?.map((order: any) => (
                                             <section
                                                 key={order.id}
                                                 className="flex justify-between items-center border-b py-4"
                                             >
 
                                                 <ConfirmAlert
-                                                    colorConfirmation="green"
-                                                    caption={
-                                                        order.latestStatus === 'AWAITING_PAYMENT'
-                                                            ? 'Apakah anda yakin ingin melakukan proses cuci pada order ini?'
-                                                            : order.latestStatus === 'IN_WASHING_PROCESS'
-                                                                ? 'Apakah anda yakin ingin menyelesaikan proses pada order ini?'
-                                                                : ''
+                                                    colorConfirmation="blue"
+                                                    caption=
+                                                    {
+                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
+                                                            ? 'Terjadi Masalah'
+                                                            : ''
                                                     }
-                                                    onClick={() => handleProcessOrder(order?.id)}>
+                                                    description=
+                                                    {
+                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? (
+                                                            <Formik
+                                                                initialValues={{ notes: '' }}
+                                                                validationSchema={NotesSchema}
+                                                                onSubmit={(values) => {
+                                                                    console.log(values)
+                                                                }}
+                                                            >
+                                                                {() => (
+                                                                    <Form>
+                                                                        <Field
+                                                                            as="textarea"
+                                                                            name="notes"
+                                                                            className="textarea"
+                                                                            placeholder="Enter notes here..."
+                                                                        />
+                                                                        <ErrorMessage name="notes" component="div" className="text-red-500" />
+                                                                    </Form>
+                                                                )}
+                                                            </Formik>
+                                                        )   
+                                                        : ""
+                                                    }
+                                                    onClick={() => {
+                                                     
+                                                    }}>
+
+
                                                     <div className="flex items-center">
                                                         <div className="ml-2">
                                                             <h2 className="font-medium text-gray-900">
-                                                                {order.userFirstName} {order.userLastName}
+                                                                {order?.Users?.firstName} {order?.Users?.lastName}
                                                             </h2>
                                                             <p className="text-xs text-gray-500">
-                                                                {order.latestStatus === 'AWAITING_PAYMENT' ? 'Belum Dicuci' :
-                                                                    order.latestStatus === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
-                                                                        order.latestStatus === 'IN_IRONING_PROCESS' ? 'Selesai' :
-                                                                            order.latestStatus}
+                                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
+                                                                    ? 'Terjadi Masalah'
+                                                                    : ''}
                                                             </p>
                                                             <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                         </div>
@@ -227,6 +227,7 @@ export default function DriverPickUp() {
                                         ))}
 
                                         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+
                                     </CardContent>
                                 </TabsContent>
                             </Tabs>

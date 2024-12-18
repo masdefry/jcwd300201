@@ -133,9 +133,9 @@ export const findNearestStore = async (req: Request, res: Response, next: NextFu
       LIMIT 1;
     `;
 
-    // if (nearestStores.length === 0) {
-    //   return res.status(404).json({ error: 'Tidak ada toko Laundry kami di dekat anda' });
-    // }
+    if (nearestStores.length === 0) {
+      return res.status(404).json({ error: 'Tidak ada toko Laundry kami di dekat anda' });
+    }
 
     res.status(200).json({
       error: false,
@@ -183,3 +183,134 @@ export const requestPickUp = async (req: Request, res: Response, next: NextFunct
 };
 
 
+export const getUserOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      dateFrom,
+      dateUntil
+    } = req.query;
+    const { userId } = req.body;
+
+    const offset = Number(limit_data) * (Number(page) - 1);
+
+    const whereConditions: any = {
+      usersId: userId,
+      AND: [
+        search
+          ? {
+            OR: [
+              { id: { contains: search as string, mode: 'insensitive' } },
+              { Users: { firstName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { lastName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { phoneNumber: { contains: search as string, mode: 'insensitive' } } }
+            ]
+          }
+          : {},
+        dateFrom && dateUntil
+          ? { createdAt: { gte: new Date(dateFrom as string), lte: new Date(dateUntil as string) } }
+          : dateFrom
+            ? { createdAt: { gte: new Date(dateFrom as string) } }
+            : dateUntil
+              ? { createdAt: { lte: new Date(dateUntil as string) } }
+              : {}
+      ]
+    };
+
+    let orderBy: any;
+    if (sort === 'date-asc') {
+      orderBy = { createdAt: 'asc' };
+    } else if (sort === 'date-desc') {
+      orderBy = { createdAt: 'desc' };
+    } else if (sort === 'name-asc') {
+      orderBy = {
+        Users: {
+          firstName: 'asc',
+        },
+      };
+    } else if (sort === 'name-desc') {
+      orderBy = {
+        Users: {
+          firstName: 'desc',
+        },
+      };
+    } else if (sort === 'order-id-asc') {
+      orderBy = { id: 'asc' };
+    } else if (sort === 'order-id-desc') {
+      orderBy = { id: 'desc' };
+    } else {
+      orderBy = { createdAt: 'desc' };
+    }
+
+    const orders = await prisma.order.findMany({
+      where: whereConditions,
+      include: {
+        Stores: true,
+        Users: true,
+        OrderType: true,
+        UserAddress: true,
+        orderStatus: {
+          orderBy: { createdAt: 'desc' },
+          take: 1
+        }
+      },
+      skip: offset,
+      take: Number(limit_data),
+      orderBy
+    });
+
+    const totalCount = await prisma.order.count({
+      where: whereConditions
+    });
+
+    const totalPage = Math.ceil(totalCount / Number(limit_data));
+
+    res.status(200).json({
+      error: false,
+      message: "Orders retrieved successfully!",
+      data: {
+        totalPage,
+        orders
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const getOrderTracking = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const findUser = await prisma.users.findFirst({
+      where: {
+        id:userId,
+        email
+      }
+    })
+    if (!findUser) throw { msg: "user tidak tersedia", status: 404 }
+ 
+    const orderStatus = await prisma.orderStatus.findMany({
+      where: {
+        orderId: String(orderId),
+      },
+      include: {
+        Order: true,
+        Worker: true,
+      },
+      orderBy: {
+        createdAt: "asc",
+      },
+    });
+
+
+  } catch (error) {
+
+
+  }
+}

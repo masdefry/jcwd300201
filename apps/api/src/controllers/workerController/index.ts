@@ -415,7 +415,9 @@ export const getOrdersForWashing = async (req: Request, res: Response, next: Nex
       limit_data = '5',
       search = '',
       sort = 'date-asc',
-      tab = ''
+      tab = '',
+      dateFrom,
+      dateUntil
     } = req.query;
 
     const offset = Number(limit_data) * (Number(page) - 1);
@@ -434,6 +436,9 @@ export const getOrdersForWashing = async (req: Request, res: Response, next: Nex
       tab ? [tab]
         : ['AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS'];
 
+    const parsedDateFrom = dateFrom ? new Date(dateFrom as string) : undefined;
+    const parsedDateUntil = dateUntil ? new Date(dateUntil as string) : undefined;
+
     const whereConditions: Prisma.OrderWhereInput = {
       storesId,
       orderStatus: {
@@ -450,6 +455,9 @@ export const getOrdersForWashing = async (req: Request, res: Response, next: Nex
             ],
           }
           : {},
+        parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
+        parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {}
+
       ].filter((condition) => Object.keys(condition).length > 0),
     };
 
@@ -531,7 +539,10 @@ export const getOrdersForIroning = async (req: Request, res: Response, next: Nex
       limit_data = '5',
       search = '',
       sort = 'date-asc',
-      tab = ''
+      tab = '',
+      dateFrom,
+      dateUntil
+
     } = req.query;
 
     const offset = Number(limit_data) * (Number(page) - 1);
@@ -560,6 +571,8 @@ export const getOrdersForIroning = async (req: Request, res: Response, next: Nex
     } else {
       statusFilter = ['IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
     }
+    const parsedDateFrom = dateFrom ? new Date(dateFrom as string) : undefined;
+    const parsedDateUntil = dateUntil ? new Date(dateUntil as string) : undefined;
 
     const whereConditions: Prisma.OrderWhereInput = {
       storesId,
@@ -579,6 +592,8 @@ export const getOrdersForIroning = async (req: Request, res: Response, next: Nex
           : {},
         ...(tab === 'belumDisetrika' ? [{ isProcessed: false }] : []),
         ...(tab === 'prosesSetrika' ? [{ isProcessed: true }] : []),
+        parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
+        parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
       ].filter((condition) => Object.keys(condition).length > 0),
     };
 
@@ -660,9 +675,11 @@ export const getOrdersForPacking = async (req: Request, res: Response, next: Nex
       limit_data = '5',
       search = '',
       sort = 'date-asc',
-      tab = ''
+      tab = '',
+      dateFrom,
+      dateUntil
+
     } = req.query;
-    console.log(userId, authorizationRole,'<<<<<<<<<')
     const offset = Number(limit_data) * (Number(page) - 1);
 
     const worker = await prisma.worker.findUnique({
@@ -690,6 +707,9 @@ export const getOrdersForPacking = async (req: Request, res: Response, next: Nex
       statusFilter = ['IN_PACKING_PROCESS'];
     }
 
+    const parsedDateFrom = dateFrom ? new Date(dateFrom as string) : undefined;
+    const parsedDateUntil = dateUntil ? new Date(dateUntil as string) : undefined;
+
     const whereConditions: Prisma.OrderWhereInput = {
       storesId,
       orderStatus: {
@@ -709,6 +729,8 @@ export const getOrdersForPacking = async (req: Request, res: Response, next: Nex
         ...(tab === 'belumDipacking' ? [{ isProcessed: false }] : []),
         ...(tab === 'prosesPacking' ? [{ isProcessed: true }] : []),
         ...(tab === 'selesai' ? [{ isDone: true }] : []),
+        parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
+        parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
       ].filter((condition) => Object.keys(condition).length > 0),
     };
 
@@ -1345,22 +1367,21 @@ export const deleteProfilePictureWorker = async (req: Request, res: Response, ne
 }
 
 
-export const approveNotes = async (req: Request, res: Response, next: NextFunction) => {
+export const createNotes = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params;
-    const { email } = req.body;
+    const { email, notes } = req.body;
 
     const findWorker = await prisma.worker.findFirst({
       where: { email }
     })
 
-    if (!findWorker) throw { msg: "driver tidak tersedia", status: 404 }
+    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
 
     const order = await prisma.order.findFirst({
       where: { id: orderId },
       include: {
         orderDetail: true,
-        orderStatus: true
       },
     });
 
@@ -1368,16 +1389,19 @@ export const approveNotes = async (req: Request, res: Response, next: NextFuncti
       return res.status(404).json({ error: true, message: "Order tidak ditemukan" });
     }
 
-    await prisma.order.update({
+    const note = await prisma.order.update({
       where: {
         id: order.id
       },
-      data: { isSolved: true }
+      data: {
+        isSolved: true,
+        notes: notes
+      }
     })
     res.status(200).json({
       error: false,
       message: 'Berhasil melakukan approve untuk melanjutkan proses',
-      data: {}
+      data: note
     })
 
   } catch (error) {
@@ -1385,10 +1409,450 @@ export const approveNotes = async (req: Request, res: Response, next: NextFuncti
   }
 }
 
+export const getNotes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil,
+    } = req.query;
+
+    const worker = await prisma.worker.findUnique({
+      where: {
+        id: userId,
+        workerRole: authorizationRole,
+      },
+      select: { storesId: true },
+    });
+
+    if (!worker) throw { msg: "Worker tidak tersedia", status: 404 };
+
+    const offset = Number(limit_data) * (Number(page) - 1);
+
+    const parsedDateFrom = dateFrom ? new Date(dateFrom as string) : undefined;
+    console.log(parsedDateFrom)
+    const parsedDateUntil = dateUntil ? new Date(dateUntil as string) : undefined;
+    console.log(parsedDateUntil)
+
+    let tabFilter: Prisma.OrderWhereInput = {};
+    if (tab === 'bermasalah') {
+      tabFilter = { isSolved: false, notes: { not: null } }; 
+    } else if (tab === 'selesai') {
+      tabFilter = { isSolved: true, notes: { not: null } };
+    }
+
+    const whereConditions: Prisma.OrderWhereInput = {
+      storesId: worker.storesId,
+      AND: [
+        search
+          ? {
+            OR: [
+              { id: { contains: search as string, mode: 'insensitive' } },
+              { Users: { firstName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { lastName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { phoneNumber: { contains: search as string, mode: 'insensitive' } } },
+            ],
+          }
+          : {},
+        tabFilter, 
+        parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
+        parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {}
+      ].filter((condition) => Object.keys(condition).length > 0),
+    };
+
+    let orderBy: Prisma.OrderOrderByWithRelationInput;
+    if (sort === 'date-asc') {
+      orderBy = { createdAt: 'asc' };
+    } else if (sort === 'date-desc') {
+      orderBy = { createdAt: 'desc' };
+    } else if (sort === 'name-asc') {
+      orderBy = { Users: { firstName: 'asc' } };
+    } else if (sort === 'name-desc') {
+      orderBy = { Users: { firstName: 'desc' } };
+    } else if (sort === 'order-id-asc') {
+      orderBy = { id: 'asc' };
+    } else if (sort === 'order-id-desc') {
+      orderBy = { id: 'desc' };
+    } else {
+      orderBy = { createdAt: 'desc' };
+    }
+
+    const orders = await prisma.order.findMany({
+      where: whereConditions,
+      orderBy,
+      skip: offset,
+      take: Number(limit_data),
+      include: {
+        Users: true,
+        UserAddress: true, 
+        orderStatus: {
+          orderBy: { createdAt: 'desc' }, 
+          take: 1,
+        },
+      },
+    });
+
+    const totalCount = await prisma.order.count({ where: whereConditions });
+    const totalPage = Math.ceil(totalCount / Number(limit_data));
+
+    res.status(200).json({
+      error: false,
+      message: "Notes retrieved successfully!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getWashingHistory = async (req: Request, res: Response, next: NextFunction) => {
-try {
-  
-} catch (error) {
-  
-}
-}
+  try {
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil } = req.query;
+    const { userId, authorizationRole, storesId } = req.body;
+
+    const worker = await prisma.worker.findFirst({
+      where: {
+        id: userId,
+        workerRole: authorizationRole,
+        storesId: storesId
+      }
+    });
+
+
+    if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 }
+
+
+    const offset = Number(limit_data) * (Number(page) - 1);
+
+    const statusFilter: Status[] = [Status.IN_WASHING_PROCESS, Status.IN_IRONING_PROCESS];
+
+    const whereConditions: any = {
+      storesId,
+      orderStatus: {
+        some: {
+          status: {
+            in: statusFilter,
+          },
+        },
+      },
+      AND: [
+        search
+          ? {
+            OR: [
+              { id: { contains: search as string, mode: 'insensitive' } },
+              { Users: { firstName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { lastName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { phoneNumber: { contains: search as string, mode: 'insensitive' } } },
+            ],
+          }
+          : {},
+        dateFrom && dateUntil
+          ? { createdAt: { gte: new Date(dateFrom as string), lte: new Date(dateUntil as string) } }
+          : dateFrom
+            ? { createdAt: { gte: new Date(dateFrom as string) } }
+            : dateUntil
+              ? { createdAt: { lte: new Date(dateUntil as string) } }
+              : {},
+      ],
+    };
+
+    let orderBy: any;
+    if (sort === 'date-asc') {
+      orderBy = { createdAt: 'asc' };
+    } else if (sort === 'date-desc') {
+      orderBy = { createdAt: 'desc' };
+    } else if (sort === 'name-asc') {
+      orderBy = {
+        Users: {
+          firstName: 'asc',
+        },
+      };
+    } else if (sort === 'name-desc') {
+      orderBy = {
+        Users: {
+          firstName: 'desc',
+        },
+      };
+    } else if (sort === 'order-id-asc') {
+      orderBy = { id: 'asc' };
+    } else if (sort === 'order-id-desc') {
+      orderBy = { id: 'desc' };
+    } else {
+      orderBy = { createdAt: 'desc' };
+    }
+
+
+    const orders = await prisma.order.findMany({
+      where: whereConditions,
+      include: {
+        orderStatus: {
+          where: {
+            status: { in: statusFilter },
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+        Users: true,
+      },
+      skip: offset,
+      take: Number(limit_data),
+      orderBy,
+    });
+
+
+    const totalCount = await prisma.order.count({
+      where: whereConditions,
+    });
+
+    const totalPage = Math.ceil(totalCount / Number(limit_data));
+
+    res.status(200).json({
+      error: false,
+      message: "Orders retrieved successfully!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getIroningHistory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil } = req.query;
+    const { userId, authorizationRole, storesId } = req.body;
+
+    const worker = await prisma.worker.findFirst({
+      where: {
+        id: userId,
+        workerRole: authorizationRole,
+        storesId: storesId
+      }
+    });
+
+
+    if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 }
+
+
+    const offset = Number(limit_data) * (Number(page) - 1);
+
+    const statusFilter: Status[] = [Status.IN_IRONING_PROCESS, Status.IN_PACKING_PROCESS];
+
+    const whereConditions: any = {
+      storesId,
+      isDone: 0,
+      orderStatus: {
+        some: {
+          status: {
+            in: statusFilter,
+          },
+        },
+      },
+      AND: [
+        search
+          ? {
+            OR: [
+              { id: { contains: search as string, mode: 'insensitive' } },
+              { Users: { firstName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { lastName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { phoneNumber: { contains: search as string, mode: 'insensitive' } } },
+            ],
+          }
+          : {},
+        dateFrom && dateUntil
+          ? { createdAt: { gte: new Date(dateFrom as string), lte: new Date(dateUntil as string) } }
+          : dateFrom
+            ? { createdAt: { gte: new Date(dateFrom as string) } }
+            : dateUntil
+              ? { createdAt: { lte: new Date(dateUntil as string) } }
+              : {},
+      ],
+    };
+
+    let orderBy: any;
+    if (sort === 'date-asc') {
+      orderBy = { createdAt: 'asc' };
+    } else if (sort === 'date-desc') {
+      orderBy = { createdAt: 'desc' };
+    } else if (sort === 'name-asc') {
+      orderBy = {
+        Users: {
+          firstName: 'asc',
+        },
+      };
+    } else if (sort === 'name-desc') {
+      orderBy = {
+        Users: {
+          firstName: 'desc',
+        },
+      };
+    } else if (sort === 'order-id-asc') {
+      orderBy = { id: 'asc' };
+    } else if (sort === 'order-id-desc') {
+      orderBy = { id: 'desc' };
+    } else {
+      orderBy = { createdAt: 'desc' };
+    }
+
+
+    const orders = await prisma.order.findMany({
+      where: whereConditions,
+      include: {
+        orderStatus: {
+          where: {
+            status: { in: statusFilter },
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+        Users: true,
+      },
+      skip: offset,
+      take: Number(limit_data),
+      orderBy,
+    });
+
+
+    const totalCount = await prisma.order.count({
+      where: whereConditions,
+    });
+
+    const totalPage = Math.ceil(totalCount / Number(limit_data));
+
+    res.status(200).json({
+      error: false,
+      message: "Orders retrieved successfully!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPackingHistory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil } = req.query;
+    const { userId, authorizationRole, storesId } = req.body;
+
+    const worker = await prisma.worker.findFirst({
+      where: {
+        id: userId,
+        workerRole: authorizationRole,
+        storesId: storesId
+      }
+    });
+
+
+    if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 }
+
+
+    const offset = Number(limit_data) * (Number(page) - 1);
+
+    const statusFilter: Status[] = [Status.IN_PACKING_PROCESS];
+
+    const whereConditions: any = {
+      storesId,
+      isDone: 1,
+      orderStatus: {
+        some: {
+          status: {
+            in: statusFilter,
+          },
+        },
+      },
+      AND: [
+        search
+          ? {
+            OR: [
+              { id: { contains: search as string, mode: 'insensitive' } },
+              { Users: { firstName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { lastName: { contains: search as string, mode: 'insensitive' } } },
+              { Users: { phoneNumber: { contains: search as string, mode: 'insensitive' } } },
+            ],
+          }
+          : {},
+        dateFrom && dateUntil
+          ? { createdAt: { gte: new Date(dateFrom as string), lte: new Date(dateUntil as string) } }
+          : dateFrom
+            ? { createdAt: { gte: new Date(dateFrom as string) } }
+            : dateUntil
+              ? { createdAt: { lte: new Date(dateUntil as string) } }
+              : {},
+      ],
+    };
+
+    let orderBy: any;
+    if (sort === 'date-asc') {
+      orderBy = { createdAt: 'asc' };
+    } else if (sort === 'date-desc') {
+      orderBy = { createdAt: 'desc' };
+    } else if (sort === 'name-asc') {
+      orderBy = {
+        Users: {
+          firstName: 'asc',
+        },
+      };
+    } else if (sort === 'name-desc') {
+      orderBy = {
+        Users: {
+          firstName: 'desc',
+        },
+      };
+    } else if (sort === 'order-id-asc') {
+      orderBy = { id: 'asc' };
+    } else if (sort === 'order-id-desc') {
+      orderBy = { id: 'desc' };
+    } else {
+      orderBy = { createdAt: 'desc' };
+    }
+
+
+    const orders = await prisma.order.findMany({
+      where: whereConditions,
+      include: {
+        orderStatus: {
+          where: {
+            status: { in: statusFilter },
+          },
+          orderBy: { createdAt: 'desc' },
+          take: 1,
+        },
+        Users: true,
+      },
+      skip: offset,
+      take: Number(limit_data),
+      orderBy,
+    });
+
+
+    const totalCount = await prisma.order.count({
+      where: whereConditions,
+    });
+
+    const totalPage = Math.ceil(totalCount / Number(limit_data));
+
+    res.status(200).json({
+      error: false,
+      message: "Orders retrieved successfully!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
