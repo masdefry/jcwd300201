@@ -7,6 +7,7 @@ import Header from '@/components/core/navbar'
 import Footer from '@/components/core/footer'
 import AuthProviders from '@/providers/authProviders'
 import { Toaster } from "@/components/ui/toaster"
+import FloatingWhatsappIcon from '@/components/core/floatingWhatsapp';
 
 
 const inter = Inter({ subsets: ['latin'] });
@@ -35,7 +36,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
             <Toaster />
             {/* </HOCLoading> */}
-            {/* <Footer /> */}
+            <FloatingWhatsappIcon />
+            <Footer />
           </AuthProviders>
         </TanstackProviders>
 

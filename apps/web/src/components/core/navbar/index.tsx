@@ -4,7 +4,7 @@ import Image from "next/image";
 import ButtonCustom from "../button";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FaBurger, FaDashcube, FaRug, FaShoePrints, FaSpaghettiMonsterFlying, FaSprayCan, FaTag, FaUserGear } from "react-icons/fa6";
+import { FaBurger, FaDashcube, FaQq, FaRug, FaShoePrints, FaSpaghettiMonsterFlying, FaSprayCan, FaTag, FaUserGear } from "react-icons/fa6";
 import { useState } from "react";
 import authStore from "@/zustand/authstore";
 import { instance } from "@/utils/axiosInstance";
@@ -110,7 +110,7 @@ export default function Header() {
 
   return (
     <nav className={`w-full h-fit fixed bg-white z-20 ${pathname == '/admin/login' || pathname == '/user/login'
-      || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/forgot-password')
+      || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/resend-email')
       || pathname.startsWith('/user/dashboard') ? 'hidden' : ''}`}>
       <div className="w-full h-fit bg-white border-b flex justify-between items-center px-10 py-3 z-50 relative">
         <div className="w-fit h-16">
@@ -144,6 +144,7 @@ export default function Header() {
             )}
           </div>
           <Link href='/contact' className={`hover:border-b-2 hover:border-orange-500 hover:text-neutral-600 cursor-pointer text-lg ${pathname == '/contact' ? 'font-bold border-b-2 border-b-orange-500 text-neutral-600' : ''}`}>Kontak</Link>
+          <Link href='/faq' className={`hover:border-b-2 hover:border-orange-500 hover:text-neutral-600 cursor-pointer text-lg ${pathname == '/faq' ? 'font-bold border-b-2 border-b-orange-500 text-neutral-600' : ''}`}>FAQ</Link>
           {!!token ? (
             <div className="hidden lg:flex space-x-4">
               <ButtonCustom btnColor="bg-orange-500 hover:bg-orange-400" rounded="rounded-full" onClick={() => router.push('/user/dashboard/pickup')}>Order Sekarang</ButtonCustom>
@@ -194,6 +195,7 @@ export default function Header() {
                     <MenuCustom url='/user/dashboard/home' navigation="Profil"><FaUserGear /></MenuCustom>
                     <MenuCustom url='/about-us' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
                     <MenuCustom url='/contact' navigation="Kontak"><LuContact /></MenuCustom>
+                    <MenuCustom url='/faq' navigation="FAQ"><FaQq /></MenuCustom>
                   </div>
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">
@@ -210,6 +212,7 @@ export default function Header() {
                     <MenuCustom url={profileUrl} navigation="Profil"><FaUserGear /></MenuCustom>
                     <MenuCustom url='/about-us' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
                     <MenuCustom url='/contact' navigation="Contact"><LuContact /></MenuCustom>
+                    <MenuCustom url='/faq' navigation="FAQ"><FaQq /></MenuCustom>
                   </div>
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">

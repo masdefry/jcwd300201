@@ -172,12 +172,7 @@ export default function LoginUser() {
 
                 <div className="flex flex-col gap-2 py-3">
                     <div className="flex w-full justify-end items-center">
-                        <Link
-                            href={'/user/forgot-password'}
-                            className="text-sm text-blue-500 hover:underline"
-                        >
-                            Lupa kata sandi?
-                        </Link>
+                        <Link href={'/user/resend-email'} className="text-sm text-blue-500 hover:underline">Lupa kata sandi?</Link>
                     </div>
                 </div>
             </div>

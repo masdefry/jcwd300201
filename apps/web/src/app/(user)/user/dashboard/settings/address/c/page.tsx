@@ -131,14 +131,15 @@ export default function AddAddress() {
         queryKey: ['get-province'],
         queryFn: async () => {
             const res = await instance.get('/order/province');
-            return res.data.rajaongkir.results
+            return res?.data?.data?.rajaongkir?.results
         },
-    });
+    })
+
     const { data: cities, isLoading: citiesLoading } = useQuery({
         queryKey: ['get-city', selectedProvince],
         queryFn: async () => {
             const res = await instance.get('/order/city', { params: { province_id: selectedProvince } });
-            return res.data.rajaongkir.results;
+            return res?.data?.data?.rajaongkir?.results
         },
         enabled: !!selectedProvince,
     });
@@ -231,7 +232,7 @@ export default function AddAddress() {
                                                     <option disabled>Loading...</option>
                                                 ) : (
                                                     provinces?.map((province: any) => (
-                                                        <option key={province.province_id} value={province.province}>
+                                                        <option key={province.province_id} value={province.province_id}>
                                                             {province.province}
                                                         </option>
                                                     ))
@@ -338,7 +339,183 @@ export default function AddAddress() {
             </main>
 
             <ContentWebSession caption="Tambah Alamat">
-                <h1>gas</h1>
+                <div>
+                    <Formik
+                        initialValues={{
+                            addressName: "",
+                            addressDetail: "",
+                            province: "",
+                            city: "",
+                            zipCode: "",
+                            latitude: "",
+                            longitude: "",
+                        }}
+                        validationSchema={Yup.object({
+                            addressName: Yup.string().required("Nama Alamat harap diisi!"),
+                            addressDetail: Yup.string().required("Alamat harap diisi!"),
+                            province: Yup.string().required("Provinsi harap diisi!"),
+                            city: Yup.string().required("Kota harap diisi!"),
+                            zipCode: Yup.string().required("Kode Pos harap diisi!"),
+                            latitude: Yup.string().required("titik lokasi harap diisi!"),
+                            longitude: Yup.string().required("titik lokasi harap diisi!"),
+                        })}
+                        onSubmit={(values) => {
+                            addUserAddress({
+                                addressName: values.addressName,
+                                addressDetail: values.addressDetail,
+                                province: values.province,
+                                city: values.city,
+                                zipCode: values.zipCode,
+                                latitude: values.latitude,
+                                longitude: values.longitude
+                            })
+                        }}
+                    >
+                        {({ values, setFieldValue, handleChange, errors, touched }) => (
+                            <Form>
+                                <div className="flex gap-4 flex-wrap justify-center flex-col ">
+                                    <div className="mt-4 h-80">
+                                        <MapContainer
+                                            center={position}
+                                            zoom={13}
+                                            style={{ height: "100%", width: "100%" }}
+                                        >
+                                            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                            <LocationPicker setFieldValue={setFieldValue} position={position} setPosition={setPosition} />
+                                        </MapContainer>
+                                    </div>
+
+                                    <button className="w-full text-white rounded-lg bg-orange-500 py-2 hover:bg-orange-600"
+                                        onClick={() => getCurrentLocation(setFieldValue)}
+                                        type="button">Use Current Location</button>
+
+                                    <TextField
+                                        id="addressName"
+                                        name="addressName"
+                                        label="Nama Alamat"
+                                        value={values.addressName}
+                                        onChange={handleChange}
+                                        placeholder="Rumah"
+                                        size="small"
+                                        fullWidth
+                                        error={touched.addressName && Boolean(errors.addressName)}
+                                        helperText={touched.addressName && errors.addressName}
+                                    />
+                                    <TextField
+                                        id="addressDetail"
+                                        name="addressDetail"
+                                        label="Alamat"
+                                        value={values.addressDetail}
+                                        onChange={handleChange}
+                                        placeholder="Jl. Rancak Banai no.76"
+                                        size="small"
+                                        fullWidth
+                                        error={touched.addressDetail && Boolean(errors.addressDetail)}
+                                        helperText={touched.addressDetail && errors.addressDetail}
+                                    />
+                                    <div>
+                                        {/* <label htmlFor="province">Provinsi</label> */}
+                                        <Field
+                                            as="select"
+                                            id="province"
+                                            name="province"
+                                            value={values.province}
+                                            className="border border-gray-400 rounded-md p-2 w-full"
+                                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                const selectedValue = e.target.value;
+                                                setFieldValue("province", selectedValue);
+                                                setSelectedProvince(selectedValue);
+                                                setFieldValue("city", "");
+                                            }}
+                                        >
+                                            <option value="">Pilih Provinsi</option>
+                                            {provincesLoading ? (
+                                                <option disabled>Loading...</option>
+                                            ) : (
+                                                provinces?.map((province: any) => (
+                                                    <option key={province.province_id} value={province.province_id}>
+                                                        {province.province}
+                                                    </option>
+                                                ))
+                                            )}
+                                        </Field>
+                                        {touched.province && errors.province && (
+                                            <div className="error text-red-600 text-xs">{errors.province}</div>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Field
+                                            as="select"
+                                            id="city"
+                                            name="city"
+                                            value={values.city}
+                                            onChange={handleChange}
+                                            disabled={!selectedProvince}
+                                            className="border border-gray-400 rounded-md p-2 w-full"
+                                        >
+                                            <option value="">
+                                                {!selectedProvince ? "Silahkan Pilih Provinsi" : "Pilih Kota"}
+                                            </option>
+                                            {citiesLoading ? (
+                                                <option disabled>Loading...</option>
+                                            ) : (
+                                                cities?.map((city: any) => (
+                                                    <option key={city.city_id} value={city.city_name}>
+                                                        {city.city_name}
+                                                    </option>
+                                                ))
+                                            )}
+                                        </Field>
+                                        {touched.city && errors.city && (
+                                            <div className="error error text-red-600 text-xs">{errors.city}</div>
+                                        )}
+                                    </div>
+                                    <TextField
+                                        id="zipCode"
+                                        label="Kode Pos"
+                                        name="zipCode"
+                                        value={values.zipCode}
+                                        onChange={handleChange}
+                                        size="small"
+                                        fullWidth
+                                        error={touched.zipCode && Boolean(errors.zipCode)}
+                                        helperText={touched.zipCode && errors.zipCode}
+                                    />
+
+                                    <TextField
+                                        id="latitude"
+                                        label=""
+                                        name="latitude"
+                                        value={values.latitude}
+                                        disabled
+                                        size="small"
+                                        fullWidth
+                                    />
+
+                                    <TextField
+                                        id="longitude"
+                                        label=""
+                                        name="longitude"
+                                        value={values.longitude}
+                                        disabled
+                                        size="small"
+                                        fullWidth
+                                    />
+
+                                    <ButtonCustom
+                                        width="w-full"
+                                        btnColor="bg-orange-500 hover:bg-orange-600"
+                                        txtColor="text-white"
+                                        type="submit"
+                                    >
+                                        Tambah Alamat
+                                    </ButtonCustom>
+                                </div>
+                            </Form>
+                        )}
+                    </Formik>
+                </div>
             </ContentWebSession>
         </>
     )

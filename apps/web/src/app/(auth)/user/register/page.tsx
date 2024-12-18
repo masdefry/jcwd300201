@@ -180,7 +180,7 @@ export default function RegisterUser() {
                             <Link href='/user/login' className='text-blue-500 hover:text-blue-700'>Login</Link>
                         </div>
                         <Link
-                            href={'/user/forgot-password'}
+                            href={'/user/resend-email'}
                             className="text-sm text-blue-500 hover:underline"
                         >
                             Lupa kata sandi?

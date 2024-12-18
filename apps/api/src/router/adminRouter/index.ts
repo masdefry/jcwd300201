@@ -13,9 +13,9 @@ adminRouter.post('/login', authLoginValidation, expressValidatorErrorHandling, l
 adminRouter.post('/logout', tokenValidation, limiter, adminLogout)
 adminRouter.post('/worker', tokenValidation, roleCheckSuperAdmin, limiter, createWorkerValidation, expressValidatorErrorHandling, createWorker)
 adminRouter.delete('/worker/detail/:id', tokenValidation, roleCheckSuperAdmin, limiter, deleteDataWorker)
-adminRouter.get('/worker/item', tokenValidation, roleCheckSuperAdmin, getItemName)
-adminRouter.post('/worker/item', tokenValidation, roleCheckSuperAdmin, limiter, productLaundryValidation, createProductLaundry)
-adminRouter.delete('/worker/item/:id', tokenValidation, roleCheckSuperAdmin, limiter, deleteDataProductLaundry)
-adminRouter.patch('/worker/item/:id', tokenValidation, roleCheckSuperAdmin, limiter, productLaundryValidation, updateDataProductLaundry)
+adminRouter.get('/worker/item', tokenValidation, roleCheckSuperAdmin, getItemName) // laundry-items
+adminRouter.post('/worker/item', tokenValidation, roleCheckSuperAdmin, limiter, productLaundryValidation, createProductLaundry) // laundry-items
+adminRouter.delete('/worker/item/:id', tokenValidation, roleCheckSuperAdmin, limiter, deleteDataProductLaundry) // laundry-items
+adminRouter.patch('/worker/item/:id', tokenValidation, roleCheckSuperAdmin, limiter, productLaundryValidation, updateDataProductLaundry) // laundry-items
 
 export default adminRouter

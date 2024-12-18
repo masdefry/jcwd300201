@@ -12,6 +12,7 @@ import { transporter } from "@/utils/transporter";
 import { validateEmail } from "@/middleware/validation/emailValidation";
 import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation";
 import dotenv from 'dotenv'
+import axios from "axios";
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
@@ -170,13 +171,22 @@ export const userCreateAddress = async (req: Request, res: Response, next: NextF
       },
     });
 
-    const isMain = !hasMainAddress;
+    const findAddressUser = await prisma.userAddress.findMany({ where: { usersId: userId } })
+    if (findAddressUser?.length >= 5) throw { msg: 'Alamat anda sudah penuh, harap hapus salah satu alamat anda', status: 401 }
 
+    const isMain = !hasMainAddress;
+    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+      headers: {
+        key: 'b4b88bdd2e2065e365b688c79ebc550c'
+      }
+    });
+
+    const provinceName: string = responseApi?.data?.rajaongkir?.results?.province
     const newAddress = await prisma.userAddress.create({
       data: {
         addressName,
         addressDetail,
-        province,
+        province: provinceName,
         city,
         zipCode,
         latitude: parseFloat(latitude),
@@ -212,16 +222,8 @@ export const userEditAddress = async (req: Request, res: Response, next: NextFun
       country,
     } = req.body;
 
-    const existingAddress = await prisma.userAddress.findUnique({
-      where: { id: parseInt(addressId) },
-    });
-
-    if (!existingAddress) {
-      return res.status(404).json({
-        success: false,
-        message: "Address not found",
-      });
-    }
+    const existingAddress = await prisma.userAddress.findFirst({ where: { id: parseInt(addressId) } })
+    if (!existingAddress) throw { msg: 'Alamat tidak tersedia', status: 404 }
 
     const updatedAddress = await prisma.userAddress.update({
       where: { id: parseInt(addressId) },
@@ -248,18 +250,32 @@ export const userEditAddress = async (req: Request, res: Response, next: NextFun
   }
 }
 
+export const getSingleAddressUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params
+    const { userId } = req.body
+
+    const findAddressById = await prisma.userAddress.findFirst({ where: { id: Number(id), usersId: userId } })
+    if (!findAddressById) throw { msg: 'Data alamat sudah tidak tersedia', status: 404 }
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil mendapat data',
+      data: findAddressById
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
 
 export const getAllUserAddresses = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.body;
 
     const addresses = await prisma.userAddress.findMany({
-      where: {
-        usersId: userId,
-      },
-      orderBy: {
-        isMain: 'desc',
-      },
+      where: { usersId: userId },
+      orderBy: { isMain: 'desc' },
     });
 
     if (addresses.length === 0) throw { msg: 'User belum menambahkan alamat', status: 404 }
