@@ -36,7 +36,7 @@ export default function HistoryOrderIroning() {
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption],
         queryFn: async () => {
 
-            const res = await instance.get('/worker/history-ironing', {
+            const res = await instance.get('/order/history-ironing', {
                 params: {
                     page,
                     limit_data: limit,

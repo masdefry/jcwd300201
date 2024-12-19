@@ -44,8 +44,8 @@ export default function Footer() {
         </section>
       </main>
 
-      <footer className={`w-full bottom-0 h-96 z-20 hidden bg-orange-100 md:flex flex-col ${pathname == '/admin/login' || pathname == '/user/login'
-        || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/forgot-password') 
+      <footer className={`w-full bottom-0 h-96 z-20 hidden bg-orange-100 md:flex flex-col ${pathname == '/worker/login' || pathname == '/user/login'
+        || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/resend-email') 
         || pathname.startsWith('/user/dashboard') ? 'md:hidden' : ''}`}>
         <div className="w-full h-full px-20">
           <div className="flex w-full h-full justify-center items-center">

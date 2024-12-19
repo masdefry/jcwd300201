@@ -47,7 +47,7 @@ export default function Page() {
                     activeTab === "process-pickup" ? "DRIVER_TO_OUTLET" :
                         activeTab === "arrived" ? "DRIVER_ARRIVED_AT_OUTLET" : "";
 
-            const res = await instance.get('/worker/order', {
+            const res = await instance.get('/order/order', {
                 params: {
                     page,
                     limit_data: entriesPerPage,
@@ -63,7 +63,7 @@ export default function Page() {
 
     const { mutate: handleProcessOrder, isPending } = useMutation({
         mutationFn: async (slug: any) => {
-            return await instance.post(`/worker/accept-order/${slug}`, { email }, {
+            return await instance.post(`/order/accept-order/${slug}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`

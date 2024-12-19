@@ -1,4 +1,4 @@
-import { getStore } from "@/controllers/stroreController";
+import { getStore } from "@/controllers/storeController";
 import { Router } from "express";
 
 const storeRouter = Router()

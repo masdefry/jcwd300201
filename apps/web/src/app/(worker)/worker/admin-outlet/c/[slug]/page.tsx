@@ -50,7 +50,7 @@ interface ICreateOrder {
 type Iitem = {
     id: number,
     itemName: string,
-    itemNameId: number;
+    laundryItemId: number;
     quantity: number;
     weight: number;
 };
@@ -66,7 +66,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
     const { mutate: handleCreateNotaOrder, isPending } = useMutation({
         mutationFn: async ({ email, totalWeight, totalPrice, items }: any) => {
-            return await instance.post(`/worker/order/${slug}`, { email, totalWeight, totalPrice, items }, {
+            return await instance.post(`/order/order/${slug}`, { email, totalWeight, totalPrice, items }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -92,7 +92,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],
         queryFn: async () => {
-            const res = await instance.get(`/worker/detail-order-note/${slug}`, {
+            const res = await instance.get(`/order/detail-order-note/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log(res?.data?.data, 'ordernote');
@@ -105,7 +105,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { data: dataItemName, isLoading: dataItemNameLoading } = useQuery({
         queryKey: ['get-data-item'],
         queryFn: async () => {
-            const res = await instance.get('/worker/item', {
+            const res = await instance.get('/laundry/', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log(res, 'itemname');
@@ -142,7 +142,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                 onSubmit={(values: any) => {
                                     console.log(values)
                                     const itemOrder = values.items.map((item: any) => ({
-                                        itemNameId: item.itemName,
+                                        laundryItemId: item.itemName,
                                         quantity: item.quantity,
                                     }));
 

@@ -4,7 +4,7 @@ import Link from "next/link"
 import { FaArrowLeft } from 'react-icons/fa';
 import TextField from '@mui/material/TextField';
 import ButtonCustom from "@/components/core/button";
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMapEvents } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
@@ -70,7 +70,9 @@ function LocationPicker({
     ) : null;
 }
 
-export default function EditStore() {
+export default function EditStore({ params }: { params: Promise<any> }) {
+    const { detail } = use(params)
+    console.log(detail)
     const [position, setPosition] = useState({ lat: -6.200000, lng: 106.816666 });
 
     const getCurrentLocation = (setFieldValue: any) => {
@@ -93,11 +95,11 @@ export default function EditStore() {
 
     return (
         <>
-            <main className="w-full h-fit">
+            <main className="w-full h-fit md:hidden block">
                 <section className="w-full h-fit">
                     <HeaderMobileUser />
                     <main className="mx-8">
-                        <section className="flex gap-2 items-center bg-white w-full z-50 font-bold  fixed pt-2 mt-14 text-lg border-b-2 pb-4">
+                        <section className="flex gap-2 items-center bg-white w-full z-50 font-bold mt-10 fixed pt-2 text-lg border-b-2 pb-4">
                             <Link href='/users/settings/address'><FaArrowLeft /></Link> EDIT ALAMAT
                         </section>
                         <Formik
@@ -188,7 +190,7 @@ export default function EditStore() {
                                         />
 
 
-                                        <div className="mt-4 h-80">
+                                        <div className="mt-4 h-80 relative z-10">
                                             <MapContainer
                                                 center={position}
                                                 zoom={13}
@@ -244,7 +246,7 @@ export default function EditStore() {
             </main>
 
             <ContentWebSession caption="Edit Alamat">
-                <h1>Gas</h1>
+                <h1>{detail?.split('CNC')[0]}</h1>
             </ContentWebSession>
         </>
     )

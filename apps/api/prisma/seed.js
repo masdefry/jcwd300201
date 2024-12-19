@@ -78,7 +78,7 @@ const dataWorker = [
         phoneNumber: '08123123124',
         profilePicture: profilePict,
         identityNumber: '302138124',
-        storesId: 1
+        storeId: 1
     },
     {
         email: "outletadmin@example.com",
@@ -88,7 +88,7 @@ const dataWorker = [
         phoneNumber: "081234567890",
         profilePicture: profilePict,
         identityNumber: "1234567890",
-        storesId: 1
+        storeId: 1
     },
     {
         email: "washingworker@example.com",
@@ -98,7 +98,7 @@ const dataWorker = [
         phoneNumber: "081234567891",
         profilePicture: profilePict,
         identityNumber: "1234567891",
-        storesId: 1
+        storeId: 1
     },
     {
         email: "ironingworker@example.com",
@@ -108,7 +108,7 @@ const dataWorker = [
         phoneNumber: "081234567892",
         profilePicture: profilePict,
         identityNumber: "1234567892",
-        storesId: 1
+        storeId: 1
     },
     {
         email: "packingworker@example.com",
@@ -118,7 +118,7 @@ const dataWorker = [
         phoneNumber: "081234567893",
         profilePicture: profilePict,
         identityNumber: "1234567893",
-        storesId: 1
+        storeId: 1
     },
     {
         email: "driver@example.com",
@@ -130,7 +130,7 @@ const dataWorker = [
         identityNumber: "1234567894",
         motorcycleType: 'Ninja 4 tak',
         plateNumber: "B 666 DEV",
-        storesId: 1
+        storeId: 1
     },
     {
         email: "outletadmin2@example.com",
@@ -140,7 +140,7 @@ const dataWorker = [
         phoneNumber: "081234567890",
         profilePicture: profilePict,
         identityNumber: "1234567890",
-        storesId: 5
+        storeId: 5
     },
     {
         email: "washingworker2@example.com",
@@ -150,7 +150,7 @@ const dataWorker = [
         phoneNumber: "081234567891",
         profilePicture: profilePict,
         identityNumber: "1234567891",
-        storesId: 5
+        storeId: 5
     },
     {
         email: "ironingworke2@example.com",
@@ -160,7 +160,7 @@ const dataWorker = [
         phoneNumber: "081234567892",
         profilePicture: profilePict,
         identityNumber: "1234567892",
-        storesId: 5
+        storeId: 5
     },
     {
         email: "packingworker2@example.com",
@@ -170,7 +170,7 @@ const dataWorker = [
         phoneNumber: "081234567893",
         profilePicture: profilePict,
         identityNumber: "1234567893",
-        storesId: 5
+        storeId: 5
     },
     {
         email: "driver2@example.com",
@@ -182,7 +182,7 @@ const dataWorker = [
         identityNumber: "1234567894",
         motorcycleType: 'Ninja 4 tak',
         plateNumber: "B 666 DEV",
-        storesId: 5
+        storeId: 5
     },
     {
         email: "outletadmin2@example.com",
@@ -192,7 +192,7 @@ const dataWorker = [
         phoneNumber: "081245678900",
         profilePicture: profilePict,
         identityNumber: "2014567890",
-        storesId: 2,
+        storeId: 2,
     },
     {
         email: "washingworker2@example.com",
@@ -202,7 +202,7 @@ const dataWorker = [
         phoneNumber: "081245678901",
         profilePicture: profilePict,
         identityNumber: "2014567891",
-        storesId: 2,
+        storeId: 2,
     },
     {
         email: "ironingworker2@example.com",
@@ -212,7 +212,7 @@ const dataWorker = [
         phoneNumber: "081245678902",
         profilePicture: profilePict,
         identityNumber: "2014567892",
-        storesId: 2,
+        storeId: 2,
     },
     {
         email: "packingworker2@example.com",
@@ -222,7 +222,7 @@ const dataWorker = [
         phoneNumber: "081245678903",
         profilePicture: profilePict,
         identityNumber: "2014567893",
-        storesId: 2,
+        storeId: 2,
     },
     {
         email: "driver2@example.com",
@@ -234,7 +234,7 @@ const dataWorker = [
         identityNumber: "2014567894",
         motorcycleType: "Vario 125",
         plateNumber: "B 1234 ABC",
-        storesId: 2,
+        storeId: 2,
     },
     {
         email: "outletadmin3@example.com",
@@ -244,7 +244,7 @@ const dataWorker = [
         phoneNumber: "081345678900",
         profilePicture: profilePict,
         identityNumber: "3014567890",
-        storesId: 3,
+        storeId: 3,
     },
     {
         email: "washingworker3@example.com",
@@ -254,7 +254,7 @@ const dataWorker = [
         phoneNumber: "081345678901",
         profilePicture: profilePict,
         identityNumber: "3014567891",
-        storesId: 3,
+        storeId: 3,
     },
     {
         email: "ironingworker3@example.com",
@@ -264,7 +264,7 @@ const dataWorker = [
         phoneNumber: "081345678902",
         profilePicture: profilePict,
         identityNumber: "3014567892",
-        storesId: 3,
+        storeId: 3,
     },
     {
         email: "packingworker3@example.com",
@@ -274,7 +274,7 @@ const dataWorker = [
         phoneNumber: "081345678903",
         profilePicture: profilePict,
         identityNumber: "3014567893",
-        storesId: 3,
+        storeId: 3,
     },
     {
         email: "driver3@example.com",
@@ -286,7 +286,7 @@ const dataWorker = [
         identityNumber: "3014567894",
         motorcycleType: "Beat Street",
         plateNumber: "B 5678 DEF",
-        storesId: 3,
+        storeId: 3,
     },
     {
         email: "outletadmin4@example.com",
@@ -296,7 +296,7 @@ const dataWorker = [
         phoneNumber: "081445678900",
         profilePicture: profilePict,
         identityNumber: "4014567890",
-        storesId: 4,
+        storeId: 4,
     },
     {
         email: "washingworker4@example.com",
@@ -306,7 +306,7 @@ const dataWorker = [
         phoneNumber: "081445678901",
         profilePicture: profilePict,
         identityNumber: "4014567891",
-        storesId: 4,
+        storeId: 4,
     },
     {
         email: "ironingworker4@example.com",
@@ -316,7 +316,7 @@ const dataWorker = [
         phoneNumber: "081445678902",
         profilePicture: profilePict,
         identityNumber: "4014567892",
-        storesId: 4,
+        storeId: 4,
     },
     {
         email: "packingworker4@example.com",
@@ -326,7 +326,7 @@ const dataWorker = [
         phoneNumber: "081445678903",
         profilePicture: profilePict,
         identityNumber: "4014567893",
-        storesId: 4,
+        storeId: 4,
     },
     {
         email: "driver4@example.com",
@@ -338,7 +338,7 @@ const dataWorker = [
         identityNumber: "4014567894",
         motorcycleType: "Mio M3",
         plateNumber: "B 6789 GHI",
-        storesId: 4,
+        storeId: 4,
     },
     {
         email: "outletadmin5@example.com",
@@ -348,7 +348,7 @@ const dataWorker = [
         phoneNumber: "081545678900",
         profilePicture: profilePict,
         identityNumber: "5014567890",
-        storesId: 5,
+        storeId: 5,
     },
     {
         email: "washingworker5@example.com",
@@ -358,7 +358,7 @@ const dataWorker = [
         phoneNumber: "081545678901",
         profilePicture: profilePict,
         identityNumber: "5014567891",
-        storesId: 5,
+        storeId: 5,
     },
     {
         email: "ironingworker5@example.com",
@@ -368,7 +368,7 @@ const dataWorker = [
         phoneNumber: "081545678902",
         profilePicture: profilePict,
         identityNumber: "5014567892",
-        storesId: 5,
+        storeId: 5,
     },
     {
         email: "packingworker5@example.com",
@@ -378,7 +378,7 @@ const dataWorker = [
         phoneNumber: "081545678903",
         profilePicture: profilePict,
         identityNumber: "5014567893",
-        storesId: 5,
+        storeId: 5,
     },
     {
         email: "driver5@example.com",
@@ -390,7 +390,7 @@ const dataWorker = [
         identityNumber: "5014567894",
         motorcycleType: "NMAX",
         plateNumber: "B 8901 JKL",
-        storesId: 5,
+        storeId: 5,
     }
 ]
 
@@ -554,7 +554,7 @@ const dataUserAddress = [
 ]
 
 async function main() {
-    await prisma.stores.createMany({
+    await prisma.store.createMany({
         data: dataStore.map((store) => ({
             id: String(store.id),
             storeName: store.storeName,
@@ -583,13 +583,13 @@ async function main() {
             identityNumber: worker.identityNumber,
             motorcycleType: worker.motorcycleType || null,
             plateNumber: worker.plateNumber || null,
-            storesId: String(worker.storesId),
+            storeId: String(worker.storeId),
         })),
         skipDuplicates: true,
     });
 
     const userPromises = dataUser.map(async (user) => {
-        return prisma.users.upsert({
+        return prisma.user.upsert({
             where: { email: user.email },
             update: {},
             create: {
@@ -617,7 +617,7 @@ async function main() {
 
     const userAddresses = dataUserAddress.map((address) => ({
         ...address,
-        usersId: firstUserId, 
+        userId: firstUserId, 
     }));
 
     await prisma.userAddress.createMany({
@@ -625,7 +625,7 @@ async function main() {
         skipDuplicates: true,
     });
 
-    await prisma.itemName.createMany({
+    await prisma.laundryItem.createMany({
         data: dataItem.map((item) => ({
             itemName: item.itemName,
         })),

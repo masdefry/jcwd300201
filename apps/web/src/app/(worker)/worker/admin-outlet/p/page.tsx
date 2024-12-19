@@ -45,7 +45,7 @@ export default function DriverPickUp() {
     const { data: dataOrderPackingProcess, refetch, isLoading: dataOrderPackingProcessLoading, isError: dataOrderPackingProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const res = await instance.get('/worker/order-notes', {
+            const res = await instance.get('/order/order-notes', {
                 params: {
                     page,
                     limit_data: limit,
@@ -65,7 +65,7 @@ export default function DriverPickUp() {
 
     const { mutate: handleProcessPacking, isPending } = useMutation({
         mutationFn: async (id: any) => {
-            return await instance.post(`/worker/packing-done/${id}`, { email }, {
+            return await instance.post(`/order/packing-done/${id}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`

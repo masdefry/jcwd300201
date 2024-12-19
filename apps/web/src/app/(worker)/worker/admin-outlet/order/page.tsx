@@ -56,7 +56,7 @@ export default function DriverPickUp() {
                                     activeTab === "selesai" ? "IN_PACKING_PROCESS" :
                                         "";
 
-            const res = await instance.get('/worker/order-washing', {
+            const res = await instance.get('/order/order-washing', {
                 params: {
                     page,
                     limit_data: limit,
@@ -75,7 +75,7 @@ export default function DriverPickUp() {
 
     const { mutate: handleProcessOrder, isPending } = useMutation({
         mutationFn: async (id: any) => {
-            return await instance.post(`/worker/accept-order/${id}`, { email }, {
+            return await instance.post(`/order/accept-order/${id}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`

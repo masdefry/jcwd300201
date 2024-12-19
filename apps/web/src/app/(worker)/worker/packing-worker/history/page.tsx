@@ -36,7 +36,7 @@ export default function HistoryOrderPacking() {
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption],
         queryFn: async () => {
 
-            const res = await instance.get('/worker/history-packing', {
+            const res = await instance.get('/order/history-packing', {
                 params: {
                     page,
                     limit_data: limit,

@@ -49,7 +49,7 @@ export default function DriverPickUp() {
     const { data: dataOrderIroningProcess, refetch, isLoading: dataOrderIroningProcessLoading, isError: dataOrderIroningProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const res = await instance.get('/worker/order-ironing', {
+            const res = await instance.get('/order/order-ironing', {
                 params: {
                     page,
                     limit_data: limit,
@@ -69,7 +69,7 @@ export default function DriverPickUp() {
 
     const { mutate: handleProcessIroning, isPending } = useMutation({
         mutationFn: async (id: any) => {
-            return await instance.post(`/worker/ironing-done/${id}`, { email }, {
+            return await instance.post(`/order/ironing-done/${id}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`

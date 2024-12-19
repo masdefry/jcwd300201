@@ -36,7 +36,7 @@ export default function HistoryOrderWashing() {
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption],
         queryFn: async () => {
 
-            const res = await instance.get('/worker/history-washing', {
+            const res = await instance.get('/order/history-washing', {
                 params: {
                     page,
                     limit_data: limit,

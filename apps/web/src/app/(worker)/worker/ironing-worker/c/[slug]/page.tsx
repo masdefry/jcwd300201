@@ -49,7 +49,7 @@ interface ICreateOrder {
 type Iitem = {
     id: number,
     itemName: string,
-    itemNameId: number;
+    laundryItemId: number;
     quantity: number;
     weight: number;
 };
@@ -69,7 +69,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],
         queryFn: async () => {
-            const res = await instance.get(`/worker/detail-order-note/${slug}`, {
+            const res = await instance.get(`/order/detail-order-note/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log(dataOrderNote)
@@ -80,7 +80,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { data: dataOrderDetail, isLoading: dataOrderDetailLoading } = useQuery({
         queryKey: ['get-detail-item'],
         queryFn: async () => {
-            const res = await instance.get(`/worker/order-detail/${slug}`, {
+            const res = await instance.get(`/order/order-detail/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return res?.data?.data;
@@ -90,7 +90,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { data: dataItemName, isLoading: dataItemNameLoading } = useQuery({
         queryKey: ['get-data-item'],
         queryFn: async () => {
-            const res = await instance.get('/worker/item/', {
+            const res = await instance.get('/laundry//', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return res?.data?.data;
@@ -99,7 +99,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
     const { mutate: handleStatusOrder } = useMutation({
         mutationFn: async ({ email, notes }: any) => {
-            return await instance.post(`/worker/ironing-process/${slug}`, { email, notes }, {
+            return await instance.post(`/order/ironing-process/${slug}`, { email, notes }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -131,7 +131,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         return frontendItems.every((item) =>
             backendItems.some(
                 (backendItem) =>
-                    String(backendItem.itemNameId) === item.itemNameId &&
+                    String(backendItem.laundryItemId) === item.laundryItemId &&
                     backendItem.quantity === item.quantity
             )
         );
@@ -171,7 +171,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                 {({ values, setFieldValue, submitForm }) => {
                                     const handleCustomSubmit = () => {
                                         const itemOrder = values.items.map((item: any) => ({
-                                            itemNameId: item.itemName,
+                                            laundryItemId: item.itemName,
                                             quantity: item.quantity,
                                         }));
                                         const isDataMatching = compareData(itemOrder, dataOrderDetail);

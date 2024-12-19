@@ -21,14 +21,14 @@ export default function Page({ params }: { params: Promise<{ detail: string }> }
     const { data: workerData, isFetching } = useQuery({
         queryKey: ['get-data-worker'],
         queryFn: async () => {
-            const res = await instance.get(`/admin/worker/detail/${idUser}`)
+            const res = await instance.get(`/worker/detail/${idUser}`)
             return res?.data?.data
         }
     })
 
     const { mutate: handleDeleteData, isPending: isPendingDelete } = useMutation({
         mutationFn: async () => {
-            return await instance.delete(`/admin/worker/detail/${idUser}`, {
+            return await instance.delete(`/worker/detail/${idUser}`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

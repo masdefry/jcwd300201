@@ -71,7 +71,7 @@ CREATE TABLE `worker` (
     `motorcycleType` VARCHAR(191) NULL,
     `plateNumber` VARCHAR(191) NULL,
     `changePasswordToken` TEXT NULL,
-    `storesId` VARCHAR(191) NULL,
+    `storeId` VARCHAR(191) NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
@@ -91,7 +91,7 @@ CREATE TABLE `order` (
     `paymentProof` VARCHAR(191) NOT NULL,
     `isPaid` BOOLEAN NOT NULL,
     `driversId` VARCHAR(191) NULL,
-    `storesId` VARCHAR(191) NULL,
+    `storeId` VARCHAR(191) NULL,
     `usersId` VARCHAR(191) NULL,
     `orderTypeId` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -117,7 +117,7 @@ CREATE TABLE `orderType` (
 CREATE TABLE `orderDetail` (
     `id` INTEGER NOT NULL AUTO_INCREMENT,
     `orderId` VARCHAR(191) NULL,
-    `itemNameId` INTEGER NULL,
+    `laundryItemId` INTEGER NULL,
     `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updatedAt` DATETIME(3) NOT NULL,
     `deletedAt` DATETIME(3) NULL,
@@ -152,10 +152,10 @@ CREATE TABLE `orderStatus` (
 ALTER TABLE `usersAddress` ADD CONSTRAINT `usersAddress_usersId_fkey` FOREIGN KEY (`usersId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `worker` ADD CONSTRAINT `worker_storesId_fkey` FOREIGN KEY (`storesId`) REFERENCES `stores`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `worker` ADD CONSTRAINT `worker_storeId_fkey` FOREIGN KEY (`storeId`) REFERENCES `stores`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `order` ADD CONSTRAINT `order_storesId_fkey` FOREIGN KEY (`storesId`) REFERENCES `stores`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `order` ADD CONSTRAINT `order_storeId_fkey` FOREIGN KEY (`storeId`) REFERENCES `stores`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `order` ADD CONSTRAINT `order_usersId_fkey` FOREIGN KEY (`usersId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -167,7 +167,7 @@ ALTER TABLE `order` ADD CONSTRAINT `order_orderTypeId_fkey` FOREIGN KEY (`orderT
 ALTER TABLE `orderDetail` ADD CONSTRAINT `orderDetail_orderId_fkey` FOREIGN KEY (`orderId`) REFERENCES `order`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `orderDetail` ADD CONSTRAINT `orderDetail_itemNameId_fkey` FOREIGN KEY (`itemNameId`) REFERENCES `itemName`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `orderDetail` ADD CONSTRAINT `orderDetail_laundryItemId_fkey` FOREIGN KEY (`laundryItemId`) REFERENCES `itemName`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `orderStatus` ADD CONSTRAINT `orderStatus_orderId_fkey` FOREIGN KEY (`orderId`) REFERENCES `order`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
