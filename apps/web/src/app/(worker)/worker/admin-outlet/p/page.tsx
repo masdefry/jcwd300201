@@ -18,6 +18,17 @@ import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function DriverPickUp() {
     const params = useSearchParams();
@@ -29,8 +40,8 @@ export default function DriverPickUp() {
     const token = authStore((state) => state.token);
     const email = authStore((state) => state.email);
 
-    const NotesSchema = Yup.object({
-        notes: Yup.string().required("Notes are required"), 
+    const notesSchema = Yup.object({
+        notes: Yup.string().required("Notes are required"),
     });
 
 
@@ -40,6 +51,8 @@ export default function DriverPickUp() {
     const [activeTab, setActiveTab] = useState("bermasalah");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+
     const limit = 5;
 
     const { data: dataOrderPackingProcess, refetch, isLoading: dataOrderPackingProcessLoading, isError: dataOrderPackingProcessError } = useQuery({
@@ -164,42 +177,84 @@ export default function DriverPickUp() {
                                                 key={order.id}
                                                 className="flex justify-between items-center border-b py-4"
                                             >
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <div className="flex items-center">
+                                                            <div className="ml-2">
+                                                                <h2 className="font-medium text-gray-900">
+                                                                    {order?.Users?.firstName} {order?.Users?.lastName}
+                                                                </h2>
+                                                                <p className="text-xs text-gray-500">
+                                                                    {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
+                                                                        ? 'Terjadi Masalah'
+                                                                        : ''}
+                                                                </p>
+                                                                <p className="text-xs text-gray-500">
+                                                                    {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </AlertDialogTrigger>
 
-                                                <ConfirmAlert
+                                                    {/* Wrap multiple components in a div */}
+                                                    <div>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>Terdapat perbedaan barang pada laundry berikut</AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    <Formik
+                                                                        initialValues={{ notes: '' }}
+                                                                        validationSchema={notesSchema}
+                                                                        onSubmit={async (values) => {
+                                                                            console.log(values);
+                                                                        }}
+                                                                    >
+                                                                        <Form>
+                                                                            <div>
+                                                                                <Field
+                                                                                    as="textarea"
+                                                                                    name="notes"
+                                                                                    rows={4}
+                                                                                    placeholder="Enter your notes"
+                                                                                    className="w-full p-2 border rounded"
+                                                                                />
+                                                                                <ErrorMessage name="notes" component="div" className="text-red-500 text-xs" />
+                                                                            </div>
+                                                                            <AlertDialogFooter>
+                                                                                <AlertDialogCancel onClick={() => setSelectedOrder(null)}>Cancel</AlertDialogCancel>
+                                                                                <AlertDialogAction type="submit">Continue</AlertDialogAction>
+                                                                            </AlertDialogFooter>
+                                                                        </Form>
+                                                                    </Formik>
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+
+                                            
+                                                        </AlertDialogContent>
+                                                    </div> {/* Closing the wrapper div */}
+                                                </AlertDialog>
+
+                                                {/* <ConfirmAlert
                                                     colorConfirmation="blue"
                                                     caption=
                                                     {
                                                         order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
-                                                            ? 'Terjadi Masalah'
+                                                            ? 'testing'
                                                             : ''
                                                     }
                                                     description=
                                                     {
                                                         order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? (
-                                                            <Formik
-                                                                initialValues={{ notes: '' }}
-                                                                validationSchema={NotesSchema}
-                                                                onSubmit={(values) => {
-                                                                    console.log(values)
-                                                                }}
-                                                            >
-                                                                {() => (
-                                                                    <Form>
-                                                                        <Field
-                                                                            as="textarea"
-                                                                            name="notes"
-                                                                            className="textarea"
-                                                                            placeholder="Enter notes here..."
-                                                                        />
-                                                                        <ErrorMessage name="notes" component="div" className="text-red-500" />
-                                                                    </Form>
-                                                                )}
-                                                            </Formik>
-                                                        )   
-                                                        : ""
+                                                            "testing"
+                                                        )
+                                                            : ""
                                                     }
                                                     onClick={() => {
-                                                     
+                                                        if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false) {
+                                                            router.push(`/worker/packing-worker/c/${order?.id}`)
+                                                        } else if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true) {
+                                                            handleProcessPacking(order?.id);
+                                                        }
                                                     }}>
 
 
@@ -216,7 +271,7 @@ export default function DriverPickUp() {
                                                             <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                         </div>
                                                     </div>
-                                                </ConfirmAlert>
+                                                </ConfirmAlert> */}
 
                                                 <div className="flex gap-1">
                                                     <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
