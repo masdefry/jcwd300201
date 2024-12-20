@@ -8,10 +8,12 @@ import { useMutation } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
 import * as Yup from 'yup'
+import { useRouter } from 'next/navigation'
 
 export default function Page() {
     const token = authStore((state) => state?.token)
     const [isDisabledSuccess, setIsDisabledSuccess] = useState<boolean>(false)
+    const router = useRouter()
     const { mutate: handleSendMessage, isPending: isPendingSendMessage } = useMutation({
         mutationFn: async ({ name, email, textHelp, phoneNumber }: { name: string, email: string, textHelp: string, phoneNumber: string }) => {
             return await instance.post('/contact', { name, email, textHelp, phoneNumber }, {
@@ -34,6 +36,8 @@ export default function Page() {
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
+
+            if (err?.response?.data?.message === 'Harap login terlebih dahulu') router.push('/user/login')
             console.log(err)
         }
     })

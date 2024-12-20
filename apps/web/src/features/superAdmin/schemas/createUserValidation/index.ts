@@ -7,5 +7,5 @@ export const createUserValidation = Yup.object().shape({
     phoneNumber: Yup.string().required('Harap diisi'),
     workerRole: Yup.string().required('Harap diisi'),
     identityNumber: Yup.string().required('Harap diisi'),
-    storesId: Yup.string().required('Harap diisi'),
+    storeId: Yup.string().required('Harap diisi'),
 })

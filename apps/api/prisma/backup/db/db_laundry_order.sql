@@ -31,7 +31,7 @@ CREATE TABLE `order` (
   `paymentProof` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `isPaid` tinyint(1) NOT NULL,
   `driversId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `storesId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `storeId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `usersId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `orderTypeId` int DEFAULT NULL,
   `createdAt` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -40,12 +40,12 @@ CREATE TABLE `order` (
   `notes` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `userAddressId` int DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `order_storesId_fkey` (`storesId`),
+  KEY `order_storeId_fkey` (`storeId`),
   KEY `order_usersId_fkey` (`usersId`),
   KEY `order_orderTypeId_fkey` (`orderTypeId`),
   KEY `order_userAddressId_fkey` (`userAddressId`),
   CONSTRAINT `order_orderTypeId_fkey` FOREIGN KEY (`orderTypeId`) REFERENCES `ordertype` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
-  CONSTRAINT `order_storesId_fkey` FOREIGN KEY (`storesId`) REFERENCES `stores` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
+  CONSTRAINT `order_storeId_fkey` FOREIGN KEY (`storeId`) REFERENCES `stores` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `order_userAddressId_fkey` FOREIGN KEY (`userAddressId`) REFERENCES `usersaddress` (`id`) ON DELETE SET NULL ON UPDATE CASCADE,
   CONSTRAINT `order_usersId_fkey` FOREIGN KEY (`usersId`) REFERENCES `users` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

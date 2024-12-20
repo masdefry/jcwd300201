@@ -38,7 +38,7 @@ export default function DriverPickUp() {
     const { data: dataOrderPackingProcess, refetch, isLoading: dataOrderPackingProcessLoading, isError: dataOrderPackingProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const res = await instance.get('/worker/order-packing', {
+            const res = await instance.get('/order/order-packing', {
                 params: {
                     page,
                     limit_data: limit,
@@ -55,7 +55,7 @@ export default function DriverPickUp() {
 
     const { mutate: handleProcessPacking, isPending } = useMutation({
         mutationFn: async (id: any) => {
-            return await instance.post(`/worker/packing-done/${id}`, { email }, {
+            return await instance.post(`/order/packing-done/${id}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -161,7 +161,10 @@ export default function DriverPickUp() {
                                                     <div className="flex items-center">
                                                         <div className="ml-2">
                                                             <h2 className="font-medium text-gray-900">
-                                                                {order?.Users?.firstName} {order?.Users?.lastName}
+                                                                {order?.id}
+                                                            </h2>
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.User?.firstName} {order?.User?.lastName}
                                                             </h2>
                                                             <p className="text-xs text-gray-500">
                                                                 {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false
@@ -213,7 +216,10 @@ export default function DriverPickUp() {
                                                         <div className="flex items-center">
                                                             <div className="ml-2">
                                                                 <h2 className="font-medium text-gray-900">
-                                                                    {order?.Users?.firstName} {order?.Users?.lastName}
+                                                                    {order?.id}
+                                                                </h2>
+                                                                <h2 className="font-medium text-gray-900">
+                                                                    {order?.User?.firstName} {order?.User?.lastName}
                                                                 </h2>
                                                                 <p className="text-xs text-gray-500">
                                                                     {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false
@@ -240,7 +246,7 @@ export default function DriverPickUp() {
                                             </section>
                                         ))}
 
-                                        <Pagination page={page} totalPages={totalPages} setPage={setPage}/>
+                                        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
                                     </CardContent>
                                 </TabsContent>
                             </Tabs>

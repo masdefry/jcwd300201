@@ -35,7 +35,7 @@ export default function ProfileSettings({ tempProfilePict, getData, profilePict,
                                     const file = e?.currentTarget?.files[0]
 
                                     setFieldValue('images', e?.currentTarget.files[0])
-                                    setTempProfilePict(URL?.createObjectURL(file))
+                                    if (file) setTempProfilePict(URL?.createObjectURL(file))
                                 }} id="images" type="file" accept="image/*" className="hidden" />
                             </label>
                             {tempProfilePict && (

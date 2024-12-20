@@ -1,8 +1,13 @@
 import prisma from "@/connection"
 import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
+import { Prisma } from "@prisma/client";
+import { Status } from "@prisma/client";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService } from "@/service/orderService";
+import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
 
-interface Store {
+
+interface IStore {
   id: string;
   storeName: string;
   address: string;
@@ -72,71 +77,8 @@ export const findNearestStore = async (req: Request, res: Response, next: NextFu
   try {
     const { userId } = req.body;
     const { address } = req.query
-
-    if (!userId) {
-      return res.status(400).json({ error: 'User ID is required' });
-    }
-
-    let userAddress;
-    if (address) {
-      userAddress = await prisma.userAddress.findFirst({
-        where: {
-          usersId: userId,
-          id: Number(address)
-        }
-      });
-    } else {
-      userAddress = await prisma.userAddress.findFirst({
-        where: {
-          usersId: userId,
-          isMain: true
-        }
-      })
-    }
-
-    if (!userAddress) {
-      return res.status(404).json({ error: 'Alamat utama tidak ditemukan' });
-    }
-
-    const { latitude: userLatitude, longitude: userLongitude } = userAddress;
-
-    const nearestStores = await prisma.$queryRaw<{
-      id: number;
-      storeName: string;
-      address: string;
-      city: string;
-      province: string;
-      country: string;
-      latitude: number;
-      longitude: number;
-      distance: number;
-    }[]>`
-      SELECT 
-          id, 
-          storeName, 
-          address,
-          city,
-          province,
-          country,
-          latitude,
-          longitude,
-          (
-              6371 * acos(
-                  cos(radians(${userLatitude})) * cos(radians(latitude)) * 
-                  cos(radians(longitude) - radians(${userLongitude})) + 
-                  sin(radians(${userLatitude})) * sin(radians(latitude))
-              )
-          ) AS distance
-      FROM stores
-      HAVING distance <= 5
-      ORDER BY distance ASC
-      LIMIT 1;
-    `;
-
-    if (nearestStores.length === 0) {
-      return res.status(404).json({ error: 'Tidak ada toko Laundry kami di dekat anda' });
-    }
-
+    const addressString = typeof address === "string" ? address : "";
+    const { nearestStores } = await findNearestStoreService({ userId, address: addressString })
     res.status(200).json({
       error: false,
       message: "Data store terdekat berhasil  didapat!",
@@ -147,30 +89,11 @@ export const findNearestStore = async (req: Request, res: Response, next: NextFu
   }
 };
 
-
-
 export const requestPickUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { totalPrice, deliveryFee, outletId, userId, orderTypeId, userAddressId } = req.body
-    console.log(req.body)
-    const newOrder = await prisma.order.create({
-      data: {
-        totalPrice,
-        deliveryFee,
-        storesId: outletId,
-        usersId: userId,
-        orderTypeId: parseInt(orderTypeId),
-        userAddressId,
-        isPaid: false,
-      },
-    });
 
-    await prisma.orderStatus.create({
-      data: {
-        status: "AWAITING_DRIVER_PICKUP",
-        orderId: newOrder.id,
-      },
-    });
+    const { newOrder } = await requestPickUpService({ userId, totalPrice, deliveryFee, outletId, orderTypeId, userAddressId })
 
     res.status(201).json({
       error: false,
@@ -181,7 +104,6 @@ export const requestPickUp = async (req: Request, res: Response, next: NextFunct
     next(error)
   }
 };
-
 
 export const getUserOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -195,78 +117,20 @@ export const getUserOrder = async (req: Request, res: Response, next: NextFuncti
     } = req.query;
     const { userId } = req.body;
 
-    const offset = Number(limit_data) * (Number(page) - 1);
-
-    const whereConditions: any = {
-      usersId: userId,
-      AND: [
-        search
-          ? {
-            OR: [
-              { id: { contains: search as string, mode: 'insensitive' } },
-              { Users: { firstName: { contains: search as string, mode: 'insensitive' } } },
-              { Users: { lastName: { contains: search as string, mode: 'insensitive' } } },
-              { Users: { phoneNumber: { contains: search as string, mode: 'insensitive' } } }
-            ]
-          }
-          : {},
-        dateFrom && dateUntil
-          ? { createdAt: { gte: new Date(dateFrom as string), lte: new Date(dateUntil as string) } }
-          : dateFrom
-            ? { createdAt: { gte: new Date(dateFrom as string) } }
-            : dateUntil
-              ? { createdAt: { lte: new Date(dateUntil as string) } }
-              : {}
-      ]
+    const params: IGetUserOrder = {
+      userId: userId as string,
+      limit_data: Number(limit_data),
+      page: Number(page),
+      search: typeof search === 'string' ? search : '',
+      dateFrom: typeof dateFrom === 'string' ? dateFrom : undefined,
+      dateUntil: typeof dateUntil === 'string' ? dateUntil : undefined,
+      sort: (typeof sort === 'string' &&
+        ['date-asc', 'date-desc', 'name-asc', 'name-desc', 'order-id-asc', 'order-id-desc'].includes(sort))
+        ? (sort as IGetUserOrder['sort'])
+        : 'date-asc',
     };
 
-    let orderBy: any;
-    if (sort === 'date-asc') {
-      orderBy = { createdAt: 'asc' };
-    } else if (sort === 'date-desc') {
-      orderBy = { createdAt: 'desc' };
-    } else if (sort === 'name-asc') {
-      orderBy = {
-        Users: {
-          firstName: 'asc',
-        },
-      };
-    } else if (sort === 'name-desc') {
-      orderBy = {
-        Users: {
-          firstName: 'desc',
-        },
-      };
-    } else if (sort === 'order-id-asc') {
-      orderBy = { id: 'asc' };
-    } else if (sort === 'order-id-desc') {
-      orderBy = { id: 'desc' };
-    } else {
-      orderBy = { createdAt: 'desc' };
-    }
-
-    const orders = await prisma.order.findMany({
-      where: whereConditions,
-      include: {
-        Stores: true,
-        Users: true,
-        OrderType: true,
-        UserAddress: true,
-        orderStatus: {
-          orderBy: { createdAt: 'desc' },
-          take: 1
-        }
-      },
-      skip: offset,
-      take: Number(limit_data),
-      orderBy
-    });
-
-    const totalCount = await prisma.order.count({
-      where: whereConditions
-    });
-
-    const totalPage = Math.ceil(totalCount / Number(limit_data));
+    const { totalPage, orders } = await getUserOrderService(params)
 
     res.status(200).json({
       error: false,
@@ -281,36 +145,911 @@ export const getUserOrder = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
+// get order driver
+export const getOrdersForDriver = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil
+    } = req.query;
 
-export const getOrderTracking = async (req: Request, res: Response, next: NextFunction) => {
+    const dataPassing: IGetOrderForDriver = {
+      userId: userId as string,
+      limit_data: Number(limit_data),
+      page: Number(page),
+      tab: typeof tab === "string" ? tab : undefined,
+      search: typeof search === 'string' ? search : '',
+      dateFrom: typeof dateFrom === 'string' ? dateFrom : undefined,
+      dateUntil: typeof dateUntil === 'string' ? dateUntil : undefined,
+      sort: (typeof sort === 'string' &&
+        ['date-asc', 'date-desc', 'name-asc', 'name-desc', 'order-id-asc', 'order-id-desc'].includes(sort))
+        ? (sort as IGetUserOrder['sort'])
+        : 'date-asc',
+      authorizationRole,
+      storeId
+    };
+
+    const { totalPage, paginatedOrders } = await getOrdersForDriverService(dataPassing)
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// acc order for driver
+export const acceptOrder = async (req: Request, res: Response, next: NextFunction) => {
+
+  try {
+    const { orderId } = req.params;
+    const { userId, email } = req.body;
+
+    const { newStatus } = await acceptOrderService({ email, orderId, userId })
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diterima",
+      data: newStatus,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+// acc order outlet
+export const acceptOrderOutlet = async (req: Request, res: Response, next: NextFunction) => {
+
+  try {
+    const { orderId } = req.params;
+    const { userId, email } = req.body;
+
+    const { newStatus } = await acceptOrderOutletService({ email, orderId, userId });
+
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diterima",
+      data: newStatus,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+// getordernotedetail
+export const getOrderNoteDetail = async (req: Request, res: Response, next: NextFunction) => {
+
+  try {
+    const { id } = req.params
+    const { userId, authorizationRole, storeId } = req.body;
+
+    const params: IGetOrderNoteDetail = {
+      id,
+      userId,
+      authorizationRole,
+      storeId
+    };
+
+    const { order } = await getOrderNoteDetailService(params);
+
+
+    res.status(200).json({
+      error: false,
+      message: "Data berhasil didapat!",
+      data: order
+    })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getOrderItemDetail = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+
+    const DetailListItem = await getOrderItemDetailService(orderId);
+
+
+    res.status(200).json({
+      error: false,
+      message: 'Detail item order berhasil didapatkan',
+      data: DetailListItem
+    });
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getOrdersForWashing = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil
+    } = req.query
+
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+
+    const { totalPage, orders: paginatedOrders } = await getOrdersForWashingService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
+        page: pageTypes,
+        limit_data: limitTypes,
+        search: searchTypes,
+        sort: sortTypes,
+        tab: tabTypes,
+        dateFrom: dateFromTypes,
+        dateUntil: dateUntilTypes
+      }
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOrdersForIroning = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil
+    } = req.query;
+
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+
+    const { totalPage, orders: paginatedOrders } = await getOrdersForIroningService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
+        page: pageTypes,
+        limit_data: limitTypes,
+        search: searchTypes,
+        sort: sortTypes,
+        tab: tabTypes,
+        dateFrom: dateFromTypes,
+        dateUntil: dateUntilTypes
+      }
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getOrdersForPacking = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil
+    } = req.query;
+
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+
+    const { totalPage, orders: paginatedOrders } = await getOrdersForPackingService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
+        page: pageTypes,
+        limit_data: limitTypes,
+        search: searchTypes,
+        sort: sortTypes,
+        tab: tabTypes,
+        dateFrom: dateFromTypes,
+        dateUntil: dateUntilTypes
+      }
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId, totalWeight, totalPrice, items } = req.body
+
+    const { updatedOrder, dataItems, orderStatus } = await createOrderService({ orderId, email, userId, totalWeight, totalPrice, items });
+
+    res.status(200).json({
+      error: false,
+      message: 'Nota order berhasil dibuat',
+      order: updatedOrder,
+      orderDetails: dataItems,
+      orderStatus: orderStatus,
+    });
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const washingProcess = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId, notes } = req.body
+
+    const findWorker = await prisma.worker.findFirst({
+      where: { email }
+    })
+
+    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+
+    const order = await prisma.order.findUnique({
+      where: { id: String(orderId) },
+      select: { orderTypeId: true },
+    });
+
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+    if (order.orderTypeId === 2) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 }
+
+    let updatedOrder = null;
+    if (notes) {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          notes,
+          isSolved: false,
+          isProcessed: false
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+      return res.status(201).json({
+        error: false,
+        message: "Approval request terhadap admin telah diajukan!",
+        data: {
+          order: updatedOrder,
+        },
+      });
+
+
+    } else {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          isProcessed: true,
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+
+      if (updatedOrder.isSolved === false) {
+        throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
+      }
+
+      const existingStatus = await prisma.orderStatus.findFirst({
+        where: {
+          orderId: String(orderId),
+          status: 'AWAITING_PAYMENT',
+        },
+      });
+
+      if (!existingStatus) {
+        throw { msg: "Order tidak dapat diproses karena belum dibuat nota order oleh oulet admin", status: 400 };
+      }
+
+      const orderStatus = await prisma.orderStatus.create({
+        data: {
+          status: 'IN_WASHING_PROCESS',
+          orderId: String(orderId),
+          workerId: userId,
+        },
+      });
+      if (!orderStatus) throw { msg: "data order status gagal dibuat", status: 404 }
+
+      res.status(200).json({
+        error: false,
+        message: "Order berhasil diupdate!",
+        data: {
+          orderStatus,
+        },
+      });
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const washingProcessDone = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
     const { email, userId } = req.body
 
-    const findUser = await prisma.users.findFirst({
-      where: {
-        id:userId,
-        email
-      }
+    const { orderStatus } = await washingProcessDoneService({ orderId, email, userId })
+
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: { orderStatus },
     })
-    if (!findUser) throw { msg: "user tidak tersedia", status: 404 }
- 
-    const orderStatus = await prisma.orderStatus.findMany({
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const ironingProcess = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId, notes } = req.body
+    const findWorker = await prisma.worker.findFirst({
+      where: { email }
+    })
+
+    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+    const order = await prisma.order.findUnique({
+      where: { id: String(orderId) },
+      select: { orderTypeId: true },
+    });
+
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+    if (order.orderTypeId === 1) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
+    
+    const orderStatuses = await prisma.orderStatus.findFirst({
       where: {
-        orderId: String(orderId),
-      },
-      include: {
-        Order: true,
-        Worker: true,
-      },
-      orderBy: {
-        createdAt: "asc",
+        orderId,
+        status: 'IN_IRONING_PROCESS'
       },
     });
 
+    if (!orderStatuses) throw { msg: "tidak ada order dengan status 'IN_IRONING_PROCESS'" };
 
+    await prisma.orderStatus.update({
+      where: { id: orderStatuses.id },
+      data: {
+        workerId: userId,
+      },
+    });
+
+    if (notes) {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          notes,
+          isSolved: false,
+          isProcessed: false
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+      return res.status(201).json({
+        error: false,
+        message: "Approval request terhadap admin telah diajukan!",
+        data: {
+          order: updatedOrder,
+        },
+      });
+
+
+    } else {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          isProcessed: true,
+        },
+      });
+
+      if (!updatedOrder) {
+        throw { msg: "Order gagal diupdate", status: 404 };
+      }
+
+      if (updatedOrder.isSolved === false) {
+        throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
+      }
+
+      const existingStatus = await prisma.orderStatus.findFirst({
+        where: {
+          orderId: String(orderId),
+          status: 'IN_IRONING_PROCESS',
+        },
+      });
+
+      if (!existingStatus) {
+        throw { msg: "Order tidak dapat diproses karena belum dicuci", status: 400 };
+      }
+
+      res.status(200).json({
+        error: false,
+        message: "Order berhasil diupdate!",
+      });
+    }
   } catch (error) {
-
-
+    next(error)
   }
 }
+
+
+export const ironingProcessDone = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const { orderStatus } = await ironingProcessDoneService({ orderId, email, userId })
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        orderStatus,
+      },
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const packingProcess = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId, notes } = req.body
+
+    await packingProcessService({ email, userId, orderId })
+
+    if (notes) {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          notes,
+          isSolved: false,
+          isProcessed: false
+        },
+      });
+
+      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 }
+
+      return res.status(201).json({
+        error: false,
+        message: "Approval request terhadap admin telah diajukan!",
+        data: {
+          order: updatedOrder,
+        },
+      });
+
+
+    } else {
+      const updatedOrder = await prisma.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          isProcessed: true,
+        },
+      })
+
+      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 };
+      if (updatedOrder.isSolved === false) throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
+
+      const existingStatus = await prisma.orderStatus.findFirst({
+        where: {
+          orderId: String(orderId),
+          status: 'IN_PACKING_PROCESS',
+        },
+      });
+
+      if (!existingStatus) throw { msg: "Order tidak dapat diproses karena belum disetrika", status: 400 };
+
+      res.status(200).json({
+        error: false,
+        message: "Order berhasil diupdate!",
+        data: {}
+      })
+    }
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const packingProcessDone = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email } = req.body
+
+    const { order } = await packingProcessDoneService({ email, orderId })
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        order,
+      },
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const getNotes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole } = req.body;
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', tab = '', dateFrom, dateUntil, } = req.query;
+
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+
+    const { totalPage, orders } = await getNotesService({
+      userId, authorizationRole, limit_data: limitTypes, page: pageTypes,
+      search: searchTypes, dateFrom: dateFromTypes, dateUntil: dateUntilTypes,
+      sort: sortTypes, tab: tabTypes
+    })
+
+    res.status(200).json({
+      error: false,
+      message: "Notes retrieved successfully!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const solveNotes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { notes, userId } = req.body
+
+    const solvedProblem = await prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        isSolved: true,
+        notes
+      }
+    })
+
+    res.status(200).json({
+      error: false,
+      message: "Notes retrieved successfully!",
+      data: solvedProblem
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const getWashingHistory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil } = req.query;
+    const { userId, authorizationRole, storeId } = req.body;
+
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+
+    const { totalPage, orders } = await getWashingHistoryService({
+      userId, authorizationRole, storeId, limit_data: limitTypes, page: pageTypes,
+      search: searchTypes, dateFrom: dateFromTypes, dateUntil: dateUntilTypes, sort: sortTypes
+    })
+
+    res.status(200).json({
+      error: false,
+      message: "Data order telah diterima!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getIroningHistory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil } = req.query;
+    const { userId, authorizationRole, storeId } = req.body;
+
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+
+    const { totalPage, orders } = await getIroningHistoryService({
+      userId, authorizationRole, storeId, limit_data: limitTypes, page: pageTypes,
+      search: searchTypes, dateFrom: dateFromTypes, dateUntil: dateUntilTypes, sort: sortTypes
+    })
+
+    res.status(200).json({
+      error: false,
+      message: "Data order diterima!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getPackingHistory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil } = req.query;
+    const { userId, authorizationRole, storeId } = req.body;
+
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+
+    const { totalPage, orders } = await getPackingHistoryService({
+      userId, authorizationRole, storeId, limit_data: limitTypes, page: pageTypes,
+      search: searchTypes, dateFrom: dateFromTypes, dateUntil: dateUntilTypes, sort: sortTypes
+    })
+
+    res.status(200).json({
+      error: false,
+      message: "Data order diterima!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCreateNotaOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil } = req.query;
+    const { userId, authorizationRole, storeId } = req.body;
+
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+
+    const { totalPage, orders } = await getCreateNoteOrderService({
+      userId, authorizationRole, storeId, limit_data: limitTypes, page: pageTypes,
+      search: searchTypes, dateFrom: dateFromTypes, dateUntil: dateUntilTypes, sort: sortTypes
+    })
+    res.status(200).json({
+      error: false,
+      message: "Data order diterima!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const getOrdersForDelivery = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil
+    } = req.query;
+
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+
+    const { totalPage, orders: paginatedOrders } = await getOrdersForDeliveryService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
+        page: pageTypes,
+        limit_data: limitTypes,
+        search: searchTypes,
+        sort: sortTypes,
+        tab: tabTypes,
+        dateFrom: dateFromTypes,
+        dateUntil: dateUntilTypes
+      }
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const requestDeliveryDone = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const { order } = await requestDeliveryDoneService({ orderId, email, userId })
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        order,
+      },
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const getOrdersForDriverDelivery = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil
+    } = req.query;
+
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+
+    const { totalPage, orders: paginatedOrders } = await getOrdersForDriverDeliveryService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
+        page: pageTypes,
+        limit_data: limitTypes,
+        search: searchTypes,
+        sort: sortTypes,
+        tab: tabTypes,
+        dateFrom: dateFromTypes,
+        dateUntil: dateUntilTypes
+      }
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

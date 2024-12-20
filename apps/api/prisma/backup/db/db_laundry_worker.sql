@@ -35,14 +35,14 @@ CREATE TABLE `worker` (
   `motorcycleType` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `plateNumber` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `changePasswordToken` text COLLATE utf8mb4_unicode_ci,
-  `storesId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `storeId` varchar(191) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `createdAt` datetime(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
   `updatedAt` datetime(3) NOT NULL,
   `deletedAt` datetime(3) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `worker_email_key` (`email`),
-  KEY `worker_storesId_fkey` (`storesId`),
-  CONSTRAINT `worker_storesId_fkey` FOREIGN KEY (`storesId`) REFERENCES `stores` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
+  KEY `worker_storeId_fkey` (`storeId`),
+  CONSTRAINT `worker_storeId_fkey` FOREIGN KEY (`storeId`) REFERENCES `stores` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

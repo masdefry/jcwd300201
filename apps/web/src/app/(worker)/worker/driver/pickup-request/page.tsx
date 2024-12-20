@@ -22,6 +22,7 @@ import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
 import ContentWebSession from "@/components/core/webSessionContent"
 import Pagination from "@/components/core/pagination"
+import FilterWorker from "@/components/core/filter"
 
 export default function Page() {
     const params = useSearchParams();
@@ -38,33 +39,61 @@ export default function Page() {
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
     const [sortOption, setSortOption] = useState("date-asc");
     const [activeTab, setActiveTab] = useState("all");
+    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const limit = 5;
 
     const { data: dataOrderAwaitingPickup, refetch, isLoading: dataOrderAwaitingPickupLoading, isError: dataOrderAwaitingPickupError } = useQuery({
-        queryKey: ['get-order', page, searchInput],
+        queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
             const tabValue =
                 activeTab === "waiting-pickup" ? "AWAITING_DRIVER_PICKUP" :
                     activeTab === "process-pickup" ? "DRIVER_TO_OUTLET" :
                         activeTab === "arrived" ? "DRIVER_ARRIVED_AT_OUTLET" : "";
 
-            const res = await instance.get('/worker/order', {
+            const res = await instance.get('/order/order', {
                 params: {
                     page,
-                    limit_data: entriesPerPage,
+                    limit_data: limit,
                     search: searchInput || "",
                     sort: sortOption,
                     tab: tabValue,
+                    dateFrom: dateFrom ?? '',
+                    dateUntil: dateUntil ?? '',
+                    
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
+            console.log(res)
             return res?.data?.data;
         },
     });
 
-    const { mutate: handleProcessOrder, isPending } = useMutation({
+    const { mutate: handleProcessOrder, isPending: handleProcessOrderLoading } = useMutation({
         mutationFn: async (slug: any) => {
-            return await instance.post(`/worker/accept-order/${slug}`, { email }, {
-
+            return await instance.post(`/order/accept-order/${slug}`, { email }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res: any) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            refetch()
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+        }
+    })
+    const { mutate: handleProcessOrderOutlet, isPending: handleProcessOrderOutletLoading } = useMutation({
+        mutationFn: async (slug: any) => {
+            return await instance.post(`/order/accept-outlet/${slug}`, { email }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -110,10 +139,19 @@ export default function Page() {
         } else {
             currentUrl.delete(`tab`)
         }
-
+        if (dateFrom) {
+            currentUrl.set(`dateFrom`, dateFrom?.toString())
+        } else {
+            currentUrl.delete(`dateFrom`)
+        }
+        if (dateUntil) {
+            currentUrl.set(`dateUntil`, dateUntil?.toString())
+        } else {
+            currentUrl.delete(`dateUntil`)
+        }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, activeTab, totalPages, refetch]);
+    }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
 
 
 
@@ -138,35 +176,17 @@ export default function Page() {
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
-                                        <div className="flex justify-between gap-1 items-center">
-                                            <div className="flex justify-between gap-1 items-center">
-                                                <div className="flex items-center justify-center">
-                                                    <div className="relative w-full max-w-md">
-                                                        <input
-                                                            type="text"
-                                                            onChange={(e) => debounce(e.target.value)}
-                                                            placeholder="Search..."
-                                                            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                                        />
-                                                        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <Select value={sortOption} onValueChange={setSortOption}>
-                                                <SelectTrigger className="w-[150px] border rounded-md py-2 px-3">
-                                                    <SelectValue placeholder="Sort By" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectItem value="date-asc">Tanggal Asc.</SelectItem>
-                                                    <SelectItem value="date-desc">Tanggal Desc.</SelectItem>
-                                                    <SelectItem value="name-asc">Customer Name Asc.</SelectItem>
-                                                    <SelectItem value="name-desc">Customer Name Desc.</SelectItem>
-                                                    <SelectItem value="order-id-asc">Order Id Desc.</SelectItem>
-                                                    <SelectItem value="order-id-desc">Order Id Desc.</SelectItem>
-
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
+                                        <FilterWorker
+                                            debounce={debounce}
+                                            sortOption={sortOption}
+                                            setSortOption={setSortOption}
+                                            dateFrom={dateFrom}
+                                            dateUntil={dateUntil}
+                                            setDateFrom={setDateFrom}
+                                            setDateUntil={setDateUntil}
+                                            setActiveTab={setActiveTab}
+                                            setSearchInput={setSearchInput}
+                                        />
                                         {dataOrderAwaitingPickupLoading && <p>Loading...</p>}
                                         {dataOrderAwaitingPickupError && <p>Silahkan coba beberapa saat lagi.</p>}
                                         {dataOrderAwaitingPickup?.orders?.map((order: any) => (
@@ -184,12 +204,27 @@ export default function Page() {
                                                                 ? 'Apakah anda yakin ingin menyelesaikan pengiriman laundry pada order ini?'
                                                                 : ''
                                                     }
-                                                    onClick={() => handleProcessOrder(order?.id)}>
+                                                    onClick={
+                                                        order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                            ? () => handleProcessOrder(order?.id)
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                                ? () => handleProcessOrderOutlet(order?.id)
+                                                                : () => { }
+                                                    }
+                                                    description={
+                                                        order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                            ? 'Konfirmasi bahwa Anda akan mengambil laundry untuk order ini'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                                ? 'Konfirmasi bahwa barang untuk order ini telah berhasil diantar ke laundry'
+                                                                : ''
+                                                    }>
                                                     <div className="flex items-center">
                                                         <div className="ml-2">
                                                             <h2 className="font-medium text-gray-900">
-
-                                                                {order?.Users?.firstName} {order?.Users?.lastName}
+                                                                {order?.id}
+                                                            </h2>
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.User?.firstName} {order?.User?.lastName}
                                                             </h2>
                                                             <p className="text-xs text-gray-500">
                                                                 {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Pickup' :

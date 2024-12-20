@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-export const authCustomerValidation = [
+export const authRegisterValidation = [
     body(['email', 'firstName', 'lastName', 'phoneNumber']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('email').isString().escape(),
     body('firstName').isString().escape(),
@@ -15,13 +15,13 @@ export const authLoginValidation = [
 ]
 
 export const createWorkerValidation = [
-    body(['email', 'firstName', 'lastName', 'phoneNumber', 'identityNumber', 'storesId', 'workerRole']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body(['email', 'firstName', 'lastName', 'phoneNumber', 'identityNumber', 'storeId', 'workerRole']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('email').isString().escape(),
     body('firstName').isString().escape(),
     body('lastName').isString().escape(),
     body('phoneNumber').isString().escape(),
     body('identityNumber').isString().escape(),
-    body('storesId').isString().escape(),
+    body('storeId').isString().escape(),
     body('workerRole').isString().escape(),
 ]
 

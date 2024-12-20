@@ -33,7 +33,7 @@ export default function Page() {
     const { data: dataItem, isFetching, refetch } = useQuery({
         queryKey: ['get-data-item', searchItem],
         queryFn: async () => {
-            const response = await instance.get('/worker/item', {
+            const response = await instance.get('/laundry/', {
                 params: {
                     search: searchItem,
                     page: currentPage,

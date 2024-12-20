@@ -24,7 +24,7 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
 
     const handleKeepAuth = async () => {
         try {
-            const response = await instance.get('/auth/keep-auth-user', {
+            const response = await instance.get('/auth/keep-auth', {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

@@ -21,7 +21,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-
+import { useRouter } from "next/navigation";
 
 const validationSchema = Yup.object().shape({
     customerName: Yup.string().required("Customer name is required"),
@@ -49,7 +49,7 @@ interface ICreateOrder {
 type Iitem = {
     id: number,
     itemName: string,
-    itemNameId: number;
+    laundryItemId: number;
     quantity: number;
     weight: number;
 };
@@ -57,7 +57,7 @@ type Iitem = {
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
 
     const { slug } = React.use(params);
-
+    const router = useRouter()
     const token = authStore((state) => state.token);
     const emails = authStore((state) => state.email);
     const { toast } = useToast();
@@ -69,7 +69,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],
         queryFn: async () => {
-            const res = await instance.get(`/worker/detail-order-note/${slug}`, {
+            const res = await instance.get(`/order/detail-order-note/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             console.log(dataOrderNote)
@@ -80,7 +80,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { data: dataOrderDetail, isLoading: dataOrderDetailLoading } = useQuery({
         queryKey: ['get-detail-item'],
         queryFn: async () => {
-            const res = await instance.get(`/worker/order-detail/${slug}`, {
+            const res = await instance.get(`/order/order-detail/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return res?.data?.data;
@@ -90,7 +90,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { data: dataItemName, isLoading: dataItemNameLoading } = useQuery({
         queryKey: ['get-data-item'],
         queryFn: async () => {
-            const res = await instance.get('/worker/item/', {
+            const res = await instance.get('/laundry//', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return res?.data?.data;
@@ -99,7 +99,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
     const { mutate: handleStatusOrder } = useMutation({
         mutationFn: async ({ email, notes }: any) => {
-            return await instance.post(`/worker/ironing-process/${slug}`, { email, notes }, {
+            return await instance.post(`/order/packing-process/${slug}`, { email, notes }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -109,7 +109,10 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
+            }),
+                setTimeout(() => {
+                    router.push('/worker/packing-worker/order/');
+                }, 1000);
         },
         onError: (err: any) => {
             toast({
@@ -130,7 +133,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         return frontendItems.every((item) =>
             backendItems.some(
                 (backendItem) =>
-                    String(backendItem.itemNameId) === item.itemNameId &&
+                    String(backendItem.laundryItemId) === item.laundryItemId &&
                     backendItem.quantity === item.quantity
             )
         );
@@ -170,7 +173,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                 {({ values, setFieldValue, submitForm }) => {
                                     const handleCustomSubmit = () => {
                                         const itemOrder = values.items.map((item: any) => ({
-                                            itemNameId: item.itemName,
+                                            laundryItemId: item.itemName,
                                             quantity: item.quantity,
                                         }));
                                         const isDataMatching = compareData(itemOrder, dataOrderDetail);
@@ -198,7 +201,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     <label className="text-sm">Customer Name</label>
                                                     <input
                                                         type="text"
-                                                        value={`${dataOrderNote[0].Users?.firstName} ${dataOrderNote[0].Users?.lastName}`}
+                                                        value={`${dataOrderNote[0].User?.firstName} ${dataOrderNote[0].User?.lastName}`}
                                                         disabled
                                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                                     />
@@ -331,8 +334,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <DialogHeader>
                                         <DialogTitle>Konfirmasi Outlet Admin</DialogTitle>
                                         <DialogDescription>
-                                            Terjadi perbedaan antara data barang yang diberikan oleh admin outlet dan data anda, silahkan laporkan ke admin outlet:
-                                        </DialogDescription>
+                                            Terjadi perbedaan antara data barang yang diberikan oleh admin outlet dan data anda. Silahkan klik Lapor                                        </DialogDescription>
                                     </DialogHeader>
                                     <textarea
                                         value={dialogNotes}

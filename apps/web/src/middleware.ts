@@ -12,7 +12,7 @@ export const middleware = (req: NextRequest) => {
         role = CryptoJS.AES.decrypt(roleUser, secret_key).toString(CryptoJS.enc.Utf8)
     }
 
-    if (role && tokenUser && (pathname === '/user/login' || pathname === '/user/register' || pathname === '/admin/login' || pathname === '/admin/register')) {
+    if (role && tokenUser && (pathname === '/user/login' || pathname === '/user/register' || pathname === '/worker/login' || pathname === '/admin/register')) {
         return NextResponse.redirect(new URL('/', req.url))
     }
 
@@ -46,8 +46,8 @@ export const middleware = (req: NextRequest) => {
 
     console.log(role)
 
-    if (!role && !tokenUser && (pathname.startsWith('/admin') || pathname.startsWith('/worker')) && pathname != '/admin/login') {
-        return NextResponse.redirect(new URL('/admin/login', req.url))
+    if (!role && !tokenUser && (pathname.startsWith('/admin') || pathname.startsWith('/worker')) && pathname != '/worker/login') {
+        return NextResponse.redirect(new URL('/worker/login', req.url))
     }
 
     if (!role && !tokenUser && (pathname.startsWith('/user/dashboard'))) {

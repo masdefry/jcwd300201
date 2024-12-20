@@ -18,15 +18,13 @@ interface IStoreMap {
 
 export const getStore = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const findStore = await prisma.stores.findMany()
-
+        const findStore = await prisma.store.findMany()
         const dataStore = findStore?.map((store: IStoreMap)=> {
             return {
                 storeId: store?.id,
                 storeName: store?.storeName
             }
         })
-
 
         res.status(201).json({
             error: false,

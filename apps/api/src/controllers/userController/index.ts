@@ -1,191 +1,15 @@
 import { Request, Response, NextFunction } from "express"
 import prisma from "@/connection"
-import { nanoid } from 'nanoid';
-import jwt from 'jsonwebtoken'
-import { signInWithGoogleService, userRegisterService } from "@/service/userService"
-import { userLoginService } from "@/service/userService"
-import { decodeToken, encodeToken } from "@/utils/tokenValidation";
-import { comparePassword, hashPassword } from "@/utils/passwordHash";
-import fs, { rmSync } from 'fs'
-import { compile } from "handlebars";
-import { transporter } from "@/utils/transporter";
-import { validateEmail } from "@/middleware/validation/emailValidation";
-import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation";
+import { changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, forgotPasswordUserService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, resendSetPasswordService, setPasswordUserService, signInWithGoogleService, updateProfileUserService, userCreateAddressService, userEditAddressService, userRegisterService } from "@/service/userService"
 import dotenv from 'dotenv'
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
-const secret_key: string | undefined = process.env.JWT_SECRET as string
-export const userRegister = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { email, firstName, lastName, phoneNumber } = req?.body
-    const verifyCode = nanoid(6)
-    const dateNow = Date.now() * Math.random()
-    const id = `CUST${Math.floor(dateNow)}${firstName.toLowerCase()}`
-
-    await userRegisterService({ id, email, firstName, lastName, phoneNumber, verifyCode })
-
-    res?.status(200).json({
-      error: false,
-      message: 'Berhasil membuat akun, silahkan verifikasi email untuk login!',
-      data: {}
-    })
-
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const userLogin = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { email, password } = req?.body
-
-    const dataLogin = await userLoginService({ email, password })
-
-    res?.status(200).json({
-      error: false,
-      message: 'Berhasil login, silahkan masuk!',
-      data: {
-        token: dataLogin?.token,
-        email,
-        role: dataLogin?.findUser?.role,
-        firstName: dataLogin?.findUser?.firstName,
-        lastName: dataLogin?.findUser?.lastName,
-        isVerify: dataLogin?.findUser?.isVerified,
-        profilePicture: dataLogin?.findUser?.profilePicture,
-        phoneNumber: dataLogin?.findUser?.phoneNumber
-      }
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const userLogout = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { email } = req.body
-
-    const findUser = await prisma.users.findFirst({
-      where: { email }
-    })
-
-    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
-
-    const { authorization } = req.headers
-    let token = authorization?.split(' ')[1] as string
-
-    jwt.verify(token, secret_key, (err) => {
-      if (err) throw { msg: 'Invalid token', status: 401 }
-
-      req.app.locals.credentials = null
-    })
-
-    res.status(200).json({
-      error: false,
-      message: 'Berhasil logout!',
-      data: {}
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const signInWithGoogle = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { firstName, lastName, email, profilePicture } = req.body;
-    const verifyCode = nanoid(6);
-
-    const { findEmail, token } = await signInWithGoogleService({ email })
-
-    if (findEmail) {
-      res.status(200).json({
-        error: false,
-        message: 'Login menggunakan Google berhasil!',
-        data: {
-          token,
-          email,
-          firstName: findEmail?.firstName,
-          lastName: findEmail?.lastName,
-          role: findEmail?.role,
-          phoneNumber: findEmail?.phoneNumber,
-          profilePicture: findEmail?.profilePicture,
-        }
-      })
-    } else {
-      const newUser = await prisma.users.create({
-        data: {
-          firstName,
-          lastName,
-          email,
-          password: await hashPassword('@googlesign123'),
-          role: 'CUSTOMER',
-          isVerified: Boolean(true),
-          phoneNumber: 'Belum terisi',
-          profilePicture: profilePicture,
-          isDiscountUsed: true,
-          isGoogleRegister: true,
-          isGooglePasswordChange: Boolean(true),
-          verifyCode
-        }
-      })
-
-      const token = await encodeToken({ id: newUser?.id as string, role: newUser?.role as string })
-
-      res.status(201).json({
-        error: false,
-        message: 'Masuk menggunakan Google berhasil!',
-        data: {
-          token,
-          email,
-          firstName: newUser?.firstName,
-          lastName: newUser?.lastName,
-          role: newUser?.role,
-          phoneNumber: newUser?.phoneNumber,
-          profilePicture: newUser?.profilePicture,
-        }
-      })
-    }
-
-  } catch (error) {
-    next(error)
-  }
-}
 
 export const userCreateAddress = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { addressName,
-      addressDetail,
-      province,
-      city,
-      zipCode,
-      latitude,
-      longitude,
-      userId,
-      country = "Indonesia" } = req.body
-
-    const hasMainAddress = await prisma.userAddress.findFirst({
-      where: {
-        usersId: userId,
-        isMain: true,
-      },
-    });
-
-    const isMain = !hasMainAddress;
-
-    const newAddress = await prisma.userAddress.create({
-      data: {
-        addressName,
-        addressDetail,
-        province,
-        city,
-        zipCode,
-        latitude: parseFloat(latitude),
-        longitude: parseFloat(longitude),
-        isMain,
-        country,
-        usersId: userId,
-      },
-    });
+    const { addressName, addressDetail, province, city, zipCode, latitude, longitude, userId, country = "Indonesia" } = req.body
+    const { newAddress } = await userCreateAddressService({ addressName, addressDetail, province, city, zipCode, latitude, longitude, userId, country })
 
     res.status(201).json({
       error: false,
@@ -201,41 +25,8 @@ export const userCreateAddress = async (req: Request, res: Response, next: NextF
 export const userEditAddress = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { addressId } = req.params;
-    const {
-      addressName,
-      addressDetail,
-      province,
-      city,
-      zipCode,
-      latitude,
-      longitude,
-      country,
-    } = req.body;
-
-    const existingAddress = await prisma.userAddress.findUnique({
-      where: { id: parseInt(addressId) },
-    });
-
-    if (!existingAddress) {
-      return res.status(404).json({
-        success: false,
-        message: "Address not found",
-      });
-    }
-
-    const updatedAddress = await prisma.userAddress.update({
-      where: { id: parseInt(addressId) },
-      data: {
-        addressName,
-        addressDetail,
-        province,
-        city,
-        zipCode,
-        latitude: latitude ? parseFloat(latitude) : undefined,
-        longitude: longitude ? parseFloat(longitude) : undefined,
-        country,
-      },
-    });
+    const { addressName, addressDetail, province, city, zipCode, latitude, longitude, country } = req.body;
+    const { updatedAddress } = await userEditAddressService({ addressId, addressName, addressDetail, province, city, zipCode, latitude, longitude, country })
 
     res.status(200).json({
       error: false,
@@ -248,21 +39,28 @@ export const userEditAddress = async (req: Request, res: Response, next: NextFun
   }
 }
 
+export const getSingleAddressUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params
+    const { userId } = req.body
+
+    const { findAddressById } = await getSingleAddressUserService({ id, userId })
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil mendapat data',
+      data: findAddressById
+    })
+  } catch (error) {
+    next(error)
+  }
+}
 
 export const getAllUserAddresses = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { userId } = req.body;
+    const { userId } = req.body
 
-    const addresses = await prisma.userAddress.findMany({
-      where: {
-        usersId: userId,
-      },
-      orderBy: {
-        isMain: 'desc',
-      },
-    });
-
-    if (addresses.length === 0) throw { msg: 'User belum menambahkan alamat', status: 404 }
+    const { addresses } = await getAllUserAddressesService({ userId })
 
     res.status(201).json({
       error: false,
@@ -275,18 +73,10 @@ export const getAllUserAddresses = async (req: Request, res: Response, next: Nex
   }
 };
 
-
 export const getUserMainAddress = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.body;
-    const mainAddress = await prisma.userAddress.findFirst({
-      where: {
-        usersId: userId,
-        isMain: true,
-      },
-    });
-
-    if (!mainAddress) throw { msg: "Alamat utama tidak ditemukan" }
+    const { mainAddress } = await getUserMainAddressService({ userId })
 
     res.status(201).json({
       error: false,
@@ -302,25 +92,7 @@ export const resendSetPassword = async (req: Request, res: Response, next: NextF
   try {
     const { email } = req.body
 
-    const findUser = await prisma.users.findFirst({
-      where: { email }
-    })
-
-    if (!findUser) throw { msg: 'User tidak terdaftar', status: 401 }
-
-    const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '1h' })
-
-    const emailFile = fs.readFileSync('./src/public/sendMail/email.html', 'utf-8')
-    let compiledHtml: any = compile(emailFile)
-    compiledHtml = compiledHtml({
-      email,
-      url: `http://localhost:3000/user/set-password/${token}`
-    })
-
-    await prisma.users.update({
-      where: { id: findUser?.id },
-      data: { forgotPasswordToken: token }
-    })
+    await resendSetPasswordService({ email })
 
     res.status(200).json({
       error: false,
@@ -337,22 +109,7 @@ export const setPasswordUser = async (req: Request, res: Response, next: NextFun
     const { userId, password } = req.body
     const { authorization } = req.headers
 
-    const token = authorization?.split(' ')[1]
-    const findUser = await prisma.users.findFirst({ where: { id: userId } })
-
-    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
-    if (token != findUser?.forgotPasswordToken) throw { msg: 'Link sudah tidak berlaku', status: 400 }
-
-    const hashedPassword = await hashPassword(password)
-
-    await prisma.users.update({
-      data: {
-        password: hashedPassword,
-        isVerified: true,
-        forgotPasswordToken: null
-      },
-      where: { id: userId }
-    })
+    await setPasswordUserService({ authorization, userId, password })
 
     res.status(200).json({
       error: false,
@@ -369,24 +126,7 @@ export const forgotPasswordUser = async (req: Request, res: Response, next: Next
   try {
     const { email } = req.body
 
-    const findUser = await prisma.users.findFirst({ where: { email } })
-    if (!findUser) throw { msg: 'Email yang anda masukan tidak valid atau user tidak tersedia', status: 404 }
-
-    const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '5m' })
-    const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
-    let compiledHtml: any = compile(readEmailHtml)
-    compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
-
-    await transporter.sendMail({
-      to: email,
-      subject: 'Atur ulang kata sandi',
-      html: compiledHtml
-    })
-
-    await prisma.users.update({
-      where: { id: findUser?.id },
-      data: { forgotPasswordToken: token }
-    })
+    await forgotPasswordUserService({ email })
 
     res.status(200).json({
       error: false,
@@ -405,7 +145,7 @@ export const userPayment = async (req: Request, res: Response, next: NextFunctio
 
     if (imageUrl.length == 0) throw { msg: 'Gambar wajib diisi', status: 400 }
 
-    const userData = await prisma.users.findFirst({
+    const userData = await prisma.user.findFirst({
       where: { email }
     })
     if (!userData) throw { msg: "User tidak ada", status: 404 }
@@ -440,8 +180,7 @@ export const confirmOrder = async (req: Request, res: Response, next: NextFuncti
   try {
     const { email, userId, orderId } = req.body
 
-
-    const userData = await prisma.users.findFirst({
+    const userData = await prisma.user.findFirst({
       where: {
         email,
         id: userId
@@ -469,7 +208,7 @@ export const getSingleDataUser = async (req: Request, res: Response, next: NextF
   try {
     const { userId } = req.body
 
-    const findUser = await prisma.users.findFirst({ where: { id: userId } })
+    const findUser = await prisma.user.findFirst({ where: { id: userId } })
 
     res.status(200).json({
       error: false,
@@ -486,27 +225,8 @@ export const updateProfileUser = async (req: Request, res: Response, next: NextF
   try {
     const imageUploaded: any = req.files
     const { userId, email, phoneNumber, firstName, lastName } = req.body
-    const findUser = await prisma.users.findFirst({ where: { id: userId } })
-    const findEmail = await prisma.users.findFirst({ where: { email } })
 
-    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
-    if (findEmail && findEmail?.email !== findUser?.email) throw { msg: 'Email sudah terpakai', status: 401 }
-    if (!validateEmail(email)) throw { msg: 'Harap masukan email dengan format yang valid', status: 401 }
-    if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan nomor telepon dengan format nomor', status: 401 }
-    if (email === findUser?.email && firstName === findUser?.firstName && lastName === findUser?.lastName && phoneNumber === findUser?.phoneNumber && (imageUploaded?.images?.length === 0 || imageUploaded?.images?.length === undefined)) throw { msg: 'Data tidak ada yang diubah', status: 400 }
-
-    const dataImage: string[] = imageUploaded?.images?.map((img: any) => {
-      return img?.filename
-    })
-
-    const newDataUser = await prisma.users.update({
-      where: { id: userId },
-      data: { firstName, lastName, email, phoneNumber, profilePicture: dataImage?.length > 0 ? dataImage[0] : findUser?.profilePicture }
-    })
-
-    if (!findUser?.profilePicture.includes('https://') && newDataUser?.profilePicture !== findUser?.profilePicture) { /** ini bersikap sementara karna default value profilePict itu dari google / berupa https:// */
-      fs.rmSync(`src/public/images/${findUser?.profilePicture}`) /**sedangkan ini menghapus directory membaca folder public/images akan menyebabkan error */
-    }
+    await updateProfileUserService({ userId, email, phoneNumber, firstName, lastName, imageUploaded })
 
     res.status(200).json({
       error: false,
@@ -522,16 +242,7 @@ export const changePasswordUser = async (req: Request, res: Response, next: Next
   try {
     const { userId, password, existingPassword } = req?.body
 
-    const findUser = await prisma.users.findFirst({ where: { id: userId } })
-    const compareOldPassword = await comparePassword(existingPassword, findUser?.password as string)
-    if (!compareOldPassword) throw { msg: 'Password lama anda salah', status: 401 }
-    if (existingPassword === password) throw { msg: 'Harap masukan password yang berbeda', status: 401 }
-
-    const hashedPassword = await hashPassword(password)
-    await prisma.users.update({
-      where: { id: userId },
-      data: { password: hashedPassword }
-    })
+    await changePasswordUserService({ userId, password, existingPassword })
 
     res.status(200).json({
       error: false,
@@ -548,17 +259,7 @@ export const deleteProfilePictureUser = async (req: Request, res: Response, next
   try {
     const { userId } = req.body
 
-    const findUser = await prisma.users.findFirst({ where: { id: userId } })
-    if (!findUser) throw { msg: 'Data tidak tersedia', status: 404 }
-
-    await prisma.users.update({
-      where: { id: userId },
-      data: { profilePicture: profilePict }
-    })
-
-    if (!findUser?.profilePicture?.includes(profilePict)) {
-      rmSync(`src/public/images/${findUser?.profilePicture}`)
-    }
+    await deleteProfilePictureUserService({ userId })
 
     res.status(200).json({
       error: false,
@@ -574,11 +275,7 @@ export const deleteProfilePictureUser = async (req: Request, res: Response, next
 export const changePasswordGoogleRegister = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId, password } = req.body
-    const findUser = await prisma.users.findFirst({ where: { id: userId } })
-    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
-
-    const hashed = await hashPassword(password)
-    await prisma.users.update({ where: { id: userId }, data: { password: hashed, isGooglePasswordChange: false } })
+    await changePasswordGoogleRegisterService({ userId, password })
 
     res.status(200).json({
       error: false,

@@ -56,7 +56,7 @@ export default function DriverPickUp() {
                                     activeTab === "selesai" ? "IN_PACKING_PROCESS" :
                                         "";
 
-            const res = await instance.get('/worker/order-washing', {
+            const res = await instance.get('/order/order-washing', {
                 params: {
                     page,
                     limit_data: limit,
@@ -75,7 +75,7 @@ export default function DriverPickUp() {
 
     const { mutate: handleProcessOrder, isPending } = useMutation({
         mutationFn: async (id: any) => {
-            return await instance.post(`/worker/accept-order/${id}`, { email }, {
+            return await instance.post(`/order/accept-order/${id}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -132,7 +132,7 @@ export default function DriverPickUp() {
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, dateFrom, dateUntil,activeTab, refetch]);
+    }, [searchInput, page, sortOption, dateFrom, dateUntil, activeTab, refetch]);
 
 
     const totalPages = dataOrderWashingProcess?.totalPage || 1;
@@ -177,10 +177,10 @@ export default function DriverPickUp() {
                                                     <SelectValue placeholder="Sort By" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="date-asc">Tanggal Asc.</SelectItem>
-                                                    <SelectItem value="date-desc">Tanggal Desc.</SelectItem>
-                                                    <SelectItem value="name-asc">Customer Name Asc.</SelectItem>
-                                                    <SelectItem value="name-desc">Customer Name Desc.</SelectItem>
+                                                    <SelectItem value="date-asc">Tanggal Terbaru</SelectItem>
+                                                    <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
+                                                    <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
+                                                    <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         </div>
@@ -205,7 +205,10 @@ export default function DriverPickUp() {
                                                     <div className="flex items-center">
                                                         <div className="ml-2">
                                                             <h2 className="font-medium text-gray-900">
-                                                                {order.userFirstName} {order.userLastName}
+                                                                {order?.id}
+                                                            </h2>
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.userFirstName} {order?.userLastName}
                                                             </h2>
                                                             <p className="text-xs text-gray-500">
                                                                 {order.latestStatus === 'AWAITING_PAYMENT' ? 'Belum Dicuci' :

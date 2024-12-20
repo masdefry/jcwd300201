@@ -36,7 +36,7 @@ export default function HistoryOrderWashing() {
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption],
         queryFn: async () => {
 
-            const res = await instance.get('/worker/history-washing', {
+            const res = await instance.get('/order/history-washing', {
                 params: {
                     page,
                     limit_data: limit,
@@ -124,7 +124,7 @@ export default function HistoryOrderWashing() {
                                             <div className="flex items-center">
                                                 <div className="ml-2">
                                                     <h2 className="font-medium text-gray-900">
-                                                        {order?.Users?.firstName} {order?.Users?.lastName}
+                                                        {order?.User?.firstName} {order?.User?.lastName}
                                                     </h2>
                                                     <p className="text-xs text-gray-500">
                                                         {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :

@@ -28,7 +28,7 @@ export default function LoginUser() {
 
     const { mutate: handleLoginAdmin, isPending } = useMutation({
         mutationFn: async ({ email, password }: { email: string, password: string }) => {
-            return await instance.post('/admin/login', { email, password })
+            return await instance.post('/auth/worker/login', { email, password })
         },
         onSuccess: (res) => {
             setToken({
@@ -172,12 +172,7 @@ export default function LoginUser() {
 
                 <div className="flex flex-col gap-2 py-3">
                     <div className="flex w-full justify-end items-center">
-                        <Link
-                            href={'/user/forgot-password'}
-                            className="text-sm text-blue-500 hover:underline"
-                        >
-                            Lupa kata sandi?
-                        </Link>
+                        <Link href={'/user/resend-email'} className="text-sm text-blue-500 hover:underline">Lupa kata sandi?</Link>
                     </div>
                 </div>
             </div>

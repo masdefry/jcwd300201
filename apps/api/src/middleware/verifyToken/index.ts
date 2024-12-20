@@ -12,7 +12,7 @@ export const tokenValidation = async (req: Request, res: Response, next: NextFun
 
         req.body.userId = tokenVerify?.data?.id
         req.body.authorizationRole = tokenVerify?.data?.role
-        req.body.storesId = tokenVerify?.data?.storesId
+        req.body.storeId = tokenVerify?.data?.storeId
 
         next()
     } catch (error) {

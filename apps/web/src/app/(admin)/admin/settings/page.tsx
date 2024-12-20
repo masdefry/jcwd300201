@@ -39,7 +39,7 @@ export default function Page() {
 
     const { mutate: handleLogoutAdmin, isPending } = useMutation({
         mutationFn: async () => {
-                return await instance.post('/admin/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
+                return await instance.post('/auth/worker/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
         },
         onSuccess: (res) => {
             if (res) {
@@ -54,7 +54,7 @@ export default function Page() {
 
                 setIsDisabledSucces(true)
 
-                window.location.href = '/admin/login'
+                window.location.href = '/worker/login'
                 console.log(res)
             }
         },
