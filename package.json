@@ -36,6 +36,7 @@
   },
   "dependencies": {
     "@types/axios": "^0.14.0",
-    "axios": "^1.7.2"
+    "axios": "^1.7.2",
+    "flowbite-react": "^0.10.2"
   }
 }

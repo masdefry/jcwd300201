@@ -85,3 +85,12 @@ export const createContactValidation = [
     body('textHelp').isString().escape(),
     body('name').isString().escape(),
 ]
+
+export const formAddressValidation = [
+    body(["addressName", "addressDetail", "province", "city", "zipCode"]).notEmpty().withMessage('Harap diisi terlebih dahulu'),
+    body('addressName').isString().escape(),
+    body('addressDetail').isString().escape(),
+    body('province').isString().escape(),
+    body('city').isString().escape(),
+    body('zipCode').isNumeric().withMessage('Kode pos harus berupa angka').isLength({ min: 4 }).withMessage('Kode pos minimal 4 digit').escape(),
+]

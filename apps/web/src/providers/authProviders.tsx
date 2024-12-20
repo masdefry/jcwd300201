@@ -93,6 +93,8 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
         }
     }, [token])
 
+    console.log(dataUser, '<< auth provide')
+
     useEffect(() => {
         const getLocation = async (): Promise<void> => {
             try {
