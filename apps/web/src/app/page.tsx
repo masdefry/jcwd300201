@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
   const [isFade, setIsFade] = useState<boolean>(false)
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const router = useRouter()
   const { ref: clickCleanRef, inView: clickCleanTextSection } = useInView()
   const { ref: laundryCaptionRef, inView: laundryCaptionInView } = useInView()
@@ -104,17 +105,19 @@ export default function Home() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setIsFade(true)
+      if (!isLoading) {
+        setIsFade(true);
 
-      setTimeout(() => {
-        setCurrentIndex((prevIdx) => (prevIdx + 1) % imageCarousell?.length)
-        setIsFade(false)
-      }, 1000)
-
-    }, 6000)
+        setTimeout(() => {
+          setCurrentIndex((prevIdx) => (prevIdx + 1) % imageCarousell?.length);
+          setIsFade(false);
+        }, 1000);
+      }
+    }, 3000)
 
     return () => clearInterval(interval)
-  }, [])
+  }, [imageCarousell?.length, currentIndex, isLoading])
+  const handleImageLoad = () => setIsLoading(false)
 
   return (
     <main className="w-full h-fit pt-0 md:pt-[62px]">
@@ -124,6 +127,7 @@ export default function Home() {
             width={2000}
             height={2000}
             src={imageCarousell[currentIndex]}
+            onLoad={handleImageLoad}
             alt="hero"
             className={`w-full h-[50vh] ${isFade ? 'opacity-0' : 'opacity-100'} lg:h-fit object-left lg:object-top object-cover transition-opacity duration-1000 ease-in-out`}
           />

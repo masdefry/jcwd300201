@@ -14,6 +14,7 @@ import axios from "axios"
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
+const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
 
 /* *login */
 export const userLoginService = async ({ email, password }: ILoginBody) => {
@@ -106,7 +107,7 @@ export const userCreateAddressService = async ({ userId, addressName, addressDet
             userId,
             isMain: true,
         },
-    });
+    })
 
     const findAddressUser = await prisma.userAddress.findMany({ where: { userId } })
     if (findAddressUser?.length >= 5) throw { msg: 'Alamat anda sudah penuh, harap hapus salah satu alamat anda', status: 401 }
@@ -114,11 +115,26 @@ export const userCreateAddressService = async ({ userId, addressName, addressDet
     const isMain = !hasMainAddress;
     const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
         headers: {
-            key: 'b4b88bdd2e2065e365b688c79ebc550c'
+            key: rajaOngkirApiKey
         }
     });
 
     const provinceName: string = responseApi?.data?.rajaongkir?.results?.province
+    const checkedAddressUser = await prisma.userAddress.findFirst({
+        where: {
+            AND: [
+                { addressName },
+                { addressDetail },
+                { province: provinceName },
+                { city },
+                { zipCode },
+                { userId }
+            ]
+        }
+    })
+
+    console.log(checkedAddressUser, "< dapet ga")
+    if (checkedAddressUser) throw { msg: 'Alamat sudah tersedia, harap masukan alamat berbeda', status: 400 }
     const newAddress = await prisma.userAddress.create({
         data: {
             addressName,
@@ -138,20 +154,40 @@ export const userCreateAddressService = async ({ userId, addressName, addressDet
 }
 
 /* edit address */
-export const userEditAddressService = async ({ addressId, addressName, addressDetail, province, city, zipCode, latitude, longitude, country }: IEditAddressUser) => {
+export const userEditAddressService = async ({ addressId, addressName, addressDetail, province, city, zipCode, latitude, longitude, country, userId }: IEditAddressUser) => {
     const existingAddress = await prisma.userAddress.findFirst({ where: { id: parseInt(addressId) } })
     if (!existingAddress) throw { msg: 'Alamat tidak tersedia', status: 404 }
+
+    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+        headers: { key: rajaOngkirApiKey }
+    });
+
+    const provinceName: string = responseApi?.data?.rajaongkir?.results?.province
+    const checkedAddressUser = await prisma.userAddress.findFirst({
+        where: {
+            AND: [
+                { addressName },
+                { addressDetail },
+                { province: provinceName },
+                { city },
+                { zipCode },
+                { userId }
+            ]
+        }
+    })
+
+    if (checkedAddressUser) throw { msg: 'Alamat sudah tersedia, harap masukan alamat yang lain', status: 400 }
 
     const updatedAddress = await prisma.userAddress.update({
         where: { id: parseInt(addressId) },
         data: {
             addressName,
             addressDetail,
-            province,
+            province: provinceName,
             city,
             zipCode,
-            latitude: latitude ? parseFloat(latitude) : undefined,
-            longitude: longitude ? parseFloat(longitude) : undefined,
+            latitude: latitude ? parseFloat(latitude) : existingAddress?.latitude,
+            longitude: longitude ? parseFloat(longitude) : existingAddress?.longitude,
             country,
         },
     });
@@ -162,18 +198,36 @@ export const userEditAddressService = async ({ addressId, addressName, addressDe
 
 /* get single address */
 export const getSingleAddressUserService = async ({ id, userId }: { id: string, userId: string }) => {
-    const findAddressById = await prisma.userAddress.findFirst({ where: { id: Number(id), userId: userId } })
+    const findAddressById = await prisma.userAddress.findFirst({ where: { id: Number(id), userId } })
     if (!findAddressById) throw { msg: 'Data alamat sudah tidak tersedia', status: 404 }
 
     return { findAddressById }
 }
 
 /* get all user address */
-export const getAllUserAddressesService = async ({ userId }: { userId: string }) => {
-    const addresses = await prisma.userAddress.findMany({
-        where: { userId },
-        orderBy: { isMain: 'desc' },
-    });
+export const getAllUserAddressesService = async ({ userId, search }: { userId: string, search: string }) => {
+    let addresses
+
+    if (search) {
+        addresses = await prisma.userAddress.findMany({
+            where: {
+                userId,
+                OR: [
+                    { addressName: { contains: search as string } },
+                    { addressDetail: { contains: search as string } },
+                    { city: { contains: search as string } },
+                    { province: { contains: search as string } },
+                    { country: { contains: search as string } },
+                ]
+            }
+        })
+    } else {
+        addresses = await prisma.userAddress.findMany({
+            where: { userId },
+            orderBy: { isMain: 'desc' },
+        });
+    }
+
 
     if (addresses.length === 0) throw { msg: 'User belum menambahkan alamat', status: 404 }
 
@@ -220,7 +274,7 @@ export const setPasswordUserService = async ({ authorization, userId, password }
 
     const hashedPassword = await hashPassword(password)
 
-    await prisma.user.update({
+    const updatedPassword = await prisma.user.update({
         data: {
             password: hashedPassword,
             isVerified: true,
@@ -228,6 +282,17 @@ export const setPasswordUserService = async ({ authorization, userId, password }
         },
         where: { id: userId }
     })
+
+    if (updatedPassword) {
+        const emailRead = fs.readFileSync('./src/public/sendMail/verifyEmailSucces.html', 'utf-8')
+        let compiledHtml: any = compile(emailRead)
+        compiledHtml = compiledHtml({ firstName: updatedPassword?.firstName, url: 'http://localhost:3000/user/login' })
+        await transporter.sendMail({
+            to: updatedPassword?.email,
+            subject: `Selamat datang ${updatedPassword?.firstName}`,
+            html: compiledHtml
+        })
+    }
 }
 
 /* forgot password */
@@ -236,20 +301,23 @@ export const forgotPasswordUserService = async ({ email }: { email: string }) =>
     if (!findUser) throw { msg: 'Email yang anda masukan tidak valid atau user tidak tersedia', status: 404 }
 
     const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '5m' })
-    const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
-    let compiledHtml: any = compile(readEmailHtml)
-    compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
 
-    await transporter.sendMail({
-        to: email,
-        subject: 'Atur ulang kata sandi',
-        html: compiledHtml
-    })
-
-    await prisma.user.update({
+    const updatedToken = await prisma.user.update({
         where: { id: findUser?.id },
         data: { forgotPasswordToken: token }
     })
+
+    if (updatedToken) {
+        const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
+        let compiledHtml: any = compile(readEmailHtml)
+        compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
+
+        await transporter.sendMail({
+            to: email,
+            subject: 'Atur ulang kata sandi',
+            html: compiledHtml
+        })
+    }
 }
 
 /* update profil */
@@ -306,6 +374,7 @@ export const deleteProfilePictureUserService = async ({ userId }: { userId: stri
     }
 }
 
+/* change password user login google */
 export const changePasswordGoogleRegisterService = async ({ userId, password }: { userId: string, password: string }) => {
     const findUser = await prisma.user.findFirst({ where: { id: userId } })
     if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
@@ -313,4 +382,21 @@ export const changePasswordGoogleRegisterService = async ({ userId, password }: 
     const hashed = await hashPassword(password)
     await prisma.user.update({ where: { id: userId }, data: { password: hashed, isGooglePasswordChange: false } })
 
+}
+
+/* delete user address */
+export const deleteUserAddressService = async ({ userId, addressId }: { userId: string, addressId: number }) => {
+    const findAddressById = await prisma.userAddress.findFirst({ where: { id: Number(addressId), userId } })
+    const findAllAddress = await prisma.userAddress.findMany({ where: { userId } })
+    if (!findAddressById) throw { msg: 'Alamat sudah tidak tersedia atau sudah terhapus', status: 404 }
+    if (findAllAddress?.length === 1 && findAddressById?.isMain == true) throw { msg: 'Alamat utama tidak dapat dihapus karena setidaknya satu alamat diperlukan sebagai alamat utama', status: 400 }
+    await prisma.userAddress.delete({ where: { id: Number(addressId), userId } })
+
+    const findAddressAfterDelete = await prisma.userAddress.findMany({ where: { userId } })
+    if (findAddressAfterDelete?.length > 0) {
+        await prisma.userAddress.update({
+            where: { id: Number(findAddressAfterDelete[0]?.id), userId },
+            data: { isMain: true }
+        })
+    }
 }

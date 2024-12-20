@@ -34,6 +34,7 @@ export interface IEditAddressUser {
     latitude: string
     longitude: string
     country: string
+    userId: string
 }
 
 export interface IUpdateProfileUser {

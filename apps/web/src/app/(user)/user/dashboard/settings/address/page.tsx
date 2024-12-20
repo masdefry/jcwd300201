@@ -1,20 +1,9 @@
 'use client'
 
 import ButtonCustom from "@/components/core/button";
-import { RiShutDownLine } from "react-icons/ri";
 import { FaUser, FaStore, FaEdit, FaTrashAlt, FaArrowLeft } from 'react-icons/fa';
 import Image from "next/image";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import Link from "next/link";
 import HeaderMobileUser from "@/components/core/headerMobileUser";
 import ContentWebSession from "@/components/core/webSessionContent";
@@ -49,10 +38,12 @@ export default function Page() {
     const pathname = usePathname()
 
     const { data: getDataItem, isFetching, refetch, isPending } = useQuery({
-        queryKey: ['get-data-item'],
+        queryKey: ['get-data-item', searchItem],
         queryFn: async () => {
             const response = await instance.get('/user/all-address', {
-                headers: {
+                params: {
+                    search: searchItem
+                }, headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
@@ -61,123 +52,66 @@ export default function Page() {
         }
     })
 
-    // const { mutate: createProductItem, isPending } = useMutation({
-    //     mutationFn: async ({ itemName }: { itemName: string }) => {
-    //         return await instance.post('/worker/laundry-items', { itemName }, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         })
-    //     },
-    //     onSuccess: (res) => {
-
-    //         toast({
-    //             description: res?.data?.message,
-    //             className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-    //         })
-    //         refetch()
-    //         console.log(res)
-    //     },
-    //     onError: (err: any) => {
-    //         toast({
-    //             description: err?.response?.data?.message,
-    //             className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
-    //         })
-    //         console.log(err)
-    //     }
-    // })
-
-    // const { mutate: handleDeleteItem, isPending: isPendingDelete } = useMutation({
-    //     mutationFn: async (id: number) => {
-    //         return await instance.delete(`/worker/laundry-items/${id}`, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         })
-    //     },
-    //     onSuccess: (res) => {
-    //         toast({
-    //             description: res?.data?.message,
-    //             className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-    //         })
-
-    //         refetch()
-    //         console.log(res)
-    //     },
-    //     onError: (err: any) => {
-    //         toast({
-    //             description: err?.response?.data?.message,
-    //             className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
-    //         })
-    //         console.log(err)
-    //     }
-    // })
-
-
-    // const { mutate: handleUpdateItem, isPending: isPendingUpdate } = useMutation({
-    //     mutationFn: async ({ id, itemName }: { id: string, itemName: string }) => {
-    //         return await instance.patch(`/worker/laundry-items/${id}`, { itemName }, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         })
-    //     },
-    //     onSuccess: (res) => {
-    //         toast({
-    //             description: res?.data?.message,
-    //             className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-    //         })
-
-    //         refetch()
-    //         console.log(res)
-    //     },
-    //     onError: (err: any) => {
-    //         toast({
-    //             description: err?.response?.data?.message,
-    //             className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
-    //         })
-    //         console.log(err)
-    //     }
-    // })
-
-
-
-    // const getDataItem = dataItem?.findItem
-    // const totalPages = dataItem?.totalPage
-
-    // const handlePageChange = (page: any) => {
-    //     setCurrentPage(page)
-    // }
-
     const debounce = useDebouncedCallback((value) => {
-        console.log(value)
+        setSearchItem(value)
     }, 1000)
 
+    const { mutate: handleDeleteItem, isPending: isPendingDelete } = useMutation({
+        mutationFn: async (id) => {
+            return await instance.delete(`/user/address/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res) => {
+            refetch()
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
+            })
+
+            console.log(res)
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+            console.log(err)
+        }
+    })
+
     useEffect(() => {
-        // if (searchItem) {
-        //     currentUrl.set('search', searchItem)
-        // } else {
-        //     currentUrl.delete('search')
-        // }
+        if (searchItem) {
+            currentUrl.set('search', searchItem)
+        } else {
+            currentUrl.delete('search')
+        }
 
-        // if (sortProduct) {
-        //     currentUrl.set('sort', sortProduct)
-        // } else {
-        //     currentUrl.delete('sort')
-        // }
+        router.push(`${pathname}?${currentUrl.toString()}`)
+        router.refresh()
+        refetch()
 
-        // if (totalPages === undefined || currentPage > totalPages) {
-        //     setCurrentPage(1)
-        // }
+    }, [params, pathname, refetch, searchItem])
 
-        // router.push(`${pathname}?${currentUrl.toString()}`)
-        // router.refresh()
-        // refetch()
-
-        console.log('Gokks')
-
-    }, [])
-
+    if (isPending) return (
+        <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
+            <section className="w-full flex flex-col p-4 rounded-xl h-full bg-white">
+                <div className="flex flex-col w-full gap-5 h-full">
+                    <div className="w-full py-7 bg-neutral-300 animate-pulse px-14 rounded-xl">
+                        <h1 className="font-bold text-white"></h1>
+                    </div>
+                    <div className='w-full flex gap-2'>
+                        <div className='py-7 bg-neutral-300 animate-pulse px-14 rounded-xl'></div>
+                        <div className='py-7 bg-neutral-300 animate-pulse px-14 rounded-xl'></div>
+                        <div className='py-7 bg-neutral-300 animate-pulse px-14 rounded-xl'></div>
+                    </div>
+                    <div className='w-full h-full bg-neutral-300 animate-pulse rounded-xl'></div>
+                </div>
+            </section>
+        </main>
+    )
 
     const settingsItems = [
         { name: 'nama alamat', description: 'jl.rorojonggrang', icon: FaUser },
@@ -251,21 +185,10 @@ export default function Page() {
 
             <ContentWebSession caption="Alamat Saya">
                 <div className="w-full h-fit flex">
-                    <div className="w-1/2 h-fit flex items-center">
-                        <select name="searchWorker"
-                            value={sortProduct} onChange={(e) => setSortProduct(e.target.value)}
-                            id="searchWorker" className="px-4 py-2 focus:outline-none focus:border-orange-500 border rounded-2xl border-gray-300 text-sm text-neutral-600">
-                            <option value="" disabled>-- Pilih Opsi --</option>
-                            <option value="name-asc">Sort berdasarkan A - Z</option>
-                            <option value="name-desc">Sort berdasarkan Z - A</option>
-                            <option value="latest-item">Sort berdasarkan data terbaru</option>
-                            <option value="oldest-item">Sort berdasarkan data terlama</option>
-                            <option value="">Reset</option>
-                        </select>
-                    </div>
+                    <div className="w-1/2 h-fit flex items-center"></div>
                     <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <ButtonCustom onClick={() => router.push('/user/dashboard/settings/address/c')} rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Produk</ButtonCustom>
+                        <SearchInputCustom placeholder='Cari alamat..' onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
+                        <ButtonCustom onClick={() => router.push('/user/dashboard/settings/address/c')} rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Tambah alamat</ButtonCustom>
                     </div>
                 </div>
 
@@ -276,8 +199,7 @@ export default function Page() {
                             <tr>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Alamat</th>
-                                <th className="py-3 px-6 text-sm font-bold text-gray-600 uppercase">Kode Pos</th>
-                                <th className="py-3 px-6 text-sm font-bold text-gray-600 uppercase">Negara</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Utama</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                             </tr>
                         </thead>
@@ -287,14 +209,13 @@ export default function Page() {
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={address?.id || i}>
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{address?.addressDetail}, {address?.city}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{address?.zipCode}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{address?.country}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{address?.addressDetail}, {address?.city}, {address?.province}, {address?.country}, {address?.zipCode}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{address?.isMain ? 'Utama' : 'Lainnya'}</td>
                                             <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
                                                 <div className='flex gap-2'>
-                                                    {/* <ConfirmAlert disabled={isPendingDelete} caption="menghapus data ini" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => handleDeleteItem(address?.id)}> */}
-                                                    <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
-                                                    {/* </ConfirmAlert> */}
+                                                    <ConfirmAlert disabled={isPendingDelete} caption="Apakah anda yakin ingin menghapus alamat anda?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => handleDeleteItem(address?.id)}>
+                                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
+                                                    </ConfirmAlert>
                                                     <Link href={`/user/dashboard/settings/address/e/${address?.id}CNC${Date.now()}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /></Link>
                                                 </div>
                                             </td>
@@ -310,15 +231,11 @@ export default function Page() {
                     </table>
                     <div className='flex gap-2 justify-between py-2 px-2 items-center'>
                         <div className="w-1/2 flex">
-                            <h1 className="text-neutral-400">Page {currentPage} of 0</h1>
+                            <h1 className="text-neutral-400">Page {currentPage} of 1</h1>
                         </div>
                         <div className="flex gap-2">
-                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
-                            // disabled={currentPage == 1} onClick={() => handlePageChange(currentPage - 1)}
-                            >Sebelumnya</ButtonCustom>
-                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
-                            // disabled={currentPage == totalPages || currentPage > totalPages} onClick={() => handlePageChange(currentPage + 1)}
-                            >Selanjutnya</ButtonCustom>
+                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled>Sebelumnya</ButtonCustom>
+                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled>Selanjutnya</ButtonCustom>
                         </div>
                     </div>
                 </div>
