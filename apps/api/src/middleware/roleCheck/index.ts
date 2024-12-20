@@ -66,14 +66,16 @@ export const roleCheckSuperAdmin = (req: Request, res: Response, next: NextFunct
 }
 
 export const roleCheckCustomer = (req: Request, res: Response, next: NextFunction) => {
+    console.log('trigger role')
     const { authorizationRole, userId } = req.body
-
-    if (authorizationRole != 'CUSTOMER') throw { msg: 'Hanya user yang bisa mengirim pesan', status: 401 }
-
+    
+    if (authorizationRole != 'CUSTOMER') throw { msg: 'Hak akses hanya milik user', status: 401 }
+    
     if (authorizationRole && userId) {
         req.body.authorizationRole = authorizationRole
         req.body.userId = userId
     }
-
+    
+    console.log('trigger role bawah')
     next()
 }

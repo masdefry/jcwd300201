@@ -91,9 +91,8 @@ export const findNearestStore = async (req: Request, res: Response, next: NextFu
 
 export const requestPickUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { totalPrice, deliveryFee, outletId, userId, orderTypeId, userAddressId } = req.body
-
-    const { newOrder } = await requestPickUpService({ userId, totalPrice, deliveryFee, outletId, orderTypeId, userAddressId })
+    const { deliveryFee, outletId, userId, orderTypeId, userAddressId } = req.body
+    const { newOrder } = await requestPickUpService({ userId, deliveryFee, outletId, orderTypeId, userAddressId })
 
     res.status(201).json({
       error: false,

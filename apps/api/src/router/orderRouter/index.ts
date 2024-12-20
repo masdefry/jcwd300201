@@ -1,5 +1,9 @@
 import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
+import { limiter } from "@/middleware/rateLimit";
+import { roleCheckCustomer } from "@/middleware/roleCheck";
+import { requestPickUpValidation } from "@/middleware/validation";
+import { expressValidatorErrorHandling } from "@/middleware/validation/errorHandlingValidator";
 
 import { tokenValidation } from "@/middleware/verifyToken";
 import { Router } from "express";
@@ -12,7 +16,9 @@ orderRouter.get('/type', getOrderType)
 orderRouter.get('/province', getProvince)
 orderRouter.get('/city', getCity)
 orderRouter.get('/nearest-store', tokenValidation, findNearestStore)
-orderRouter.post('/request-pickup', tokenValidation, requestPickUp)
+
+/* request pickup */
+orderRouter.post('/request-pickup', tokenValidation, roleCheckCustomer, limiter, requestPickUp)
 
 
 orderRouter.get('/order', tokenValidation, getOrdersForDriver)

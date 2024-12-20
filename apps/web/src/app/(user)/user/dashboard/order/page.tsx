@@ -14,6 +14,7 @@ import { useDebouncedCallback } from "use-debounce"
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
+import ContentWebSession from "@/components/core/webSessionContent"
 
 export default function HistoryOrderWashing() {
     const params = useSearchParams();
@@ -87,7 +88,7 @@ export default function HistoryOrderWashing() {
 
     return (
         <>
-            <main className="w-full h-fit">
+            <main className="w-full h-fit block md:hidden">
                 <section className="w-full h-fit">
                     <HeaderMobile />
                     <main className="w-full">
@@ -163,6 +164,10 @@ export default function HistoryOrderWashing() {
                     </main>
                 </section>
             </main>
+
+            <ContentWebSession caption="Order saya">
+                <h1>Tes</h1>
+            </ContentWebSession>
         </>
     )
 }

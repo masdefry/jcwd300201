@@ -7,7 +7,7 @@ export interface IFindNearestStore {
 
 export interface IRequestPickup {
     userId: string
-    totalPrice: number
+    totalPrice?: number
     deliveryFee: number
     outletId: string
     orderTypeId: string

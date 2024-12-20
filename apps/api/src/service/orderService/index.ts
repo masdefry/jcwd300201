@@ -5,21 +5,31 @@ import fs, { rmSync } from 'fs'
 import dotenv from 'dotenv'
 import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone } from "./types"
 import { Prisma, Role, Status } from "@prisma/client"
-import { sortAndDeduplicateDiagnostics } from "typescript"
+import { addHours } from "date-fns"
 dotenv.config()
 
-export const requestPickUpService = async ({ userId, totalPrice, deliveryFee, outletId, orderTypeId, userAddressId }: IRequestPickup) => {
+export const requestPickUpService = async ({ userId, deliveryFee, outletId, orderTypeId, userAddressId }: IRequestPickup) => {
+  const findUser = await prisma.user.findFirst({ where: { id: userId } })
+  const dateCustom = `${new Date().getFullYear()}${new Date().getMonth()}${new Date().getDate()}${Date.now()}`
+  const orderId = `ORD-${dateCustom}-${findUser?.firstName.toUpperCase()}`
+  const dateNow = addHours(new Date(), 7)
+
   const newOrder: any = await prisma.order.create({
     data: {
-      totalPrice,
+      id: orderId,
+      totalPrice: null,
       deliveryFee,
       storeId: outletId,
       userId,
       orderTypeId: parseInt(orderTypeId),
       userAddressId,
       isPaid: false,
+      createdAt: dateNow,
+      updatedAt: dateNow
     },
   });
+
+  console.log(newOrder)
 
   await prisma.orderStatus.create({
     data: {
@@ -28,7 +38,7 @@ export const requestPickUpService = async ({ userId, totalPrice, deliveryFee, ou
     },
   });
 
-  return newOrder
+  return { newOrder }
 }
 
 export const findNearestStoreService = async ({ userId, address }: IFindNearestStore) => {
@@ -83,14 +93,14 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
               )
           ) AS distance
       FROM stores
-      HAVING distance <= 5
+      HAVING distance <= 100
       ORDER BY distance ASC
       LIMIT 1;
     `;
 
   if (nearestStores.length === 0) throw { msg: 'Tidak ada toko Laundry kami di dekat anda', status: 404 }
-
-  return nearestStores
+  console.log('<<< sampe mana')
+  return { nearestStores }
 }
 
 export const getUserOrderService = async ({ userId, limit_data, page, search, dateUntil, dateFrom, sort }: IGetUserOrder) => {
