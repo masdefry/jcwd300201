@@ -12,7 +12,7 @@ import { IoMdRefresh } from "react-icons/io";
 import { IFilterProps } from "./type";
 
 
-export default function FilterWorker({ debounce, sortOption, setSortOption, dateFrom, dateUntil, setDateFrom, setDateUntil, setActiveTab, setSearchInput }: IFilterProps) {
+export default function FilterWorker({ debounce, sortOption, setSortOption, selectTab = 'semua', dateFrom, dateUntil, setDateFrom, setDateUntil, setActiveTab, setSearchInput }: IFilterProps) {
     return (
         <>
             <div className="flex justify-between gap-1 items-center">
@@ -34,12 +34,12 @@ export default function FilterWorker({ debounce, sortOption, setSortOption, date
                         <SelectValue placeholder="Sort By" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="date-asc">Tanggal Asc.</SelectItem>
-                        <SelectItem value="date-desc">Tanggal Desc.</SelectItem>
-                        <SelectItem value="name-asc">Customer Name Asc.</SelectItem>
-                        <SelectItem value="name-desc">Customer Name Desc.</SelectItem>
-                        <SelectItem value="order-id-asc">Order Id Desc.</SelectItem>
-                        <SelectItem value="order-id-desc">Order Id Desc.</SelectItem>
+                        <SelectItem value="date-asc">Tanggal Terbaru</SelectItem>
+                        <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
+                        <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
+                        <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
+                        <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
+                        <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
                     </SelectContent>
                 </Select>
             </div>
@@ -70,7 +70,7 @@ export default function FilterWorker({ debounce, sortOption, setSortOption, date
                     <button className="flex items-center justify-center h-10 w-10 px-2 border rounded-lg border-gray-500 mr-2"
                         onClick={() => {
                             setSortOption("date-asc"),
-                                setActiveTab("semua"),
+                                setActiveTab(selectTab),
                                 setDateFrom(null),
                                 setDateUntil(null),
                                 setSearchInput('');

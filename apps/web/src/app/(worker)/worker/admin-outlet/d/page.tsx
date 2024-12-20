@@ -11,13 +11,26 @@ import authStore from "@/zustand/authstore"
 import { useState, useEffect } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
+import { Formik, Form, Field, ErrorMessage } from "formik";
+import * as Yup from "yup";
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
-export default function DriverPickUp() {
+export default function DeliveryRequest() {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -27,24 +40,34 @@ export default function DriverPickUp() {
     const token = authStore((state) => state.token);
     const email = authStore((state) => state.email);
 
+    const notesSchema = Yup.object({
+        notes: Yup.string().required("Notes are required"),
+    });
+
+
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState("date-asc");
-    const [activeTab, setActiveTab] = useState("semua");
+    const [activeTab, setActiveTab] = useState("menungguPembayaran");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+
     const limit = 5;
 
-    const { data: dataOrderPackingProcess, refetch, isLoading: dataOrderPackingProcessLoading, isError: dataOrderPackingProcessError } = useQuery({
+    const { data: dataOrderDelivery, refetch, isLoading: dataOrderDeliveryLoading, isError: dataOrderDeliveryError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const res = await instance.get('/order/order-packing', {
+            const res = await instance.get(`/order/order-delivery/`, {
                 params: {
                     page,
                     limit_data: limit,
                     search: searchInput || "",
                     sort: sortOption,
                     tab: activeTab,
+                    dateFrom,
+                    dateUntil,
+
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -53,9 +76,9 @@ export default function DriverPickUp() {
         },
     });
 
-    const { mutate: handleProcessPacking, isPending } = useMutation({
-        mutationFn: async (id: any) => {
-            return await instance.post(`/order/packing-done/${id}`, { email }, {
+    const { mutate: handleRequestDelivery, isPending } = useMutation({
+        mutationFn: async ( orderId : any) => {
+            return await instance.patch(`/order/order-delivery/${orderId}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -115,7 +138,7 @@ export default function DriverPickUp() {
     }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
 
 
-    const totalPages = dataOrderPackingProcess?.totalPage || 1;
+    const totalPages = dataOrderDelivery?.totalPage || 1;
 
     return (
         <>
@@ -125,16 +148,14 @@ export default function DriverPickUp() {
                     <main className="w-full">
                         <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
                             <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> PACKING WORKER
+                                <Link href='/admin/settings'><FaArrowLeft /></Link> REQUEST DELIVERY
                             </div>
                         </section>
                         <div className="py-28 mx-4 space-y-4">
                             <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-4">
-                                    <TabsTrigger value="semua" onClick={() => { setActiveTab("semua"); setPage(1) }} >Semua</TabsTrigger>
-                                    <TabsTrigger value="belumPacking" onClick={() => { setActiveTab("belumPacking"); setPage(1) }} >Belum Packing</TabsTrigger>
-                                    <TabsTrigger value="prosesPacking" onClick={() => { setActiveTab("prosesPacking"); setPage(1) }} >Proses Packing</TabsTrigger>
-                                    <TabsTrigger value="selesai" onClick={() => { setActiveTab("selesai"); setPage(1) }}>Selesai</TabsTrigger>
+                                <TabsList className="grid w-full grid-cols-2">
+                                    <TabsTrigger value="menungguPembayaran" onClick={() => { setActiveTab("menungguPembayaran"); setPage(1) }} >Menunggu Pembayaran</TabsTrigger>
+                                    <TabsTrigger value="siapKirim" onClick={() => { setActiveTab("siapKirim"); setPage(1) }} >Siap Kirim</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
@@ -148,69 +169,30 @@ export default function DriverPickUp() {
                                             setDateUntil={setDateUntil}
                                             setActiveTab={setActiveTab}
                                             setSearchInput={setSearchInput}
+                                            selectTab="menungguPembayaran"
                                         />
-                                        {dataOrderPackingProcessLoading && <p>Loading...</p>}
-                                        {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                        {dataOrderPackingProcess?.orders?.map((order: any) => (
+                                        {dataOrderDeliveryLoading && <div>Loading...</div>}
+                                        {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}
+                                        {dataOrderDelivery?.orders?.map((order: any) => (
                                             <section
                                                 key={order.id}
                                                 className="flex justify-between items-center border-b py-4"
                                             >
-
-                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isDone === true ? (
-                                                    <div className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false
-                                                                    ? 'Belum Packing'
-                                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true
-                                                                        ? 'Proses Packing'
-                                                                        : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isDone === true
-                                                                            ? 'Selesai'
-                                                                            : order?.orderStatus[0]?.status}
-                                                            </p>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                ) : (
-                                                    <ConfirmAlert
+                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true ? (
+                                                    < ConfirmAlert
                                                         colorConfirmation="blue"
                                                         caption={
-                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' &&
-                                                                order?.isProcessed === false &&
-                                                                order?.isSolved === false
-                                                                ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
-                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' &&
-                                                                    order?.isProcessed === false &&
-                                                                    order?.isSolved === true
-                                                                    ? 'Apakah anda yakin ingin melakukan proses packing pada order ini?'
-                                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true
-                                                                        ? 'Apakah anda yakin ingin menyelesaikan proses packing pada order ini?'
-                                                                        : ''
+                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                                ? 'Apakah Anda ingin request pengiriman untuk pesanan ini?'
+                                                                : ''
                                                         }
                                                         description={
-                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isSolved === false
-                                                                ? 'Silahkan hubungi admin'
-                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isSolved === true
-                                                                    ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                        ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                        : ''
+                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                                ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                : ''
                                                         }
                                                         onClick={() => {
-                                                            if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false) {
-                                                                router.push(`/worker/packing-worker/c/${order?.id}`);
-                                                            } else if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true) {
-                                                                handleProcessPacking(order?.id);
-                                                            }
+                                                            handleRequestDelivery(order?.id);
                                                         }}
                                                     >
                                                         <div className="flex items-center">
@@ -221,21 +203,41 @@ export default function DriverPickUp() {
                                                                 <h2 className="font-medium text-gray-900">
                                                                     {order?.User?.firstName} {order?.User?.lastName}
                                                                 </h2>
-                                                                <p className="text-xs text-gray-500">
-                                                                    {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false
-                                                                        ? 'Belum Packing'
-                                                                        : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true
-                                                                            ? 'Proses Packing'
-                                                                            : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isDone === true
-                                                                                ? 'Selesai'
-                                                                                : order?.orderStatus[0]?.status}
-                                                                </p>
+                                                                <div className="text-xs text-gray-500">
+                                                                    {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
+                                                                        ? 'Menunggu Pembayaran' :
+                                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                                            ? 'Siap untuk dikirim'
+                                                                            : 'tes'}
+                                                                </div>
                                                                 <p className="text-xs text-gray-500">
                                                                     {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
                                                                 </p>
                                                             </div>
                                                         </div>
                                                     </ConfirmAlert>
+                                                ) : (
+
+                                                    <div className="flex items-center">
+                                                        <div className="ml-2">
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.id}
+                                                            </h2>
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.User?.firstName} {order?.User?.lastName}
+                                                            </h2>
+                                                            <div className="text-xs text-gray-500">
+                                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
+                                                                    ? 'Menunggu Pembayaran' :
+                                                                    order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                                        ? 'Siap untuk dikirim'
+                                                                        : 'tes'}
+                                                            </div>
+                                                            <div className="text-xs text-gray-500">
+                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 )}
 
                                                 <div className="flex gap-1">
@@ -245,15 +247,14 @@ export default function DriverPickUp() {
                                                 </div>
                                             </section>
                                         ))}
-
                                         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
                                     </CardContent>
                                 </TabsContent>
                             </Tabs>
                         </div>
                     </main>
-                </section>
-            </main>
+                </section >
+            </main >
         </>
     )
 }

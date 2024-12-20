@@ -4,14 +4,14 @@ import { FaArrowLeft } from "react-icons/fa";
 import HeaderMobile from "@/components/core/headerMobile"
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
 import { useToast } from "@/components/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import React, { useState } from 'react';
-import { Interface } from "readline";
+import { useRouter } from "next/navigation";
+
 import {
     Dialog,
     DialogTrigger,
@@ -57,6 +57,7 @@ type Iitem = {
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
 
     const { slug } = React.use(params);
+    const router = useRouter()
 
     const token = authStore((state) => state.token);
     const emails = authStore((state) => state.email);
@@ -110,12 +111,16 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
+            setTimeout(() => {
+                router.push('/worker/washing-worker/order/');
+            }, 1000);
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
             })
+           
         }
     })
 
@@ -163,7 +168,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                 onSubmit={(values: any) => {
                                     handleStatusOrder({
                                         email: emails,
-                                        notes: values.notes, 
+                                        notes: values.notes,
                                     });
                                 }}
                             >
@@ -198,7 +203,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     <label className="text-sm">Customer Name</label>
                                                     <input
                                                         type="text"
-                                                        value={`${dataOrderNote[0].Users?.firstName} ${dataOrderNote[0].Users?.lastName}`}
+                                                        value={`${dataOrderNote[0].User?.firstName} ${dataOrderNote[0].User?.lastName}`}
                                                         disabled
                                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                                     />
@@ -331,8 +336,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <DialogHeader>
                                         <DialogTitle>Konfirmasi Outlet Admin</DialogTitle>
                                         <DialogDescription>
-                                            Terjadi perbedaan antara data barang yang diberikan oleh admin outlet dan data anda, silahkan laporkan ke admin outlet:
-                                        </DialogDescription>
+                                            Terjadi perbedaan antara data barang yang diberikan oleh admin outlet dan data anda. Silahkan klik Lapor                                        </DialogDescription>
                                     </DialogHeader>
                                     <textarea
                                         value={dialogNotes}
@@ -341,12 +345,12 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         placeholder="Add notes or comments..."
                                         rows={6}
                                     />
-                                    <DialogFooter>
+                                    <DialogFooter className="flex flex-col gap-2">
                                         <button
                                             onClick={handleDialogSubmit}
 
                                             type="submit"
-                                            className="bg-green-500 text-white rounded-md p-2"
+                                            className="bg-blue-500 hover:bg-blue-700 transition-all duration-200 ease-in-out text-white rounded-md p-2"
                                         >
                                             Lapor
                                         </button>

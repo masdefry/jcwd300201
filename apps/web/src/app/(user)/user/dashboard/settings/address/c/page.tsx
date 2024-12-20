@@ -199,8 +199,7 @@ export default function Page() {
                                                         <option key={province.province_id} value={province.province_id}>
                                                             {province.province}
                                                         </option>
-                                                    ))
-                                                )}
+                                                    )))}
                                             </Field>
                                             {touched.province && errors.province && (
                                                 <div className="error text-red-600 text-xs">{errors.province}</div>

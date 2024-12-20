@@ -183,9 +183,9 @@ export default function DriverPickUp() {
                                                                 order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
                                                                     ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
                                                                     : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === true
-                                                                        ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                        ? 'Apakah anda yakin ingin melakukan proses cuci pada order ini?'
                                                                         : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
-                                                                            ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                            ? 'Apakah anda yakin ingin menyelesaikan proses pada order ini?'
                                                                             : ''
                                                             }
                                                             description={
@@ -199,8 +199,8 @@ export default function DriverPickUp() {
                                                             }
                                                             hideButtons={order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false}
                                                             onClick={() => {
-                                                                if (order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' && order?.isProcessed === false) {
-                                                                    router.push(`/worker/ironing-worker/c/${order?.id}`);
+                                                                if (order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false) {
+                                                                    router.push(`/worker/washing-worker/c/${order?.id}`);
                                                                 } else if (order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' && order?.isProcessed === true) {
                                                                     handleProcessWashing(order?.id);
                                                                 }
@@ -209,7 +209,10 @@ export default function DriverPickUp() {
                                                             <div className="flex items-center">
                                                                 <div className="ml-2">
                                                                     <h2 className="font-medium text-gray-900">
-                                                                        {order?.Users?.firstName} {order?.Users?.lastName}
+                                                                        {order?.id}
+                                                                    </h2>
+                                                                    <h2 className="font-medium text-gray-900">
+                                                                        {order?.User?.firstName} {order?.User?.lastName}
                                                                     </h2>
                                                                     <p className="text-xs text-gray-500">
                                                                         {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
@@ -232,7 +235,7 @@ export default function DriverPickUp() {
                                                         <div className="flex items-center">
                                                             <div className="ml-2">
                                                                 <h2 className="font-medium text-gray-900">
-                                                                    {order?.Users?.firstName} {order?.Users?.lastName}
+                                                                    {order?.User?.firstName} {order?.User?.lastName}
                                                                 </h2>
                                                                 <p className="text-xs text-gray-500">
                                                                     {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false

@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 import { Prisma } from "@prisma/client";
 import { Status } from "@prisma/client";
-import { ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService } from "@/service/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService } from "@/service/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
 import dotenv from 'dotenv'
 
@@ -75,10 +75,8 @@ export const findNearestStore = async (req: Request, res: Response, next: NextFu
   try {
     const { userId } = req.body;
     const { address } = req.query
-
     const addressString = typeof address === "string" ? address : "";
     const { nearestStores } = await findNearestStoreService({ userId, address: addressString })
-
     res.status(200).json({
       error: false,
       message: "Data store terdekat berhasil  didapat!",
@@ -454,6 +452,15 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
 
     if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
 
+    const order = await prisma.order.findUnique({
+      where: { id: String(orderId) },
+      select: { orderTypeId: true },
+    });
+
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+    if (order.orderTypeId === 2) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 }
+
     let updatedOrder = null;
     if (notes) {
       const updatedOrder = await prisma.order.update({
@@ -558,7 +565,15 @@ export const ironingProcess = async (req: Request, res: Response, next: NextFunc
     })
 
     if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+    const order = await prisma.order.findUnique({
+      where: { id: String(orderId) },
+      select: { orderTypeId: true },
+    });
 
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+    if (order.orderTypeId === 1) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
+    
     const orderStatuses = await prisma.orderStatus.findFirst({
       where: {
         orderId,
@@ -773,6 +788,32 @@ export const getNotes = async (req: Request, res: Response, next: NextFunction) 
   }
 };
 
+
+export const solveNotes = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { notes, userId } = req.body
+
+    const solvedProblem = await prisma.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        isSolved: true,
+        notes
+      }
+    })
+
+    res.status(200).json({
+      error: false,
+      message: "Notes retrieved successfully!",
+      data: solvedProblem
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
 export const getWashingHistory = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil } = req.query;
@@ -856,6 +897,154 @@ export const getPackingHistory = async (req: Request, res: Response, next: NextF
       data: {
         totalPage,
         orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const getCreateNotaOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil } = req.query;
+    const { userId, authorizationRole, storeId } = req.body;
+
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+
+    const { totalPage, orders } = await getCreateNoteOrderService({
+      userId, authorizationRole, storeId, limit_data: limitTypes, page: pageTypes,
+      search: searchTypes, dateFrom: dateFromTypes, dateUntil: dateUntilTypes, sort: sortTypes
+    })
+    res.status(200).json({
+      error: false,
+      message: "Data order diterima!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const getOrdersForDelivery = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil
+    } = req.query;
+
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+
+    const { totalPage, orders: paginatedOrders } = await getOrdersForDeliveryService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
+        page: pageTypes,
+        limit_data: limitTypes,
+        search: searchTypes,
+        sort: sortTypes,
+        tab: tabTypes,
+        dateFrom: dateFromTypes,
+        dateUntil: dateUntilTypes
+      }
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const requestDeliveryDone = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const { order } = await requestDeliveryDoneService({ orderId, email, userId })
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        order,
+      },
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const getOrdersForDriverDelivery = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil
+    } = req.query;
+
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+
+    const { totalPage, orders: paginatedOrders } = await getOrdersForDriverDeliveryService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
+        page: pageTypes,
+        limit_data: limitTypes,
+        search: searchTypes,
+        sort: sortTypes,
+        tab: tabTypes,
+        dateFrom: dateFromTypes,
+        dateUntil: dateUntilTypes
+      }
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
       },
     });
   } catch (error) {

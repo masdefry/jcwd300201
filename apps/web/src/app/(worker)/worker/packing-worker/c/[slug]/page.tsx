@@ -21,7 +21,7 @@ import {
     DialogTitle,
     DialogDescription,
 } from "@/components/ui/dialog";
-
+import { useRouter } from "next/navigation";
 
 const validationSchema = Yup.object().shape({
     customerName: Yup.string().required("Customer name is required"),
@@ -57,7 +57,7 @@ type Iitem = {
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
 
     const { slug } = React.use(params);
-
+    const router = useRouter()
     const token = authStore((state) => state.token);
     const emails = authStore((state) => state.email);
     const { toast } = useToast();
@@ -109,7 +109,10 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
+            }),
+                setTimeout(() => {
+                    router.push('/worker/packing-worker/order/');
+                }, 1000);
         },
         onError: (err: any) => {
             toast({
@@ -198,7 +201,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     <label className="text-sm">Customer Name</label>
                                                     <input
                                                         type="text"
-                                                        value={`${dataOrderNote[0].Users?.firstName} ${dataOrderNote[0].Users?.lastName}`}
+                                                        value={`${dataOrderNote[0].User?.firstName} ${dataOrderNote[0].User?.lastName}`}
                                                         disabled
                                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                                     />
@@ -331,8 +334,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <DialogHeader>
                                         <DialogTitle>Konfirmasi Outlet Admin</DialogTitle>
                                         <DialogDescription>
-                                            Terjadi perbedaan antara data barang yang diberikan oleh admin outlet dan data anda, silahkan laporkan ke admin outlet:
-                                        </DialogDescription>
+                                            Terjadi perbedaan antara data barang yang diberikan oleh admin outlet dan data anda. Silahkan klik Lapor                                        </DialogDescription>
                                     </DialogHeader>
                                     <textarea
                                         value={dialogNotes}
