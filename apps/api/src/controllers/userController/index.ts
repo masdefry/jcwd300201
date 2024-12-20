@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import prisma from "@/connection"
-import { changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, forgotPasswordUserService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, resendSetPasswordService, setPasswordUserService, signInWithGoogleService, updateProfileUserService, userCreateAddressService, userEditAddressService, userRegisterService } from "@/service/userService"
+import { changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, deleteUserAddressService, forgotPasswordUserService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, resendSetPasswordService, setPasswordUserService, signInWithGoogleService, updateProfileUserService, userCreateAddressService, userEditAddressService, userRegisterService } from "@/service/userService"
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -25,8 +25,8 @@ export const userCreateAddress = async (req: Request, res: Response, next: NextF
 export const userEditAddress = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { addressId } = req.params;
-    const { addressName, addressDetail, province, city, zipCode, latitude, longitude, country } = req.body;
-    const { updatedAddress } = await userEditAddressService({ addressId, addressName, addressDetail, province, city, zipCode, latitude, longitude, country })
+    const { addressName, addressDetail, province, city, zipCode, latitude, longitude, country, userId } = req.body;
+    const { updatedAddress } = await userEditAddressService({ addressId, addressName, addressDetail, province, city, zipCode, latitude, longitude, country, userId })
 
     res.status(200).json({
       error: false,
@@ -37,7 +37,7 @@ export const userEditAddress = async (req: Request, res: Response, next: NextFun
   } catch (error) {
     next(error)
   }
-}
+} 
 
 export const getSingleAddressUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -59,8 +59,10 @@ export const getSingleAddressUser = async (req: Request, res: Response, next: Ne
 export const getAllUserAddresses = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.body
-
-    const { addresses } = await getAllUserAddressesService({ userId })
+    const { search } = req.query
+    
+    const searchType = typeof search === 'string' ? search : ''
+    const { addresses } = await getAllUserAddressesService({ userId, search: searchType as string })
 
     res.status(201).json({
       error: false,
@@ -283,6 +285,23 @@ export const changePasswordGoogleRegister = async (req: Request, res: Response, 
       data: {}
     })
 
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const deleteUserAddress = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { addressId } = req.params
+    const { userId } = req.body
+
+    await deleteUserAddressService({ userId, addressId: Number(addressId) })
+
+    res.status(200).json({
+      error: false,
+      message: 'Alamat berhasil dihapus',
+      data: {}
+    })
   } catch (error) {
     next(error)
   }

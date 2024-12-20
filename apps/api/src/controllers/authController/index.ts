@@ -16,7 +16,7 @@ export const userRegister = async (req: Request, res: Response, next: NextFuncti
         const { email, firstName, lastName, phoneNumber } = req?.body
         const verifyCode = nanoid(6)
         const dateNow = Date.now() * Math.random()
-        const id = `CUST${Math.floor(dateNow)}${firstName.toLowerCase()}`
+        const id = `CUST${Math.floor(dateNow)}${firstName.toUpperCase()}`
 
         await userRegisterService({ id, email, firstName, lastName, phoneNumber, verifyCode })
 

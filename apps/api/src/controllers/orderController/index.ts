@@ -5,7 +5,7 @@ import { Prisma } from "@prisma/client";
 import { Status } from "@prisma/client";
 import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService } from "@/service/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
-
+import dotenv from 'dotenv'
 
 interface IStore {
   id: string;
@@ -19,6 +19,8 @@ interface IStore {
   distance: number;
 }
 
+dotenv.config()
+const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
 export const getOrderType = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const orderTypes = await prisma.orderType.findMany({
@@ -39,9 +41,7 @@ export const getOrderType = async (req: Request, res: Response, next: NextFuncti
 export const getProvince = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const response = await axios.get('https://api.rajaongkir.com/starter/province', {
-      headers: {
-        key: 'b4b88bdd2e2065e365b688c79ebc550c'
-      }
+      headers: { key: rajaOngkirApiKey }
     });
     res.status(200).json({
       error: false,
@@ -58,9 +58,7 @@ export const getCity = async (req: Request, res: Response, next: NextFunction) =
     const { province_id } = req.query as { province_id?: string };
 
     const response = await axios.get(`https://api.rajaongkir.com/starter/city${province_id ? `?province=${province_id}` : ''}`, {
-      headers: {
-        key: 'b4b88bdd2e2065e365b688c79ebc550c'
-      }
+      headers: { key: rajaOngkirApiKey }
     });
     res.status(200).json({
       error: false,

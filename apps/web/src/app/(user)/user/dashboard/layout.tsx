@@ -84,6 +84,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/user/dashboard/pickup' className={`w-full flex ${pathname.startsWith('/user/dashboard/pickup') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaMoneyBillWave /> Pickup Request</Link>
+                    <Link href='/user/dashboard/order' className={`w-full flex ${pathname.startsWith('/user/dashboard/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaAddressCard /> Order Saya</Link>
                     <Link href='/user/dashboard/settings/address' className={`w-full flex ${pathname.startsWith('/user/dashboard/settings/address') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaAddressCard /> Alamat Saya</Link>
                     <Link href='/' className={`w-full flex hover:text-white text-neutral-700 hover:bg-orange-500 items-center gap-2 py-2 rounded-full px-4`}>

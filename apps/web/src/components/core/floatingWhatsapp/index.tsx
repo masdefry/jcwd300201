@@ -11,7 +11,7 @@ export default function FloatingWhatsappIcon() {
     const [showText, setShowText] = useState<boolean>(false)
     const handleShowText = () => setShowText(!showText)
     const pathname = usePathname()
-    const tempMessage = encodeURIComponent(`Halo Saya ${name}, Selamat datang di Clean&Click Laundry! Saya ingin bertanya mengenai layanan laundry yang tersedia.`)
+    const tempMessage = encodeURIComponent(`Halo, Clean&Click Laundry! Saya ingin bertanya mengenai layanan laundry yang tersedia.`)
 
     return (
         <div className={`
@@ -21,7 +21,7 @@ export default function FloatingWhatsappIcon() {
                 group fixed bottom-10 right-10 p-4 flex items-end justify-end w-auto h-auto
         `}>
             <Link target="_blank" onMouseEnter={handleShowText} onMouseLeave={handleShowText} href={`https://wa.me/6285693327635?text=${tempMessage?.trim()}`} className={`text-white shadow-lg flex gap-3 items-center justify-center ${showText ? 'px-5' : 'px-2'} py-2 rounded-full bg-green-600 z-50 bg-opacity-65 transition-all duration-300 hover:bg-green-700 hover:scale-105`}>
-                {showText ? <span className="hidden sm:block">Hubungi Kami</span> : ''}
+                {showText ? <span className="hidden sm:block animate-fade-left">Hubungi Kami</span> : ''}
                 <FaWhatsapp className="text-4xl" />
             </Link>
         </div>

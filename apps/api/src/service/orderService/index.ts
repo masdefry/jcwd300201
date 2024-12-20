@@ -28,7 +28,7 @@ export const requestPickUpService = async ({ userId, totalPrice, deliveryFee, ou
     },
   });
 
-  return {newOrder}
+  return { newOrder }
 }
 
 export const findNearestStoreService = async ({ userId, address }: IFindNearestStore) => {
@@ -721,26 +721,53 @@ export const washingProcessDoneService = async ({ orderId, email, userId }: IWas
 
   if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
 
-  await prisma.order.update({
-    where: {
-      id: String(orderId),
-    },
-    data: {
-      isProcessed: false
-    },
+  const order = await prisma.order.findUnique({
+    where: { id: String(orderId) },
+    select: { orderTypeId: true },
   });
 
-  const orderStatus = await prisma.orderStatus.create({
-    data: {
-      status: 'IN_IRONING_PROCESS',
-      orderId: String(orderId),
-    },
-  });
+  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
 
-  if (!orderStatus) throw { msg: "data order status gagal dibuat", status: 404 }
+  if (order.orderTypeId === 2) {
+    throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
 
-  return { orderStatus }
-}
+  } else if (order.orderTypeId === 1) {
+    await prisma.order.update({
+      where: { id: String(orderId) },
+      data: { isProcessed: false },
+    });
+
+    const orderStatus = await prisma.orderStatus.create({
+      data: {
+        status: 'IN_PACKING_PROCESS',
+        orderId: String(orderId),
+      },
+    });
+
+    if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
+
+    return { orderStatus };
+
+  } else if (order.orderTypeId === 3) {
+    await prisma.order.update({
+      where: { id: String(orderId) },
+      data: { isProcessed: false },
+    });
+
+    const orderStatus = await prisma.orderStatus.create({
+      data: {
+        status: 'IN_IRONING_PROCESS',
+        orderId: String(orderId),
+      },
+    });
+
+    if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
+
+    return { orderStatus };
+  } else {
+    throw { msg: "Tipe order tidak dikenal", status: 400 };
+  }
+};
 
 export const ironingProcessDoneService = async ({ orderId, email, userId }: IIroningProcessDone) => {
   const findWorker = await prisma.worker.findFirst({
@@ -749,25 +776,38 @@ export const ironingProcessDoneService = async ({ orderId, email, userId }: IIro
 
   if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
 
-  await prisma.order.update({
-    where: {
-      id: String(orderId),
-    },
-    data: {
-      isProcessed: false
-    },
+  const order = await prisma.order.findUnique({
+    where: { id: String(orderId) },
+    select: { orderTypeId: true },
   });
 
-  const orderStatus = await prisma.orderStatus.create({
-    data: {
-      status: 'IN_PACKING_PROCESS',
-      orderId: String(orderId),
-    },
-  });
-  if (!orderStatus) throw { msg: "data order status gagal dibuat", status: 404 }
+  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
 
-  return { orderStatus }
-}
+  if (order.orderTypeId === 1) {
+    throw { msg: "Order dengan tipe ini tidak dapat diproses di ironing process", status: 400 };
+
+  } else if (order.orderTypeId === 2 || order.orderTypeId === 3) {
+    await prisma.order.update({
+      where: { id: String(orderId) },
+      data: { isProcessed: false },
+    });
+
+    const orderStatus = await prisma.orderStatus.create({
+      data: {
+        status: 'IN_PACKING_PROCESS',
+        orderId: String(orderId),
+      },
+    });
+
+    if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
+
+    return { orderStatus };
+
+  } else {
+    throw { msg: "Tipe order tidak dikenal", status: 400 };
+  }
+};
+
 
 
 export const getOrdersForPackingService = async ({
