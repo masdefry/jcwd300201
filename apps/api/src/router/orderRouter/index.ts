@@ -1,4 +1,4 @@
-import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone } from "@/controllers/orderController";
+import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
 
 import { tokenValidation } from "@/middleware/verifyToken";
@@ -55,6 +55,9 @@ orderRouter.get('/nota-order', tokenValidation, getCreateNotaOrder)
 orderRouter.get('/order-delivery', tokenValidation, getOrdersForDelivery)
 orderRouter.patch('/order-delivery/:orderId', tokenValidation, requestDeliveryDone)
 
-
+// Driver
+orderRouter.get('/delivery', tokenValidation, getOrdersForDriverDelivery)
+orderRouter.post('/delivery-process/:orderId', tokenValidation, processOrderDelivery)
+orderRouter.post('/delivery-accept/:orderId', tokenValidation, acceptOrderDelivery)
 
 export default orderRouter

@@ -34,7 +34,7 @@ export default function FilterWorker({ debounce, sortOption, setSortOption, sele
                         <SelectValue placeholder="Sort By" />
                     </SelectTrigger>
                     <SelectContent>
-                        <SelectItem value="date-asc">Tanggal Terbaru</SelectItem>
+                        <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
                         <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
                         <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
                         <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>

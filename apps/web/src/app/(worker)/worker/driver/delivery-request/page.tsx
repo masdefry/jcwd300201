@@ -11,24 +11,11 @@ import authStore from "@/zustand/authstore"
 import { useState, useEffect } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
 
 export default function DriverDelivery() {
     const params = useSearchParams();
@@ -40,15 +27,11 @@ export default function DriverDelivery() {
     const token = authStore((state) => state.token);
     const email = authStore((state) => state.email);
 
-    const notesSchema = Yup.object({
-        notes: Yup.string().required("Notes are required"),
-    });
-
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState("date-asc");
-    const [activeTab, setActiveTab] = useState("menungguPembayaran");
+    const [activeTab, setActiveTab] = useState("semua");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -58,7 +41,7 @@ export default function DriverDelivery() {
     const { data: dataOrderDelivery, refetch, isLoading: dataOrderDeliveryLoading, isError: dataOrderDeliveryError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const res = await instance.get(`/order/order-delivery/`, {
+            const res = await instance.get(`/order/delivery/`, {
                 params: {
                     page,
                     limit_data: limit,
@@ -75,10 +58,32 @@ export default function DriverDelivery() {
         },
     });
 
-    const { mutate: handleRequestDelivery, isPending } = useMutation({
+    const { mutate: handleProcessDelivery, isPending: handleProcessDeliveryPending } = useMutation({
         mutationFn: async (orderId: any) => {
-            return await instance.patch(`/order/order-delivery/${orderId}`, { email }, {
+            return await instance.post(`/order/delivery-process/${orderId}`, { email }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res: any) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            refetch()
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+        }
+    })
 
+    const { mutate: handleAcceptOrderDelivery, isPending: handleAcceptOrderDeliveryPending } = useMutation({
+        mutationFn: async (orderId: any) => {
+            return await instance.post(`/order/delivery-accept/${orderId}`, { email }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -152,9 +157,9 @@ export default function DriverDelivery() {
                         </section>
                         <div className="py-28 mx-4 space-y-4">
                             <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-2">
-                                    <TabsTrigger value="menungguPembayaran" onClick={() => { setActiveTab("semua"); setPage(1) }} >Semua</TabsTrigger>
-                                    <TabsTrigger value="siapKirim" onClick={() => { setActiveTab("menungguDriver"); setPage(1) }} >Menunggu Driver</TabsTrigger>
+                                <TabsList className="grid w-full grid-cols-4">
+                                    <TabsTrigger value="semua" onClick={() => { setActiveTab("semua"); setPage(1) }} >Semua</TabsTrigger>
+                                    <TabsTrigger value="menungguDriver" onClick={() => { setActiveTab("menungguDriver"); setPage(1) }} >Belum Dikirim</TabsTrigger>
                                     <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
                                     <TabsTrigger value="terkirim" onClick={() => { setActiveTab("terkirim"); setPage(1) }} >Terkirim</TabsTrigger>
                                 </TabsList>
@@ -170,7 +175,7 @@ export default function DriverDelivery() {
                                             setDateUntil={setDateUntil}
                                             setActiveTab={setActiveTab}
                                             setSearchInput={setSearchInput}
-                                            selectTab="menungguPembayaran"
+                                            selectTab="semua"
                                         />
                                         {dataOrderDeliveryLoading && <div>Loading...</div>}
                                         {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}
@@ -179,22 +184,30 @@ export default function DriverDelivery() {
                                                 key={order.id}
                                                 className="flex justify-between items-center border-b py-4"
                                             >
-                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true ? (
+                                                {order?.orderStatus[0]?.status !== 'DRIVER_DELIVERED_LAUNDRY' ? (
                                                     < ConfirmAlert
                                                         colorConfirmation="blue"
                                                         caption={
-                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                                ? 'Apakah Anda ingin request pengiriman untuk pesanan ini?'
-                                                                : ''
+                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true && order.isReqDelivery === true
+                                                                ? 'Apakah Anda ingin melakukan pengiriman untuk pesanan ini?'
+                                                                : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' ?
+                                                                    'Apakah Anda ingin menyelesaikan pengiriman untuk pesanan ini?'
+                                                                    : ''
                                                         }
                                                         description={
-                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true && order.isReqDelivery === true
                                                                 ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                : ''
+                                                                : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' ?
+                                                                    'Pastikan anda memilih order yang tepat/benar'
+                                                                    : ''
                                                         }
-                                                        onClick={() => {
-                                                            handleRequestDelivery(order?.id);
-                                                        }}
+                                                        onClick={
+                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true && order.isReqDelivery === true
+                                                                ? () => handleProcessDelivery(order?.id)
+                                                                : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' ?
+                                                                    () => handleAcceptOrderDelivery(order?.id)
+                                                                    : () => { }
+                                                        }
                                                     >
                                                         <div className="flex items-center">
                                                             <div className="ml-2">
@@ -207,9 +220,11 @@ export default function DriverDelivery() {
                                                                 <div className="text-xs text-gray-500">
                                                                     {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
                                                                         ? 'Menunggu Pembayaran' :
-                                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                                            ? 'Siap untuk dikirim'
-                                                                            : 'tes'}
+                                                                        order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' && order?.isPaid === true
+                                                                            ? 'Siap untuk dikirim' :
+                                                                            order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true
+                                                                                ? 'Laundry berhasil diantar'
+                                                                                : ''}
                                                                 </div>
                                                                 <p className="text-xs text-gray-500">
                                                                     {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
@@ -230,9 +245,12 @@ export default function DriverDelivery() {
                                                             <div className="text-xs text-gray-500">
                                                                 {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
                                                                     ? 'Menunggu Pembayaran' :
-                                                                    order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                                        ? 'Siap untuk dikirim'
-                                                                        : 'tes'}
+                                                                    order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' && order?.isPaid === true
+                                                                        ? 'Siap untuk dikirim' :
+                                                                        order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true
+                                                                            ? 'Laundry berhasil diantar'
+                                                                            : ''
+                                                                }
                                                             </div>
                                                             <div className="text-xs text-gray-500">
                                                                 {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
