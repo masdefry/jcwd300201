@@ -89,9 +89,8 @@ export const findNearestStore = async (req: Request, res: Response, next: NextFu
 
 export const requestPickUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { totalPrice, deliveryFee, outletId, userId, orderTypeId, userAddressId } = req.body
-
-    const { newOrder } = await requestPickUpService({ userId, totalPrice, deliveryFee, outletId, orderTypeId, userAddressId })
+    const { deliveryFee, outletId, userId, orderTypeId, userAddressId } = req.body
+    const { newOrder } = await requestPickUpService({ userId, deliveryFee, outletId, orderTypeId, userAddressId })
 
     res.status(201).json({
       error: false,
@@ -161,10 +160,10 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
       userId: userId as string,
       limit_data: Number(limit_data),
       page: Number(page),
-      tab: typeof tab === "string" ? tab : undefined,
+      tab: typeof tab === "string" ? tab : '',
       search: typeof search === 'string' ? search : '',
-      dateFrom: typeof dateFrom === 'string' ? dateFrom : undefined,
-      dateUntil: typeof dateUntil === 'string' ? dateUntil : undefined,
+      dateFrom: typeof dateFrom === 'string' ? dateFrom : '',
+      dateUntil: typeof dateUntil === 'string' ? dateUntil : '',
       sort: (typeof sort === 'string' &&
         ['date-asc', 'date-desc', 'name-asc', 'name-desc', 'order-id-asc', 'order-id-desc'].includes(sort))
         ? (sort as IGetUserOrder['sort'])
@@ -573,7 +572,7 @@ export const ironingProcess = async (req: Request, res: Response, next: NextFunc
     if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
 
     if (order.orderTypeId === 1) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
-    
+
     const orderStatuses = await prisma.orderStatus.findFirst({
       where: {
         orderId,
@@ -1091,3 +1090,70 @@ export const acceptOrderDelivery = async (req: Request, res: Response, next: Nex
     next(error);
   }
 };
+
+export const getAllOrderForAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { search = '', sort = '', page = '1', limit_data = '5' } = req.query
+
+    const take = parseInt(limit_data as string)
+    const skip = (parseInt(page as string) - 1) * take
+
+    let findAllOrder
+    if (search) {
+      findAllOrder = {
+        OR: [
+          { id: { contains: search as string } },
+          { userId: { contains: search as string } },
+        ]
+      }
+    }
+
+    let dataOrder;
+    if (sort == 'order-asc') {
+      dataOrder = await prisma.order.findMany({
+        where: findAllOrder, take, skip, orderBy: { createdAt: 'asc' },
+        include: {
+          orderStatus: { select: { status: true } },
+          User: { select: { firstName: true, lastName: true } },
+          Store: { select: { storeName: true } }
+        },
+
+      })
+    } else if (sort == 'order-desc') {
+      dataOrder = await prisma.order.findMany({
+        where: findAllOrder, take, skip, orderBy: { createdAt: 'desc' },
+        include: {
+          orderStatus: { select: { status: true } },
+          User: { select: { firstName: true, lastName: true } },
+          Store: { select: { storeName: true } }
+        },
+      })
+    } else {
+      dataOrder = await prisma.order.findMany({
+        where: findAllOrder, take, skip,
+        include: {
+          orderStatus: { select: { status: true } },
+          User: { select: { firstName: true, lastName: true } },
+          Store: { select: { storeName: true } }
+        },
+      })
+    }
+
+    const totalData = await prisma.order.count({
+      where: findAllOrder
+    })
+
+    console.log(totalData, '"<<< total data')
+
+    const totalPages = Math.ceil(Number(totalData) / take)
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil mendapatkan data',
+      data: { totalPages, dataOrder }
+    })
+
+  } catch (error) {
+    next(error)
+  }
+}

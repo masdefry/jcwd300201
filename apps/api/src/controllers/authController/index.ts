@@ -88,6 +88,8 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
     try {
         const { firstName, lastName, email, profilePicture } = req.body;
         const verifyCode = nanoid(6);
+        const dateNow = Date.now() * Math.random()
+        const id = `CUST${Math.floor(dateNow)}${firstName.toUpperCase()}`
 
         const { findEmail, token } = await signInWithGoogleService({ email })
 
@@ -108,6 +110,7 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
         } else {
             const newUser = await prisma.user.create({
                 data: {
+                    id,
                     firstName,
                     lastName,
                     email,

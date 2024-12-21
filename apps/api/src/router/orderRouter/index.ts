@@ -1,5 +1,9 @@
-import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery } from "@/controllers/orderController";
+import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
+import { limiter } from "@/middleware/rateLimit";
+import { roleCheckCustomer, roleCheckSuperAdmin } from "@/middleware/roleCheck";
+import { requestPickUpValidation } from "@/middleware/validation";
+import { expressValidatorErrorHandling } from "@/middleware/validation/errorHandlingValidator";
 
 import { tokenValidation } from "@/middleware/verifyToken";
 import { Router } from "express";
@@ -27,7 +31,7 @@ orderRouter.post('/packing-process/:orderId', tokenValidation, packingProcess)
 orderRouter.post('/packing-done/:orderId', tokenValidation, packingProcessDone)
 
 // User Request Pickup
-orderRouter.post('/request-pickup', tokenValidation, requestPickUp)
+orderRouter.post('/request-pickup', tokenValidation, limiter, requestPickUp)
 
 // Driver Terima Pengantaran
 orderRouter.get('/order', tokenValidation, getOrdersForDriver)
@@ -58,6 +62,7 @@ orderRouter.patch('/order-delivery/:orderId', tokenValidation, requestDeliveryDo
 // Driver
 orderRouter.get('/delivery', tokenValidation, getOrdersForDriverDelivery)
 orderRouter.post('/delivery-process/:orderId', tokenValidation, processOrderDelivery)
-orderRouter.post('/delivery-accept/:orderId', tokenValidation, acceptOrderDelivery)
+orderRouter.post('/delivery-accept/:orderId', tokenValidation, acceptOrderDelivery)/* tracking order super admin */
+orderRouter.get('/orders', tokenValidation, roleCheckSuperAdmin, getAllOrderForAdmin)
 
 export default orderRouter

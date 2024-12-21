@@ -54,7 +54,7 @@ export default function ProfileSettings({ tempProfilePict, getData, profilePict,
                             )}
                         </div>
                         {getData?.profilePicture !== profilePict && (
-                            <ConfirmAlert type='button' caption='menghapus foto profil' onClick={() => handleDeleteProfilePicture()} description='Menghapus foto profil akan menghilangkan gambar yang saat ini digunakan untuk akun Anda. Apakah Anda ingin melanjutkan?'>
+                            <ConfirmAlert type='button' caption='Apakah anda yakin ingin menghapus foto profil?' onClick={() => handleDeleteProfilePicture()} description='Menghapus foto profil akan menghilangkan gambar yang saat ini digunakan untuk akun Anda. Apakah Anda ingin melanjutkan?'>
                                 <button type='button' disabled={disabledProfilePhoto} className='text-red-500 hover:text-red-600 flex items-center gap-1'><FaTrash className='text-sm text-red-500' /> Hapus Foto Profile</button>
                             </ConfirmAlert>
                         )}

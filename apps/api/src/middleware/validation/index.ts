@@ -94,3 +94,9 @@ export const formAddressValidation = [
     body('city').isString().escape(),
     body('zipCode').isNumeric().withMessage('Kode pos harus berupa angka').isLength({ min: 4 }).withMessage('Kode pos minimal 4 digit').escape(),
 ]
+
+export const requestPickUpValidation = [
+    body(['orderTypeId', 'userAddressId']).notEmpty().withMessage('Harap diisi terlebih dahulu'),
+    body('orderTypeId').isString().escape(),
+    body('userAddressId').isString().escape(),
+]
