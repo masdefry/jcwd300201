@@ -1,5 +1,9 @@
-import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone } from "@/controllers/orderController";
+import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getAllOrderForAdmin } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
+import { limiter } from "@/middleware/rateLimit";
+import { roleCheckCustomer, roleCheckSuperAdmin } from "@/middleware/roleCheck";
+import { requestPickUpValidation } from "@/middleware/validation";
+import { expressValidatorErrorHandling } from "@/middleware/validation/errorHandlingValidator";
 
 import { tokenValidation } from "@/middleware/verifyToken";
 import { Router } from "express";
@@ -27,7 +31,7 @@ orderRouter.post('/packing-process/:orderId', tokenValidation, packingProcess)
 orderRouter.post('/packing-done/:orderId', tokenValidation, packingProcessDone)
 
 // User Request Pickup
-orderRouter.post('/request-pickup', tokenValidation, requestPickUp)
+orderRouter.post('/request-pickup', tokenValidation, limiter, requestPickUp)
 
 // Driver Terima Pengantaran
 orderRouter.get('/order', tokenValidation, getOrdersForDriver)
@@ -55,6 +59,7 @@ orderRouter.get('/nota-order', tokenValidation, getCreateNotaOrder)
 orderRouter.get('/order-delivery', tokenValidation, getOrdersForDelivery)
 orderRouter.patch('/order-delivery/:orderId', tokenValidation, requestDeliveryDone)
 
-
+/* tracking order super admin */
+orderRouter.get('/orders', tokenValidation, roleCheckSuperAdmin, getAllOrderForAdmin)
 
 export default orderRouter

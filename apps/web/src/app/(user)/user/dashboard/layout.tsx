@@ -14,7 +14,8 @@ import { RiProfileFill } from "react-icons/ri";
 import { toast } from "@/components/hooks/use-toast";
 import ButtonCustom from "@/components/core/button";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
-import { FaAddressCard } from "react-icons/fa6";
+import { FaAddressCard, FaBuysellads, FaCartShopping } from "react-icons/fa6";
+import { MdSportsMotorsports } from "react-icons/md";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Layout({ children }: { children: ReactNode }) {
@@ -83,19 +84,19 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <Link href='/user/dashboard/home' className={`w-full flex ${pathname.startsWith('/user/dashboard/home') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/user/dashboard/pickup' className={`w-full flex ${pathname.startsWith('/user/dashboard/pickup') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaMoneyBillWave /> Pickup Request</Link>
+                        <MdSportsMotorsports /> Pickup Request</Link>
                     <Link href='/user/dashboard/order' className={`w-full flex ${pathname.startsWith('/user/dashboard/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaAddressCard /> Order Saya</Link>
+                        <FaCartShopping  /> Order Saya</Link>
                     <Link href='/user/dashboard/settings/address' className={`w-full flex ${pathname.startsWith('/user/dashboard/settings/address') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaAddressCard /> Alamat Saya</Link>
                     <Link href='/' className={`w-full flex hover:text-white text-neutral-700 hover:bg-orange-500 items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaHome /> Beranda</Link>
+                        <FaMoneyBillWave /> Tagihan</Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">
                     <Link href='/user/dashboard/settings' className={`w-full flex ${pathname.startsWith('/user/dashboard/settings') && !pathname.startsWith('/user/dashboard/settings/address') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>
-                    <ConfirmAlert caption="logout" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                    <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
                         <span className={`w-full cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
                             <FaSignOutAlt /> Logout</span>
                     </ConfirmAlert>
