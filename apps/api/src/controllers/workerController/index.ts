@@ -107,7 +107,7 @@ export const createNotes = async (req: Request, res: Response, next: NextFunctio
 /* get all worker */
 export const getAllWorker = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { search = '', sort = '', page = 1, limit = 5 } = req.query;
+    const { search = '', sort = '', page = '1', limit = '5' } = req.query;
 
     const take = parseInt(limit as string)
     const skip = (parseInt(page as string) - 1) * take
@@ -181,7 +181,7 @@ export const deleteDataWorkerById = async (req: Request, res: Response, next: Ne
 /* get laundry items */
 export const getLaundryItems = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { page = 1, limit = 5, search = '', sort } = req.query
+    const { page = '1', limit = '5', search = '', sort } = req.query
 
     const pageTypes = typeof page != "string" ? "" : page
     const limitTypes = typeof limit != 'string' ? '' : limit

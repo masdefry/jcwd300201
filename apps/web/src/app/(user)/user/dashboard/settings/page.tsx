@@ -1,13 +1,14 @@
 import ButtonCustom from "@/components/core/button";
 import { RiShutDownLine } from "react-icons/ri";
 import HeaderMobile from "@/components/core/headerMobile";
-import { FaUser, FaStore } from 'react-icons/fa';
+import { FaUser, FaStore, FaRegFilePowerpoint } from 'react-icons/fa';
 import ContentWebSession from "@/components/core/webSessionContent";
 import ListCustom from "@/components/core/listSettings";
 
 const settingsItems = [
     { name: 'Pengaturan Akun', description: 'Ubah profil akun anda', icon: FaUser, url: '/user/dashboard/settings/account' },
     { name: 'Pengaturan Alamat', description: 'Tambah, ubah, hapus alamat rumah', icon: FaStore, url: '/user/dashboard/home' },
+    { name: 'Laporan Saya', description: 'Lihat laporan mu', icon: FaRegFilePowerpoint, url: '/user/dashboard/home' },
 ];
 
 export default function pengaturanAdmin() {

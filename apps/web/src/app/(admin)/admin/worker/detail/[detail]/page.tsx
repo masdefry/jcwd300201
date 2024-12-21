@@ -84,7 +84,7 @@ export default function Page({ params }: { params: Promise<{ detail: string }> }
                                     </div>
                                     <div className="flex items-center gap-3">
                                         <h1 className="rounded-full px-2 py-1 border-2 text-neutral-100 italic text-xs">{workerData?.workerRole}</h1>
-                                        <ConfirmAlert caption="menghapus data pekerja" description="Berhati-hati, dikarenakan data akan hilang secara permanen" onClick={() => handleDeleteData()}
+                                        <ConfirmAlert caption="Apakah anda yakin ingin menghapus data pekerja?" description="Berhati-hati, dikarenakan data akan hilang secara permanen" onClick={() => handleDeleteData()}
                                             disabled={isPendingDelete}>
                                             <span className="text-neutral-100 hover:text-neutral-400 cursor-pointer"><BsTrash3 /> </span>
                                         </ConfirmAlert>

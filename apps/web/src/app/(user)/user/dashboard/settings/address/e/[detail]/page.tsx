@@ -20,26 +20,19 @@ import * as Yup from 'yup'
 import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
 import { IAddressDetail } from "./types";
+import { useRouter } from "next/navigation";
 
 export default function Page({ params }: { params: Promise<any> }) {
     const { detail } = use(params)
     const addressId = detail?.split('CNC')[0]
+    const router = useRouter()
     const latitudeGlobal = locationStore((state) => state?.latitude);
     const lngGlobal = locationStore((state) => state?.longitude);
     const token = authStore((state) => state?.token)
     const [isPosition, setIsPosition] = useState({ lat: latitudeGlobal || -6.200000, lng: lngGlobal || 106.816666 });
     const [selectedProvince, setSelectedProvince] = useState<string>('')
     const [dataUser, setDataUser] = useState<any>({})
-    const [initialValues, setInitialValues] = useState({
-        addressName: "",
-        addressDetail: "",
-        province: "",
-        city: "",
-        zipCode: "",
-        latitude: "",
-        longitude: "",
-    })
-
+   
     const { data: cities, isLoading: citiesLoading, isFetching: loadingPage } = useQuery({
         queryKey: ['get-city', selectedProvince],
         queryFn: async () => {
@@ -120,7 +113,7 @@ export default function Page({ params }: { params: Promise<any> }) {
         };
     }, []);
 
-    const { data: getSingleUserAddress, isLoading, refetch } = useQuery({
+    const { data: getSingleUserAddress, isFetching, refetch } = useQuery({
         queryKey: ['get-single-address'],
         queryFn: async () => {
             const response = await instance.get(`/user/address/${addressId}`, {
@@ -135,19 +128,9 @@ export default function Page({ params }: { params: Promise<any> }) {
 
     const time = useMemo(() => new Date().getTime(), [])
 
-    useEffect(() => {
-        if (getSingleUserAddress) {
-            setInitialValues({
-                addressName: getSingleUserAddress?.addressName || "",
-                addressDetail: getSingleUserAddress?.addressDetail || "",
-                province: getSingleUserAddress?.province || "",
-                city: getSingleUserAddress?.city || "",
-                zipCode: getSingleUserAddress?.zipCode || "",
-                latitude: getSingleUserAddress?.latitude || "",
-                longitude: getSingleUserAddress?.longitude || "",
-            })
-        }
-    }, [getSingleUserAddress])
+    console.log(latitudeGlobal)
+    console.log(lngGlobal)
+    if (isFetching) return <div>....</div>
 
     return (
         <>
@@ -285,12 +268,12 @@ export default function Page({ params }: { params: Promise<any> }) {
                                         />
 
 
-                                        <div className="mt-4 h-80 block md:hidden">
+                                        {/* <div className="mt-4 h-80 block md:hidden">
                                             <MapContainer id="map-container-mobile" key={time} center={isPosition} zoom={13} style={{ height: "100%", width: "100%" }}>
                                                 <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                                 <LocationPicker setFieldValue={setFieldValue} position={isPosition} setPosition={setIsPosition} />
                                             </MapContainer>
-                                        </div>
+                                        </div> */}
 
                                         <ButtonCustom disabled={isPending} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
                                             Tambah Alamat
@@ -335,34 +318,35 @@ export default function Page({ params }: { params: Promise<any> }) {
                             zipCode: Yup.string().required("Kode Pos harap diisi!"),
                         })}
 
-                        initialValues={getSingleUserAddress ?
-                            {
-                                addressName: getSingleUserAddress?.addressName || "",
-                                addressDetail: getSingleUserAddress?.addressDetail || "",
-                                province: "",
-                                city: getSingleUserAddress?.city || "",
-                                zipCode: getSingleUserAddress?.zipCode || "",
-                                latitude: getSingleUserAddress?.latitude || "",
-                                longitude: getSingleUserAddress?.longitude || "",
-                            } : {
-                                addressName: "",
-                                addressDetail: "",
-                                province: "",
-                                city: "",
-                                zipCode: "",
-                                latitude: "",
-                                longitude: "",
-                            }}> 
+                        initialValues={getSingleUserAddress ? {
+                            addressName: getSingleUserAddress?.addressName || "",
+                            addressDetail: getSingleUserAddress?.addressDetail || "",
+                            province: "",
+                            city: getSingleUserAddress?.city || "",
+                            zipCode: getSingleUserAddress?.zipCode || "",
+                            latitude: getSingleUserAddress?.latitude || "",
+                            longitude: getSingleUserAddress?.longitude || "",
+                        } : {
+                            addressName: "",
+                            addressDetail: "",
+                            province: "",
+                            city: "",
+                            zipCode: "",
+                            latitude: "",
+                            longitude: "",
+                        }}>
                         {({ setFieldValue, values, handleChange }) => (
                             <Form className="flex gap-5 h-full w-full justify-center">
-                                <div className="h-full w-full relative">
+                                {/* <div className="h-full w-full relative">
                                     <MapContainer id="map-container" key={time} center={isPosition} zoom={13} className="w-full h-full rounded-2xl">
                                         <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                         <LocationPicker setFieldValue={setFieldValue} position={isPosition} setPosition={setIsPosition} />
-                                    </MapContainer>
-
-                                </div>
-                                <div className="flex flex-col pr-2 justify-center gap-4 w-full h-full overflow-y-auto">
+                                        </MapContainer>
+                                        </div> */}
+                                <div className="flex flex-col pb-5 pr-2 justify-center gap-4 w-full h-full overflow-y-auto">
+                                    <ButtonCustom onClick={() => router.push('/user/dashboard/settings/address/set-location')} disabled={isPending} width="w-full" btnColor="bg-blue-500 hover:bg-blue-600" txtColor="text-white" type="button">
+                                        Dapatkan posisi terkini
+                                    </ButtonCustom>
                                     <div className="w-full flex flex-col gap-2 relative">
                                         <label htmlFor="addressName" className="font-semibold">Jenis Alamat <span className="text-red-600">*</span></label>
                                         <Field type='text' name='addressName' placeholder='Rumah / Kantor' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />

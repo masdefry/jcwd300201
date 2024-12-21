@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CiSquarePlus } from "react-icons/ci";
 import ContentWebSession from '@/components/core/webSessionContent';
+import ButtonCustom from '@/components/core/button';
 
 const validationSchema = Yup.object({
     deliveryFee: Yup.number().required().positive().integer(),
@@ -31,7 +32,7 @@ export default function PickupLaundry() {
 
     const [userAddress, setUserAddress] = useState(params.get('address') || null);
 
-    const { mutate: handlePickupRequest } = useMutation({
+    const { mutate: handlePickupRequest, isPending: PendingPickupSubmit } = useMutation({
         mutationFn: async ({ deliveryFee, outletId, orderTypeId, userAddressId }: IRequestPickup) => {
             return await instance.post(
                 '/order/request-pickup',
@@ -83,7 +84,6 @@ export default function PickupLaundry() {
             const res = await instance.get('/user/all-address', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res, 'alladdress');
             return res?.data?.data;
         },
         retry: 4,
@@ -157,92 +157,92 @@ export default function PickupLaundry() {
                                             <div
                                                 className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50 cursor-pointer"
 
-                                        >
-                                            {dataMainAddressLoading ? (
-                                                <span className="text-gray-500">Memuat alamat...</span>
-                                            ) : dataMainAddress && !selectedAddress ? (
-                                                <div onClick={() => setOpenDialog(true)}>
-                                                    <p className="font-semibold text-gray-800">{dataMainAddress.addressName}</p>
-                                                    <p className="text-gray-600">{dataMainAddress.addressDetail}</p>
-                                                    <p className="text-gray-600">{dataMainAddress.city} {dataMainAddress.province}</p>
-                                                </div>
-                                            ) : !dataMainAddress ? (
-                                                <div className='flex items-center justify-center'>
-                                                    <div><CiSquarePlus /></div>
-                                                    <div>Buat Alamat Baru</div>
-                                                </div>
-                                            ) : (
-                                                <div onClick={() => setOpenDialog(true)}>
-                                                    <p className="font-semibold text-gray-800">{selectedAddress?.addressName}</p>
-                                                    <p className="text-gray-600">{selectedAddress?.addressDetail}</p>
-                                                    <p className="text-gray-600">{selectedAddress?.city} {selectedAddress?.province}</p>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </section>
+                                            >
+                                                {dataMainAddressLoading ? (
+                                                    <span className="text-gray-500">Memuat alamat...</span>
+                                                ) : dataMainAddress && !selectedAddress ? (
+                                                    <div onClick={() => setOpenDialog(true)}>
+                                                        <p className="font-semibold text-gray-800">{dataMainAddress.addressName}</p>
+                                                        <p className="text-gray-600">{dataMainAddress.addressDetail}</p>
+                                                        <p className="text-gray-600">{dataMainAddress.city} {dataMainAddress.province}</p>
+                                                    </div>
+                                                ) : !dataMainAddress ? (
+                                                    <div className='flex items-center justify-center'>
+                                                        <div><CiSquarePlus /></div>
+                                                        <div>Buat Alamat Baru</div>
+                                                    </div>
+                                                ) : (
+                                                    <div onClick={() => setOpenDialog(true)}>
+                                                        <p className="font-semibold text-gray-800">{selectedAddress?.addressName}</p>
+                                                        <p className="text-gray-600">{selectedAddress?.addressDetail}</p>
+                                                        <p className="text-gray-600">{selectedAddress?.city} {selectedAddress?.province}</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </section>
 
-                                    <section className="bg-white rounded-lg shadow-md p-4">
-                                        <h2 className="font-bold text-center text-gray-700">Store Terdekat</h2>
-                                        <div className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50">
-                                            {dataNearestStoreLoading ? (
-                                                <span className="text-gray-500">Memuat store terdekat...</span>
-                                            ) : dataNearestStore && dataNearestStore.length > 0 ? (
-                                                <div>
-                                                    <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
-                                                    <p className="text-gray-600">{dataNearestStore[0]?.address}</p>
-                                                    <p className="text-gray-600">Jarak: {dataNearestStore[0]?.distance.toFixed(2)} km</p>
-                                                </div>
-                                            ) : (
-                                                <span className="text-red-500">Tidak ada store di dekatmu. Nantikan kedatangan kami!</span>
-                                            )}
-                                        </div>
-                                    </section>
+                                        <section className="bg-white rounded-lg shadow-md p-4">
+                                            <h2 className="font-bold text-center text-gray-700">Store Terdekat</h2>
+                                            <div className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50">
+                                                {dataNearestStoreLoading ? (
+                                                    <span className="text-gray-500">Memuat store terdekat...</span>
+                                                ) : dataNearestStore && dataNearestStore.length > 0 ? (
+                                                    <div>
+                                                        <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
+                                                        <p className="text-gray-600">{dataNearestStore[0]?.address}</p>
+                                                        <p className="text-gray-600">Jarak: {dataNearestStore[0]?.distance.toFixed(2)} km</p>
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-red-500">Tidak ada store di dekatmu. Nantikan kedatangan kami!</span>
+                                                )}
+                                            </div>
+                                        </section>
 
-                                    <section className="bg-white rounded-lg shadow-md p-4">
-                                        <h2 className="font-bold text-center text-gray-700">Estimasi Ongkos Kirim</h2>
-                                        <div className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50">
-                                            {dataNearestStore && dataNearestStore.length > 0 ? (
-                                                <span className="text-lg font-semibold text-gray-800">
-                                                    Rp{(Math.ceil(dataNearestStore[0]?.distance) * 8000).toLocaleString('id-ID')}
-                                                </span>
-                                            ) : (
-                                                <span className="text-gray-500">Estimasi tidak tersedia.</span>
-                                            )}
-                                        </div>
-                                    </section>
+                                        <section className="bg-white rounded-lg shadow-md p-4">
+                                            <h2 className="font-bold text-center text-gray-700">Estimasi Ongkos Kirim</h2>
+                                            <div className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50">
+                                                {dataNearestStore && dataNearestStore.length > 0 ? (
+                                                    <span className="text-lg font-semibold text-gray-800">
+                                                        Rp{(Math.ceil(dataNearestStore[0]?.distance) * 8000).toLocaleString('id-ID')}
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-gray-500">Estimasi tidak tersedia.</span>
+                                                )}
+                                            </div>
+                                        </section>
 
-                                    <section className="bg-white rounded-lg shadow-md p-4">
-                                        <h2 className="font-bold text-center text-gray-700">Tipe Laundry</h2>
-                                        <Field as="select" name="orderTypeId" className="w-full border border-gray-300 rounded-md p-2 bg-gray-50 hover:bg-gray-100">
-                                            <option value="">Pilih Tipe Laundry</option>
-                                            {dataOrderTypeLoading ? (
-                                                <option disabled>Memuat...</option>
-                                            ) : (
-                                                dataOrderType?.filter((item) => item?.id && item?.Type).map((item) => (
-                                                    <option key={item.id} value={item.id}>
-                                                        {item.Type}
-                                                    </option>
-                                                ))
-                                            )}
-                                        </Field>
-                                        <ErrorMessage name="orderTypeId" component="div" className="text-red-500 text-sm" />
-                                    </section>
+                                        <section className="bg-white rounded-lg shadow-md p-4">
+                                            <h2 className="font-bold text-center text-gray-700">Tipe Laundry</h2>
+                                            <Field as="select" name="orderTypeId" className="w-full border border-gray-300 rounded-md p-2 bg-gray-50 hover:bg-gray-100">
+                                                <option value="">Pilih Tipe Laundry</option>
+                                                {dataOrderTypeLoading ? (
+                                                    <option disabled>Memuat...</option>
+                                                ) : (
+                                                    dataOrderType?.filter((item) => item?.id && item?.Type).map((item) => (
+                                                        <option key={item.id} value={item.id}>
+                                                            {item.Type}
+                                                        </option>
+                                                    ))
+                                                )}
+                                            </Field>
+                                            <ErrorMessage name="orderTypeId" component="div" className="text-red-500 text-sm" />
+                                        </section>
 
-                                    <section className="mt-4">
-                                        <button
-                                            type="submit"
-                                            disabled={isSubmitting}
-                                            className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg disabled:bg-gray-300"
-                                        >
-                                            {isSubmitting ? 'Memproses...' : 'Kirim Permintaan Pickup'}
-                                        </button>
-                                    </section>
-                                </Form>
-                            )}
-                        </Formik>
-                    </section>
-                </main >
-            </section >
+                                        <section className="mt-4">
+                                            <button
+                                                type="submit"
+                                                disabled={isSubmitting}
+                                                className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg disabled:bg-gray-300"
+                                            >
+                                                {isSubmitting ? 'Memproses...' : 'Kirim Permintaan Pickup'}
+                                            </button>
+                                        </section>
+                                    </Form>
+                                )}
+                            </Formik>
+                        </section>
+                    </main >
+                </section >
 
                 <Dialog open={openDialog} onOpenChange={(open) => setOpenDialog(open)}>
                     <DialogTrigger className="hidden"></DialogTrigger>
@@ -297,50 +297,52 @@ export default function PickupLaundry() {
                     >
                         {({ isSubmitting }) => (
                             <Form>
-                                <section className="bg-white rounded-lg shadow-md p-4">
-                                    <h2 className="font-bold text-center text-gray-700">Alamat</h2>
-                                    <div className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50 cursor-pointer">
-                                        {dataMainAddressLoading ? (
-                                            <span className="text-gray-500">Memuat alamat...</span>
-                                        ) : dataMainAddress && !selectedAddress ? (
-                                            <div onClick={() => setOpenDialog(true)}>
-                                                <p className="font-semibold text-gray-800">{dataMainAddress.addressName}</p>
-                                                <p className="text-gray-600">{dataMainAddress.addressDetail}</p>
-                                                <p className="text-gray-600">{dataMainAddress.city} {dataMainAddress.province}</p>
-                                            </div>
-                                        ) : !dataMainAddress ? (
-                                            <div className='flex items-center justify-center'>
-                                                <div><CiSquarePlus /></div>
-                                                <div>Buat Alamat Baru</div>
-                                            </div>
-                                        ) : (
-                                            <div onClick={() => setOpenDialog(true)}>
-                                                <p className="font-semibold text-gray-800">{selectedAddress?.addressName}</p>
-                                                <p className="text-gray-600">{selectedAddress?.addressDetail}</p>
-                                                <p className="text-gray-600">{selectedAddress?.city} {selectedAddress?.province}</p>
-                                            </div>
-                                        )}
-                                    </div>
-                                </section>
+                                <div className='w-full flex gap-2'>
+                                    <section className="w-full">
+                                        <h2 className="font-bold text-gray-700">Alamat saat ini</h2>
+                                        <div className="border border-gray-300 rounded-lg p-4 mt-2 bg-gray-50 cursor-pointer">
+                                            {dataMainAddressLoading ? (
+                                                <span className="text-gray-500">Memuat alamat...</span>
+                                            ) : dataMainAddress && !selectedAddress ? (
+                                                <div onClick={() => setOpenDialog(true)}>
+                                                    <p className="font-semibold text-gray-800">{dataMainAddress.addressName}</p>
+                                                    <p className="text-gray-600">{dataMainAddress.addressDetail}</p>
+                                                    <p className="text-gray-600">{dataMainAddress.city}, {dataMainAddress.province}</p>
+                                                </div>
+                                            ) : !dataMainAddress ? (
+                                                <div className='flex items-center justify-center'>
+                                                    <div><CiSquarePlus /></div>
+                                                    <div>Buat Alamat Baru</div>
+                                                </div>
+                                            ) : (
+                                                <div onClick={() => setOpenDialog(true)}>
+                                                    <p className="font-semibold text-gray-800">{selectedAddress?.addressName}</p>
+                                                    <p className="text-gray-600">{selectedAddress?.addressDetail}</p>
+                                                    <p className="text-gray-600">{selectedAddress?.city} {selectedAddress?.province}</p>
+                                                </div>
+                                            )}
+                                        </div>
+                                    </section>
 
-                                <section className="bg-white rounded-lg shadow-md p-4">
-                                    <h2 className="font-bold text-center text-gray-700">Store Terdekat</h2>
-                                    <div className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50">
-                                        {dataNearestStoreLoading ? (
-                                            <span className="text-gray-500">Memuat store terdekat...</span>
-                                        ) : dataNearestStore && dataNearestStore.length > 0 ? (
-                                            <div>
-                                                <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
-                                                <p className="text-gray-600">{dataNearestStore[0]?.address}</p>
-                                                <p className="text-gray-600">Jarak: {dataNearestStore[0]?.distance.toFixed(2)} km</p>
-                                            </div>
-                                        ) : (
-                                            <span className="text-red-500">Tidak ada store di dekatmu. Nantikan kedatangan kami!</span>
-                                        )}
-                                    </div>
-                                </section>
+                                    <section className="w-full">
+                                        <h2 className="font-bold text-gray-700">Store Terdekat</h2>
+                                        <div className="border border-gray-300 p-4 mt-2 rounded-lg bg-gray-50">
+                                            {dataNearestStoreLoading ? (
+                                                <span className="text-gray-500">Memuat store terdekat...</span>
+                                            ) : dataNearestStore && dataNearestStore.length > 0 ? (
+                                                <div>
+                                                    <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
+                                                    <p className="text-gray-600">{dataNearestStore[0]?.address}</p>
+                                                    <p className="text-gray-600">Jarak: {dataNearestStore[0]?.distance.toFixed(2)} km</p>
+                                                </div>
+                                            ) : (
+                                                <span className="text-red-500">Tidak ada store di dekatmu. Nantikan kedatangan kami!</span>
+                                            )}
+                                        </div>
+                                    </section>
+                                </div>
 
-                                <section className="bg-white rounded-lg shadow-md p-4">
+                                <section className="w-full py-4">
                                     <h2 className="font-bold text-center text-gray-700">Estimasi Ongkos Kirim</h2>
                                     <div className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50">
                                         {dataNearestStore && dataNearestStore.length > 0 ? (
@@ -353,8 +355,8 @@ export default function PickupLaundry() {
                                     </div>
                                 </section>
 
-                                <section className="bg-white rounded-lg shadow-md p-4">
-                                    <h2 className="font-bold text-center text-gray-700">Tipe Laundry</h2>
+                                <section className="w-full">
+                                    <h2 className="font-bold text-center text-gray-700 py-2">Tipe Laundry</h2>
                                     <Field as="select" name="orderTypeId" className="w-full border border-gray-300 rounded-md p-2 bg-gray-50 hover:bg-gray-100">
                                         <option value="">Pilih Tipe Laundry</option>
                                         {dataOrderTypeLoading ? (
@@ -371,13 +373,9 @@ export default function PickupLaundry() {
                                 </section>
 
                                 <section className="mt-4">
-                                    <button
-                                        type="submit"
-                                        disabled={isSubmitting}
-                                        className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg disabled:bg-gray-300"
-                                    >
+                                    <ButtonCustom type="submit" disabled={PendingPickupSubmit} width='w-full' btnColor='bg-orange-500 hover:bg-orange-500'>
                                         {isSubmitting ? 'Memproses...' : 'Kirim Permintaan Pickup'}
-                                    </button>
+                                    </ButtonCustom>
                                 </section>
                             </Form>
                         )}

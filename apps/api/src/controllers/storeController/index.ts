@@ -26,7 +26,6 @@ export const getStore = async (req: Request, res: Response, next: NextFunction) 
             }
         })
 
-
         res.status(201).json({
             error: false,
             message: "Data store berhasil didapat!",

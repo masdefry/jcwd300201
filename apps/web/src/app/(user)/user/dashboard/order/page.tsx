@@ -2,21 +2,26 @@
 
 import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
+import { FaArrowLeft, FaJediOrder } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
 import authStore from "@/zustand/authstore"
-import { useState, useEffect } from "react"
+import { useState, useEffect, ChangeEvent } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
 import ContentWebSession from "@/components/core/webSessionContent"
+import ButtonCustom from "@/components/core/button"
+import SearchInputCustom from "@/components/core/searchBar"
+import { ConfirmAlert } from "@/components/core/confirmAlert"
+import { FaPlus } from "react-icons/fa6"
+import { BsPencil, BsTrash } from "react-icons/bs"
 
-export default function HistoryOrderWashing() {
+export default function Page() {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -32,7 +37,7 @@ export default function HistoryOrderWashing() {
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const limit = 5;
 
-    const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
+    const { data: dataOrderWashingProcess, refetch, isFetching: isFetchingDataOrder, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption],
         queryFn: async () => {
 
@@ -114,7 +119,6 @@ export default function HistoryOrderWashing() {
                                 {dataOrderWashingProcessLoading && <p>Loading...</p>}
                                 {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                                 {dataOrderWashingProcess?.orders?.map((order: any) => {
-                                    console.log(order?.isSolved)
                                     return (
                                         <section
                                             key={order.id}
@@ -124,7 +128,7 @@ export default function HistoryOrderWashing() {
                                             <div className="flex items-center">
                                                 <div className="ml-2">
                                                     <h2 className="font-medium text-gray-900">
-                                                        {order?.Users?.firstName} {order?.Users?.lastName}
+                                                        {order?.User?.firstName} {order?.User?.lastName}
                                                     </h2>
                                                     <p className="text-xs text-gray-500">
                                                         {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
@@ -166,7 +170,79 @@ export default function HistoryOrderWashing() {
             </main>
 
             <ContentWebSession caption="Order saya">
-                <h1>Tes</h1>
+                <div className="w-full h-fit flex">
+                    <div className="w-1/2 h-fit flex items-center">
+                        <select name="searchWorker"
+                            // value={sortProduct} onChange={(e) => setSortProduct(e.target.value)}
+                            id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                            <option value="" disabled>-- Pilih Opsi --</option>
+                            <option value="name-asc">Sort berdasarkan A - Z</option>
+                            <option value="name-desc">Sort berdasarkan Z - A</option>
+                            <option value="">Reset</option>
+                        </select>
+                    </div>
+                    <div className="w-1/2 h-fit flex gap-2 justify-end">
+                        <SearchInputCustom placeholder='Cari alamat..' onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
+                        <ButtonCustom onClick={() => router.push('/user/dashboard/pickup')} rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Tambah alamat</ButtonCustom>
+                    </div>
+                </div>
+
+                {/* table */}
+                <div className="w-full flex flex-col justify-center">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order ID</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Layanan</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status Order</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dataOrderWashingProcess?.orders?.length > 0 ? (
+                                dataOrderWashingProcess?.orders?.map((order: any, i: number) => {
+                                    return (
+                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{i + 1}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words"> {order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words"> {order?.OrderType?.Type === 'Iron Only' ? 'Strika' : order?.OrderType?.Type === 'Wash Only' ? 'Mencuci' :
+                                                order?.OrderType?.Type === 'Wash & Iron' ? 'Mencuci & Setrika' : ''}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words"> {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Kurir' :
+                                                order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Kurir dalam perjalanan' : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Kurir sudah sampai di outlet'
+                                                    : order?.orderStatus[0]?.status}</td>
+                                            <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
+                                                <div className='flex gap-2'>
+                                                    <ConfirmAlert caption="Apakah anda yakin ingin menghapus alamat anda?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => alert(order?.id)}>
+                                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
+                                                    </ConfirmAlert>
+                                                    <Link href={`/user/dashboard/settings/order/e/${order?.id}CNC${Date.now()}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /></Link>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-20 font-bold">
+                                        {isFetchingDataOrder ? 'Mohon tunggu...' : 'Data tidak tersedia'}
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    <div className='flex gap-2 justify-between py-2 px-2 items-center'>
+                        <div className="w-1/2 flex">
+                            <h1 className="text-neutral-400">Page {page} of {totalPages}</h1>
+                        </div>
+                        <div className="flex gap-2">
+                            <ButtonCustom disabled={page === 1} rounded="rounded-2xl" btnColor="bg-orange-500" onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>Sebelumnya</ButtonCustom>
+                            <ButtonCustom disabled={page === totalPages} rounded="rounded-2xl" btnColor="bg-orange-500" onClick={() => setPage((prev) => Math.min(prev + 1, totalPages))}>Selanjutnya</ButtonCustom>
+                        </div>
+                    </div>
+                </div>
             </ContentWebSession>
         </>
     )

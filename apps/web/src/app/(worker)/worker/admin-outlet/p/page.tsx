@@ -18,6 +18,17 @@ import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
 
 export default function DriverPickUp() {
     const params = useSearchParams();
@@ -29,8 +40,8 @@ export default function DriverPickUp() {
     const token = authStore((state) => state.token);
     const email = authStore((state) => state.email);
 
-    const NotesSchema = Yup.object({
-        notes: Yup.string().required("Notes are required"), 
+    const notesSchema = Yup.object({
+        notes: Yup.string().required("Notes are required"),
     });
 
 
@@ -40,12 +51,14 @@ export default function DriverPickUp() {
     const [activeTab, setActiveTab] = useState("bermasalah");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+
     const limit = 5;
 
     const { data: dataOrderPackingProcess, refetch, isLoading: dataOrderPackingProcessLoading, isError: dataOrderPackingProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const res = await instance.get('/order/order-notes', {
+            const res = await instance.get(`/order/order-notes/`, {
                 params: {
                     page,
                     limit_data: limit,
@@ -63,9 +76,9 @@ export default function DriverPickUp() {
         },
     });
 
-    const { mutate: handleProcessPacking, isPending } = useMutation({
-        mutationFn: async (id: any) => {
-            return await instance.post(`/order/packing-done/${id}`, { email }, {
+    const { mutate: handleLaundryProblem, isPending } = useMutation({
+        mutationFn: async ({ orderId, notes }:any) => {
+            return await instance.patch(`/order/order-notes/${orderId}`, { notes }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -135,7 +148,7 @@ export default function DriverPickUp() {
                     <main className="w-full">
                         <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
                             <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> PACKING WORKER
+                                <Link href='/admin/settings'><FaArrowLeft /></Link> ORDER BERMASALAH
                             </div>
                         </section>
                         <div className="py-28 mx-4 space-y-4">
@@ -156,67 +169,72 @@ export default function DriverPickUp() {
                                             setDateUntil={setDateUntil}
                                             setActiveTab={setActiveTab}
                                             setSearchInput={setSearchInput}
+                                            selectTab="bermasalah"
                                         />
-                                        {dataOrderPackingProcessLoading && <p>Loading...</p>}
-                                        {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
+                                        {dataOrderPackingProcessLoading && <div>Loading...</div>}
+                                        {dataOrderPackingProcessError && <div>Silahkan coba beberapa saat lagi.</div>}
                                         {dataOrderPackingProcess?.orders?.map((order: any) => (
                                             <section
                                                 key={order.id}
                                                 className="flex justify-between items-center border-b py-4"
                                             >
-
-                                                <ConfirmAlert
-                                                    colorConfirmation="blue"
-                                                    caption=
-                                                    {
-                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
-                                                            ? 'Terjadi Masalah'
-                                                            : ''
-                                                    }
-                                                    description=
-                                                    {
-                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? (
-                                                            <Formik
-                                                                initialValues={{ notes: '' }}
-                                                                validationSchema={NotesSchema}
-                                                                onSubmit={(values) => {
-                                                                    console.log(values)
-                                                                }}
-                                                            >
-                                                                {() => (
-                                                                    <Form>
-                                                                        <Field
-                                                                            as="textarea"
-                                                                            name="notes"
-                                                                            className="textarea"
-                                                                            placeholder="Enter notes here..."
-                                                                        />
-                                                                        <ErrorMessage name="notes" component="div" className="text-red-500" />
-                                                                    </Form>
-                                                                )}
-                                                            </Formik>
-                                                        )   
-                                                        : ""
-                                                    }
-                                                    onClick={() => {
-                                                     
-                                                    }}>
-
-
-                                                    <div className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.Users?.firstName} {order?.Users?.lastName}
-                                                            </h2>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
-                                                                    ? 'Terjadi Masalah'
-                                                                    : ''}
-                                                            </p>
-                                                            <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <div className="flex items-center">
+                                                            <div className="ml-2">
+                                                                <h2 className="font-medium text-gray-900">
+                                                                    {order?.id}
+                                                                </h2>
+                                                                <h2 className="font-medium text-gray-900">
+                                                                    {order?.User?.firstName} {order?.User?.lastName}
+                                                                </h2>
+                                                                <div className="text-xs text-gray-500">
+                                                                    {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
+                                                                        ? 'Terjadi Masalah'
+                                                                        : ''}
+                                                                </div>
+                                                                <div className="text-xs text-gray-500">
+                                                                    {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                                </div>
+                                                            </div>
                                                         </div>
-                                                    </div>
-                                                </ConfirmAlert>
+                                                    </AlertDialogTrigger>
+
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Terdapat perbedaan barang pada laundry berikut</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                <Formik
+                                                                    initialValues={{ notes: '' }}
+                                                                    validationSchema={notesSchema}
+                                                                    onSubmit={async (values) => {
+                                                                        handleLaundryProblem({
+                                                                            notes: values.notes,
+                                                                            orderId : order?.id
+                                                                        });
+                                                                    }}
+                                                                >
+                                                                    <Form>
+                                                                        <div>
+                                                                            <Field
+                                                                                as="textarea"
+                                                                                name="notes"
+                                                                                rows={4}
+                                                                                placeholder="Enter your notes"
+                                                                                className="w-full p-2 border rounded"
+                                                                            />
+                                                                            <ErrorMessage name="notes" component="div" className="text-red-500 text-xs" />
+                                                                        </div>
+                                                                        <AlertDialogFooter>
+                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                            <AlertDialogAction type="submit">Continue</AlertDialogAction>
+                                                                        </AlertDialogFooter>
+                                                                    </Form>
+                                                                </Formik>
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
 
                                                 <div className="flex gap-1">
                                                     <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
@@ -225,9 +243,7 @@ export default function DriverPickUp() {
                                                 </div>
                                             </section>
                                         ))}
-
                                         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-
                                     </CardContent>
                                 </TabsContent>
                             </Tabs>

@@ -11,5 +11,6 @@ export interface IConfirmAlert {
     disabled?: boolean,
     type?: "button" | "submit" | "reset",
     hideButtons?: boolean
+    hideAllButtons? :boolean
     hideCaption?:boolean
 }

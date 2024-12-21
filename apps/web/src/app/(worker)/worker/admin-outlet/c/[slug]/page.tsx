@@ -1,28 +1,17 @@
 'use client'
-
-import { FaWhatsapp, FaStore } from "react-icons/fa";
-import { MdOutlineStickyNote2 } from "react-icons/md";
-import Image from "next/image";
-import { MdOutlineIron } from "react-icons/md";
-import { CgSmartHomeWashMachine } from "react-icons/cg";
-import { FaMotorcycle } from "react-icons/fa6";
-import { IoLocationOutline } from "react-icons/io5";
 // import RealTimeClock from "@/features/worker/components/realTimeClock";
-import { BsPerson } from "react-icons/bs";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import HeaderMobile from "@/components/core/headerMobile"
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { MdOutlineAccessTimeFilled } from "react-icons/md";
 import { FaRegTrashAlt } from "react-icons/fa";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
 import { useToast } from "@/components/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import React, { useEffect } from 'react';
-import { Interface } from "readline";
-
+import { useRouter } from "next/navigation";
 
 const validationSchema = Yup.object().shape({
     customerName: Yup.string().required("Customer name is required"),
@@ -58,6 +47,7 @@ type Iitem = {
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
 
     const { slug } = React.use(params);
+    const router = useRouter()
 
     const token = authStore((state) => state.token);
     const email = authStore((state) => state.email);
@@ -78,6 +68,9 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
+            setTimeout(() => {
+                router.push('/worker/admin-outlet/nota-order');
+            }, 1000);
         },
         onError: (err: any) => {
             console.log(err)
@@ -175,7 +168,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     <label className="text-sm">Customer Name</label>
                                                     <input
                                                         type="text"
-                                                        value={`${dataOrderNote[0].Users?.firstName} ${dataOrderNote[0].Users?.lastName}`}
+                                                        value={`${dataOrderNote[0].User?.firstName} ${dataOrderNote[0].User?.lastName}`}
                                                         disabled
                                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                                     />
@@ -296,7 +289,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     name="totalWeight"
                                                     type="number"
                                                     placeholder="Enter total weight"
-                                                    className="block w-full rounded-lg border-gray-500 shadow-sm focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-3"
+                                                    className="block w-full rounded-lg border-gray-600 shadow-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-3"
                                                     min="1"
                                                     step="1"
                                                 />

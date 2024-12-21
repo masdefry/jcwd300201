@@ -200,7 +200,7 @@ export default function Header() {
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">
                     <MenuCustom url='/user/dashboard/settings' navigation="Settings"><BsGearFill /></MenuCustom>
-                    <ConfirmAlert disabled={isPending || isDisabledSucces} caption="logout" onClick={() => handleLogout()}>
+                    <ConfirmAlert disabled={isPending || isDisabledSucces} caption="Apakah anda yakin ingin logout?" onClick={() => handleLogout()}>
                       <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
                     </ConfirmAlert>
                   </div>
@@ -217,7 +217,7 @@ export default function Header() {
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">
                     <MenuCustom url={settingsUrl} navigation="Settings"><BsGearFill /></MenuCustom>
-                    <ConfirmAlert disabled={isPending || isDisabledSucces} caption="logout" onClick={() => handleLogout()}>
+                    <ConfirmAlert disabled={isPending || isDisabledSucces} caption="Apakah anda yakin ingin logout?" onClick={() => handleLogout()}>
                       <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
                     </ConfirmAlert>
                   </div>
