@@ -1143,8 +1143,6 @@ export const getAllOrderForAdmin = async (req: Request, res: Response, next: Nex
       where: findAllOrder
     })
 
-    console.log(totalData, '"<<< total data')
-
     const totalPages = Math.ceil(Number(totalData) / take)
 
     res.status(200).json({
@@ -1157,3 +1155,21 @@ export const getAllOrderForAdmin = async (req: Request, res: Response, next: Nex
     next(error)
   }
 }
+
+// export const deleteOrderUser = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const { orderId } = req.params
+//     const { userId } = req.body
+
+//     const findOderStatus = await prisma.order.findFirst({
+//       where: {
+//         id: orderId,
+//         userId
+//       }
+//     })
+
+//     if(findOderStatus && findOderStatus?.)
+//   } catch (error) {
+//     next(error)
+//   }
+// }

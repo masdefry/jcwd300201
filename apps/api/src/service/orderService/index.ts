@@ -10,7 +10,7 @@ import { formatOrder } from "@/utils/formatOrder"
 import { sortAndDeduplicateDiagnostics } from "typescript"
 
 dotenv.config()
-const excludedStatuses = [Status.PAYMENT_DONE, Status.AWAITING_PAYMENT];
+const excludedStatuses = [Status.PAYMENT_DONE];
 
 export const requestPickUpService = async ({ userId, deliveryFee, outletId, orderTypeId, userAddressId }: IRequestPickup) => {
   const findUser = await prisma.user.findFirst({ where: { id: userId } })

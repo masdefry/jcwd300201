@@ -136,9 +136,9 @@ export default function Header() {
             {isService && (
               <span className="w-[300px] absolute h-fit z-0 pt-3 right-0 top-6">
                 <div className="border w-full h-fit pb-8 pt-4 px-4 space-y-5 bg-white rounded-b-2xl shadow-md">
-                  <MenuCustom url="/wash-dry" navigation="Layanan Mencuci"><FaTshirt /></MenuCustom>
-                  <MenuCustom url="/wash-iron" navigation="Layanan Setrika"><FaHandHoldingWater /></MenuCustom>
-                  <MenuCustom url="/dry-cleaning" navigation="Mencuci dan Setrika"><FaSprayCan /></MenuCustom>
+                  <MenuCustom url="/service" navigation="Layanan Mencuci"><FaTshirt /></MenuCustom>
+                  <MenuCustom url="/service" navigation="Layanan Setrika"><FaHandHoldingWater /></MenuCustom>
+                  <MenuCustom url="/service" navigation="Mencuci dan Setrika"><FaSprayCan /></MenuCustom>
                 </div>
               </span>
             )}
@@ -195,10 +195,10 @@ export default function Header() {
                     <MenuCustom url='/user/dashboard/home' navigation="Profil"><FaUserGear /></MenuCustom>
                     <MenuCustom url='/about-us' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
                     <MenuCustom url='/contact' navigation="Kontak"><LuContact /></MenuCustom>
-                    <MenuCustom url='/faq' navigation="FAQ"><FaQq /></MenuCustom>
                   </div>
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">
+                    <MenuCustom url='/faq' navigation="FAQ"><FaQq /></MenuCustom>
                     <MenuCustom url='/user/dashboard/settings' navigation="Settings"><BsGearFill /></MenuCustom>
                     <ConfirmAlert disabled={isPending || isDisabledSucces} caption="Apakah anda yakin ingin logout?" onClick={() => handleLogout()}>
                       <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
@@ -212,10 +212,10 @@ export default function Header() {
                     <MenuCustom url={profileUrl} navigation="Profil"><FaUserGear /></MenuCustom>
                     <MenuCustom url='/about-us' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
                     <MenuCustom url='/contact' navigation="Contact"><LuContact /></MenuCustom>
-                    <MenuCustom url='/faq' navigation="FAQ"><FaQq /></MenuCustom>
                   </div>
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">
+                    <MenuCustom url='/faq' navigation="FAQ"><FaQq /></MenuCustom>
                     <MenuCustom url={settingsUrl} navigation="Settings"><BsGearFill /></MenuCustom>
                     <ConfirmAlert disabled={isPending || isDisabledSucces} caption="Apakah anda yakin ingin logout?" onClick={() => handleLogout()}>
                       <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>

@@ -13,8 +13,9 @@ import { useState, useEffect } from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { CiSquarePlus } from "react-icons/ci";
-import ContentWebSession from '@/components/core/webSessionContent';
+import ContentWebLayout from '@/components/core/webSessionContent';
 import ButtonCustom from '@/components/core/button';
+import Link from 'next/link'
 
 const validationSchema = Yup.object({
     deliveryFee: Yup.number().required().positive().integer(),
@@ -274,7 +275,7 @@ export default function PickupLaundry() {
             </main>
 
             {/* web session */}
-            <ContentWebSession caption='Permintaan Pickup'>
+            <ContentWebLayout caption='Permintaan Pickup'>
                 <div className='w-full h-fit'>
                     <Formik
                         enableReinitialize
@@ -310,10 +311,10 @@ export default function PickupLaundry() {
                                                     <p className="text-gray-600">{dataMainAddress.city}, {dataMainAddress.province}</p>
                                                 </div>
                                             ) : !dataMainAddress ? (
-                                                <div className='flex items-center justify-center'>
+                                                <Link href='/user/dashboard/settings/address/c' className='flex items-center justify-center'>
                                                     <div><CiSquarePlus /></div>
                                                     <div>Buat Alamat Baru</div>
-                                                </div>
+                                                </Link>
                                             ) : (
                                                 <div onClick={() => setOpenDialog(true)}>
                                                     <p className="font-semibold text-gray-800">{selectedAddress?.addressName}</p>
@@ -381,7 +382,7 @@ export default function PickupLaundry() {
                         )}
                     </Formik>
                 </div>
-            </ContentWebSession>
+            </ContentWebLayout>
         </>
     );
 }

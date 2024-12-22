@@ -182,7 +182,7 @@ const dataWorker = [
         identityNumber: "1234567894",
         motorcycleType: 'Ninja 4 tak',
         plateNumber: "B 666 DEV",
-        storeId: 5
+        storeId: 2
     },
     {
         email: "outletadmin2@example.com",

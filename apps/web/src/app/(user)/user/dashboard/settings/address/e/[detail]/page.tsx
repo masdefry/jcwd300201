@@ -1,7 +1,7 @@
 'use client'
 
 import "leaflet/dist/leaflet.css";
-import ContentWebSession from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/webSessionContent";
 import { instance } from "@/utils/axiosInstance";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -287,7 +287,7 @@ export default function Page({ params }: { params: Promise<any> }) {
             </main>
 
             {/* web session */}
-            <ContentWebSession caption="Tambah alamat">
+            <ContentWebLayout caption="Tambah alamat">
                 <div className='w-full h-full flex'>
                     <Formik
                         onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -418,7 +418,7 @@ export default function Page({ params }: { params: Promise<any> }) {
                         )}
                     </Formik>
                 </div>
-            </ContentWebSession>
+            </ContentWebLayout>
         </>
     );
 }

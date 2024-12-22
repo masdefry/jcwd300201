@@ -13,23 +13,23 @@ const authStore = create(
     profilePicture: '',
     isDiscountUsed: false,
     totalWorker: null,
-    productLaundry: null,
+    orders: null,
     store: '',
 
     setAuth: ({
       token, firstName, lastName, email, role,
-      isVerified, profilePicture, isDiscountUsed, totalWorker, productLaundry, store,
+      isVerified, profilePicture, isDiscountUsed, totalWorker, orders, store,
     }: IAuthStore) => set({
       token, firstName, lastName, email, role,
-      isVerified, profilePicture, isDiscountUsed, totalWorker, productLaundry, store,
+      isVerified, profilePicture, isDiscountUsed, totalWorker, orders, store,
     }),
 
     setKeepAuth: ({
       firstName, lastName, email, role,
-      isVerified, profilePicture, isDiscountUsed, totalWorker, productLaundry, store,
+      isVerified, profilePicture, isDiscountUsed, totalWorker, orders, store,
     }: IAuthStore) => set({
       firstName, lastName, email, role,
-      isVerified, profilePicture, isDiscountUsed, totalWorker, productLaundry, store,
+      isVerified, profilePicture, isDiscountUsed, totalWorker, orders, store,
     }),
 
     resetAuth: () => set({
@@ -42,7 +42,7 @@ const authStore = create(
       profilePicture: '',
       isDiscountUsed: false,
       totalWorker: null,
-      productLaundry: null,
+      orders: null,
       store: ''
     }),
   }),
