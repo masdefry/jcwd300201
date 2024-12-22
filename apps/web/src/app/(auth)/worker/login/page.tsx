@@ -13,7 +13,6 @@ import ButtonCustom from "@/components/core/button";
 import Cookies from 'js-cookie'
 import CryptoJS from 'crypto-js'
 import { loginAdminValidation } from "@/features/adminLogin/schemas";
-import * as Yup from 'yup'
 
 const secret_key_crypto = process.env.NEXT_PUBLIC_CRYPTO_SECRET_KEY || ''
 export default function Page() {

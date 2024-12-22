@@ -20,7 +20,7 @@ import { IoLocationSharp } from "react-icons/io5";
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
-import ContentWebSession from "@/components/core/webSessionContent"
+import ContentWebLayout from "@/components/core/webSessionContent"
 import Pagination from "@/components/core/pagination"
 import FilterWorker from "@/components/core/filter"
 
@@ -261,7 +261,7 @@ export default function Page() {
             </main>
 
             {/* web ssi */}
-            <ContentWebSession caption='Permintaan Pesanan'>
+            <ContentWebLayout caption='Permintaan Pesanan'>
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 gap-2 h-fit flex items-center">
                         <select name="searchWorker" value={activeTab} onChange={(e) => {
@@ -344,7 +344,7 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-            </ContentWebSession>
+            </ContentWebLayout>
         </>
     )
 }

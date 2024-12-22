@@ -1,14 +1,13 @@
 'use client'
 import ButtonCustom from "@/components/core/button";
-import InputCustom from "@/components/core/input";
 import { toast } from "@/components/hooks/use-toast";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
 import { useMutation } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { useState } from "react";
-import * as Yup from 'yup'
 import { useRouter } from 'next/navigation'
+import { createMessageValidation } from "@/features/contact/schemas/createMessageValidation";
 
 export default function Page() {
     const token = authStore((state) => state?.token)
@@ -59,14 +58,7 @@ export default function Page() {
                             phoneNumber: '',
                             name: ''
                         }}
-                        validationSchema={Yup.object().shape({
-                            email: Yup.string().email('Harap masukan email yang valid').required('Harap diisi terlebih dahulu'),
-                            textHelp: Yup.string().required('Harap diisi terlebih dahulu'),
-                            phoneNumber: Yup.string()
-                                .matches(/^\d{10,}$/, 'Harap masukan nomor yang valid')
-                                .required('Harap diisi terlebih dahulu'),
-                            name: Yup.string().required('Harap diisi terlebih dahulu')
-                        })}
+                        validationSchema={createMessageValidation}
                         onSubmit={(values) => handleSendMessage({ name: values?.name, email: values?.email, textHelp: values?.textHelp, phoneNumber: values?.phoneNumber })}>
                         <Form className="space-y-4">
                             <div className="flex flex-col relative">

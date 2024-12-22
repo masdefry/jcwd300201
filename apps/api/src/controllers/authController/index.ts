@@ -245,7 +245,7 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
         let findUser
         let findAdmin
         let findWorker
-        let itemLaundry
+        let orderTrack
 
         if (authorizationRole == 'CUSTOMER') {
             findUser = await prisma.user.findFirst({
@@ -260,7 +260,7 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
             })
 
             findWorker = await prisma.worker.findMany({ where: { deletedAt: null } })
-            itemLaundry = await prisma.laundryItem.findMany({ where: { deletedAt: null } })
+            orderTrack = await prisma.order.findMany({ where: { deletedAt: null } })
         }
 
         res.status(200).json({
@@ -281,7 +281,7 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
                 lastName: findAdmin?.lastName,
                 profilePicture: findAdmin?.profilePicture,
                 totalWorker: findWorker!.length,
-                productLaundry: itemLaundry!.length
+                orders: orderTrack!.length
             } : authorizationRole !== 'CUSTOMER' && authorizationRole !== 'SUPER_ADMIN' ? {
                 role: findAdmin?.workerRole,
                 firstName: findAdmin?.firstName,

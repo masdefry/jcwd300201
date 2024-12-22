@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 import { Prisma } from "@prisma/client";
 import { Status } from "@prisma/client";
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService } from "@/service/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService } from "@/service/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
 import dotenv from 'dotenv'
 
@@ -991,7 +991,7 @@ export const requestDeliveryDone = async (req: Request, res: Response, next: Nex
 
     res.status(200).json({
       error: false,
-      message: "Order berhasil diupdate!",
+      message: "Berhasil melakukan request delivery!",
       data: {
         order,
       },
@@ -1051,6 +1051,46 @@ export const getOrdersForDriverDelivery = async (req: Request, res: Response, ne
   }
 };
 
+export const processOrderDelivery = async (req: Request, res: Response, next: NextFunction) => {
+
+  try {
+    const { orderId } = req.params;
+    const { userId, email } = req.body;
+    console.log(req.body)
+
+    const { newStatus } = await processOrderDeliveryService({ email, orderId, userId })
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diterima",
+      data: newStatus,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const acceptOrderDelivery = async (req: Request, res: Response, next: NextFunction) => {
+
+  try {
+    const { orderId } = req.params;
+    const { userId, email } = req.body;
+
+    const { newStatus } = await acceptOrderDeliveryService({ email, orderId, userId });
+
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diterima",
+      data: newStatus,
+    });
+
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getAllOrderForAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { search = '', sort = '', page = '1', limit_data = '5' } = req.query
@@ -1103,8 +1143,6 @@ export const getAllOrderForAdmin = async (req: Request, res: Response, next: Nex
       where: findAllOrder
     })
 
-    console.log(totalData, '"<<< total data')
-
     const totalPages = Math.ceil(Number(totalData) / take)
 
     res.status(200).json({
@@ -1117,3 +1155,21 @@ export const getAllOrderForAdmin = async (req: Request, res: Response, next: Nex
     next(error)
   }
 }
+
+// export const deleteOrderUser = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const { orderId } = req.params
+//     const { userId } = req.body
+
+//     const findOderStatus = await prisma.order.findFirst({
+//       where: {
+//         id: orderId,
+//         userId
+//       }
+//     })
+
+//     if(findOderStatus && findOderStatus?.)
+//   } catch (error) {
+//     next(error)
+//   }
+// }

@@ -18,7 +18,7 @@ import { FaEdit } from 'react-icons/fa';
 import ProcessAndSortDate from "@/features/order/components/processAndSortDate"
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
-import ContentWebSession from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/webSessionContent";
 
 export default function Page() {
     const token = authStore((state) => state?.token)
@@ -236,7 +236,7 @@ export default function Page() {
             </main>
 
             {/* web sesi */}
-            <ContentWebSession caption="Order">
+            <ContentWebLayout caption="Order">
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 h-fit flex items-center">
                         <select name="searchWorker"
@@ -306,7 +306,7 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-            </ContentWebSession>
+            </ContentWebLayout>
         </>
     )
 }

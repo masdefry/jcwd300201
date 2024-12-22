@@ -11,7 +11,7 @@ import * as Yup from 'yup'
 import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
 import { useWashingWorkerSettingsHooks } from '@/features/washingWorker/hooks/useWashingWorkerSettingsHooks';
-import ContentWebSession from '@/components/core/webSessionContent';
+import ContentWebLayout from '@/components/core/webSessionContent';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -43,7 +43,7 @@ export default function Page() {
         <>
 
             {/* web sesi */}
-            <ContentWebSession caption='Pengaturan'>
+            <ContentWebLayout caption='Pengaturan'>
                 
                 {/* tabs */}
                 <TabContext value={value}>
@@ -106,7 +106,7 @@ export default function Page() {
                         </Formik>
                     </TabPanel>
                 </TabContext>
-            </ContentWebSession>
+            </ContentWebLayout>
         </>
     );
 }

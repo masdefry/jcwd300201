@@ -6,9 +6,11 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
-import { FaArrowRight, FaCartArrowDown, FaDashcube, FaHouseDamage, FaIceCream, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaUserCheck } from "react-icons/fa";
 import { RiProfileFill } from "react-icons/ri";
-import { MdWorkHistory } from "react-icons/md";
+import { MdFeedback, MdOutlet, MdWorkHistory } from "react-icons/md";
+import FloatingMessageCustomer from "@/components/core/floatingComponent";
+import { FaStore } from "react-icons/fa6";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 
@@ -17,7 +19,6 @@ export default function Layout({ children }: { children: ReactNode }) {
     const profilePicture = authStore((state) => state?.profilePicture)
     const role = authStore((state) => state?.role)
     const name = authStore((state) => state?.firstName)
-    const router = useRouter()
     const pathname = usePathname()
     const handleCloseSideBar = () => {
         setIsClose(!isClose)
@@ -41,23 +42,27 @@ export default function Layout({ children }: { children: ReactNode }) {
                         <h1 className="italic text-[11px]">{role || 'SUPER_ADMIN'}</h1>
                     </div>
                 </div>
-                <h1 className="px-4 text-sm text-neutral-600 py-2">Menu</h1>
-                <div className="w-full h-full flex flex-col gap-4">
+                <h1 className="px-4 text-sm text-neutral-600 py-3">Menu</h1>
+                <div className="w-full h-full flex flex-col gap-2">
                     <Link href='/admin/dashboard' className={`w-full flex ${pathname == '/admin/dashboard' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/admin/product' className={`w-full flex ${pathname.startsWith('/admin/product') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaCartArrowDown /> Produk Laundry</Link>
+                        <FaCartArrowDown /> Daftar Produk</Link>
+                    <Link href='/admin/order' className={`w-full flex ${pathname.startsWith('/admin/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaMoneyBillWave /> Daftar Pesanan</Link>
                     <Link href='/admin/worker' className={`w-full flex ${pathname.startsWith('/admin/worker') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <MdWorkHistory /> Data Pekerja</Link>
-                    <Link href='/admin/order' className={`w-full flex ${pathname.startsWith('/admin/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaMoneyBillWave /> Order List</Link>
+                    <Link href='/admin/outlet' className={`w-full flex ${pathname.startsWith('/admin/outlet') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaStore /> Data Outlet</Link>
                 </div>
-                <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
-                <div className="w-full h-full flex flex-col gap-4">
-                    <Link href='/admin/settings' className={`w-full flex ${pathname.startsWith('/admin/settings') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                <h1 className="px-4 text-sm text-neutral-600 py-3">Account</h1>
+                <div className="w-full h-full flex flex-col gap-2">
+                    <Link href='/admin/settings/account' className={`w-full flex ${pathname.startsWith('/admin/settings/account') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <RiProfileFill /> Kelola Profil</Link>
+                    <Link href='/admin/contact' className={`w-full flex ${pathname.startsWith('/admin/contact') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <MdFeedback /> Umpan balik</Link>
+                    <Link href='/admin/settings' className={`w-full flex ${pathname.startsWith('/admin/settings') && pathname !== '/admin/settings/account' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>
-                    <span className={`w-full  cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
-                        <RiProfileFill /> Profile</span>
                 </div>
             </section>
             <section className="w-full h-fit md:h-screen md:bg-white md:px-1 md:py-1 relative">
@@ -65,6 +70,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     {isClose ? <GoSidebarCollapse /> : <GoSidebarExpand />}
                 </span>
                 {children}
+                <FloatingMessageCustomer />
             </section>
         </main>
     );

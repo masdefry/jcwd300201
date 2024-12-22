@@ -14,7 +14,7 @@ import { useDebouncedCallback } from "use-debounce"
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
-import ContentWebSession from "@/components/core/webSessionContent"
+import ContentWebLayout from "@/components/core/webSessionContent"
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
@@ -169,7 +169,7 @@ export default function Page() {
                 </section>
             </main>
 
-            <ContentWebSession caption="Order saya">
+            <ContentWebLayout caption="Order saya">
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 h-fit flex items-center">
                         <select name="searchWorker"
@@ -243,7 +243,7 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-            </ContentWebSession>
+            </ContentWebLayout>
         </>
     )
 }

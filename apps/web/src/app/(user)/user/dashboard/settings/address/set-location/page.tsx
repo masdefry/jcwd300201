@@ -2,7 +2,7 @@
 
 import "leaflet/dist/leaflet.css";
 import LocationPicker from "@/components/core/locationPicker";
-import ContentWebSession from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/webSessionContent";
 import authStore from "@/zustand/authstore";
 import { locationStore } from "@/zustand/locationStore";
 import { Form, Formik } from "formik";
@@ -37,7 +37,7 @@ export default function Page() {
 
     const time = useMemo(() => new Date().getTime(), [])
     return (
-        <ContentWebSession caption='Pilih Alamat' height="h-full">
+        <ContentWebLayout caption='Pilih Alamat' height="h-full">
             <div className='w-full h-full flex pb-5'>
                 <Formik
                     onSubmit={(values) => {
@@ -83,6 +83,6 @@ export default function Page() {
                     )}
                 </Formik>
             </div>
-        </ContentWebSession>
+        </ContentWebLayout>
     );
 }

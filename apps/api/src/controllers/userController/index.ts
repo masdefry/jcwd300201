@@ -4,7 +4,6 @@ import { changePasswordGoogleRegisterService, changePasswordUserService, deleteP
 import dotenv from 'dotenv'
 
 dotenv.config()
-const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
 export const userCreateAddress = async (req: Request, res: Response, next: NextFunction) => {
   try {

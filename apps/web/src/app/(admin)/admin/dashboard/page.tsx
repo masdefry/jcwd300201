@@ -9,6 +9,7 @@ import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import ChartComponents from "@/components/core/chart";
 import { FaFirstOrderAlt } from "react-icons/fa6";
+import { Calendar } from "@/components/ui/calendar";
 
 const iconButtons = [
     { icon: FaStore, label: "Data Outlet" },
@@ -19,8 +20,9 @@ const iconButtons = [
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
+    const [date, setDate] = useState<Date | undefined>(new Date())
     const totalWorker = authStore((state) => state?.totalWorker)
-    const productLaundry = authStore((state) => state?.productLaundry)
+    const totalOrders = authStore((state) => state?.orders)
     const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
 
@@ -127,8 +129,8 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="w-full rounded-xl h-full space-y-2">
-                        <div className="flex flex-col w-full h-full gap-2">
-                            <div className="flex w-full h-full gap-2">
+                        <div className="flex w-full h-full gap-2">
+                            <div className="flex flex-col w-full h-full gap-2">
                                 <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg relative">
                                     <div className="absolute top-[30%] opacity-60 flex items-center gap-2">
                                         <MdDashboard className="text-6xl" />
@@ -137,27 +139,26 @@ export default function Page() {
                                             <p className="font-bold text-2xl">Pekerja</p>
                                         </div>
                                     </div>
-                                    {/* <div className="w-full h-full flex items-end px-2 py-5">
-                                        <h1>Lihat detail</h1>
-                                    </div> */}
                                 </div>
 
                                 <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg relative">
                                     <div className="absolute top-[30%] left-2 opacity-60 flex items-center gap-2">
                                         <FaFirstOrderAlt className="text-6xl" />
                                         <div className="flex items-center gap-3">
-                                            <h1 className="font-bold text-3xl text-center">{totalWorker ? totalWorker : '0'}</h1>
+                                            <h1 className="font-bold text-3xl text-center">{totalOrders ? totalOrders : '0'}</h1>
                                             <p className="font-bold text-2xl">Order</p>
                                         </div>
                                     </div>
-                                    {/* <div className="w-full h-full flex items-end px-2 py-5">
-                                        <h1>Lihat detail</h1>
-                                    </div> */}
                                 </div>
                             </div>
 
                             <div className="flex w-full h-full gap-2 bg-white rounded-xl">
-
+                                <Calendar
+                                    mode="single"
+                                    selected={date}
+                                    onSelect={setDate}
+                                    className="rounded-md"
+                                />
                             </div>
                         </div>
                     </div>
