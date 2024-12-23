@@ -124,6 +124,9 @@ export default function HistoryOrderWashing() {
                                             <div className="flex items-center">
                                                 <div className="ml-2">
                                                     <h2 className="font-medium text-gray-900">
+                                                        {order?.id}
+                                                    </h2>
+                                                    <h2 className="font-medium text-gray-900">
                                                         {order?.User?.firstName} {order?.User?.lastName}
                                                     </h2>
                                                     <p className="text-xs text-gray-500">

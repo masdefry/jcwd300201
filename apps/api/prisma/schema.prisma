@@ -107,6 +107,7 @@ model Worker {
 model Order {
   id            String   @id @default(uuid())
   totalPrice    Int?
+  laundryPrice  Int?
   totalWeight   Int?
   discount      Float?
   deliveryFee   Int
@@ -142,8 +143,8 @@ model Order {
 
 model OrderType {
   id    Int    @id @default(autoincrement())
-  Type  String
-  Price Int
+  type  String?
+  price Int?
 
   order Order[]
 
@@ -236,4 +237,3 @@ enum Role {
   PACKING_WORKER
   DRIVER
 }
-

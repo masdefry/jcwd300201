@@ -7,7 +7,7 @@ export interface IFindNearestStore {
 
 export interface IRequestPickup {
     userId: string
-    totalPrice?: number
+    laundryPrice?: number
     deliveryFee: number
     outletId: string
     orderTypeId: string
@@ -109,28 +109,41 @@ export interface IGetNotes {
     sort: string,
 }
 
-export interface ICreateOrder{
+export interface ICreateOrder {
     orderId: string,
     email: string,
     userId: string,
     totalWeight: number,
-    totalPrice: number,
+    laundryPrice: number,
     items: { itemName: string, quantity: number }[],
 }
 
 export interface IWashingProcessDone {
-    orderId:string,
+    orderId: string,
     email: string,
     userId: string,
 }
 export interface IStatusOrder {
     storeId: string,
-    orderId:string,
+    orderId: string,
     email: string,
     userId: string,
 }
 export interface IIroningProcessDone {
-    orderId:string,
+    orderId: string,
     email: string,
     userId: string,
+}
+
+export interface IGeDriverHistory {
+    tab:string,
+    userId: string,
+    authorizationRole: Role,
+    storeId: string,
+    limit_data: string,
+    page: string,
+    search: string,
+    dateFrom: string,
+    dateUntil: string,
+    sort: string,
 }

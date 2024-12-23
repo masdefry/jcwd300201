@@ -208,8 +208,8 @@ export default function Page() {
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words">{i + 1}</td>
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words"> {order?.User?.firstName} {order?.User?.lastName}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words"> {order?.OrderType?.Type === 'Iron Only' ? 'Strika' : order?.OrderType?.Type === 'Wash Only' ? 'Mencuci' :
-                                                order?.OrderType?.Type === 'Wash & Iron' ? 'Mencuci & Setrika' : ''}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words"> {order?.OrderType?.type === 'Iron Only' ? 'Strika' : order?.OrderType?.type === 'Wash Only' ? 'Mencuci' :
+                                                order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci & Setrika' : ''}</td>
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words"> {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Kurir' :
                                                 order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Kurir dalam perjalanan' : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Kurir sudah sampai di outlet'
                                                     : order?.orderStatus[0]?.status}</td>
