@@ -177,7 +177,15 @@ export const userEditAddressService = async ({ addressId, addressName, addressDe
     })
 
     if (checkedAddressUser) throw { msg: 'Alamat sudah tersedia, harap masukan alamat yang lain', status: 400 }
-
+    const findOrderUser = await prisma.order.findFirst({
+        where: {
+            userId,
+            UserAddress: { id: Number(addressId), userId },
+            // isConfirm: false || null sementara gini dulu
+        }
+    })
+    
+    if (findOrderUser) throw { msg: 'Kamu sedang melakukan pesanan, tidak dapat merubah alamat', status: 400 }
     const updatedAddress = await prisma.userAddress.update({
         where: { id: parseInt(addressId) },
         data: {
@@ -388,6 +396,17 @@ export const changePasswordGoogleRegisterService = async ({ userId, password }: 
 export const deleteUserAddressService = async ({ userId, addressId }: { userId: string, addressId: number }) => {
     const findAddressById = await prisma.userAddress.findFirst({ where: { id: Number(addressId), userId } })
     const findAllAddress = await prisma.userAddress.findMany({ where: { userId } })
+    const findOrderUser = await prisma.order.findFirst({
+        where: {
+            userId,
+            UserAddress: { id: addressId, userId },
+            // isConfirm: false || null sementara gini dulu
+        }
+    })
+
+    console.log(findOrderUser, "<<< ddapet ga")
+
+    if (findOrderUser) throw { msg: 'Kamu sedang melakukan pesanan, tidak dapat menghapus alamat', status: 400 }
     if (!findAddressById) throw { msg: 'Alamat sudah tidak tersedia atau sudah terhapus', status: 404 }
     if (findAllAddress?.length === 1 && findAddressById?.isMain == true) throw { msg: 'Alamat utama tidak dapat dihapus karena setidaknya satu alamat diperlukan sebagai alamat utama', status: 400 }
     await prisma.userAddress.delete({ where: { id: Number(addressId), userId } })

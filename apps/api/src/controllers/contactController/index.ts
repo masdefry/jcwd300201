@@ -34,3 +34,68 @@ export const createContactMessage = async (req: Request, res: Response, next: Ne
         next(error)
     }
 }
+
+export const getContactMessage = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        // const { sort = '', search = '', page = '1', limit_data = '5' } = req.query
+
+        // const take = parseInt(limit_data as string)
+        // const skip = (parseInt(page as string) - 1) * take
+
+        // let whereClause
+        // if (search) {
+        //     whereClause = {
+        //         OR: [
+        //             { User: { firstName: { contains: search as string } } },
+        //             { phoneNumber: { contains: search as string } },
+        //             { textHelp: { contains: search as string } },
+        //         ]
+        //     }
+        // }
+
+        // let dataMessage;
+        // if (sort == 'order-asc') {
+        //     dataMessage = await prisma.contact.findMany({
+        //         where: whereClause, take, skip, orderBy: { createdAt: 'asc' },
+        //     })
+        // } else if (sort == 'order-desc') {
+        //     dataMessage = await prisma.contact.findMany({
+        //         where: whereClause, take, skip, orderBy: { createdAt: 'desc' },
+        //     })
+        // } else {
+        //     dataMessage = await prisma.contact.findMany({
+        //         where: whereClause, take, skip,
+        //     })
+        // }
+
+        // const totalData = await prisma.contact.count({
+        //     where: whereClause
+        // })
+
+        // const totalPages = Math.ceil(Number(totalData) / take)
+        const findMessageUser = await prisma.contact.findMany({
+            where: { deletedAt: null },
+            include: {
+                User: {
+                    select: {
+                        firstName: true,
+                        lastName: true,
+                        profilePicture: true,
+                        phoneNumber: true,
+                        email: true,
+                    },
+                }
+            }
+        })
+
+        res.status(200).json({
+            error: false,
+            message: 'Berhasil mendapatkan data',
+            data: findMessageUser
+            // { totalPages, dataMessage }
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}

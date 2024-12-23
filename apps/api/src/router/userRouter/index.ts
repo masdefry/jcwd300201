@@ -10,7 +10,7 @@ import { roleCheckCustomer } from '@/middleware/roleCheck'
 const userRouter = Router()
 
 // authenticate
-userRouter.post('/set-password', tokenValidation, roleCheckCustomer, setPasswordValidation, expressValidatorErrorHandling, limiter, setPasswordUser)
+userRouter.post('/set-password', tokenValidation, setPasswordValidation, expressValidatorErrorHandling, limiter, setPasswordUser)
 userRouter.post('/forgot-password', forgotPasswordUserValidation, expressValidatorErrorHandling, limiter, forgotPasswordUser)
 userRouter.post('/resend-password', resendSetPasswordValidation, expressValidatorErrorHandling, limiter, resendSetPassword)
 userRouter.patch('/change-password', tokenValidation, roleCheckCustomer, limiter, changePasswordUserValidation, expressValidatorErrorHandling, changePasswordUser)

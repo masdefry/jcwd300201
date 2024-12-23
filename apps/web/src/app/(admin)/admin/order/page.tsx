@@ -353,8 +353,81 @@ export default function DeliveryRequest() {
                             </Dialog>
                         </div>
                     </main>
-                </section >
-            </main >
+                </section>
+            </main>
+
+            {/* web sesi */}
+            <ContentWebSession caption="Order">
+                <div className="w-full h-fit flex">
+                    <div className="w-1/2 h-fit flex items-center">
+                        <select name="searchWorker"
+                            value={sortProduct} onChange={(e) => setSortProduct(e.target.value)}
+                            id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                            <option value="" disabled>-- Pilih Opsi --</option>
+                            <option value="order-asc">Sort berdasarkan terbaru</option>
+                            <option value="order-desc">Sort berdasarkan terlama</option>
+                            <option value="">Reset</option>
+                        </select>
+                    </div>
+                    <div className="w-1/2 h-fit flex gap-2 justify-end">
+                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
+                        <Link href='/admin/worker/c'>
+                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
+                        </Link>
+                    </div>
+                </div>
+
+                {/* table */}
+                <div className="w-full flex flex-col justify-center">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order ID</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Customer</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Store</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {getDataItem?.length > 0 ? (
+                                getDataItem?.map((order: any, i: number) => {
+                                    return (
+                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu kurir' : ''}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
+                                            <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
+                                                <Link href={`/admin/worker/detail/${order?.id}`}>View</Link>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? 'Mohon tunggu...' : 'Data tidak tersedia'}</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    <div className='flex gap-2 justify-between py-2 px-2 items-center'>
+                        <div className="w-1/2 flex">
+                            <h1 className="text-neutral-400">Page {currentPage} of {totalPages || '0'}</h1>
+                        </div>
+                        <div className="flex gap-2">
+                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
+                                disabled={currentPage == 1} onClick={() => handlePageChange(currentPage - 1)}
+                            >Sebelumnya</ButtonCustom>
+                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
+                                disabled={currentPage == totalPages || currentPage > totalPages} onClick={() => handlePageChange(currentPage + 1)}
+                            >Selanjutnya</ButtonCustom>
+                        </div>
+                    </div>
+                </div>
+            </ContentWebSession>
         </>
     )
 }

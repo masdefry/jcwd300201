@@ -6,7 +6,7 @@ import Image from "next/image";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import Link from "next/link";
 import HeaderMobileUser from "@/components/core/headerMobileUser";
-import ContentWebSession from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/webSessionContent";
 import SearchInputCustom from "@/components/core/searchBar";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
 import { instance } from "@/utils/axiosInstance";
@@ -183,7 +183,7 @@ export default function Page() {
                 </div>
             </main>
 
-            <ContentWebSession caption="Alamat Saya">
+            <ContentWebLayout caption="Alamat Saya">
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 h-fit flex items-center"></div>
                     <div className="w-1/2 h-fit flex gap-2 justify-end">
@@ -239,7 +239,7 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-            </ContentWebSession>
+            </ContentWebLayout>
         </>
     );
 

@@ -8,6 +8,6 @@ export interface IAuthStore {
     profilePicture: string, 
     isDiscountUsed: boolean, 
     totalWorker: number | null, 
-    productLaundry: number | null,
+    orders: number | null,
     store: string
 }

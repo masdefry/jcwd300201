@@ -27,14 +27,15 @@ export default function Page() {
     const [isLogoutSuccess, setIsLogoutSuccess] = useState<boolean>(false)
 
     const settingsItems = [
-        { name: 'Pengaturan Akun', description: 'Ubah password akun anda', icon: FaUser, url: '/admin/settings/account' },
-        { name: 'Pengaturan Outlet', description: 'Tambah, ubah, hapus outlet laundry', icon: FaStore, url: '/admin/settings/outlet' },
-        { name: 'Pengaturan Layanan', description: 'Tambah, ubah, hapus layanan', icon: FaCut, url: '/admin/settings/service' },
-        { name: 'Pengaturan Antar-Jemput', description: 'Tambah, ubah, hapus antar-jemput', icon: FaTruck, url: '/admin/settings/pickup' },
-        { name: 'Pengaturan Kasir', description: 'Atur, tambah, ubah, hapus kasir', icon: FaCashRegister, url: '/admin/settings/cashier' },
-        { name: 'Pengaturan Pelanggan', description: 'Tambah, ubah, hapus pelanggan', icon: FaUsers, url: '/admin/settings/customer' },
-        { name: 'Pengaturan Nota', description: 'Atur tampilan nota', icon: FaReceipt, url: '/admin/settings/receipt' },
+        { name: 'Pengaturan Akun', description: 'Ubah pengaturan akun dan perbarui kata sandi Anda.', icon: FaUser, url: '/admin/settings/account' },
+        { name: 'Kelola Outlet', description: 'Tambah, ubah, atau hapus outlet laundry yang tersedia.', icon: FaStore, url: '/admin/outlet' },
+        { name: 'Kelola Pesanan', description: 'Atur pesanan antar-jemput laundry, mulai dari penambahan hingga penghapusan.', icon: FaTruck, url: '/admin/order' },
+        { name: 'Kelola Pekerja', description: 'Tambah, ubah, atau hapus informasi profil pekerja.', icon: FaUsers, url: '/admin/worker' },
+        { name: 'Layanan Laundry', description: 'Kelola layanan laundry, termasuk penambahan, perubahan, atau penghapusan layanan.', icon: FaCut, url: '/admin/product' },
+        { name: 'Umpan Balik Pelanggan', description: 'Atur dan kelola umpan balik pelanggan, serta kelola data kasir.', icon: FaCashRegister, url: '/admin/contact' },
+        { name: 'Pengaturan Nota', description: 'Atur tampilan dan format nota untuk transaksi laundry.', icon: FaReceipt, url: '/admin/settings/receipt' },
     ];
+    
     
 
     const { mutate: handleLogoutAdmin, isPending } = useMutation({

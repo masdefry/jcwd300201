@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export default function ContentWebSession({ caption = 'Caption disini', height = 'h-full', children }: { caption: string, children: ReactNode, height?: string }) {
+export default function ContentWebLayout({ caption = 'Caption disini', height = 'h-full', children }: { caption: string, children: ReactNode, height?: string }) {
     return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
             <section className="w-full flex flex-col p-4 rounded-xl h-full bg-white overflow-y-auto">

@@ -2,7 +2,7 @@ import ButtonCustom from "@/components/core/button";
 import { RiShutDownLine } from "react-icons/ri";
 import HeaderMobile from "@/components/core/headerMobile";
 import { FaUser, FaStore, FaRegFilePowerpoint } from 'react-icons/fa';
-import ContentWebSession from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/webSessionContent";
 import ListCustom from "@/components/core/listSettings";
 
 const settingsItems = [
@@ -46,11 +46,11 @@ export default function pengaturanAdmin() {
             </main>
 
             {/* web sesi */}
-            <ContentWebSession caption="Pengaturan">
+            <ContentWebLayout caption="Pengaturan">
                 {settingsItems?.map((set, i) => (
                     <ListCustom key={i} url={set?.url} caption={set.name}><set.icon /></ListCustom>
                 ))}
-            </ContentWebSession>
+            </ContentWebLayout>
         </>
     )
 }

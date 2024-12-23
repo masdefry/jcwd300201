@@ -100,3 +100,14 @@ export const requestPickUpValidation = [
     body('orderTypeId').isString().escape(),
     body('userAddressId').isString().escape(),
 ]
+
+export const createOutletValidation = [
+    body(["storeName", 'address', 'city', 'province', 'latitude', 'longitude', 'zipCode']).notEmpty().withMessage('Harap diisi terlebih dahulu'),
+    body("storeName").trim().isString().matches(/^[A-Za-z0-9\s\-]+$/).withMessage("Nama Outlet hanya berisi huruf").escape(),
+    body("address").trim().isString().matches(/^[A-Za-z0-9\s.,-]+$/).withMessage("Format alamat tidak valid").escape(),
+    body("city").trim().isString().escape(),
+    body("province").trim().isString().escape(),
+    body("zipCode").trim().matches(/^[0-9]+$/).withMessage("Kode Pos hanya berisi angka").escape(),
+    body("latitude").isFloat().withMessage("Latitude harus berupa angka desimal").escape(),
+    body("longitude").isFloat().withMessage("Longitude harus berupa angka desimal").escape(),
+];

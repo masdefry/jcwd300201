@@ -1159,3 +1159,21 @@ export const orderStatus = async (req: Request, res: Response, next: NextFunctio
     next(error)
   }
 }
+
+// export const deleteOrderUser = async (req: Request, res: Response, next: NextFunction) => {
+//   try {
+//     const { orderId } = req.params
+//     const { userId } = req.body
+
+//     const findOderStatus = await prisma.order.findFirst({
+//       where: {
+//         id: orderId,
+//         userId
+//       }
+//     })
+
+//     if(findOderStatus && findOderStatus?.)
+//   } catch (error) {
+//     next(error)
+//   }
+// }
