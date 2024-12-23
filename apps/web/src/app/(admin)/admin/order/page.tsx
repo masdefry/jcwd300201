@@ -8,29 +8,31 @@ import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
 import authStore from "@/zustand/authstore"
-import { useState, useEffect } from "react"
+import { useState, useEffect, ChangeEvent } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
-import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
-import { Button } from "@/components/ui/button"
 import {
     Dialog,
     DialogContent,
-    DialogDescription,
-    DialogFooter,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import Timeline from "@/components/core/timeline"
+import ContentWebLayout from "@/components/core/webSessionContent";
+import ButtonCustom from "@/components/core/button";
+import SearchInputCustom from "@/components/core/searchBar";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { FaPlus } from "react-icons/fa6";
 
 
 export default function DeliveryRequest() {
@@ -42,6 +44,8 @@ export default function DeliveryRequest() {
     const email = authStore((state) => state.email);
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
+    const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
+
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState("date-asc");
     const [activeTab, setActiveTab] = useState("proses");
@@ -86,7 +90,7 @@ export default function DeliveryRequest() {
         },
     })
 
-    const { data: getDataStore, isLoading: isStoreLoading, isError: isStoreError } = useQuery({
+    const { data: getDataStore,isFetching, isLoading: isStoreLoading, isError: isStoreError } = useQuery({
         queryKey: ['get-data-store'],
         queryFn: async () => {
             const res = await instance.get('/store')
@@ -94,6 +98,12 @@ export default function DeliveryRequest() {
             return res?.data?.data
         }
     })
+
+    const getDataItem = dataOrderList?.dataOrder
+
+    const handlePageChange = (page: any) => {
+        setPage(page)
+    }
 
 
     const debounce = useDebouncedCallback(values => {
@@ -357,17 +367,22 @@ export default function DeliveryRequest() {
             </main>
 
             {/* web sesi */}
-            <ContentWebSession caption="Order">
+            <ContentWebLayout caption="Order">
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 h-fit flex items-center">
-                        <select name="searchWorker"
-                            value={sortProduct} onChange={(e) => setSortProduct(e.target.value)}
-                            id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
-                            <option value="" disabled>-- Pilih Opsi --</option>
-                            <option value="order-asc">Sort berdasarkan terbaru</option>
-                            <option value="order-desc">Sort berdasarkan terlama</option>
-                            <option value="">Reset</option>
-                        </select>
+                        <Select value={sortOption} onValueChange={setSortOption}>
+                            <SelectTrigger className="w-[150px] border rounded-md py-2 px-3">
+                                <SelectValue placeholder="Sort By" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
+                                <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
+                                <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
+                                <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
+                                <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
+                                <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
+                            </SelectContent>
+                        </Select>
                     </div>
                     <div className="w-1/2 h-fit flex gap-2 justify-end">
                         <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
@@ -395,7 +410,7 @@ export default function DeliveryRequest() {
                                 getDataItem?.map((order: any, i: number) => {
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu kurir' : ''}</td>
@@ -415,19 +430,19 @@ export default function DeliveryRequest() {
                     </table>
                     <div className='flex gap-2 justify-between py-2 px-2 items-center'>
                         <div className="w-1/2 flex">
-                            <h1 className="text-neutral-400">Page {currentPage} of {totalPages || '0'}</h1>
+                            <h1 className="text-neutral-400">Page {page} of {totalPages || '0'}</h1>
                         </div>
                         <div className="flex gap-2">
                             <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
-                                disabled={currentPage == 1} onClick={() => handlePageChange(currentPage - 1)}
+                                disabled={page == 1} onClick={() => handlePageChange(page - 1)}
                             >Sebelumnya</ButtonCustom>
                             <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
-                                disabled={currentPage == totalPages || currentPage > totalPages} onClick={() => handlePageChange(currentPage + 1)}
+                                disabled={page == totalPages || page > totalPages} onClick={() => handlePageChange(page + 1)}
                             >Selanjutnya</ButtonCustom>
                         </div>
                     </div>
                 </div>
-            </ContentWebSession>
+            </ContentWebLayout>
         </>
     )
 }
