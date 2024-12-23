@@ -7,10 +7,11 @@ export interface IConfirmAlert {
     children: ReactNode,
     onClick: () => void,
     description?: string | ReactNode,
-    colorConfirmation?:string,
+    colorConfirmation?: string,
     disabled?: boolean,
     type?: "button" | "submit" | "reset",
     hideButtons?: boolean
-    hideAllButtons? :boolean
-    hideCaption?:boolean
+    hideAllButtons?: boolean
+    hideCaption?: boolean
+    hoverColorConfirmation?: string
 }

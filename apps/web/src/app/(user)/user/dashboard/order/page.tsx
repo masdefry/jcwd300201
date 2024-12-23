@@ -31,7 +31,7 @@ export default function Page() {
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState("date-asc");
+    const [sortOption, setSortOption] = useState(params.get('sort') || '');
     const [activeTab, setActiveTab] = useState("semua");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
@@ -84,8 +84,10 @@ export default function Page() {
         } else {
             currentUrl.delete(`dateUntil`)
         }
+
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
+
     }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
 
 
@@ -147,9 +149,7 @@ export default function Page() {
                                 <div className="flex justify-between items-center mt-4">
                                     <button
                                         onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                                        disabled={page === 1}
-                                        className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:bg-gray-100"
-                                    >
+                                        disabled={page === 1} className="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded disabled:bg-gray-100">
                                         Previous
                                     </button>
                                     <span>
@@ -173,11 +173,15 @@ export default function Page() {
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 h-fit flex items-center">
                         <select name="searchWorker"
-                            // value={sortProduct} onChange={(e) => setSortProduct(e.target.value)}
+                            value={sortOption} onChange={(e) => setSortOption(e.target.value)}
                             id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
                             <option value="" disabled>-- Pilih Opsi --</option>
                             <option value="name-asc">Sort berdasarkan A - Z</option>
                             <option value="name-desc">Sort berdasarkan Z - A</option>
+                            <option value="date-asc">Sort berdasarkan terbaru</option>
+                            <option value="date-desc">Sort berdasarkan terlama</option>
+                            <option value="order-id-asc">Sort berdasarkan Order ID</option>
+                            <option value="order-id-desc">Sort berdasarkan Order ID</option>
                             <option value="">Reset</option>
                         </select>
                     </div>
@@ -186,8 +190,6 @@ export default function Page() {
                         <ButtonCustom onClick={() => router.push('/user/dashboard/pickup')} rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Tambah alamat</ButtonCustom>
                     </div>
                 </div>
-
-                {/* table */}
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
                         <thead className="bg-gray-200">

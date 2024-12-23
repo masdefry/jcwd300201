@@ -7,98 +7,13 @@ import { encodeToken } from "@/utils/tokenValidation"
 import { transporter } from "@/utils/transporter"
 import fs, { rmSync } from 'fs'
 import { compile } from "handlebars"
-import { ICreateAddressUser, IEditAddressUser, ILoginBody, IUpdateProfileUser } from "./types"
-import { IRegisterBody } from "./types"
+import { ICreateAddressUser, IEditAddressUser, IUpdateProfileUser } from "./types"
 import dotenv from 'dotenv'
 import axios from "axios"
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
-
-/* *login */
-export const userLoginService = async ({ email, password }: ILoginBody) => {
-
-    if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
-    const findUser = await prisma.user.findFirst({ where: { email } })
-
-    if (!findUser) throw { msg: 'Email yang anda masukan salah atau tidak ada', status: 401 }
-
-    const match = await comparePassword(password, findUser?.password)
-    if (!match) throw { msg: 'Password anda salah!', status: 401 }
-
-    const token = await encodeToken({ id: findUser?.id, role: findUser?.role })
-
-    return { token, findUser }
-}
-
-/* *register */
-export const userRegisterService = async ({ id, email, firstName, lastName, phoneNumber, verifyCode }: IRegisterBody) => {
-    if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
-    if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
-
-    const findEmailInWorker = await prisma.worker.findFirst({ where: { email } })
-    if (findEmailInWorker) throw { msg: 'User sudah terdaftar', status: 400 }
-
-
-    const findUser = await prisma.user.findFirst({ where: { email } })
-    if (findUser) throw { msg: 'User sudah terdaftar', status: 400 }
-
-    const dataUser = await prisma.user.create({
-        data: {
-            id,
-            email,
-            firstName,
-            password: await hashPassword('12312312'),
-            lastName,
-            phoneNumber,
-            profilePicture: profilePict,
-            isVerified: Boolean(false),
-            verifyCode: verifyCode,
-            isGoogleRegister: Boolean(false),
-            isDiscountUsed: Boolean(true),
-            role: 'CUSTOMER',
-            isGooglePasswordChange: Boolean(false)
-        }
-    })
-
-    const setTokenUser = await encodeToken({ id: dataUser?.id, role: dataUser?.email, expiresIn: '1h' })
-
-    const emailHTML = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
-    let compiledHtml: any = compile(emailHTML)
-    compiledHtml = compiledHtml({
-        email: email,
-        url: `http://localhost:3000/user/set-password/${setTokenUser}`,
-    })
-
-    await transporter.sendMail({
-        to: email,
-        html: compiledHtml,
-        subject: 'Verifikasi akun dan atur ulang password anda'
-    })
-
-    await prisma.user.update({
-        where: { id: dataUser?.id },
-        data: { forgotPasswordToken: setTokenUser }
-    })
-}
-
-/**sign with google */
-export const signInWithGoogleService = async ({ email }: { email: string }) => {
-    const findEmailInWorker = await prisma.worker.findFirst({
-        where: { email }
-    })
-
-    if (findEmailInWorker) throw { msg: 'Email sudah terpakai', status: 401 }
-
-    const findEmail = await prisma.user.findFirst({
-        where: { email }
-    })
-
-    const token = await encodeToken({ id: findEmail?.id as string, role: findEmail?.role as string })
-
-    return { findEmail, token }
-}
 
 /* get address */
 export const userCreateAddressService = async ({ userId, addressName, addressDetail, province, city, zipCode, latitude, longitude, country }: ICreateAddressUser) => {
@@ -254,78 +169,6 @@ export const getUserMainAddressService = async ({ userId }: { userId: string }) 
     if (!mainAddress) throw { msg: "Alamat utama tidak ditemukan" }
 
     return { mainAddress }
-}
-
-/* resend email */
-export const resendSetPasswordService = async ({ email }: { email: string }) => {
-    const findUser = await prisma.user.findFirst({ where: { email } })
-    if (!findUser) throw { msg: 'User tidak terdaftar', status: 401 }
-    const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '1h' })
-
-    const emailFile = fs.readFileSync('./src/public/sendMail/email.html', 'utf-8')
-    let compiledHtml: any = compile(emailFile)
-    compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
-
-    await prisma.user.update({
-        where: { id: findUser?.id },
-        data: { forgotPasswordToken: token }
-    })
-}
-
-/* setPassword User */
-export const setPasswordUserService = async ({ authorization, userId, password }: { authorization: any, userId: string, password: string }) => {
-    const token = authorization?.split(' ')[1]
-    const findUser = await prisma.user.findFirst({ where: { id: userId } })
-
-    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
-    if (token != findUser?.forgotPasswordToken) throw { msg: 'Link sudah tidak berlaku', status: 400 }
-
-    const hashedPassword = await hashPassword(password)
-
-    const updatedPassword = await prisma.user.update({
-        data: {
-            password: hashedPassword,
-            isVerified: true,
-            forgotPasswordToken: null
-        },
-        where: { id: userId }
-    })
-
-    if (updatedPassword) {
-        const emailRead = fs.readFileSync('./src/public/sendMail/verifyEmailSucces.html', 'utf-8')
-        let compiledHtml: any = compile(emailRead)
-        compiledHtml = compiledHtml({ firstName: updatedPassword?.firstName, url: 'http://localhost:3000/user/login' })
-        await transporter.sendMail({
-            to: updatedPassword?.email,
-            subject: `Selamat datang ${updatedPassword?.firstName}`,
-            html: compiledHtml
-        })
-    }
-}
-
-/* forgot password */
-export const forgotPasswordUserService = async ({ email }: { email: string }) => {
-    const findUser = await prisma.user.findFirst({ where: { email } })
-    if (!findUser) throw { msg: 'Email yang anda masukan tidak valid atau user tidak tersedia', status: 404 }
-
-    const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '5m' })
-
-    const updatedToken = await prisma.user.update({
-        where: { id: findUser?.id },
-        data: { forgotPasswordToken: token }
-    })
-
-    if (updatedToken) {
-        const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
-        let compiledHtml: any = compile(readEmailHtml)
-        compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
-
-        await transporter.sendMail({
-            to: email,
-            subject: 'Atur ulang kata sandi',
-            html: compiledHtml
-        })
-    }
 }
 
 /* update profil */

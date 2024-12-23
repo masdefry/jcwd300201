@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-const loginAdminValidation = Yup.object({
+const loginUserValidation = Yup.object().shape({
     email: Yup.string()
         .required('Email harap diisi!')
         .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, 'Format email tidak valid')
@@ -9,4 +9,4 @@ const loginAdminValidation = Yup.object({
     password: Yup.string().min(8, 'Password minimal 8 karakter').required('Password harap diisi!')
 })
 
-export { loginAdminValidation }
+export { loginUserValidation }
