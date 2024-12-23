@@ -611,14 +611,8 @@ async function main() {
     });
 
     const createdUsers = await Promise.all(userPromises);
-
-
     const firstUserId = createdUsers[0].id;
-
-    const userAddresses = dataUserAddress.map((address) => ({
-        ...address,
-        userId: firstUserId, 
-    }));
+    const userAddresses = dataUserAddress.map((address) => ({ ...address, userId: firstUserId }));
 
     await prisma.userAddress.createMany({
         data: userAddresses,
@@ -639,8 +633,90 @@ async function main() {
         })),
         skipDuplicates: true,
     });
-  
+
     console.log("Data seeded successfully.");
+
+    const dateNow = Date.now() * Math.random()
+    const id = `CUST${Math.floor(dateNow)}${firstName.toUpperCase()}`
+
+    // const createUser = await prisma.user.create({
+    //     data: {
+    //         id,
+    //         email: 'kickandi@cnc.com',
+    //         firstName: 'Andi',
+    //         lastName: 'Kick',
+    //         isGoogleRegister: false,
+    //         isVerified: true,
+    //         password: await hashPassword('12312312'),
+    //         phoneNumber: '082308124081',
+    //         profilePicture: profilePict,
+    //         role: 'CUSTOMER',
+    //         userAddress: {
+    //             create: {
+    //                 addressDetail: 'Jln. Haji Kurun No. 14',
+    //                 addressName: 'Rumah',
+    //                 city: 'Bogor',
+    //                 province: 'Jawa Barat',
+    //                 country: 'Indonesia',
+    //                 isMain: true,
+    //                 latitude: -6.23348808466673,
+    //                 longitude: 106.6331260189041,
+    //                 zipCode: '141250',
+    //             }
+    //         },
+    //         contact: {
+    //             create: {
+    //                 email: 'kickandi@cnc.com',
+    //                 name: 'Andi Kick',
+    //                 phoneNumber: '081742107412',
+    //                 textHelp: 'Halo Admin, Bisakah anda membantu menjelaskan cara ordernya?',
+    //             }
+    //         },
+    //         verifyCode: '701274',
+    //         isDiscountUsed: true,
+    //         order: {
+    //             create: {
+    //                 deliveryFee: 65000,
+    //                 isPaid: false,
+    //                 isDone: false,
+    //                 isConfirm: false,
+    //                 isProcessed: false,
+    //                 isReqDelivery: false,
+    //                 isSolved: false,
+    //                 orderTypeId: 1,
+    //                 totalPrice: null,
+    //                 storeId: 
+    //             }
+    //         }
+    //     }
+    // })
+
+    // const { orderId } = formatOrder()
+//   const dateNow = addHours(new Date(), 7)
+
+//   const newOrder: any = await prisma.order.create({
+//     data: {
+//       id: orderId,
+//       totalPrice: null,
+//       deliveryFee,
+//       storeId: outletId,
+//       userId,
+//       orderTypeId: parseInt(orderTypeId),
+//       userAddressId,
+//       isPaid: false,
+//       createdAt: dateNow,
+//       updatedAt: dateNow
+//     },
+//   });
+
+//   await prisma.orderStatus.create({
+//     data: {
+//       status: "AWAITING_DRIVER_PICKUP",
+//       orderId: newOrder.id,
+//       createdAt: addHours(new Date(), 7),
+
+//     },
+//   });
 }
 
 main()

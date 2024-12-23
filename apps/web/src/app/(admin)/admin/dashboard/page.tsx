@@ -11,12 +11,6 @@ import ChartComponents from "@/components/core/chart";
 import { FaFirstOrderAlt } from "react-icons/fa6";
 import { Calendar } from "@/components/ui/calendar";
 
-const iconButtons = [
-    { icon: FaStore, label: "Data Outlet" },
-    { icon: IoSearchSharp, label: "Cari Pesanan" },
-    { icon: IoPersonSharp, label: "Data Pelanggan" },
-    { icon: GrUserWorker, label: "Data Pekerja" },
-];
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
@@ -25,6 +19,13 @@ export default function Page() {
     const totalOrders = authStore((state) => state?.orders)
     const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
+    
+    const iconButtons = [
+        { icon: FaStore, label: "Data Outlet" },
+        { icon: IoSearchSharp, label: "Cari Pesanan" },
+        { icon: IoPersonSharp, label: "Data Pelanggan" },
+        { icon: GrUserWorker, label: "Data Pekerja" },
+    ];
 
     const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 

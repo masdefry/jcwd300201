@@ -30,12 +30,14 @@ interface IError extends Error {
 }
 
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
-    const imagesUpload: any = req.files /**set multer error */
+    const imagesUpload: any = req.files /* *set multer error */
     if (imagesUpload?.images?.length != 0 || imagesUpload?.images?.length != undefined) {
         imagesUpload?.images?.forEach((img: any) => {
             fs.rmSync(`${img?.path}`)
         });
     }
+
+    if (error?.message === 'jwt expired') throw { msg: 'jwt expired', status: 401 }
 
     res.status(error?.status || 500).json({
         error: true,
