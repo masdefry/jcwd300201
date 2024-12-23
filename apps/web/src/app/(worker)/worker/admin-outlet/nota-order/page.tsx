@@ -32,7 +32,7 @@ export default function HistoryOrderWashing() {
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const limit = 5;
 
-    const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
+    const { data: dataCreateOrder, refetch, isLoading: dataCreateOrderLoading, isError: dataCreateOrderError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption],
         queryFn: async () => {
 
@@ -84,7 +84,7 @@ export default function HistoryOrderWashing() {
     }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
 
 
-    const totalPages = dataOrderWashingProcess?.totalPage || 1;
+    const totalPages = dataCreateOrder?.totalPage || 1;
 
     return (
         <>
@@ -111,9 +111,9 @@ export default function HistoryOrderWashing() {
                                     setActiveTab={setActiveTab}
                                     setSearchInput={setSearchInput}
                                 />
-                                {dataOrderWashingProcessLoading && <p>Loading...</p>}
-                                {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                {dataOrderWashingProcess?.orders?.map((order: any) => {
+                                {dataCreateOrderLoading && <p>Loading...</p>}
+                                {dataCreateOrderError && <p>Silahkan coba beberapa saat lagi.</p>}
+                                {dataCreateOrder?.orders?.map((order: any) => {
                                     console.log(order?.isSolved)
                                     return (
                                         <section

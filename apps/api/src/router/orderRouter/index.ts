@@ -1,7 +1,7 @@
-import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin } from "@/controllers/orderController";
+import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
 import { limiter } from "@/middleware/rateLimit";
-import { roleCheckCustomer, roleCheckSuperAdmin } from "@/middleware/roleCheck";
+import { roleCheckAdmin, roleCheckCustomer, roleCheckSuperAdmin } from "@/middleware/roleCheck";
 import { requestPickUpValidation } from "@/middleware/validation";
 import { expressValidatorErrorHandling } from "@/middleware/validation/errorHandlingValidator";
 
@@ -63,6 +63,10 @@ orderRouter.patch('/order-delivery/:orderId', tokenValidation, requestDeliveryDo
 orderRouter.get('/delivery', tokenValidation, getOrdersForDriverDelivery)
 orderRouter.post('/delivery-process/:orderId', tokenValidation, processOrderDelivery)
 orderRouter.post('/delivery-accept/:orderId', tokenValidation, acceptOrderDelivery)/* tracking order super admin */
-orderRouter.get('/orders', tokenValidation, roleCheckSuperAdmin, getAllOrderForAdmin)
+
+// Get Admin Order List
+orderRouter.get('/orders', tokenValidation, getAllOrderForAdmin)
+orderRouter.get('/orders-detail/:orderId', tokenValidation, orderStatus)
+
 
 export default orderRouter
