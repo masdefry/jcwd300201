@@ -61,8 +61,6 @@ export default function Page() {
                     tab: tabValue,
                     dateFrom: dateFrom ?? '',
                     dateUntil: dateUntil ?? '',
-
-
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
