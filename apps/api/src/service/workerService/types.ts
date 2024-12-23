@@ -24,10 +24,3 @@ export interface IGetAllWorker {
     take: number
     skip: number
 }
-
-export interface IGetLaundryItems {
-    page?: string;
-    limit?: string;
-    search?: string;
-    sort?: string;
-}

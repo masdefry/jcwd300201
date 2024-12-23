@@ -2,20 +2,15 @@
 
 import ContentWebLayout from "@/components/core/webSessionContent";
 import ButtonCustom from "@/components/core/button";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
 import SearchInputCustom from "@/components/core/searchBar";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { BsPencil, BsTrash } from "react-icons/bs";
-import { FaArrowLeft, FaArrowRight, FaPlus } from "react-icons/fa6";
+import { FaPlus } from "react-icons/fa6";
 import { useDebouncedCallback } from "use-debounce";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { ErrorMessage, Field, Form, Formik } from "formik";
-import * as Yup from 'yup'
-import { toast } from "@/components/hooks/use-toast";
 
 export default function Page() {
     const token = authStore((state) => state?.token)
@@ -43,32 +38,6 @@ export default function Page() {
             })
 
             return response?.data?.data
-        }
-    })
-
-    const { mutate: createProductItem, isPending } = useMutation({
-        mutationFn: async ({ itemName }: { itemName: string }) => {
-            return await instance.post('/worker/laundry-items', { itemName }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-        },
-        onSuccess: (res) => {
-
-            toast({
-                description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
-            refetch()
-            console.log(res)
-        },
-        onError: (err: any) => {
-            toast({
-                description: err?.response?.data?.message,
-                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
-            console.log(err)
         }
     })
 

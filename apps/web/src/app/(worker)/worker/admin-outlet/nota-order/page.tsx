@@ -122,10 +122,7 @@ export default function HistoryOrderWashing() {
                                 {dataCreateOrder?.orders?.map((order: any) => {
                                     console.log(order?.isSolved)
                                     return (
-                                        <section
-                                            key={order.id}
-                                            className="flex justify-between items-center border-b py-4"
-                                        >
+                                        <section key={order.id} className="flex justify-between items-center border-b py-4">
                                             <Link href={`/worker/admin-outlet/c/${order?.id}`}>
                                                 <div className="flex items-center">
                                                     <div className="ml-2">
@@ -136,8 +133,7 @@ export default function HistoryOrderWashing() {
                                                             {order?.User?.firstName} {order?.User?.lastName}
                                                         </h2>
                                                         <p className="text-xs text-gray-500">
-                                                            {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Menunggu Pembuatan Nota Order' :
-                                                                ""}
+                                                            {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Menunggu Pembuatan Nota Order' : ""}
                                                         </p>
                                                         <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                     </div>
@@ -187,23 +183,25 @@ export default function HistoryOrderWashing() {
                             <tr>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
-                                <th className="py-3 px-6 text-sm font-bold text-gray-600 uppercase text-center">Tanggal dibuat</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tanggal dibuat</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                             </tr>
                         </thead>
                         <tbody>
                             {dataCreateOrder?.orders?.length > 0 ? (
-                                dataCreateOrder?.orders?.map((prod: any, i: number) => {
+                                dataCreateOrder?.orders?.map((order: any, i: number) => {
                                     return (
-                                        <tr className="hover:bg-gray-100 border-b" key={prod?.id || i}>
+                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{prod?.itemName}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{new Date(prod?.createdAt).toLocaleDateString()}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words"> {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Menunggu Pembuatan Nota Order' : ""}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{new Date(order?.createdAt).toLocaleDateString()}</td>
                                             <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
                                                 <div className='flex gap-2'>
-                                                    <ConfirmAlert 
-                                                    // disabled={isPendingDelete} 
-                                                    caption="Apakah anda yakin ingin menghapus data ini?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => alert(prod?.id)}>
+                                                    <ConfirmAlert
+                                                        // disabled={isPendingDelete} 
+                                                        caption="Apakah anda yakin ingin menghapus data ini?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => alert(order?.id)}>
                                                         <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
                                                     </ConfirmAlert>
                                                     {/* <DialogUpdateProduct handleUpdateItem={handleUpdateItem} product={prod} isPendingUpdate={isPendingUpdate} /> */}

@@ -91,7 +91,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { data: dataItemName, isLoading: dataItemNameLoading } = useQuery({
         queryKey: ['get-data-item'],
         queryFn: async () => {
-            const res = await instance.get('/laundry//', {
+            const res = await instance.get('/laundry', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return res?.data?.data;
