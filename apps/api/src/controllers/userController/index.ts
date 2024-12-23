@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from "express"
 import prisma from "@/connection"
 import { changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, deleteUserAddressService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, updateProfileUserService, userCreateAddressService, userEditAddressService } from "@/service/userService"
 import dotenv from 'dotenv'
-
 dotenv.config()
+
 
 export const userCreateAddress = async (req: Request, res: Response, next: NextFunction) => {
   try {

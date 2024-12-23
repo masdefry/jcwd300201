@@ -35,7 +35,7 @@ import {
 import { FaPlus } from "react-icons/fa6";
 
 
-export default function DeliveryRequest() {
+export default function OrderList() {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -53,7 +53,6 @@ export default function DeliveryRequest() {
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [outletId, setOutletId] = useState<any>(null);
-    console.log(outletId)
 
     const limit = 5;
 
@@ -406,8 +405,8 @@ export default function DeliveryRequest() {
                             </tr>
                         </thead>
                         <tbody>
-                            {getDataItem?.length > 0 ? (
-                                getDataItem?.map((order: any, i: number) => {
+                            {dataOrderList?.orders?.length > 0 ? (
+                                dataOrderList?.orders?.map((order: any, i: number) => {
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>

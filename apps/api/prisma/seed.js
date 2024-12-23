@@ -88,8 +88,8 @@ async function main() {
 
         await prisma.orderType.createMany({
             data: dataOrderType.map((item) => ({
-                Type: item.type,
-                Price: item.price,
+                type: item.type,
+                price: item.price,
             })),
             skipDuplicates: true,
         });
