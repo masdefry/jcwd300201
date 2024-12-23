@@ -2,86 +2,17 @@
 
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
-import { useState } from "react";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
-import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
-import { useToast } from "@/components/hooks/use-toast";
 import ButtonCustom from "@/components/core/button";
-import Cookies from 'js-cookie'
-import CryptoJS from 'crypto-js'
-import { loginAdminValidation } from "@/features/adminLogin/schemas";
+import { loginAdminValidation } from "@/features/adminLogin/schemas/loginWorkerValidation";
+import { useWorkerLoginHooks } from "@/features/adminLogin/hooks/useWorkerLoginHooks";
 
-const secret_key_crypto = process.env.NEXT_PUBLIC_CRYPTO_SECRET_KEY || ''
 export default function Page() {
-    const { toast } = useToast()
-    const setToken = authStore((state) => state?.setAuth)
-    const [passwordVisible, setPasswordVisible] = useState<boolean>(false);
-    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
-
-    /* handle password visible */
-    const togglePasswordVisibility = () => {
-        setPasswordVisible(!passwordVisible);
-    };
-
-    const { mutate: handleLoginAdmin, isPending } = useMutation({
-        mutationFn: async ({ email, password }: { email: string, password: string }) => {
-            return await instance.post('/auth/worker/login', { email, password })
-        },
-        onSuccess: (res) => {
-            setToken({
-                token: res?.data?.data?.token,
-                firstName: res?.data?.data?.firstName,
-                lastName: res?.data?.data?.lastName,
-                email: res?.data?.data?.email,
-                role: res?.data?.data?.role,
-                totalWorker: res?.data?.data?.totalWorker,
-                productLaundry: res?.data?.data?.productLaundry
-            })
-
-            toast({
-                description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
-
-            const role = CryptoJS.AES.encrypt(res?.data?.data?.role, secret_key_crypto).toString()
-
-            Cookies.set('__rolx', role)
-            Cookies.set('__toksed', res?.data?.data?.token)
-
-            setIsDisabledSucces(true)
-            
-            if (res?.data?.data?.role == 'SUPER_ADMIN') {
-                window.location.href = '/admin/dashboard'
-            } else if(res?.data?.data?.role == 'OUTLET_ADMIN'){
-                window.location.href = '/worker/admin-outlet/dashboard'
-            } else if(res?.data?.data?.role == 'WASHING_WORKER'){
-                window.location.href = '/worker/washing-worker/dashboard'
-            } else if(res?.data?.data?.role == 'IRONING_WORKER'){
-                window.location.href = '/worker/ironing-worker/dashboard'
-            } else if(res?.data?.data?.role == 'PACKING_WORKER'){
-                window.location.href = '/worker/packing-worker/dashboard'
-            } else if(res?.data?.data?.role == 'DRIVER'){
-                window.location.href = '/worker/driver/dashboard'
-            } else {
-                window.location.href = '/'
-            }
-
-            console.log(res)
-        },
-        onError: (err: any) => {
-            toast({
-                description: err?.response?.data?.message,
-                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
-            })
-            console.log(err)
-        }
-    })
+    const { passwordVisible, isDisabledSucces, handleLoginAdmin,
+        togglePasswordVisibility, isPending } = useWorkerLoginHooks()
 
     return (
-
         <main className='w-full h-screen flex'>
             <section className='w-3/5 h-full py-2 pl-2'>
                 <div className='bg-blue-700 rounded-2xl p-10 h-full w-full relative'>
@@ -126,8 +57,6 @@ export default function Page() {
                         }}
                     >
                         <Form className="flex z-20 flex-col justify-center items-center w-full space-y-4">
-
-                            {/* Email Input */}
                             <div id="emailOrganizer-input" className="w-full">
                                 <div className="flex gap-5 items-center">
                                     <label className="text-sm lg:text-base">
@@ -146,8 +75,6 @@ export default function Page() {
                                     type="email"
                                 />
                             </div>
-
-                            {/* Password Input */}
                             <div id="password-input" className="relative w-full">
                                 <div className="flex gap-5 items-center">
                                     <label className="text-sm lg:text-base">
@@ -172,8 +99,6 @@ export default function Page() {
                                     {passwordVisible ? <FaEye /> : <FaEyeSlash />}
                                 </span>
                             </div>
-
-                            {/* Submit Button */}
                             <ButtonCustom
                                 disabled={isPending || isDisabledSucces}
                                 type="submit"
@@ -186,8 +111,8 @@ export default function Page() {
                     <div className="flex w-full flex-col gap-2 py-3 z-20">
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-1 text-sm"></div>
-                            <Link href={'/user/resend-email'}  className="text-sm text-blue-500 hover:underline">
-                                Lupa kata sandi?
+                            <Link href={'/user/resend-email'} className="text-sm text-blue-500 hover:underline">
+                                Atur ulang kata sandi?
                             </Link>
                         </div>
                     </div>

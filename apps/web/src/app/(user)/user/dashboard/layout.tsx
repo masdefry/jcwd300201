@@ -8,11 +8,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import Cookies from 'js-cookie'
-import { FaCartArrowDown, FaDashcube, FaHome, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import { FaDashcube, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
-import { RiProfileFill } from "react-icons/ri";
 import { toast } from "@/components/hooks/use-toast";
-import ButtonCustom from "@/components/core/button";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
 import { FaAddressCard, FaBuysellads, FaCartShopping } from "react-icons/fa6";
 import { MdSportsMotorsports } from "react-icons/md";
@@ -86,7 +84,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <Link href='/user/dashboard/pickup' className={`w-full flex ${pathname.startsWith('/user/dashboard/pickup') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <MdSportsMotorsports /> Pickup Request</Link>
                     <Link href='/user/dashboard/order' className={`w-full flex ${pathname.startsWith('/user/dashboard/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaCartShopping  /> Order Saya</Link>
+                        <FaCartShopping /> Order Saya</Link>
                     <Link href='/user/dashboard/settings/address' className={`w-full flex ${pathname.startsWith('/user/dashboard/settings/address') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaAddressCard /> Alamat Saya</Link>
                     <Link href='/' className={`w-full flex hover:text-white text-neutral-700 hover:bg-orange-500 items-center gap-2 py-2 rounded-full px-4`}>

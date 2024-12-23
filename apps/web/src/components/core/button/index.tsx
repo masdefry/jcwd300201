@@ -25,7 +25,7 @@ export default function ButtonCustom({
     rounded = 'rounded-lg',
     type }: IButtonProps) {
     return (
-        <button onClick={onClick} className={`${width} 
+        <button onClick={onClick} className={`${width} focus:outline-none
         transform active:scale-90 active:ring-4 active:ring-white active:ring-opacity-30
         relative overflow-hidden group transition-all duration-300 px-5 ${py} ${disabledBtn} 
         flex items-center text-center justify-center disabled:scale-100 disabled:ring-0 disabled:pointer-events-none

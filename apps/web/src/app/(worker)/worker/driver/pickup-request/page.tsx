@@ -23,6 +23,7 @@ import { FaPlus } from "react-icons/fa6"
 import ContentWebLayout from "@/components/core/webSessionContent"
 import Pagination from "@/components/core/pagination"
 import FilterWorker from "@/components/core/filter"
+import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout"
 
 export default function Page() {
     const params = useSearchParams();
@@ -60,6 +61,7 @@ export default function Page() {
                     tab: tabValue,
                     dateFrom: dateFrom ?? '',
                     dateUntil: dateUntil ?? '',
+
 
                 },
                 headers: { Authorization: `Bearer ${token}` }
@@ -308,21 +310,41 @@ export default function Page() {
                         </thead>
                         <tbody>
                             {dataOrderAwaitingPickup?.orders?.length > 0 ? (
-                                dataOrderAwaitingPickup?.orders?.map((item: any, i: number) => {
+                                dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => {
                                     return (
-                                        <tr className="hover:bg-gray-100 border-b" key={item?.id || i}>
+                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{item?.userFirstName} {item?.userLastName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{item?.OrderType?.type}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">
-                                                {item?.latestStatus === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Pickup' :
-                                                    item?.latestStatus === 'DRIVER_TO_OUTLET' ? 'Perjalanan Menuju Outlet' :
-                                                        item?.latestStatus === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Sampai Pada Outlet' :
-                                                            item?.latestStatus}
+                                                {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Pickup' :
+                                                    order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Perjalanan Menuju Outlet' :
+                                                        order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Sampai Pada Outlet' :
+                                                            order?.orderStatus[0]?.status}
                                             </td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{item?.createdAt.split('T')[0]} {item?.createdAt.split('T')[1].split('.')[0]}</td>
-                                            <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <Link href={`/admin/worker/detail/${item?.id}`}>View</Link>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
+                                            <td className="py-4 px-6 hover:underline break-words">
+                                                <ConfirmAlert disabled={order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? true : false} colorConfirmation="blue" caption={order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                    ? 'Apakah anda yakin ingin melakukan pengambilan laundry pada order ini?'
+                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                        ? 'Apakah anda yakin ingin menyelesaikan pengiriman laundry pada order ini?'
+                                                        : ''}
+                                                    onClick={order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? () => {
+                                                        handleProcessOrder(order?.id)
+                                                        refetch()
+                                                    }
+                                                        : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? () => {
+                                                            handleProcessOrderOutlet(order?.id)
+                                                            refetch()
+                                                        } : () => console.log('trigger')
+                                                    }
+                                                    description={order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Konfirmasi bahwa Anda akan mengambil laundry untuk order ini'
+                                                        : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Konfirmasi bahwa barang untuk order ini telah berhasil diantar ke laundry'
+                                                            : ''
+                                                    }>
+                                                    <button className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500' disabled={order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? true : false}>{order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Pickup' : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Selesaikan' :
+                                                        order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Selesai' : 'Selesai'}</button>
+                                                </ConfirmAlert>
                                             </td>
                                         </tr>
                                     )
@@ -334,15 +356,10 @@ export default function Page() {
                             )}
                         </tbody>
                     </table>
-                    <div className='flex gap-2 justify-between py-2 px-2 items-center'>
-                        <div className="w-1/2 flex">
-                            <h1 className="text-neutral-400">Page {page} of {totalPages || '0'}</h1>
-                        </div>
-                        <div className="flex gap-2">
-                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>Sebelumnya</ButtonCustom>
-                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => { setPage((prev) => Math.min(prev + 1, totalPages)) }}>Selanjutnya</ButtonCustom>
-                        </div>
-                    </div>
+                    <PaginationWebLayout currentPage={page} totalPages={totalPages || '1'}>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>Sebelumnya</ButtonCustom>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => { setPage((prev) => Math.min(prev + 1, totalPages)) }}>Selanjutnya</ButtonCustom>
+                    </PaginationWebLayout>
                 </div>
             </ContentWebLayout>
         </>

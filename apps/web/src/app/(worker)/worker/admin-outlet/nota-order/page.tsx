@@ -8,13 +8,19 @@ import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
 import authStore from "@/zustand/authstore"
-import { useState, useEffect } from "react"
+import { useState, useEffect, ChangeEvent } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
+import ContentWebLayout from "@/components/core/webSessionContent"
+import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout"
+import ButtonCustom from "@/components/core/button"
+import SearchInputCustom from "@/components/core/searchBar"
+import { ConfirmAlert } from "@/components/core/confirmAlert"
+import { BsTrash } from "react-icons/bs"
 
 export default function HistoryOrderWashing() {
     const params = useSearchParams();
@@ -88,7 +94,7 @@ export default function HistoryOrderWashing() {
 
     return (
         <>
-            <main className="w-full h-fit">
+            <main className="w-full h-fit md:hidden block">
                 <section className="w-full h-fit">
                     <HeaderMobile />
                     <main className="w-full">
@@ -154,6 +160,75 @@ export default function HistoryOrderWashing() {
                     </main>
                 </section>
             </main>
+
+            <ContentWebLayout caption='Nota Pesanan'>
+                <div className="w-full h-fit flex">
+                    <div className="w-1/2 h-fit flex items-center">
+                        <select name="searchWorker"
+                            // value={sortProduct} onChange={(e) => setSortProduct(e.target.value)}
+                            id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                            <option value="" disabled>-- Pilih Opsi --</option>
+                            <option value="name-asc">Sort berdasarkan A - Z</option>
+                            <option value="name-desc">Sort berdasarkan Z - A</option>
+                            <option value="latest-item">Sort berdasarkan data terbaru</option>
+                            <option value="oldest-item">Sort berdasarkan data terlama</option>
+                            <option value="">Reset</option>
+                        </select>
+                    </div>
+                    <div className="w-1/2 h-fit flex gap-2 justify-end">
+                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
+                        {/* <DialogCreateProduct createProductItem={createProductItem} isPending={isPending} /> */}
+                    </div>
+                </div>
+
+                <div className="w-full flex flex-col justify-center">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                <th className="py-3 px-6 text-sm font-bold text-gray-600 uppercase text-center">Tanggal dibuat</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dataCreateOrder?.orders?.length > 0 ? (
+                                dataCreateOrder?.orders?.map((prod: any, i: number) => {
+                                    return (
+                                        <tr className="hover:bg-gray-100 border-b" key={prod?.id || i}>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{prod?.itemName}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{new Date(prod?.createdAt).toLocaleDateString()}</td>
+                                            <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
+                                                <div className='flex gap-2'>
+                                                    <ConfirmAlert 
+                                                    // disabled={isPendingDelete} 
+                                                    caption="Apakah anda yakin ingin menghapus data ini?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => alert(prod?.id)}>
+                                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
+                                                    </ConfirmAlert>
+                                                    {/* <DialogUpdateProduct handleUpdateItem={handleUpdateItem} product={prod} isPendingUpdate={isPendingUpdate} /> */}
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-20 font-bold">tes</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    <PaginationWebLayout currentPage={page} totalPages={totalPages}>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => alert(page - 1)}>
+                            Sebelumnya
+                        </ButtonCustom>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => alert(page + 1)}>
+                            Selanjutnya
+                        </ButtonCustom>
+                    </PaginationWebLayout>
+                </div>
+            </ContentWebLayout>
         </>
     )
 }

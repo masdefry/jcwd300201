@@ -152,7 +152,7 @@ export default function DeliveryRequest() {
 
     return (
         <>
-            <main className="w-full h-fit">
+            <main className="w-full h-fit md:hidden block">
                 <section className="w-full h-fit">
                     <HeaderMobile />
                     <main className="w-full">
@@ -368,10 +368,10 @@ export default function DeliveryRequest() {
 
             {/* web sesi */}
             <ContentWebLayout caption="Order">
-                <div className="w-full h-fit flex">
+                <div className="w-full h-fit flex items-center">
                     <div className="w-1/2 h-fit flex items-center">
                         <Select value={sortOption} onValueChange={setSortOption}>
-                            <SelectTrigger className="w-[150px] border rounded-md py-2 px-3">
+                            <SelectTrigger className="w-[150px] border rounded-full py-2 px-3">
                                 <SelectValue placeholder="Sort By" />
                             </SelectTrigger>
                             <SelectContent>

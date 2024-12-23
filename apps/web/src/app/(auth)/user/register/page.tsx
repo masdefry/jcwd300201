@@ -1,50 +1,18 @@
 'use client'
 
-import * as Yup from "yup";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useState } from "react";
-import { FaEye, FaEyeSlash } from "react-icons/fa";
-import { useMutation } from "@tanstack/react-query";
-import { instance } from "@/utils/axiosInstance";
-import { IRegisterUser } from "./types";
-import { useToast } from "@/components/hooks/use-toast";
 import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRegisterHooks } from "@/features/user/hooks/useRegisterHooks";
+import { registerUserValidation } from "@/features/user/schemas/registerUserValidation";
 
-export default function RegisterUser() {
-    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
-    const router = useRouter()
-    const { toast } = useToast()
-
-    const { mutate: handleRegister, isPending } = useMutation({
-        mutationFn: async ({ email, firstName, lastName, phoneNumber }: IRegisterUser) => {
-            return await instance.post('/auth/user/register', { email, firstName, lastName, phoneNumber })
-        },
-        onSuccess: (res) => {
-            toast({
-                description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
-
-            setIsDisabledSucces(true)
-            console.log(res)
-
-            router.push('/user/login')
-        },
-        onError: (err: any) => {
-            toast({
-                description: err?.response?.data?.message,
-                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
-            })
-            console.log(err)
-        }
-    })
+export default function Page() {
+    const { handleRegister, isPending } = useRegisterHooks()
 
     return (
 
-        <main className="w-screen flex justify-center ">
+        <main className="w-full flex justify-center">
             <section className="hidden lg:block w-1/2 ">
                 <div className="w-full h-screen">
                     <Image
@@ -75,20 +43,14 @@ export default function RegisterUser() {
                         phoneNumber: '',
                     }}
 
-                    validationSchema={Yup.object({
-                        email: Yup.string().required('Email harap diisi!'),
-                        firstName: Yup.string().required('Nama harap diisi!'),
-                        lastName: Yup.string().required("Nama harap diisi!"),
-                        phoneNumber: Yup.string().required('Nomor telepon harap diisi!')
-                    })}
-
-                    onSubmit={(values) => {
+                    validationSchema={registerUserValidation}
+                    onSubmit={(values, { resetForm }) => {
                         handleRegister({
                             email: values.email,
                             firstName: values.firstName,
                             lastName: values.lastName,
                             phoneNumber: values.phoneNumber,
-                        })
+                        }, { onSuccess: () => { resetForm() } })
                     }}
                 >
 
@@ -166,7 +128,7 @@ export default function RegisterUser() {
                             />
                         </div>
                         <ButtonCustom
-                            disabled={isPending || isDisabledSucces}
+                            disabled={isPending}
                             type="submit"
                             btnColor="bg-blue-600 hover:bg-blue-500"
                             width="w-full"

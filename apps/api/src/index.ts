@@ -7,35 +7,32 @@ import { portConnect } from './utils/asciiText/dbConnect'
 import fs from 'fs'
 
 dotenv.config()
-const port: string | undefined = process.env.PORT
+const port: string | undefined = process.env.PORT as string
 
-/* Set Up express */
 const app: Express = express()
 app.use(express.json())
 
-/* Cors */
 const corsOption = {
     origin: '*',
     credentials: true
 }
 app.use(cors(corsOption))
-
-/* Route */
 app.use('/api', router)
 
-/* Central Error */
 interface IError extends Error {
     msg: string,
     status: number
 }
 
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
-    const imagesUpload: any = req.files /**set multer error */
+    const imagesUpload: any = req.files
     if (imagesUpload?.images?.length != 0 || imagesUpload?.images?.length != undefined) {
         imagesUpload?.images?.forEach((img: any) => {
             fs.rmSync(`${img?.path}`)
         });
     }
+
+    if (error?.message === 'jwt expired') throw { msg: 'jwt expired', status: 401 }
 
     res.status(error?.status || 500).json({
         error: true,
@@ -44,10 +41,5 @@ app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
     })
 })
 
-/* DB Connection */
 dbConnect()
-
-/* listen on port 5000 */
-app.listen(port, () => {
-    console.log(portConnect)
-})
+app.listen(port, () => console.log(portConnect))

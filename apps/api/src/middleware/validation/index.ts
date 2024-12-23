@@ -2,16 +2,20 @@ import { body } from "express-validator";
 
 export const authRegisterValidation = [
     body(['email', 'firstName', 'lastName', 'phoneNumber']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
-    body('email').isString().escape(),
-    body('firstName').isString().escape(),
-    body('lastName').isString().escape(),
-    body('phoneNumber').isString().escape()
+    body('email').isEmail().withMessage('Format email tidak valid')
+        .trim().escape(),
+    body('firstName').isString().trim().escape(),
+    body('lastName').isString().trim().escape(),
+    body('phoneNumber').isString()
+        .matches(/^[0-9]+$/).withMessage('Nomor telepon hanya boleh berisi angka')
+        .isLength({ min: 10, max: 15 }).withMessage('Nomor telepon harus memiliki panjang 10-15 digit')
+        .trim().escape()
 ]
 
 export const authLoginValidation = [
     body(['email', 'password']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
-    body('email').isString().escape(),
-    body('password').isString().escape(),
+    body('email').isEmail().withMessage('Format email tidak valid').trim().escape(),
+    body('password').isString().isLength({ min: 8 }).withMessage('Password minimal 8 karakter').trim().escape(),
 ]
 
 export const createWorkerValidation = [

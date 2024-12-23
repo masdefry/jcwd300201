@@ -55,10 +55,10 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <Link href={dashboardUrl} className={`w-full flex 
                         ${Object.values(dashboardMenuUrl).includes(pathname) ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
-                    <Link href={role == 'OUTLET_ADMIN' ?  '/worker/admin-outlet/nota-order' : '/'} className={`w-full flex ${pathname == '/admin/features' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaCartArrowDown /> {role == 'OUTLET_ADMIN' ? 'Nota Order' : role === 'DRIVER' ? 'Delivery Request' : 'Menu Order'}</Link>
-                    <Link href='/admin/worker' className={`w-full flex ${pathname.startsWith('/admin/worker') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaMoneyBillWave />  {role == 'OUTLET_ADMIN' ? 'History Order' : role === 'DRIVER' ? 'Pickup Request' : 'Menu Order'}</Link>
+                    <Link href='/worker/admin-outlet/nota-order' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/nota-order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaCartArrowDown />Nota Order</Link>
+                    <Link href='/worker/admin-outlet/order' className={`w-full flex ${pathname.startsWith('/admin/worker') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaMoneyBillWave /> History Order</Link>
                     <Link href='/' className={`w-full ${pathname.startsWith('/worker/driver') ? 'hidden' : 'flex'} ${pathname == '/admin/category' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaHouseDamage /> {role == 'OUTLET_ADMIN' ? 'Resolve Order' : 'Menu Order'}</Link>
                 </div>
