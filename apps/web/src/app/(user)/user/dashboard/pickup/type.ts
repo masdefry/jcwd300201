@@ -1,7 +1,7 @@
 export interface IOrderType {
     id: number;
-    Type: string;
-    Price: number;
+    type: string;
+    price: number;
     createdAt: string;
     updatedAt: string;
     deletedAt?: string | null;

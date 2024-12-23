@@ -46,31 +46,6 @@ export default function Page() {
         }
     })
 
-    const { mutate: createProductItem, isPending } = useMutation({
-        mutationFn: async ({ itemName }: { itemName: string }) => {
-            return await instance.post('/worker/laundry-items', { itemName }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-        },
-        onSuccess: (res) => {
-
-            toast({
-                description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
-            refetch()
-            console.log(res)
-        },
-        onError: (err: any) => {
-            toast({
-                description: err?.response?.data?.message,
-                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
-            console.log(err)
-        }
-    })
 
     const getDataStore = dataItem?.findStore
     const totalPages = dataItem?.totalPage

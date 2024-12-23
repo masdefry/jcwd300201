@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 import { Prisma } from "@prisma/client";
 import { Status } from "@prisma/client";
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService } from "@/service/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService } from "@/service/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
 import dotenv from 'dotenv'
 
@@ -423,9 +423,9 @@ export const getOrdersForPacking = async (req: Request, res: Response, next: Nex
 export const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
-    const { email, userId, totalWeight, totalPrice, items } = req.body
+    const { email, userId, totalWeight, laundryPrice, items } = req.body
 
-    const { updatedOrder, dataItems, orderStatus } = await createOrderService({ orderId, email, userId, totalWeight, totalPrice, items });
+    const { updatedOrder, updatedOrderWithPaymentUrl, dataItems, orderStatus } = await createOrderService({ orderId, email, userId, totalWeight, laundryPrice, items });
 
     res.status(200).json({
       error: false,
@@ -433,6 +433,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       order: updatedOrder,
       orderDetails: dataItems,
       orderStatus: orderStatus,
+      OrderUrl: updatedOrderWithPaymentUrl
     });
 
   } catch (error) {
@@ -1145,7 +1146,7 @@ export const getAllOrderForAdmin = async (req: Request, res: Response, next: Nex
 export const orderStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
-    const {  email, userId } = req.body
+    const { email, userId } = req.body
 
     const { order, orderStatus } = await orderStatusService({ orderId, email, userId })
 
@@ -1160,20 +1161,34 @@ export const orderStatus = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-// export const deleteOrderUser = async (req: Request, res: Response, next: NextFunction) => {
-//   try {
-//     const { orderId } = req.params
-//     const { userId } = req.body
+export const getDriverHistory = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { page = '1', limit_data = '5', search = '', sort = 'date-asc', dateFrom, dateUntil, tab = ''} = req.query;
+    const { userId, authorizationRole, storeId } = req.body;
 
-//     const findOderStatus = await prisma.order.findFirst({
-//       where: {
-//         id: orderId,
-//         userId
-//       }
-//     })
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const tabTypes = typeof tab === "string" ? tab : ''
 
-//     if(findOderStatus && findOderStatus?.)
-//   } catch (error) {
-//     next(error)
-//   }
-// }
+
+    const { totalPage, orders } = await getDriverHistoryService({
+      userId, authorizationRole, storeId, limit_data: limitTypes, page: pageTypes,
+      search: searchTypes, dateFrom: dateFromTypes, dateUntil: dateUntilTypes, sort: sortTypes, tab: tabTypes
+    })
+
+    res.status(200).json({
+      error: false,
+      message: "Data order diterima!",
+      data: {
+        totalPage,
+        orders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};

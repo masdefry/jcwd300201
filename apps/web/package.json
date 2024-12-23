@@ -44,6 +44,7 @@
     "leaflet": "^1.9.4",
     "lucide-react": "^0.464.0",
     "mapbox-gl": "^3.9.0",
+    "midtrans-client": "^1.4.2",
     "next": "^15.0.3",
     "react": "^18",
     "react-apexcharts": "^1.7.0",
