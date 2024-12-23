@@ -26,7 +26,6 @@ export default function Page() {
         queryKey: ['get-data-store'],
         queryFn: async () => {
             const res = await instance.get('/store')
-
             return res?.data?.data
         }
     })

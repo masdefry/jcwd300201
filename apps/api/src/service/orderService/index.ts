@@ -3,7 +3,7 @@ import { validateEmail } from "@/middleware/validation/emailValidation"
 import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation"
 import fs, { rmSync } from 'fs'
 import dotenv from 'dotenv'
-import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone } from "./types"
+import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder } from "./types"
 import { Prisma, Role, Status } from "@prisma/client"
 import { addHours } from "date-fns"
 import { formatOrder } from "@/utils/formatOrder"
@@ -11,6 +11,7 @@ import { sortAndDeduplicateDiagnostics } from "typescript"
 
 dotenv.config()
 const excludedStatuses = [Status.PAYMENT_DONE];
+const excludedStatusesOrder = [Status.PAYMENT_DONE, Status.AWAITING_PAYMENT];
 
 export const requestPickUpService = async ({ userId, deliveryFee, outletId, orderTypeId, userAddressId }: IRequestPickup) => {
   const findUser = await prisma.user.findFirst({ where: { id: userId } })
@@ -163,11 +164,17 @@ export const getUserOrderService = async ({ userId, limit_data, page, search, da
       User: {
         select: {
           firstName: true,
-          lastName: true
+          lastName: true,
+          phoneNumber: true
         }
       },
       OrderType: true,
-      UserAddress: true,
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
       orderStatus: {
         orderBy: { createdAt: 'desc' },
         take: 1
@@ -264,8 +271,19 @@ export const getOrdersForDriverService = async ({ authorizationRole, tab, storeI
     where: whereConditions,
     orderBy,
     include: {
-      User: true,
-      UserAddress: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
       orderStatus: {
         orderBy: { createdAt: 'desc' },
         take: 1,
@@ -388,7 +406,13 @@ export const getOrderNoteDetailService = async ({ id, userId, authorizationRole,
       storeId,
     },
     include: {
-      User: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
       UserAddress: true,
       OrderType: true,
     },
@@ -510,8 +534,19 @@ export const getOrdersForWashingService = async ({
     where: whereConditions,
     orderBy,
     include: {
-      User: true,
-      UserAddress: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
       orderStatus: {
         where: {
           status: {
@@ -656,8 +691,19 @@ export const getOrdersForIroningService = async ({
     where: whereConditions,
     orderBy,
     include: {
-      User: true,
-      UserAddress: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
       orderStatus: {
         where: {
           status: {
@@ -715,6 +761,7 @@ export const createOrderService = async ({
       isSolved: true,
       isDone: false,
       isReqDelivery: false,
+      isConfirm: false,
       updatedAt: addHours(new Date(), 7)
     },
   });
@@ -957,8 +1004,19 @@ export const getOrdersForPackingService = async ({
     where: whereConditions,
     orderBy,
     include: {
-      User: true,
-      UserAddress: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
       orderStatus: {
         where: {
           status: {
@@ -1081,7 +1139,13 @@ export const getPackingHistoryService = async ({ userId, authorizationRole, stor
         orderBy: { createdAt: 'desc' },
         take: 1,
       },
-      User: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
     },
     skip: offset,
     take: Number(limit_data),
@@ -1178,7 +1242,13 @@ export const getIroningHistoryService = async ({ userId, authorizationRole, stor
         orderBy: { createdAt: 'desc' },
         take: 1,
       },
-      User: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
     },
     skip: offset,
     take: Number(limit_data),
@@ -1279,7 +1349,13 @@ export const getWashingHistoryService = async ({ userId, authorizationRole, stor
         orderBy: { createdAt: 'desc' },
         take: 1,
       },
-      User: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
     },
     skip: offset,
     take: Number(limit_data),
@@ -1363,8 +1439,19 @@ export const getNotesService = async ({ userId, authorizationRole, tab, limit_da
     skip: offset,
     take: Number(limit_data),
     include: {
-      User: true,
-      UserAddress: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
       orderStatus: {
         orderBy: { createdAt: 'desc' },
         take: 1,
@@ -1496,7 +1583,13 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
         orderBy: { createdAt: 'desc' },
         take: 1,
       },
-      User: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
     },
     skip: offset,
     take: Number(limit_data),
@@ -1620,8 +1713,19 @@ export const getOrdersForDeliveryService = async ({
     where: whereConditions,
     orderBy,
     include: {
-      User: true,
-      UserAddress: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
       orderStatus: {
         where: {
           status: {
@@ -1641,7 +1745,7 @@ export const getOrdersForDeliveryService = async ({
 
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
-    return statusFilter.includes(latestStatus) 
+    return statusFilter.includes(latestStatus)
 
   });
 
@@ -1733,7 +1837,7 @@ export const getOrdersForDriverDeliveryService = async ({
     orderStatus: {
       some: {
         status: { in: statusFilter },
-        ...(tab === 'DRIVER_TO_CUSTOMER'
+        ...(tab === 'DRIVER_TO_CUSTOMER' || tab === 'DRIVER_DELIVERED_LAUNDRY'
           ? { workerId: userId }
           : {}),
       },
@@ -1787,8 +1891,19 @@ export const getOrdersForDriverDeliveryService = async ({
     where: whereConditions,
     orderBy,
     include: {
-      User: true,
-      UserAddress: true,
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
       orderStatus: {
         where: {
           status: {
@@ -1894,9 +2009,195 @@ export const acceptOrderDeliveryService = async ({ email, orderId, userId }: IAc
     where: { id: order.id },
     data: {
       updatedAt: addHours(new Date(), 7),
-      isProcessed:false
+      isProcessed: false
     }
   });
 
   return { newStatus };
 }
+
+
+export const getAllOrderForAdminService = async ({
+  userId,
+  authorizationRole,
+  storeId,
+  page,
+  limit_data,
+  search,
+  sort,
+  tab,
+  dateFrom,
+  dateUntil,
+  outletId
+}: {
+  userId: string,
+  authorizationRole: Role,
+  storeId: string,
+  page: string,
+  limit_data: string,
+  search: string,
+  sort: string,
+  tab: string,
+  dateFrom?: string,
+  dateUntil?: string,
+  outletId: string
+}) => {
+  const offset = Number(limit_data) * (Number(page) - 1);
+
+  const worker = await prisma.worker.findUnique({
+    where: {
+      id: userId,
+      workerRole: authorizationRole,
+    },
+    select: { storeId: true },
+  });
+
+  if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
+
+  let statusFilter: any;
+  if (tab === "proses") {
+    statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
+  } else if (tab === "selesai") {
+    statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
+  } else if (tab) {
+    statusFilter = [tab];
+  } else {
+    statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
+  }
+  const parsedDateFrom = dateFrom ? new Date(dateFrom as string) : undefined;
+  const parsedDateUntil = dateUntil ? new Date(dateUntil as string) : undefined;
+
+  const whereConditions: Prisma.OrderWhereInput = {
+    ...(outletId ? { storeId: outletId } : {}),
+    orderStatus: {
+      some: {
+        status: { in: statusFilter },
+      },
+    },
+    AND: [
+      search
+        ? {
+          OR: [
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
+          ],
+        }
+        : {},
+      ...(tab === 'proses' ? [{ isConfirm: false }] : []),
+      ...(tab === 'selesai' ? [{ isConfirm: true }] : []),
+      parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
+      parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
+    ].filter((condition) => Object.keys(condition).length > 0),
+  };
+
+
+  let orderBy: Prisma.OrderOrderByWithRelationInput;
+  if (sort === 'date-asc') {
+    orderBy = { createdAt: 'asc' };
+  } else if (sort === 'date-desc') {
+    orderBy = { createdAt: 'desc' };
+  } else if (sort === 'name-asc') {
+    orderBy = {
+      User: {
+        firstName: 'asc',
+      },
+    };
+  } else if (sort === 'name-desc') {
+    orderBy = {
+      User: {
+        firstName: 'desc',
+      },
+    };
+  } else if (sort === 'order-id-asc') {
+    orderBy = { id: 'asc' };
+  } else if (sort === 'order-id-desc') {
+    orderBy = { id: 'desc' };
+  } else {
+    orderBy = { createdAt: 'desc' };
+  }
+
+  const orders = await prisma.order.findMany({
+    where: whereConditions,
+    orderBy,
+    include: {
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
+      orderStatus: {
+        where: {
+          status: {
+            notIn: excludedStatusesOrder,
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+      },
+      OrderType: {
+        select: {
+          Type: true,
+        },
+      },
+    },
+  });
+
+  const filteredOrders = orders.filter(order => {
+    const latestStatus = order.orderStatus[0]?.status;
+    return statusFilter.includes(latestStatus)
+
+  });
+
+  const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
+
+  const totalCount = filteredOrders.length;
+
+  const totalPage = Math.ceil(totalCount / Number(limit_data));
+
+  return {
+    totalPage,
+    orders: paginatedOrders,
+  };
+}
+
+
+export const orderStatusService = async ({ orderId, email, userId }: IWashingProcessDone) => {
+  const findWorker = await prisma.worker.findFirst({
+    where: { email }
+  })
+
+  if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+
+  const order = await prisma.order.findUnique({
+    where: {
+      id: String(orderId),
+    },
+    include: {
+      OrderType:true
+    }
+  });
+
+  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+
+
+  const orderStatus = await prisma.orderStatus.findMany({
+    where: {
+      orderId: order.id
+    },
+    include: {
+      Worker: true
+    }
+  })
+  return { order, orderStatus };
+};
