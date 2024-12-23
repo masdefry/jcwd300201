@@ -109,9 +109,9 @@ export default function Header() {
   const settingsUrl = settingsMenuUrl[role] || ''
 
   return (
-    <nav className={`w-full h-fit fixed bg-white z-20 ${pathname == '/worker/login' || pathname == '/user/login'
+    <nav className={`w-full h-fit hidden md:block md:fixed bg-white z-20 ${pathname == '/worker/login' || pathname == '/user/login'
       || pathname?.split('/')[2] === 'set-password' || pathname == '/user/register' || pathname.startsWith('/admin') || pathname.startsWith('/worker') || pathname.startsWith('/user/resend-email')
-      || pathname.startsWith('/user/dashboard') ? 'hidden' : ''}`}>
+      || pathname.startsWith('/user/dashboard') ? 'md:hidden' : ''}`}>
       <div className="w-full h-fit bg-white border-b flex justify-between items-center px-10 py-3 z-50 relative">
         <div className="w-fit h-16">
           <Link href='/'>

@@ -55,8 +55,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { toast } = useToast();
 
     const { mutate: handleCreateNotaOrder, isPending } = useMutation({
-        mutationFn: async ({ email, totalWeight, totalPrice, items }: any) => {
-            return await instance.post(`/order/order/${slug}`, { email, totalWeight, totalPrice, items }, {
+        mutationFn: async ({ email, totalWeight, laundryPrice, items }: any) => {
+            return await instance.post(`/order/order/${slug}`, { email, totalWeight, laundryPrice, items }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -129,7 +129,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     itemName: '',
                                     quantity: 1,
                                     weight: 0.1,
-                                    totalPrice: 0,
+                                    laundryPrice: 0,
                                     totalWeight: 0
                                 }}
                                 onSubmit={(values: any) => {
@@ -143,17 +143,17 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     handleCreateNotaOrder({
                                         email: email,
                                         totalWeight: values.totalWeight,
-                                        totalPrice: values.totalPrice,
+                                        laundryPrice: values.laundryPrice,
                                         items: values.items
                                     })
                                 }}
                             >
                                 {({ values, setFieldValue }) => {
-                                    
+
                                     const calculatePrice = () => {
-                                        const pricePerKg = dataOrderNote[0].OrderType?.Price || 0;
-                                        const totalPrice = values.totalWeight * pricePerKg;
-                                        setFieldValue("totalPrice", totalPrice);
+                                        const pricePerKg = dataOrderNote[0].OrderType?.price || 0;
+                                        const laundryPrice = values.totalWeight * pricePerKg;
+                                        setFieldValue("laundryPrice", laundryPrice);
                                     };
 
                                     // eslint-disable-next-line react-hooks/rules-of-hooks
@@ -188,7 +188,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     <label className="text-sm">Order Type</label>
                                                     <input
                                                         type="text"
-                                                        value={dataOrderNote[0].OrderType?.Type}
+                                                        value={dataOrderNote[0].OrderType?.type}
                                                         disabled
                                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                                     />
@@ -218,7 +218,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                             className="border border-gray-500 rounded-md p-2"
                                                             min="1"
                                                         />
-                                            
+
                                                     </div>
                                                     <button
                                                         type="button"
@@ -285,28 +285,28 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                             <div className="mt-4 flex items-center gap-4">
                                                 <label className="block text-sm font-medium text-gray-700">Total Berat (kg)</label>
                                                 <div className="relative mt-2">
-                                                <Field
-                                                    name="totalWeight"
-                                                    type="number"
-                                                    placeholder="Enter total weight"
-                                                    className="block w-full rounded-lg border-gray-600 shadow-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-3"
-                                                    min="1"
-                                                    step="1"
-                                                />
-                                                <ErrorMessage
-                                                    name="totalWeight"
-                                                    component="div"
-                                                    className="absolute -bottom-5 left-0 text-xs text-red-600"
-                                                />
+                                                    <Field
+                                                        name="totalWeight"
+                                                        type="number"
+                                                        placeholder="Enter total weight"
+                                                        className="block w-full rounded-lg border-gray-600 shadow-lg focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm p-3"
+                                                        min="1"
+                                                        step="1"
+                                                    />
+                                                    <ErrorMessage
+                                                        name="totalWeight"
+                                                        component="div"
+                                                        className="absolute -bottom-5 left-0 text-xs text-red-600"
+                                                    />
                                                 </div>
                                             </div>
 
-       
+
                                             <div className="mt-5 bg-gray-50 rounded-lg shadow-sm p-4">
                                                 <p className="text-sm font-semibold text-gray-700">Ringkasan</p>
-                                                <p className="text-lg font-bold text-green-600 mt-1">Total Harga: Rp{values.totalPrice.toLocaleString('id-ID')}</p>
+                                                <p className="text-lg font-bold text-green-600 mt-1">Total Harga: Rp{values.laundryPrice.toLocaleString('id-ID')}</p>
                                             </div>
-                                           
+
                                             <button
                                                 type="submit"
                                                 className="bg-green-500 text-white rounded-md p-3 mt-4"

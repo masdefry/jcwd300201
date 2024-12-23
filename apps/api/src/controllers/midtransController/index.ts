@@ -1,27 +1,25 @@
-import { NextFunction, Request, Response } from "express";
+import { Prisma } from "@prisma/client";
+import { Status } from "@prisma/client";
+import { Request, Response, NextFunction } from "express";
+import prisma from "@/connection";
+import { handleMidtransNotificationService } from "@/service/midtransService";
 
-export const createTransactionMidtrans = async (req: Request, res: Response, next: NextFunction) => {
+
+export const handleMidtransNotification = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { userId, totalPrice, totalWeight } = req.body
+        const notification = req.body;
+        const transactionStatus = notification.transaction_status;
+        const orderId = notification.order_id;
 
-        //         id           String   @id @default(uuid())
-        //   totalPrice   Int?
-        //   totalWeight  Int?
-        //   discount     Float?
-        //   deliveryFee  Int
-        //   paymentProof String?
-        //   isPaid       Boolean
-        //   isProcessed  Boolean?
+        handleMidtransNotificationService({ orderId, transactionStatus })
 
-        //   isSolved Boolean?
-        //   notes    String?
 
-        //   storeId      String?
-        //   usersId       String?
-        //   orderTypeId   Int?
-        //   userAddressId Int?
+        res.status(200).json({
+            error: false,
+            message: 'Transaksi Berhasil Di-Update',
+        });
 
     } catch (error) {
-        next(error)
+        next(error);
     }
-}
+};

@@ -41,6 +41,7 @@ export default function Page() {
         }
     })
 
+
     const getDataStore = dataItem?.findStore
     const totalPages = dataItem?.totalPage
 

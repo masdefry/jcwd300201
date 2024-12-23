@@ -120,7 +120,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
             })
-           
+
         }
     })
 
@@ -223,7 +223,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     <label className="text-sm">Order Type</label>
                                                     <input
                                                         type="text"
-                                                        value={dataOrderNote[0].OrderType?.Type}
+                                                        value={dataOrderNote[0].OrderType?.type}
                                                         disabled
                                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                                     />

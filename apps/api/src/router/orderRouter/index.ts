@@ -1,4 +1,4 @@
-import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus } from "@/controllers/orderController";
+import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
 import { limiter } from "@/middleware/rateLimit";
 import { roleCheckAdmin, roleCheckCustomer, roleCheckSuperAdmin } from "@/middleware/roleCheck";
@@ -47,6 +47,7 @@ orderRouter.post('/order/:orderId', tokenValidation, createOrder)
 orderRouter.get('/history-washing/', tokenValidation, getWashingHistory)
 orderRouter.get('/history-ironing/', tokenValidation, getIroningHistory)
 orderRouter.get('/history-packing/', tokenValidation, getPackingHistory)
+orderRouter.get('/history-driver/', tokenValidation, getDriverHistory)
 
 // Nota Order
 orderRouter.get('/order-notes', tokenValidation, getNotes)

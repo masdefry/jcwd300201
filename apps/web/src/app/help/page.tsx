@@ -1,7 +1,18 @@
+'use client'
+
+import MobileWebLayout from "@/components/core/mobileSessionLayout";
+import { useRouter } from "next/navigation";
+import { CgArrowLeft } from "react-icons/cg";
+
 export default function Page() {
+
     return (
-        <div>
-            Enter
-        </div>
+        <>
+            <MobileWebLayout title="Bantuan">
+                <div className="w-full h-fit">
+                    <h1>Hallo</h1>
+                </div>
+            </MobileWebLayout>
+        </>
     );
 }

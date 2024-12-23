@@ -35,7 +35,7 @@ import {
 import { FaPlus } from "react-icons/fa6";
 
 
-export default function DeliveryRequest() {
+export default function OrderList() {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -53,7 +53,6 @@ export default function DeliveryRequest() {
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [outletId, setOutletId] = useState<any>(null);
-    console.log(outletId)
 
     const limit = 5;
 
@@ -90,7 +89,7 @@ export default function DeliveryRequest() {
         },
     })
 
-    const { data: getDataStore,isFetching, isLoading: isStoreLoading, isError: isStoreError } = useQuery({
+    const { data: getDataStore, isFetching, isLoading: isStoreLoading, isError: isStoreError } = useQuery({
         queryKey: ['get-data-store'],
         queryFn: async () => {
             const res = await instance.get('/store')
@@ -269,7 +268,7 @@ export default function DeliveryRequest() {
                                                 <div className="flex justify-between items-center">
                                                     <div className="flex flex-col">
                                                         <h2 className="text-base font-semibold">{orderData?.order?.id}</h2>
-                                                        <h2 className="text-base">{orderData?.order?.OrderType?.Type}</h2>
+                                                        <h2 className="text-base">{orderData?.order?.OrderType?.type}</h2>
                                                     </div>
                                                     <div className="flex flex-col">
 
@@ -349,11 +348,11 @@ export default function DeliveryRequest() {
                                             </div>
                                             <div className="flex justify-between">
                                                 <span>Harga Laundry:</span>
-                                                <span>Rp{orderData?.order?.totalPrice?.toLocaleString("id-ID")}</span>
+                                                <span>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</span>
                                             </div>
                                             <div className="flex justify-between font-semibold">
                                                 <span>Total Harga:</span>
-                                                <span>Rp{(orderData?.order?.deliveryFee + orderData?.order?.totalPrice)?.toLocaleString("id-ID")}</span>
+                                                <span>Rp{(orderData?.order?.deliveryFee + orderData?.order?.laundryPrice)?.toLocaleString("id-ID")}</span>
                                             </div>
                                         </>
                                     ) : (
@@ -406,8 +405,8 @@ export default function DeliveryRequest() {
                             </tr>
                         </thead>
                         <tbody>
-                            {getDataItem?.length > 0 ? (
-                                getDataItem?.map((order: any, i: number) => {
+                            {dataOrderList?.orders?.length > 0 ? (
+                                dataOrderList?.orders?.map((order: any, i: number) => {
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
