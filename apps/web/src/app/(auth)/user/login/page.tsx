@@ -129,7 +129,7 @@ export default function Page() {
                             <Link
                                 href={'/user/resend-email'}
                                 className="text-sm text-blue-500 hover:underline">
-                                Lupa kata sandi?
+                                Atur ulang kata sandi?
                             </Link>
                         </div>
                     </div>

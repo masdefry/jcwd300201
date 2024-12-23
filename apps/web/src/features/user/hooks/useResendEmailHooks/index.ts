@@ -9,7 +9,7 @@ export const useResendEmailUserHooks = () => {
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
     const { mutate: handleResendEmail, isPending } = useMutation({
         mutationFn: async ({ email }: { email: string }) => {
-            return await instance.post('/user/forgot-password', { email })
+            return await instance.post('/auth/forgot-password', { email })
         },
 
         onSuccess: (res) => {

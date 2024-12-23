@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 import { Prisma } from "@prisma/client";
 import { Status } from "@prisma/client";
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService } from "@/service/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService } from "@/service/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
 import dotenv from 'dotenv'
 
@@ -1093,64 +1093,68 @@ export const acceptOrderDelivery = async (req: Request, res: Response, next: Nex
 
 export const getAllOrderForAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { search = '', sort = '', page = '1', limit_data = '5' } = req.query
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil,
+      outletId
+    } = req.query
 
-    const take = parseInt(limit_data as string)
-    const skip = (parseInt(page as string) - 1) * take
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+    const outletIdTypes = typeof outletId !== 'string' ? "" : outletId
 
-    let findAllOrder
-    if (search) {
-      findAllOrder = {
-        OR: [
-          { id: { contains: search as string } },
-          { userId: { contains: search as string } },
-        ]
+    const { totalPage, orders: paginatedOrders } = await getAllOrderForAdminService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
+        page: pageTypes,
+        limit_data: limitTypes,
+        search: searchTypes,
+        sort: sortTypes,
+        tab: tabTypes,
+        dateFrom: dateFromTypes,
+        dateUntil: dateUntilTypes,
+        outletId: outletIdTypes
       }
-    }
-
-    let dataOrder;
-    if (sort == 'order-asc') {
-      dataOrder = await prisma.order.findMany({
-        where: findAllOrder, take, skip, orderBy: { createdAt: 'asc' },
-        include: {
-          orderStatus: { select: { status: true } },
-          User: { select: { firstName: true, lastName: true } },
-          Store: { select: { storeName: true } }
-        },
-
-      })
-    } else if (sort == 'order-desc') {
-      dataOrder = await prisma.order.findMany({
-        where: findAllOrder, take, skip, orderBy: { createdAt: 'desc' },
-        include: {
-          orderStatus: { select: { status: true } },
-          User: { select: { firstName: true, lastName: true } },
-          Store: { select: { storeName: true } }
-        },
-      })
-    } else {
-      dataOrder = await prisma.order.findMany({
-        where: findAllOrder, take, skip,
-        include: {
-          orderStatus: { select: { status: true } },
-          User: { select: { firstName: true, lastName: true } },
-          Store: { select: { storeName: true } }
-        },
-      })
-    }
-
-    const totalData = await prisma.order.count({
-      where: findAllOrder
-    })
-
-    const totalPages = Math.ceil(Number(totalData) / take)
+    );
 
     res.status(200).json({
       error: false,
-      message: 'Berhasil mendapatkan data',
-      data: { totalPages, dataOrder }
-    })
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+export const orderStatus = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const {  email, userId } = req.body
 
+    const { order, orderStatus } = await orderStatusService({ orderId, email, userId })
+
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: { orderStatus, order },
+    })
   } catch (error) {
     next(error)
   }

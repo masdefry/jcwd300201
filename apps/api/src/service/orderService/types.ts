@@ -123,6 +123,12 @@ export interface IWashingProcessDone {
     email: string,
     userId: string,
 }
+export interface IStatusOrder {
+    storeId: string,
+    orderId:string,
+    email: string,
+    userId: string,
+}
 export interface IIroningProcessDone {
     orderId:string,
     email: string,

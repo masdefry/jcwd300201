@@ -21,7 +21,7 @@ export const useSetPasswordHooks = (params: Promise<IParamsType>) => {
 
     const { mutate: handleSetPassword, isPending } = useMutation({
         mutationFn: async ({ password }: { password: string }) => {
-            return await instance.post('/user/set-password', { password }, {
+            return await instance.post('/auth/set-password', { password }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

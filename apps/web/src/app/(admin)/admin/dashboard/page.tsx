@@ -43,8 +43,8 @@ export default function Page() {
 
     return (
         <>
-            <main className="w-full h-fit">
-                <section className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
+            <main className="w-full h-fit md:hidden block">
+                <section className="w-full h-fit md:max-w-full max-w-[425px]">
                     <section>
                         <Image src={'/images/New Project.webp'} alt="header"
                             height={500} width={500} />

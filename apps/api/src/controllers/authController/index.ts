@@ -1,16 +1,15 @@
 import prisma from "@/connection"
-import { createWorkerService, signInWithGoogleService, userLoginService, userRegisterService, workerLoginService } from "@/service/authService";
+import { createWorkerService, forgotPasswordUserService, resendSetPasswordService, setPasswordUserService, signInWithGoogleService, userLoginService, userRegisterService, workerLoginService } from "@/service/authService";
 import { NextFunction, Request, Response } from "express";
 import { nanoid } from "nanoid";
 import jwt from 'jsonwebtoken'
 import { hashPassword } from "@/utils/passwordHash";
 import { encodeToken } from "@/utils/tokenValidation";
+import { compile } from "handlebars";
+import fs from 'fs'
 
 const secret_key: string | undefined = process.env.JWT_SECRET as string
 
-/* user authenticate */
-
-/* user register */
 export const userRegister = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, firstName, lastName, phoneNumber } = req?.body
@@ -31,7 +30,6 @@ export const userRegister = async (req: Request, res: Response, next: NextFuncti
     }
 }
 
-/* user login */
 export const userLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req?.body
@@ -57,7 +55,6 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
     }
 }
 
-/* user logout */
 export const userLogout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email } = req.body
@@ -83,7 +80,6 @@ export const userLogout = async (req: Request, res: Response, next: NextFunction
     }
 }
 
-/* user login with google */
 export const signInWithGoogle = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { firstName, lastName, email, profilePicture } = req.body;
@@ -148,10 +144,58 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
     }
 }
 
+export const resendSetPassword = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = req.body
 
-/* worker authentication */
+        await resendSetPasswordService({ email })
 
-/* worker login */
+        res.status(200).json({
+            error: false,
+            message: 'Harap cek email anda secara berkala',
+            data: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const setPasswordUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { userId, password } = req.body
+        const { authorization } = req.headers
+
+        await setPasswordUserService({ authorization, userId, password })
+
+        res.status(200).json({
+            error: false,
+            message: 'Berhasil, silahkan masuk',
+            data: {}
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const forgotPasswordUser = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = req.body
+
+        await forgotPasswordUserService({ email })
+
+        res.status(200).json({
+            error: false,
+            message: 'Harap cek email anda secara berkala',
+            data: {}
+        })
+
+    } catch (error) {
+        next(error)
+    }
+}
+
+/* worker */
 export const workerLogin = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, password } = req.body
@@ -176,7 +220,6 @@ export const workerLogin = async (req: Request, res: Response, next: NextFunctio
     }
 }
 
-/* worker register */
 export const workerRegisterByAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email, firstName, lastName, phoneNumber, workerRole, identityNumber, storeId, motorcycleType, plateNumber } = req.body
@@ -208,7 +251,6 @@ export const workerRegisterByAdmin = async (req: Request, res: Response, next: N
     }
 }
 
-/* worker logout */
 export const workerLogout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email } = req.body
@@ -237,7 +279,6 @@ export const workerLogout = async (req: Request, res: Response, next: NextFuncti
     }
 }
 
-// keep auth
 export const userKeepAuth = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { userId, authorizationRole } = req.body
@@ -292,6 +333,27 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
             } : {}
         })
 
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const resendEmailWorker = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { email } = req.body
+
+        const findUser = await prisma.worker.findFirst({ where: { email } })
+        if (!findUser) throw { msg: 'Pekerja tidak terdaftar', status: 401 }
+        const token = await encodeToken({ id: findUser?.id, role: findUser?.workerRole, expiresIn: '1h' })
+    
+        const emailFile = fs.readFileSync('./src/public/sendMail/email.html', 'utf-8')
+        let compiledHtml: any = compile(emailFile)
+        compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
+    
+        // await prisma.worker.update({
+        //     where: { id: findUser?.id },
+        //     data: { forgotPasswordToken: token }
+        // })
     } catch (error) {
         next(error)
     }

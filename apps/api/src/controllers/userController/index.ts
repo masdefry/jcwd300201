@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import prisma from "@/connection"
-import { changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, deleteUserAddressService, forgotPasswordUserService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, resendSetPasswordService, setPasswordUserService, updateProfileUserService, userCreateAddressService, userEditAddressService } from "@/service/userService"
+import { changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, deleteUserAddressService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, updateProfileUserService, userCreateAddressService, userEditAddressService } from "@/service/userService"
 import dotenv from 'dotenv'
 
 dotenv.config()
@@ -36,7 +36,7 @@ export const userEditAddress = async (req: Request, res: Response, next: NextFun
   } catch (error) {
     next(error)
   }
-} 
+}
 
 export const getSingleAddressUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -59,7 +59,7 @@ export const getAllUserAddresses = async (req: Request, res: Response, next: Nex
   try {
     const { userId } = req.body
     const { search } = req.query
-    
+
     const searchType = typeof search === 'string' ? search : ''
     const { addresses } = await getAllUserAddressesService({ userId, search: searchType as string })
 
@@ -84,57 +84,6 @@ export const getUserMainAddress = async (req: Request, res: Response, next: Next
       message: "Alamat berhasil ditambahkan",
       data: mainAddress,
     });
-  } catch (error) {
-    next(error)
-  }
-};
-
-export const resendSetPassword = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { email } = req.body
-
-    await resendSetPasswordService({ email })
-
-    res.status(200).json({
-      error: false,
-      message: 'Harap cek email anda secara berkala',
-      data: {}
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const setPasswordUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { userId, password } = req.body
-    const { authorization } = req.headers
-
-    await setPasswordUserService({ authorization, userId, password })
-
-    res.status(200).json({
-      error: false,
-      message: 'Berhasil, silahkan masuk',
-      data: {}
-    })
-
-  } catch (error) {
-    next(error)
-  }
-}
-
-export const forgotPasswordUser = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { email } = req.body
-
-    await forgotPasswordUserService({ email })
-
-    res.status(200).json({
-      error: false,
-      message: 'Harap cek email anda secara berkala',
-      data: {}
-    })
-
   } catch (error) {
     next(error)
   }

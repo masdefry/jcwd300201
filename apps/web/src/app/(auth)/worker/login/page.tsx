@@ -112,7 +112,7 @@ export default function Page() {
                         <div className="flex w-full justify-between items-center">
                             <div className="flex items-center gap-1 text-sm"></div>
                             <Link href={'/user/resend-email'} className="text-sm text-blue-500 hover:underline">
-                                Lupa kata sandi?
+                                Atur ulang kata sandi?
                             </Link>
                         </div>
                     </div>
