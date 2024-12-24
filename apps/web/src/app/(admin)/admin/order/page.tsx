@@ -47,13 +47,12 @@ export default function DeliveryRequest() {
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
 
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState("date-asc");
-    const [activeTab, setActiveTab] = useState("proses");
+    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "proses");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
-    const [outletId, setOutletId] = useState<any>(null);
-    console.log(outletId)
+    const [outletId, setOutletId] = useState(params.get("outletId") || null);
 
     const limit = 5;
 
@@ -78,6 +77,7 @@ export default function DeliveryRequest() {
     });
     const [openDialog, setOpenDialog] = useState(false);
     const [orderData, setOrderData] = useState<any>(null);
+    console.log(orderData)
 
     const { mutate: handleOrderDetail } = useMutation({
         mutationFn: async (id: any) => {
@@ -206,7 +206,6 @@ export default function DeliveryRequest() {
                                             setDateUntil={setDateUntil}
                                             setActiveTab={setActiveTab}
                                             setSearchInput={setSearchInput}
-                                            selectTab="proses"
                                         />
                                         {dataOrderListLoading && <div>Loading...</div>}
                                         {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
@@ -233,11 +232,23 @@ export default function DeliveryRequest() {
                                                             {order?.User?.firstName} {order?.User?.lastName}
                                                         </h2>
                                                         <div className="text-xs text-gray-500">
-                                                            {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
-                                                                ? 'Menunggu Pembayaran' :
-                                                                order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                                    ? 'Siap untuk dikirim'
-                                                                    : 'tes'}
+                                                            {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                                ? 'Menunggu Driver'
+                                                                : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                                    ? 'Driver Menuju Store'
+                                                                    : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
+                                                                        ? 'Diterima Outlet'
+                                                                        : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                            ? 'Proses Cuci'
+                                                                            : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'
+                                                                                ? 'Proses Setrika'
+                                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                                                    ? 'Proses Packing'
+                                                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
+                                                                                        ? 'Proses Delivery'
+                                                                                        : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
+                                                                                            ? 'Laundry Sampai'
+                                                                                            : 'Status tidak dikenal'}
                                                         </div>
                                                         <p className="text-xs text-gray-500">
                                                             {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
@@ -280,26 +291,9 @@ export default function DeliveryRequest() {
                                                 </div>
                                             </div>
 
-                                            {/* Map Order Items */}
-                                            {/* <div className="space-y-2">
-                                                <h3 className="font-medium">Order Items</h3>
-                                                {selectedOrder.orderItems?.map((item: any, index: number) => (
-                                                    <div key={index} className="flex justify-between">
-                                                        <span>{item.item}</span>
-                                                        <span>{item.price.toLocaleString("id-ID", { style: "currency", currency: "IDR" })}</span>
-                                                    </div>
-                                                ))}
-                                            </div> */}
 
-                                            {/* Map Order Status */}
-                                            {/* <div className="space-y-2">
-                                                <h3 className="font-medium">Order Status</h3>
-                                                {selectedOrder.orderStatus?.map((status: any, index: number) => (
-                                                    <div key={index} className="text-sm text-gray-500">
-                                                        {status.status}
-                                                    </div>
-                                                ))}
-                                            </div> */}
+
+
                                             <div className="flex flex-row justify-between">
                                                 <div>
                                                     Proses :
@@ -340,6 +334,18 @@ export default function DeliveryRequest() {
                                                             )}
                                                         </div>
                                                     </div>
+                                                </div>
+                                            </div>
+
+                                            {/* Map Order Items */}
+                                            <div className="text-center">
+                                                <h3 className="font-medium">Order Items</h3>
+                                                <div className="grid grid-cols-2  justify-items-center">
+                                                    {orderData.orderDetail?.map((item: any, index: number) => (
+                                                        <div key={index} className="border-b border-black py-1 flex items-center justify-center">
+                                                            <span>{item?.quantity}x {item?.LaundryItem?.itemName}</span>
+                                                        </div>
+                                                    ))}
                                                 </div>
                                             </div>
                                             {/* Delivery Fee and Total Price */}

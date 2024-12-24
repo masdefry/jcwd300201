@@ -38,8 +38,8 @@ export default function Page() {
     const [page, setPage] = useState<number>(1)
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
-    const [sortOption, setSortOption] = useState("date-asc");
-    const [activeTab, setActiveTab] = useState("all");
+    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const limit = 5;
