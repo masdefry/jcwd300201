@@ -13,25 +13,21 @@ const Timeline = ({ orderStatus }: any) => {
         'DRIVER_DELIVERED_LAUNDRY'
     ];
 
-    // Check which statuses are in the fetched orderStatus array
     const statusesInOrder = orderStatus.map((statusItem: any) => statusItem.status);
 
     return (
         <div className="relative">
             {allStatuses.map((status, index) => {
-                // Determine if the current status should be blue (i.e., exists in the order status data)
                 const isBlue = statusesInOrder.includes(status);
 
                 return (
                     <div key={status} className="flex items-center">
-                        {/* Line connecting the circles */}
                         {index < allStatuses.length - 1 && (
                             <div
                                 className='absolute w-1 bg-gray-300 h-8 top-2 left-2 z-0'
                             ></div>
                         )}
 
-                        {/* Circle for the status */}
                         <div
                             className={`w-6 h-6 z-10 rounded-full flex items-center justify-center 
                 ${isBlue ? 'bg-blue-500' : 'bg-gray-400'}
@@ -41,7 +37,6 @@ const Timeline = ({ orderStatus }: any) => {
                             <span className="text-white text-sm">{index + 1}</span>
                         </div>
 
-                        {/* Status text */}
                         <div className="ml-4 text-sm font-medium text-gray-800">
                             {statusTranslations[status] || status}
                         </div>
@@ -51,9 +46,7 @@ const Timeline = ({ orderStatus }: any) => {
         </div>
     );
 };
-
-
-                            
+    
 
 const statusTranslations: Record<string, string> = {
     "AWAITING_DRIVER_PICKUP": "Menunggu Pickup",

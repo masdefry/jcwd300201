@@ -30,8 +30,8 @@ export default function DriverDelivery() {
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState("date-asc");
-    const [activeTab, setActiveTab] = useState("semua");
+    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "semua");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -175,7 +175,6 @@ export default function DriverDelivery() {
                                             setDateUntil={setDateUntil}
                                             setActiveTab={setActiveTab}
                                             setSearchInput={setSearchInput}
-                                            selectTab="semua"
                                         />
                                         {dataOrderDeliveryLoading && <div>Loading...</div>}
                                         {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}

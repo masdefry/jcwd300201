@@ -39,8 +39,8 @@ export default function DriverPickUp() {
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState("date-asc");
-    const [activeTab, setActiveTab] = useState("semua");
+    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "semua");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
 

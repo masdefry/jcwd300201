@@ -47,8 +47,8 @@ export default function DeliveryRequest() {
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState("date-asc");
-    const [activeTab, setActiveTab] = useState("menungguPembayaran");
+    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "menungguPembayaran");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -169,7 +169,6 @@ export default function DeliveryRequest() {
                                             setDateUntil={setDateUntil}
                                             setActiveTab={setActiveTab}
                                             setSearchInput={setSearchInput}
-                                            selectTab="menungguPembayaran"
                                         />
                                         {dataOrderDeliveryLoading && <div>Loading...</div>}
                                         {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}

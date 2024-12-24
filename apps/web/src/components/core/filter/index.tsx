@@ -10,7 +10,7 @@ import { IoMdRefresh } from "react-icons/io";
 import { IFilterProps } from "./type";
 
 
-export default function FilterWorker({ debounce, sortOption, setSortOption, selectTab = 'semua', dateFrom, dateUntil, setDateFrom, setDateUntil, setActiveTab, setSearchInput }: IFilterProps) {
+export default function FilterWorker({ debounce, sortOption, setSortOption, dateFrom, dateUntil, setDateFrom, setDateUntil, setActiveTab, setSearchInput }: IFilterProps) {
     return (
         <>
             <div className="flex justify-between gap-1 items-center">
@@ -68,7 +68,6 @@ export default function FilterWorker({ debounce, sortOption, setSortOption, sele
                     <button className="flex items-center justify-center h-10 w-10 px-2 border rounded-lg border-gray-500 mr-2"
                         onClick={() => {
                             setSortOption("date-asc"),
-                                setActiveTab(selectTab),
                                 setDateFrom(null),
                                 setDateUntil(null),
                                 setSearchInput('');

@@ -47,8 +47,8 @@ export default function DriverPickUp() {
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState("date-asc");
-    const [activeTab, setActiveTab] = useState("bermasalah");
+    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "bermasalah");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -169,7 +169,6 @@ export default function DriverPickUp() {
                                             setDateUntil={setDateUntil}
                                             setActiveTab={setActiveTab}
                                             setSearchInput={setSearchInput}
-                                            selectTab="bermasalah"
                                         />
                                         {dataOrderPackingProcessLoading && <div>Loading...</div>}
                                         {dataOrderPackingProcessError && <div>Silahkan coba beberapa saat lagi.</div>}

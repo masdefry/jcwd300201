@@ -2,10 +2,11 @@ import prisma from "@/connection"
 import { validateEmail } from "@/middleware/validation/emailValidation"
 import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation"
 import fs, { rmSync } from 'fs'
+import cron from 'node-cron'
 import dotenv from 'dotenv'
 import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory } from "./types"
 import { Prisma, Role, Status } from "@prisma/client"
-import { addHours } from "date-fns"
+import { addHours, isBefore } from "date-fns"
 import { formatOrder } from "@/utils/formatOrder"
 
 import { sortAndDeduplicateDiagnostics } from "typescript"
@@ -2017,6 +2018,36 @@ export const processOrderDeliveryService = async ({ email, orderId, userId }: IA
   return { newStatus }
 }
 
+export const schedulePaymentCheck = async (orderId: string, checkTime: Date) => {
+  const task = cron.schedule(`*/1 * * * *`, async () => {
+    try {
+      const now = new Date();
+
+      if (isBefore(now, checkTime)) return; 
+
+      const order = await prisma.order.findFirst({
+        where: { id: orderId },
+      });
+
+      if (order && order.isPaid === false) {
+        await prisma.order.update({
+          where: { id: order.id },
+          data: {
+            isPaid: true,
+            updatedAt: addHours(new Date(), 7),
+          },
+        });
+
+        console.log(`Order ${orderId} has been marked as paid after 48 hours.`);
+      }
+
+      task.stop();
+    } catch (error) {
+      task.stop();
+    }
+  });
+};
+
 
 export const acceptOrderDeliveryService = async ({ email, orderId, userId }: IAcceptOrderOutlet) => {
   const findWorker = await prisma.worker.findFirst({
@@ -2053,6 +2084,10 @@ export const acceptOrderDeliveryService = async ({ email, orderId, userId }: IAc
       isProcessed: false
     }
   });
+  const deliveredAt = newStatus.createdAt;
+  const twoDaysLater = addHours(deliveredAt, 48);
+
+  schedulePaymentCheck(order.id, twoDaysLater);
 
   return { newStatus };
 }
@@ -2240,7 +2275,19 @@ export const orderStatusService = async ({ orderId, email, userId }: IWashingPro
       Worker: true
     }
   })
-  return { order, orderStatus };
+  const orderDetail = await prisma.orderDetail.findMany({
+    where: {
+      orderId: order.id
+    },
+    include: {
+      LaundryItem: true
+    }
+  })
+
+
+  return { orderDetail, order, orderStatus };
+
+
 };
 
 export const getDriverHistoryService = async ({ tab, userId, authorizationRole, storeId, limit_data, page, search, dateFrom, dateUntil, sort }: IGeDriverHistory) => {
@@ -2260,11 +2307,11 @@ export const getDriverHistoryService = async ({ tab, userId, authorizationRole, 
     statusFilter = ['DRIVER_ARRIVED_AT_OUTLET'];
   } else if (tab === "delivery") {
     statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
-  }  else {
+  } else {
     statusFilter = ['DRIVER_DELIVERED_LAUNDRY', 'DRIVER_ARRIVED_AT_OUTLET'];
   }
 
-  
+
   const whereConditions: any = {
     storeId,
     orderStatus: {
@@ -2354,4 +2401,153 @@ export const getDriverHistoryService = async ({ tab, userId, authorizationRole, 
   const totalPage = Math.ceil(totalCount / Number(limit_data));
 
   return { totalPage, orders }
+}
+
+
+export const getAllOrderForUserService = async ({
+  userId,
+  page,
+  limit_data,
+  search,
+  sort,
+  tab,
+  dateFrom,
+  dateUntil,
+}: {
+  userId: string,
+  page: string,
+  limit_data: string,
+  search: string,
+  sort: string,
+  tab: string,
+  dateFrom?: string,
+  dateUntil?: string,
+}) => {
+  const offset = Number(limit_data) * (Number(page) - 1);
+
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+
+  if (!user) throw { msg: "User tidak tersedia", status: 404 }
+
+  let statusFilter: any;
+  if (tab === "menungguPembayaran") {
+    statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
+  } else if (tab === "proses") {
+    statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
+  } else if (tab === "selesai") {
+    statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
+  } else if (tab) {
+    statusFilter = [tab];
+  } else {
+    statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
+  }
+  const parsedDateFrom = dateFrom ? new Date(dateFrom as string) : undefined;
+  const parsedDateUntil = dateUntil ? new Date(dateUntil as string) : undefined;
+
+  const whereConditions: Prisma.OrderWhereInput = {
+    userId,
+    orderStatus: {
+      some: {
+        status: { in: statusFilter },
+      },
+    },
+    AND: [
+      search
+        ? {
+          OR: [
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
+          ],
+        }
+        : {},
+      ...(tab === 'menungguPembayaran' ? [{ isPaid: false }] : []),
+      ...(tab === 'proses' ? [{ isConfirm: false }] : []),
+      ...(tab === 'selesai' ? [{ isConfirm: true }] : []),
+      parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
+      parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
+    ].filter((condition) => Object.keys(condition).length > 0),
+  };
+
+
+  let orderBy: Prisma.OrderOrderByWithRelationInput;
+  if (sort === 'date-asc') {
+    orderBy = { createdAt: 'asc' };
+  } else if (sort === 'date-desc') {
+    orderBy = { createdAt: 'desc' };
+  } else if (sort === 'name-asc') {
+    orderBy = {
+      User: {
+        firstName: 'asc',
+      },
+    };
+  } else if (sort === 'name-desc') {
+    orderBy = {
+      User: {
+        firstName: 'desc',
+      },
+    };
+  } else if (sort === 'order-id-asc') {
+    orderBy = { id: 'asc' };
+  } else if (sort === 'order-id-desc') {
+    orderBy = { id: 'desc' };
+  } else {
+    orderBy = { createdAt: 'desc' };
+  }
+
+  const orders = await prisma.order.findMany({
+    where: whereConditions,
+    orderBy,
+    include: {
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true
+        }
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true
+        }
+      },
+      orderStatus: {
+        where: {
+          status: {
+            notIn: excludedStatusesOrder,
+          },
+        },
+        orderBy: { createdAt: 'desc' },
+        take: 1,
+      },
+      OrderType: {
+        select: {
+          type: true,
+        },
+      },
+    },
+  });
+
+  const filteredOrders = orders.filter(order => {
+    const latestStatus = order.orderStatus[0]?.status;
+    return statusFilter.includes(latestStatus)
+
+  });
+
+  const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
+
+  const totalCount = filteredOrders.length;
+
+  const totalPage = Math.ceil(totalCount / Number(limit_data));
+
+  return {
+    totalPage,
+    orders: paginatedOrders,
+  };
 }
