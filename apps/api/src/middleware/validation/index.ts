@@ -19,14 +19,50 @@ export const authLoginValidation = [
 ]
 
 export const createWorkerValidation = [
-    body(['email', 'firstName', 'lastName', 'phoneNumber', 'identityNumber', 'storeId', 'workerRole']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
-    body('email').isString().escape(),
-    body('firstName').isString().escape(),
-    body('lastName').isString().escape(),
-    body('phoneNumber').isString().escape(),
-    body('identityNumber').isString().escape(),
-    body('storeId').isString().escape(),
-    body('workerRole').isString().escape(),
+    body(['email', 'firstName', 'lastName', 'phoneNumber', 'identityNumber', 'storeId', 'workerRole', 'shiftId']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
+    body('email')
+        .isString()
+        .trim()
+        .escape(),
+
+    body('firstName')
+        .isString()
+        .trim()
+        .escape(),
+
+    body('lastName')
+        .isString()
+        .trim()
+        .escape(),
+
+    body('phoneNumber')
+        .isString()
+        .isLength({ min: 10, max: 15 }).withMessage('Nomor telepon minimal 10 digit angka')
+        .matches(/^[0-9]+$/).withMessage("Nomor telepon hanya berisi angka")
+        .trim()
+        .escape(),
+
+    body('identityNumber')
+        .isString()
+        .isLength({ min: 10, max: 20 }).withMessage('Nomor identitas minimal 10 digit angka')
+        .matches(/^[0-9]+$/).withMessage("Nomor identitas hanya berisi angka")
+        .trim()
+        .escape(),
+
+    body('storeId')
+        .isString()
+        .trim()
+        .escape(),
+
+    body('workerRole')
+        .isString()
+        .trim()
+        .escape(),
+
+    body('shiftId')
+        .isString()
+        .trim()
+        .escape()
 ]
 
 export const resendSetPasswordValidation = [

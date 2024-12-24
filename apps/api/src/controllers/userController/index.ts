@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import prisma from "@/connection"
-import { changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, deleteUserAddressService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, updateProfileUserService, userCreateAddressService, userEditAddressService } from "@/service/userService"
+import { changeMainAddressUserServices, changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, deleteUserAddressService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, updateProfileUserService, userCreateAddressService, userEditAddressService } from "@/service/userService"
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -250,6 +250,23 @@ export const deleteUserAddress = async (req: Request, res: Response, next: NextF
       message: 'Alamat berhasil dihapus',
       data: {}
     })
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const changeMainAddressUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params
+    const { userId } = req.body
+    await changeMainAddressUserServices({ id: Number(id), userId })
+
+    res.status(200).json({
+      error: false,
+      message: 'Berhasil merubah alamat utama',
+      data: {}
+    })
+
   } catch (error) {
     next(error)
   }

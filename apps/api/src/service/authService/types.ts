@@ -30,4 +30,5 @@ export interface ICreateWorkerService {
     storeId: string,
     motorcycleType: string, 
     plateNumber: string
+    shiftId: number
 }

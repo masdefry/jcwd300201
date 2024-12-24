@@ -6,12 +6,12 @@ import { useMutation } from "@tanstack/react-query"
 import { useRouter } from "next/navigation"
 import { useState } from "react"
 
-export const useResendEmailUserHooks = () => {
+export const useResendEmailWorkerHooks = () => {
     const router = useRouter()
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
     const { mutate: handleResendEmail, isPending } = useMutation({
         mutationFn: async ({ email }: { email: string }) => {
-            return await instance.post('/auth/user/resend-email', { email })
+            return await instance.post('/auth/worker/resend-email', { email })
         },
 
         onSuccess: (res) => {

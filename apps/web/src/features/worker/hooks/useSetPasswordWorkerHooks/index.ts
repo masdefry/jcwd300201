@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import { use, useState } from "react"
 import { IParamsType } from "./types"
 
-export const useSetPasswordHooks = (params: Promise<IParamsType>) => {
+export const useSetPasswordWorkerHooks = (params: Promise<IParamsType>) => {
     const slug = use(params)
     const router = useRouter()
     const token = slug?.slug
@@ -21,7 +21,7 @@ export const useSetPasswordHooks = (params: Promise<IParamsType>) => {
 
     const { mutate: handleSetPassword, isPending } = useMutation({
         mutationFn: async ({ password }: { password: string }) => {
-            return await instance.post('/auth/user/set-password', { password }, {
+            return await instance.post('/auth/worker/set-password', { password }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -34,16 +34,16 @@ export const useSetPasswordHooks = (params: Promise<IParamsType>) => {
             })
 
             setIsDisabledSucces(true)
-            router.push('/user/login')
+            router.push('/worker/login')
         },
         onError: (err: any) => {
-            if (err?.response?.data?.message === 'jwt expired') {
+            if (err?.response?.data?.message === 'jwt expired' || err?.response?.data?.message === 'jwt malformed') {
                 toast({
                     description: 'Link sudah tidak berlaku, harap mengirim ulang email anda',
                     className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
                 })
 
-                router.push('/user/resend-email')
+                router.push('/worker/resend-email')
             } else {
                 toast({
                     description: err?.response?.data?.message,
