@@ -7,5 +7,6 @@ export interface ICreateUserBody {
     identityNumber: string,
     storeId: string,
     motorcycleType: string,
-    plateNumber: string
+    plateNumber: string,
+    shiftId: string
 }

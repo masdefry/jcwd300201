@@ -17,9 +17,8 @@ const useCreateWorkerHooks = () => {
     })
 
     const { mutate: handleCreateUser, isPending } = useMutation({
-        mutationFn: async ({ email, firstName, lastName, phoneNumber, workerRole, identityNumber, storeId, motorcycleType, plateNumber
-        }: ICreateUserBody) => {
-            return await instance.post('/auth/worker/register', { email, firstName, lastName, phoneNumber, workerRole, identityNumber, storeId, motorcycleType, plateNumber }, {
+        mutationFn: async ({ email, firstName, lastName, phoneNumber, workerRole, identityNumber, storeId, motorcycleType, plateNumber, shiftId }: ICreateUserBody) => {
+            return await instance.post('/auth/worker/register', { email, firstName, lastName, phoneNumber, workerRole, identityNumber, storeId, shiftId, motorcycleType, plateNumber }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

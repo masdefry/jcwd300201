@@ -8,4 +8,5 @@ export const createUserValidation = Yup.object().shape({
     workerRole: Yup.string().required('Harap diisi'),
     identityNumber: Yup.string().required('Harap diisi'),
     storeId: Yup.string().required('Harap diisi'),
+    shiftId: Yup.string().required('Harap diisi'),
 })

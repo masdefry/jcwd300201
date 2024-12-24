@@ -1,19 +1,11 @@
 import prisma from "@/connection";
-import { validateEmail } from "@/middleware/validation/emailValidation";
-import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation";
-import fs, { rmSync } from 'fs'
-import { comparePassword, hashPassword } from "@/utils/passwordHash";
 import dotenv from 'dotenv'
-import { Prisma } from "@prisma/client";
-import { Status } from "@prisma/client";
 import { NextFunction, Request, Response } from "express";
-import { changePasswordWorkerService, createLaundryItemsService, createNotesService, deleteDataWorkerByIdService, deleteLaundryItemsService, deleteProfilePictureWorkerService, getAllWorkerService, getLaundryItemsService, updateLaundryItemsService, updateProfileWorkerService } from "@/service/workerService";
+import { changePasswordWorkerService, createNotesService, deleteDataWorkerByIdService, deleteProfilePictureWorkerService, getAllWorkerService, updateProfileWorkerService } from "@/service/workerService";
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
-
-// updateProfile Worker
 export const updateProfileWorker = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const imageUploaded: any = req.files
@@ -31,7 +23,6 @@ export const updateProfileWorker = async (req: Request, res: Response, next: Nex
   }
 }
 
-// get single data worker
 export const getSingleDataWorker = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.body
@@ -47,7 +38,6 @@ export const getSingleDataWorker = async (req: Request, res: Response, next: Nex
   }
 }
 
-// change password worker
 export const changePasswordWorker = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId, password, existingPassword } = req?.body
@@ -64,7 +54,6 @@ export const changePasswordWorker = async (req: Request, res: Response, next: Ne
   }
 }
 
-// delete foto profile worker
 export const deleteProfilePictureWorker = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId } = req.body
@@ -82,7 +71,6 @@ export const deleteProfilePictureWorker = async (req: Request, res: Response, ne
   }
 }
 
-/* create notes */
 export const createNotes = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params;
@@ -101,10 +89,6 @@ export const createNotes = async (req: Request, res: Response, next: NextFunctio
   }
 }
 
-
-/* top - super admin ---..*/
-
-/* get all worker */
 export const getAllWorker = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { search = '', sort = '', page = '1', limit = '5' } = req.query;
@@ -142,7 +126,6 @@ export const getAllWorker = async (req: Request, res: Response, next: NextFuncti
   }
 }
 
-/* get single worker */
 export const getSingleWorkerById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
@@ -161,7 +144,6 @@ export const getSingleWorkerById = async (req: Request, res: Response, next: Nex
   }
 }
 
-/* delete data worker */
 export const deleteDataWorkerById = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { id } = req.params
@@ -177,81 +159,3 @@ export const deleteDataWorkerById = async (req: Request, res: Response, next: Ne
     next(error)
   }
 }
-
-/* get laundry items */
-export const getLaundryItems = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { page = '1', limit = '5', search = '', sort } = req.query
-
-    const pageTypes = typeof page != "string" ? "" : page
-    const limitTypes = typeof limit != 'string' ? '' : limit
-    const searchTypes = typeof search != 'string' ? '' : search
-    const sortTypes = typeof sort != 'string' ? '' : sort
-
-    const { findItem, totalPage } = await getLaundryItemsService({ page: pageTypes, limit: limitTypes, search: searchTypes, sort: sortTypes })
-
-    res.status(200).json({
-      error: false,
-      message: "Data berhasil didapat!",
-      data: { findItem, totalPage, currentPage: page, entriesPerPage: limit }
-    })
-
-  } catch (error) {
-    next(error);
-  }
-}
-
-/* create product laundry items */
-export const createLaundryItems = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { itemName } = req.body
-
-    await createLaundryItemsService({ itemName })
-
-    res.status(200).json({
-      error: false,
-      message: 'Berhasil membuat produk',
-      data: {}
-    })
-
-  } catch (error) {
-    next(error)
-  }
-}
-
-/* delete laundryItems */
-export const deleteLaundryItems = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { id } = req.params
-
-    await deleteLaundryItemsService({ id })
-
-    res.status(200).json({
-      error: false,
-      message: 'Berhasil menghapus data',
-      data: {}
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-/* update laundry items */
-export const updateLaundryItems = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { itemName } = req.body
-    const { id } = req.params
-
-    await updateLaundryItemsService({ itemName, id })
-
-    res.status(200).json({
-      error: false,
-      message: 'Berhasil mengubah data',
-      data: {}
-    })
-  } catch (error) {
-    next(error)
-  }
-}
-
-/* ..---- bottom - super admin */

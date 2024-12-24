@@ -1,7 +1,7 @@
 import prisma from "@/connection"
 import { validateEmail } from "@/middleware/validation/emailValidation"
 import { phoneNumberValidation } from "@/middleware/validation/phoneNumberValidation"
-import { IChangePasswordWorker, ICreateNotes, IGetAllWorker, IGetLaundryItems, IUpdateProfileWorker } from "./types"
+import { IChangePasswordWorker, ICreateNotes, IGetAllWorker, IUpdateProfileWorker } from "./types"
 import fs, { rmSync } from 'fs'
 import { comparePassword, hashPassword } from "@/utils/passwordHash"
 import dotenv from 'dotenv'
@@ -9,7 +9,6 @@ import dotenv from 'dotenv'
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
-/* update profil worker */
 export const updateProfileWorkerService = async ({ userId, email, phoneNumber, firstName, lastName, imageUploaded }: IUpdateProfileWorker) => {
     const findUser = await prisma.worker.findFirst({ where: { id: userId } })
     const findEmail = await prisma.worker.findFirst({ where: { email } })
@@ -35,7 +34,6 @@ export const updateProfileWorkerService = async ({ userId, email, phoneNumber, f
 
 }
 
-/* change password worker */
 export const changePasswordWorkerService = async ({ userId, password, existingPassword }: IChangePasswordWorker) => {
     const findWorker = await prisma.worker.findFirst({ where: { id: userId } })
     const compareOldPassword = await comparePassword(existingPassword, findWorker?.password as string)
@@ -49,7 +47,6 @@ export const changePasswordWorkerService = async ({ userId, password, existingPa
     })
 }
 
-/* delete profile picture */
 export const deleteProfilePictureWorkerService = async ({ userId }: { userId: string }) => {
     const findWorker = await prisma.worker.findFirst({ where: { id: userId } })
     if (!findWorker) throw { msg: 'Data tidak tersedia', status: 404 }
@@ -64,7 +61,6 @@ export const deleteProfilePictureWorkerService = async ({ userId }: { userId: st
     }
 }
 
-/* create notes worker */
 export const createNotesService = async ({ email, notes, orderId }: ICreateNotes) => {
     const findWorker = await prisma.worker.findFirst({ where: { email } })
     if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 }
@@ -90,9 +86,6 @@ export const createNotesService = async ({ email, notes, orderId }: ICreateNotes
     return note
 }
 
-/* super admin ---[] */
-
-/* get all worker */
 export const getAllWorkerService = async ({ whereClause, take, skip }: IGetAllWorker) => {
     const findWorker = await prisma.worker.findMany({
         where: whereClause,
@@ -112,7 +105,6 @@ export const getAllWorkerService = async ({ whereClause, take, skip }: IGetAllWo
     return { findWorker, totalPages }
 }
 
-/* delete worker by id */
 export const deleteDataWorkerByIdService = async ({ id }: { id: string }) => {
     const findWorker = await prisma.worker.findFirst({ where: { id } })
     if (!findWorker) throw { msg: 'User tidak tersedia atau sudah terhapus', status: 404 }
@@ -120,76 +112,3 @@ export const deleteDataWorkerByIdService = async ({ id }: { id: string }) => {
 
     await prisma.worker.delete({ where: { id } })
 }
-
-/* get laundry items */
-export const getLaundryItemsService = async ({ limit, page, search, sort }: IGetLaundryItems) => {
-    const take = parseInt(limit as string)
-    const skip = (parseInt(page as string) - 1) * take
-    let whereClause;
-
-    if (search) {
-        whereClause = {
-            OR: [
-                { itemName: { contains: search as string } },
-            ]
-        }
-    }
-    let findItem: any
-
-
-    const totalData = await prisma.laundryItem.count({
-        where: whereClause
-    })
-
-    if (sort == 'name-asc') {
-        findItem = await prisma.laundryItem.findMany({
-            where: whereClause, take, skip, orderBy: { itemName: 'asc' }
-
-        })
-    } else if (sort == 'name-desc') {
-        findItem = await prisma.laundryItem.findMany({
-            where: whereClause, take, skip, orderBy: { itemName: 'desc' }
-        })
-    } else if (sort == 'latest-item') {
-        findItem = await prisma.laundryItem.findMany({
-            where: whereClause, take, skip, orderBy: { createdAt: 'desc' }
-        })
-    } else if (sort == 'oldest-item') {
-        findItem = await prisma.laundryItem.findMany({
-            where: whereClause, take, skip, orderBy: { createdAt: 'asc' }
-        })
-    } else {
-        findItem = await prisma.laundryItem.findMany({
-            where: whereClause, take, skip
-        })
-    }
-
-    if (findItem?.length === 0) throw { msg: 'Data item tidak tersedia', status: 404 }
-    const totalPage = Math.ceil(totalData / Number(limit))
-
-    return { findItem, totalPage }
-}
-
-export const createLaundryItemsService = async ({ itemName }: { itemName: string }) => {
-    const findName = await prisma.laundryItem.findFirst({ where: { itemName } })
-    if (findName) throw { msg: 'Data sudah tersedia', status: 406 }
-    await prisma.laundryItem.create({ data: { itemName } })
-}
-
-export const deleteLaundryItemsService = async ({ id }: { id: string }) => {
-    const findItem = await prisma.laundryItem.findFirst({ where: { id: Number(id) } })
-    if (!findItem) throw { msg: 'Data sudah tidak tersedia atau sudah terhapus', status: 404 }
-    await prisma.laundryItem.delete({ where: { id: Number(id) } })
-}
-
-export const updateLaundryItemsService = async ({ id, itemName }: { id: string, itemName: string }) => {
-    const findData = await prisma.laundryItem.findFirst({ where: { id: Number(id) } })
-    if (!findData) throw { msg: "Data tidak tersedia", status: 404 }
-
-    const findItem = await prisma.laundryItem.findFirst({ where: { itemName } })
-    if (findItem) throw { msg: 'Data sudah tersedia', status: 406 }
-
-    await prisma.laundryItem.update({ data: { itemName }, where: { id: Number(id) } })
-}
-
-/* []--- super admin */

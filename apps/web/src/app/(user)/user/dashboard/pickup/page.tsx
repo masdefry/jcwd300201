@@ -220,6 +220,7 @@ export default function PickupLaundry() {
                                                     <option disabled>Memuat...</option>
                                                 ) : (
                                                     dataOrderType?.filter((item) => item?.id && item?.type).map((item) => (
+                                                    dataOrderType?.filter((item) => item?.id && item?.type).map((item) => (
                                                         <option key={item.id} value={item.id}>
                                                             {item?.type}
                                                         </option>
@@ -363,6 +364,7 @@ export default function PickupLaundry() {
                                         {dataOrderTypeLoading ? (
                                             <option disabled>Memuat...</option>
                                         ) : (
+                                            dataOrderType?.filter((item) => item?.id && item?.type).map((item) => (
                                             dataOrderType?.filter((item) => item?.id && item?.type).map((item) => (
                                                 <option key={item.id} value={item.id}>
                                                     {item?.type}

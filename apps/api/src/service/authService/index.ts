@@ -8,13 +8,11 @@ import fs from 'fs'
 import dotenv from 'dotenv'
 import { compile } from "handlebars"
 import { ICreateWorkerService, ILoginBody, IRegisterBody } from "./types"
+import { addHours, format, isAfter, isBefore, parse } from "date-fns"
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
-/* * User Service  */
-
-/* *register */
 export const userRegisterService = async ({ id, email, firstName, lastName, phoneNumber, verifyCode }: IRegisterBody) => {
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
@@ -65,7 +63,6 @@ export const userRegisterService = async ({ id, email, firstName, lastName, phon
     })
 }
 
-/* *login */
 export const userLoginService = async ({ email, password }: ILoginBody) => {
 
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
@@ -81,7 +78,6 @@ export const userLoginService = async ({ email, password }: ILoginBody) => {
     return { token, findUser }
 }
 
-/**sign with google */
 export const signInWithGoogleService = async ({ email }: { email: string }) => {
     const findEmailInWorker = await prisma.worker.findFirst({ where: { email } })
     if (findEmailInWorker) throw { msg: 'Email sudah terpakai', status: 401 }
@@ -92,7 +88,6 @@ export const signInWithGoogleService = async ({ email }: { email: string }) => {
     return { findEmail, token }
 }
 
-// user logout
 export const userLogoutService = async ({ authorization, email }: { authorization: any, email: string }) => {
     const findUser = await prisma.user.findFirst({ where: { email } })
     if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
@@ -101,24 +96,52 @@ export const userLogoutService = async ({ authorization, email }: { authorizatio
     return { token }
 }
 
-/* user */
-/* resend email */
-export const resendSetPasswordService = async ({ email }: { email: string }) => {
+export const resendEmailUserService = async ({ email }: { email: string }) => {
     const findUser = await prisma.user.findFirst({ where: { email } })
-    if (!findUser) throw { msg: 'User tidak terdaftar', status: 401 }
-    const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '1h' })
+    if (!findUser) throw { msg: 'Email yang anda masukan tidak valid atau user tidak tersedia', status: 404 }
+    const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '10m' })
 
-    const emailFile = fs.readFileSync('./src/public/sendMail/email.html', 'utf-8')
-    let compiledHtml: any = compile(emailFile)
-    compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
-
-    await prisma.user.update({
+    const updateToken = await prisma.user.update({
         where: { id: findUser?.id },
         data: { forgotPasswordToken: token }
     })
+    
+    if(updateToken) {
+        const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
+        let compiledHtml: any = compile(readEmailHtml)
+        compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
+
+        await transporter.sendMail({
+            to: email,
+            subject: 'Atur ulang kata sandi',
+            html: compiledHtml
+        })
+    }
 }
 
-/* setPassword User */
+export const resendEmailWorkerService = async ({ email }: { email: string }) => {
+    const findUser = await prisma.worker.findFirst({ where: { email } })
+    if (!findUser) throw { msg: 'Email yang anda masukan tidak valid atau user tidak tersedia', status: 404 }
+    const token = await encodeToken({ id: findUser?.id, role: findUser?.workerRole, expiresIn: '10m' })
+
+    const updatedToken = await prisma.worker.update({
+        where: { id: findUser?.id },
+        data: { changePasswordToken: token }
+    })
+
+    if (updatedToken) {
+        const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
+        let compiledHtml: any = compile(readEmailHtml)
+        compiledHtml = compiledHtml({ email, url: `http://localhost:3000/worker/set-password/${token}` })
+
+        await transporter.sendMail({
+            to: email,
+            subject: 'Atur ulang kata sandi',
+            html: compiledHtml
+        })
+    }
+}
+
 export const setPasswordUserService = async ({ authorization, userId, password }: { authorization: any, userId: string, password: string }) => {
     const token = authorization?.split(' ')[1]
     const findUser = await prisma.user.findFirst({ where: { id: userId } })
@@ -149,41 +172,50 @@ export const setPasswordUserService = async ({ authorization, userId, password }
     }
 }
 
-/* forgot password */
-export const forgotPasswordUserService = async ({ email }: { email: string }) => {
-    const findUser = await prisma.user.findFirst({ where: { email } })
-    if (!findUser) throw { msg: 'Email yang anda masukan tidak valid atau user tidak tersedia', status: 404 }
+export const setPasswordWorkerService = async ({ authorization, userId, password }: { authorization: any, userId: string, password: string }) => {
+    const token = authorization?.split(' ')[1]
+    const findUser = await prisma.worker.findFirst({ where: { id: userId } })
 
-    const token = await encodeToken({ id: findUser?.id, role: findUser?.role, expiresIn: '5m' })
+    if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
+    if (token != findUser?.changePasswordToken) throw { msg: 'Link sudah tidak berlaku', status: 400 }
 
-    const updatedToken = await prisma.user.update({
-        where: { id: findUser?.id },
-        data: { forgotPasswordToken: token }
+    const hashedPassword = await hashPassword(password)
+
+    const updatedPassword = await prisma.worker.update({
+        data: {
+            password: hashedPassword,
+            changePasswordToken: null
+        },
+        where: { id: userId }
     })
 
-    if (updatedToken) {
-        const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
-        let compiledHtml: any = compile(readEmailHtml)
-        compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
-
+    if (updatedPassword) {
+        const emailRead = fs.readFileSync('./src/public/sendMail/verifyEmailSucces.html', 'utf-8')
+        let compiledHtml: any = compile(emailRead)
+        compiledHtml = compiledHtml({ firstName: updatedPassword?.firstName, url: 'http://localhost:3000/worker/login' })
+       
         await transporter.sendMail({
-            to: email,
-            subject: 'Atur ulang kata sandi',
+            to: updatedPassword?.email,
+            subject: `Selamat datang ${updatedPassword?.firstName}`,
             html: compiledHtml
         })
     }
 }
 
-
-/** worker service */
-
-/* *login admin */
 export const workerLoginService = async ({ email, password }: ILoginBody) => {
-
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
 
-    const findAdmin = await prisma.worker.findFirst({ where: { email } })
+    const findAdmin = await prisma.worker.findFirst({ where: { email }, include: { Shift: true } })
     if (!findAdmin) throw { msg: 'User admin tidak tersedia', status: 404 }
+
+    if (findAdmin?.Shift?.startTime !== undefined) {
+        const currentDate = format(new Date(), 'yyyy-MM-dd')
+        const startTimeWorker = format(new Date(findAdmin?.Shift?.startTime!).toLocaleString('en-US', { timeZone: 'UTC' }), 'HH:mm:ss')
+        const endTimeWorker = format(new Date(findAdmin?.Shift?.endTime!).toLocaleString('en-US', { timeZone: 'UTC' }), 'HH:mm:ss')
+
+        const checkedShift = isAfter(format(new Date(), 'yyyy-MM-dd kk:mm:ss'), `${currentDate} ${startTimeWorker}`) && isBefore(format(new Date(), 'yyyy-MM-dd kk:mm:ss'), `${currentDate} ${endTimeWorker}`)
+        if (checkedShift === false) throw { msg: 'Anda tidak dapat masuk diluar jam kerja', status: 401 }
+    }
 
     const match = await comparePassword(password, findAdmin?.password)
     if (!match) throw { msg: 'Password anda salah!', status: 401 }
@@ -193,7 +225,6 @@ export const workerLoginService = async ({ email, password }: ILoginBody) => {
     return { token, findAdmin }
 }
 
-/* *admin create worker */
 export const createWorkerService = async ({
     id,
     email,
@@ -204,7 +235,8 @@ export const createWorkerService = async ({
     identityNumber,
     storeId,
     motorcycleType,
-    plateNumber
+    plateNumber,
+    shiftId
 }: ICreateWorkerService) => {
     if (!phoneNumberValidation(identityNumber)) throw { msg: 'Harap memasukan format angka pada nomor identitas anda', status: 400 }
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email yang benar', status: 400 }
@@ -239,7 +271,8 @@ export const createWorkerService = async ({
                     workerRole,
                     identityNumber,
                     storeId,
-                    profilePicture: profilePict
+                    profilePicture: profilePict,
+                    shiftId: Number(shiftId)
                 }
             })
 
@@ -261,7 +294,8 @@ export const createWorkerService = async ({
                     storeId,
                     profilePicture: profilePict,
                     motorcycleType,
-                    plateNumber
+                    plateNumber,
+                    shiftId: Number(shiftId)
                 }
             })
         }
@@ -279,7 +313,7 @@ export const createWorkerService = async ({
         let compiledHtml: any = compile(emailHtml)
         compiledHtml = compiledHtml({
             email: email,
-            url: `http://localhost:3000/worker/reset-password/${token}`
+            url: `http://localhost:3000/worker/set-password/${token}`
         })
 
         transporter.sendMail({

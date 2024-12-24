@@ -1,3 +1,14 @@
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "postgresql"
+//   url      = env("DATABASE_URL")
+//   directUrl = env("DIRECT_URL")
+
+// }
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -92,9 +103,11 @@ model Worker {
   plateNumber         String?
   changePasswordToken String? @db.VarChar(500)
   storeId             String?
+  shiftId             Int?
 
   orderstatus OrderStatus[]
 
+  Shift Shift? @relation(fields: [shiftId], references: [id])
   Store Store? @relation(fields: [storeId], references: [id])
 
   createdAt DateTime  @default(now())
@@ -102,6 +115,19 @@ model Worker {
   deletedAt DateTime?
 
   @@map("workers")
+}
+
+model Shift {
+  id        Int      @id @default(autoincrement())
+  startTime DateTime? @db.Time()
+  endTime   DateTime? @db.Time()
+  worker    Worker[]
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime?
+
+  @@map("shifts")
 }
 
 model Order {
@@ -142,7 +168,7 @@ model Order {
 }
 
 model OrderType {
-  id    Int    @id @default(autoincrement())
+  id    Int     @id @default(autoincrement())
   type  String?
   price Int?
 
