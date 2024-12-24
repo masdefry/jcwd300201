@@ -1,16 +1,21 @@
 'use client'
 
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
-import { loginAdminValidation } from "@/features/adminLogin/schemas/loginWorkerValidation";
-import { useWorkerLoginHooks } from "@/features/adminLogin/hooks/useWorkerLoginHooks";
+import { IParamsType } from "@/features/user/hooks/useSetPasswordHooks/types";
+import { setPasswordValidation } from "@/features/worker/schemas/setPasswordValidation";
+import { useSetPasswordWorkerHooks } from "@/features/worker/hooks/useSetPasswordWorkerHooks";
 
-export default function Page() {
-    const { passwordVisible, isDisabledSucces, handleLoginAdmin,
-        togglePasswordVisibility, isPending } = useWorkerLoginHooks()
+export default function Page({ params }: { params: Promise<IParamsType> }) {
+    const { passwordVisible,
+        confirmPasswordVisible,
+        isDisabledSucces,
+        toggleConfirmPasswordVisibility,
+        togglePasswordVisibility,
+        handleSetPassword,
+        isPending } = useSetPasswordWorkerHooks(params)
 
     return (
         <main className='w-full h-screen flex'>
@@ -27,54 +32,27 @@ export default function Page() {
                     </div>
                     <div className="inset-0 absolute w-full flex-col h-full p-10 flex justify-center">
                         <h1 className="text-4xl text-white font-semibold font-sans">
-                            Layanan Laundry Modern dan Efisien Bersama <span className='text-orange-400 font-bold'>Clean&Click</span>
+                            Atur Ulang Password Anda
                         </h1>
                         <p className="text-neutral-200 mt-4 font-sans">
-                            Nikmati kemudahan mencuci pakaian tanpa ribet!
-                            Clean&Click siap membantu Anda dengan layanan cepat, bersih, dan terpercaya.
+                            Lupa password? Masukkan email Anda untuk menerima link pengaturan ulang password yang aman dan mudah.
                         </p>
                     </div>
                 </div>
             </section>
             <section className='w-full h-full bg-white p-10 relative'>
-                <div className="w-full h-full flex flex-col">
-                    <div className="w-full z-20 flex items-end opacity-40 justify-end h-full gap-3"></div>
-                </div>
+                <div className="w-full h-full flex flex-col"></div>
                 <div className="flex flex-col absolute inset-0 h-full px-10 items-center justify-center w-full">
                     <div className="pb-5 z-20 w-full flex flex-col justify-start">
                         <h1 className="font-bold text-neutral-800 text-3xl md:text-4xl">Selamat Datang Kembali</h1>
-                        <p className="text-neutral-500 mt-2 md:text-lg">Masuk untuk mengakses akun Anda dan mengelola pesanan.</p>
+                        <p className="text-neutral-500 mt-2 md:text-lg">Masukkan password Anda untuk melanjutkan.</p>
                     </div>
                     <Formik
-                        initialValues={{
-                            email: '',
-                            password: '',
-                        }}
-                        validationSchema={loginAdminValidation}
-                        onSubmit={(values) => {
-                            console.log(values);
-                            handleLoginAdmin({ email: values.email, password: values.password })
-                        }}
-                    >
-                        <Form className="flex z-20 flex-col justify-center items-center w-full space-y-4">
-                            <div id="emailOrganizer-input" className="w-full">
-                                <div className="flex gap-5 items-center">
-                                    <label className="text-sm lg:text-base">
-                                        Email <span className="text-red-500">*</span>
-                                    </label>
-                                    <ErrorMessage
-                                        name="email"
-                                        component="div"
-                                        className="text-red-500 text-[5px] md:text-xs lg:text-sm mt-1"
-                                    />
-                                </div>
-                                <Field
-                                    name="email"
-                                    className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10"
-                                    placeholder="example@gmail.com"
-                                    type="email"
-                                />
-                            </div>
+                        initialValues={{ password: '', confirmPassword: '' }}
+                        validationSchema={setPasswordValidation}
+                        onSubmit={(values, { resetForm }) => handleSetPassword({ password: values?.password },
+                            { onSuccess: () => resetForm() })}>
+                        <Form className="flex flex-col justify-center items-center w-full space-y-4">
                             <div id="password-input" className="relative w-full">
                                 <div className="flex gap-5 items-center">
                                     <label className="text-sm lg:text-base">
@@ -88,15 +66,36 @@ export default function Page() {
                                 </div>
                                 <Field
                                     name="password"
-                                    className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-yellow-400 text-sm pr-10"
                                     placeholder="******"
                                     type={passwordVisible ? 'text' : 'password'}
                                 />
-                                <span
-                                    className="absolute right-3 transform -translate-y-7 flex items-center cursor-pointer text-gray-500"
-                                    onClick={togglePasswordVisibility}
-                                >
+                                <span className="absolute right-3 transform -translate-y-7 flex items-center cursor-pointer text-gray-500"
+                                    onClick={togglePasswordVisibility}>
                                     {passwordVisible ? <FaEye /> : <FaEyeSlash />}
+                                </span>
+                            </div>
+
+                            <div id="confirm-password-input" className="relative w-full">
+                                <div className="flex gap-5 items-center">
+                                    <label className="text-sm lg:text-base">
+                                        Konfirmasi Password <span className="text-red-500">*</span>
+                                    </label>
+                                    <ErrorMessage
+                                        name="confirmPassword"
+                                        component="div"
+                                        className="text-red-500 text-[5px] md:text-xs lg:text-sm mt-1"
+                                    />
+                                </div>
+                                <Field
+                                    name="confirmPassword"
+                                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-yellow-400 text-sm pr-10"
+                                    placeholder="******"
+                                    type={confirmPasswordVisible ? 'text' : 'password'}
+                                />
+                                <span className="absolute right-3 transform -translate-y-7 flex items-center cursor-pointer text-gray-500"
+                                    onClick={toggleConfirmPasswordVisibility}>
+                                    {confirmPasswordVisible ? <FaEye /> : <FaEyeSlash />}
                                 </span>
                             </div>
                             <ButtonCustom
@@ -104,18 +103,9 @@ export default function Page() {
                                 type="submit"
                                 btnColor="bg-blue-600 hover:bg-blue-500"
                                 width="w-full"
-                            >Masuk</ButtonCustom>
+                            >Ubah Password</ButtonCustom>
                         </Form>
                     </Formik>
-
-                    <div className="flex w-full flex-col gap-2 py-3 z-20">
-                        <div className="flex w-full justify-between items-center">
-                            <div className="flex items-center gap-1 text-sm"></div>
-                            <Link href={'/worker/resend-email'} className="text-sm text-blue-500 hover:underline">
-                                Atur ulang kata sandi?
-                            </Link>
-                        </div>
-                    </div>
                 </div>
             </section>
         </main>

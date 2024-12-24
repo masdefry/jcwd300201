@@ -82,6 +82,31 @@ export default function Page() {
         }
     })
 
+    const { mutate: handleChangeMainAddress } = useMutation({
+        mutationFn: async (id: number) => {
+            return await instance.patch(`/user/main-address/${id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
+            })
+            console.log(res)
+            refetch()
+        },
+        onError: (err: any) => {
+            console.log(err)
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+        }
+    })
+
     useEffect(() => {
         if (searchItem) {
             currentUrl.set('search', searchItem)
@@ -210,7 +235,12 @@ export default function Page() {
                                         <tr className="hover:bg-gray-100 border-b" key={address?.id || i}>
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words">{address?.addressDetail}, {address?.city}, {address?.province}, {address?.country}, {address?.zipCode}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{address?.isMain ? 'Utama' : 'Lainnya'}</td>
+                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">
+                                                <ConfirmAlert caption='Apakah yakin anda ingin mengganti alamat utama?' onClick={() => handleChangeMainAddress(address?.id)}
+                                                    description='Halaman utama akan diganti sesuai yang anda pilih'>
+                                                    <button>{address?.isMain ? 'Utama' : 'Lainnya'}</button>
+                                                </ConfirmAlert>
+                                            </td>
                                             <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
                                                 <div className='flex gap-2'>
                                                     <ConfirmAlert disabled={isPendingDelete} caption="Apakah anda yakin ingin menghapus alamat anda?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => handleDeleteItem(address?.id)}>

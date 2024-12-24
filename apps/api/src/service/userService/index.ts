@@ -15,7 +15,6 @@ dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
 
-/* get address */
 export const userCreateAddressService = async ({ userId, addressName, addressDetail, province, city, zipCode, latitude, longitude, country }: ICreateAddressUser) => {
     const hasMainAddress = await prisma.userAddress.findFirst({
         where: {
@@ -68,7 +67,6 @@ export const userCreateAddressService = async ({ userId, addressName, addressDet
     return { newAddress }
 }
 
-/* edit address */
 export const userEditAddressService = async ({ addressId, addressName, addressDetail, province, city, zipCode, latitude, longitude, country, userId }: IEditAddressUser) => {
     const existingAddress = await prisma.userAddress.findFirst({ where: { id: parseInt(addressId) } })
     if (!existingAddress) throw { msg: 'Alamat tidak tersedia', status: 404 }
@@ -99,7 +97,7 @@ export const userEditAddressService = async ({ addressId, addressName, addressDe
             // isConfirm: false || null sementara gini dulu
         }
     })
-    
+
     if (findOrderUser) throw { msg: 'Kamu sedang melakukan pesanan, tidak dapat merubah alamat', status: 400 }
     const updatedAddress = await prisma.userAddress.update({
         where: { id: parseInt(addressId) },
@@ -119,7 +117,6 @@ export const userEditAddressService = async ({ addressId, addressName, addressDe
     return { updatedAddress }
 }
 
-/* get single address */
 export const getSingleAddressUserService = async ({ id, userId }: { id: string, userId: string }) => {
     const findAddressById = await prisma.userAddress.findFirst({ where: { id: Number(id), userId } })
     if (!findAddressById) throw { msg: 'Data alamat sudah tidak tersedia', status: 404 }
@@ -127,7 +124,6 @@ export const getSingleAddressUserService = async ({ id, userId }: { id: string, 
     return { findAddressById }
 }
 
-/* get all user address */
 export const getAllUserAddressesService = async ({ userId, search }: { userId: string, search: string }) => {
     let addresses
 
@@ -157,7 +153,6 @@ export const getAllUserAddressesService = async ({ userId, search }: { userId: s
     return { addresses }
 }
 
-/* get main address */
 export const getUserMainAddressService = async ({ userId }: { userId: string }) => {
     const mainAddress = await prisma.userAddress.findFirst({
         where: {
@@ -171,7 +166,6 @@ export const getUserMainAddressService = async ({ userId }: { userId: string }) 
     return { mainAddress }
 }
 
-/* update profil */
 export const updateProfileUserService = async ({ userId, email, phoneNumber, firstName, lastName, imageUploaded }: IUpdateProfileUser) => {
     const findUser = await prisma.user.findFirst({ where: { id: userId } })
     const findEmail = await prisma.user.findFirst({ where: { email } })
@@ -196,7 +190,6 @@ export const updateProfileUserService = async ({ userId, email, phoneNumber, fir
     }
 }
 
-/* change password */
 export const changePasswordUserService = async ({ userId, password, existingPassword }: { userId: string, password: string, existingPassword: string }) => {
     const findUser = await prisma.user.findFirst({ where: { id: userId } })
     const compareOldPassword = await comparePassword(existingPassword, findUser?.password as string)
@@ -210,7 +203,6 @@ export const changePasswordUserService = async ({ userId, password, existingPass
     })
 }
 
-/* delete profile pict */
 export const deleteProfilePictureUserService = async ({ userId }: { userId: string }) => {
     const findUser = await prisma.user.findFirst({ where: { id: userId } })
     if (!findUser) throw { msg: 'Data tidak tersedia', status: 404 }
@@ -225,7 +217,6 @@ export const deleteProfilePictureUserService = async ({ userId }: { userId: stri
     }
 }
 
-/* change password user login google */
 export const changePasswordGoogleRegisterService = async ({ userId, password }: { userId: string, password: string }) => {
     const findUser = await prisma.user.findFirst({ where: { id: userId } })
     if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
@@ -235,7 +226,6 @@ export const changePasswordGoogleRegisterService = async ({ userId, password }: 
 
 }
 
-/* delete user address */
 export const deleteUserAddressService = async ({ userId, addressId }: { userId: string, addressId: number }) => {
     const findAddressById = await prisma.userAddress.findFirst({ where: { id: Number(addressId), userId } })
     const findAllAddress = await prisma.userAddress.findMany({ where: { userId } })
@@ -261,4 +251,26 @@ export const deleteUserAddressService = async ({ userId, addressId }: { userId: 
             data: { isMain: true }
         })
     }
+}
+
+export const changeMainAddressUserServices = async ({ id, userId }: { id: number, userId: string }) => {
+    await prisma.$transaction(async (tx) => {
+        const findAddress = await tx.userAddress.findUnique({ where: { id: Number(id), userId } })
+        const findAddressMain = await tx.userAddress.findFirst({ where: { isMain: true, userId } })
+
+        if (!findAddress) throw { msg: 'Data alamat tidak tersedia', status: 404 }
+        if (findAddress?.isMain === true) throw { msg: 'Ini adalah alamat utama anda', status: 406 }
+
+        const updatedMainAddress = await tx.userAddress.update({
+            where: { id: Number(findAddressMain?.id), userId },
+            data: { isMain: false }
+        })
+
+        if (updatedMainAddress) {
+            await tx.userAddress.update({
+                where: { id: Number(id), userId },
+                data: { isMain: true }
+            })
+        }
+    })
 }

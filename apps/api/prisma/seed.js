@@ -27,26 +27,37 @@ async function main() {
                 longitude: store.longitude,
             })),
             skipDuplicates: true,
-        });
+        })
+
+        await prisma.shift.createMany({
+            data: [
+                { startTime: new Date('2024-12-24T08:00:00Z'), endTime: new Date('2024-12-24T16:00:00Z') },
+                { startTime: new Date('2024-12-24T16:00:00Z'), endTime: new Date('2024-12-24T23:59:59Z') }
+            ]
+        })
 
         const hashedPassword = await hashPassword("12312312");
 
-        await prisma.worker.createMany({
-            data: dataWorker.map((worker) => ({
-                email: worker.email,
-                password: hashedPassword,
-                workerRole: worker.workerRole,
-                firstName: worker.firstName,
-                lastName: worker.lastName,
-                phoneNumber: worker.phoneNumber,
-                profilePicture: worker.profilePicture,
-                identityNumber: worker.identityNumber,
-                motorcycleType: worker.motorcycleType || null,
-                plateNumber: worker.plateNumber || null,
-                storeId: String(worker.storeId),
-            })),
-            skipDuplicates: true,
-        });
+        const findShift = await prisma.shift.findMany()
+        if (findShift?.length > 0) {
+            await prisma.worker.createMany({
+                data: dataWorker.map((worker) => ({
+                    email: worker.email,
+                    password: hashedPassword,
+                    workerRole: worker.workerRole,
+                    firstName: worker.firstName,
+                    lastName: worker.lastName,
+                    phoneNumber: worker.phoneNumber,
+                    profilePicture: worker.profilePicture,
+                    identityNumber: worker.identityNumber,
+                    motorcycleType: worker.motorcycleType || null,
+                    plateNumber: worker.plateNumber || null,
+                    storeId: String(worker.storeId),
+                    shiftId: Number(worker?.shiftId)
+                })),
+                skipDuplicates: true,
+            });
+        }
 
         const userPromises = dataUser.map(async (user) => {
             return prisma.user.upsert({
