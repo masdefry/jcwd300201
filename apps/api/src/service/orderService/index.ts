@@ -728,7 +728,7 @@ export const getOrdersForIroningService = async ({
     return statusFilter.includes(latestStatus)
 
   });
-  
+
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
   const totalCount = filteredOrders.length;
   const totalPage = Math.ceil(totalCount / Number(limit_data));
@@ -1550,13 +1550,10 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
     }
   });
 
-
   if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 }
-
-
   const offset = Number(limit_data) * (Number(page) - 1);
-
   const statusFilter: Status[] = [Status.DRIVER_ARRIVED_AT_OUTLET];
+
 
   const whereConditions: any = {
     storeId,
@@ -1592,19 +1589,12 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
   if (sort === 'date-asc') {
     orderBy = { createdAt: 'asc' };
   } else if (sort === 'date-desc') {
-    orderBy = { createdAt: 'desc' };
+    orderBy = { createdAt: 'desc' }
   } else if (sort === 'name-asc') {
-    orderBy = {
-      User: {
-        firstName: 'asc',
-      },
-    };
+    console.log(sort, '<< ini sampe kesini ga')
+    orderBy = { User: { firstName: 'asc' } };
   } else if (sort === 'name-desc') {
-    orderBy = {
-      User: {
-        firstName: 'desc',
-      },
-    };
+    orderBy = { User: { firstName: 'desc' } }
   } else if (sort === 'order-id-asc') {
     orderBy = { id: 'asc' };
   } else if (sort === 'order-id-desc') {
@@ -1612,6 +1602,14 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
   } else {
     orderBy = { createdAt: 'desc' };
   }
+
+  if (sort === 'name-asc') {
+    const tester = await prisma.order.findMany({
+      orderBy: { User: { firstName: 'asc' } }
+    })
+    console.log(tester, ", tester")
+  }
+
 
 
   const orders = await prisma.order.findMany({
@@ -1631,14 +1629,18 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
     },
     skip: offset,
     take: Number(limit_data),
-    orderBy,
+    orderBy: orderBy,
   });
+
+  console.log(orders, '<<< ini desc')
 
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
-    return latestStatus === Status.DRIVER_ARRIVED_AT_OUTLET
-  });
+    console.log(`Order ID: ${ order.id }, Latest Status: ${ latestStatus }`);
+    return statusFilter.includes(latestStatus);
+  })
 
+  console.log(filteredOrders, "< ini isinya apaan")
 
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
 

@@ -15,8 +15,8 @@ const useNotaOrderHooks = () => {
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
-    const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
+    const [sortOption, setSortOption] = useState(params.get("sort") || "");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "");
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const limit = 5;

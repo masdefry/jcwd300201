@@ -392,10 +392,12 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         {({ values, setFieldValue, submitForm }) => {
                             const handleCustomSubmit = () => {
                                 const itemOrder = values.items.map((item: any) => ({
-                                    laundryItemId: Number(item.itemName),
+                                    laundryItemId: item.itemName,
                                     quantity: item.quantity,
                                 }));
                                 const isDataMatching = compareData(itemOrder, dataOrderDetail);
+                                console.log(itemOrder, '< item order')
+                                console.log(dataOrderDetail, '< item order')
                                 if (isDataMatching) {
                                     console.log("Data is matching, submitting form...");
                                     submitForm()
