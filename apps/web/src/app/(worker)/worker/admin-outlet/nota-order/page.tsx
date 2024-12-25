@@ -3,94 +3,26 @@
 import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
 import { FaArrowLeft } from "react-icons/fa"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import { useQuery, useMutation } from "@tanstack/react-query"
-import { instance } from "@/utils/axiosInstance"
-import authStore from "@/zustand/authstore"
-import { useState, useEffect, ChangeEvent } from "react"
-import { useSearchParams, useRouter, usePathname } from "next/navigation"
-import { useDebouncedCallback } from "use-debounce"
+import { ChangeEvent } from "react"
 import { FaWhatsapp } from "react-icons/fa";
-import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 import ContentWebLayout from "@/components/core/webSessionContent"
 import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout"
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
-import { ConfirmAlert } from "@/components/core/confirmAlert"
-import { BsTrash } from "react-icons/bs"
+import TableHeadNotaOrder from "@/features/adminOutlet/components/tableHeadNotaOrder"
+import TableHeadLayout from "@/features/adminOutlet/components/tableHeadLayout"
+import TableBodyNotFound from "@/features/adminOutlet/components/tableBodyDataNotFound"
+import TableBodyContent from "@/features/adminOutlet/components/tableBodyContent"
+import { useNotaOrderHooks } from "@/features/adminOutlet/hooks/useNotaOrderHooks"
 
 export default function HistoryOrderWashing() {
-    const params = useSearchParams();
-    const router = useRouter();
-    const pathname = usePathname();
-    const { toast } = useToast()
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
-
-    const [page, setPage] = useState(Number(params.get("page")) || 1);
-    const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
-    const [activeTab, setActiveTab] = useState(params.get("tab") || "semua");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
-    const limit = 5;
-
-    const { data: dataCreateOrder, refetch, isLoading: dataCreateOrderLoading, isError: dataCreateOrderError } = useQuery({
-        queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption],
-        queryFn: async () => {
-
-            const res = await instance.get('/order/nota-order', {
-                params: {
-                    page,
-                    limit_data: limit,
-                    search: searchInput || "",
-                    sort: sortOption,
-                    dateFrom: dateFrom ?? '',
-                    dateUntil: dateUntil ?? '',
-                },
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            console.log(res)
-            return res?.data?.data;
-        },
-    });
-
-    const debounce = useDebouncedCallback(values => {
-        setSearchInput(values)
-        setPage(1)
-    }, 500);
-
-    useEffect(() => {
-        const currentUrl = new URLSearchParams(params.toString());
-        if (searchInput) {
-            currentUrl.set(`search`, searchInput)
-        } else {
-            currentUrl.delete(`search`)
-        }
-        if (sortOption) {
-            currentUrl.set("sort", sortOption);
-        } else {
-            currentUrl.delete(`sort`)
-        }
-        if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
-        } else {
-            currentUrl.delete(`dateFrom`)
-        }
-        if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
-        } else {
-            currentUrl.delete(`dateUntil`)
-        }
-        router.push(`${pathname}?${currentUrl.toString()}`)
-        refetch()
-    }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
-
-
-    const totalPages = dataCreateOrder?.totalPage || 1;
+    const { page, totalPages, sortOption, dateFrom, dateUntil, limit,
+        debounce, setSearchInput, setSortOption, setActiveTab,
+        setDateFrom, setDateUntil, dataCreateOrder, dataCreateOrderLoading,
+        dataCreateOrderError, setPage } = useNotaOrderHooks()
 
     return (
         <>
@@ -120,10 +52,9 @@ export default function HistoryOrderWashing() {
                                 {dataCreateOrderLoading && <p>Loading...</p>}
                                 {dataCreateOrderError && <p>Silahkan coba beberapa saat lagi.</p>}
                                 {dataCreateOrder?.orders?.map((order: any) => {
-                                    console.log(order?.isSolved)
                                     return (
                                         <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                            <Link href={`/worker/admin-outlet/c/${order?.id}`}>
+                                            <Link href={`/worker/admin-outlet/nota-order/c/${order?.id}`}>
                                                 <div className="flex items-center">
                                                     <div className="ml-2">
                                                         <h2 className="font-medium text-gray-900">
@@ -141,7 +72,7 @@ export default function HistoryOrderWashing() {
                                             </Link>
 
                                             <div className="flex gap-1">
-                                                <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                                <Link href={`https://wa.me/62${order?.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
                                                     <FaWhatsapp />
                                                 </Link>
                                             </div>
@@ -160,61 +91,33 @@ export default function HistoryOrderWashing() {
             <ContentWebLayout caption='Nota Pesanan'>
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 h-fit flex items-center">
-                        <select name="searchWorker"
-                            // value={sortProduct} onChange={(e) => setSortProduct(e.target.value)}
-                            id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                        <select name="sortNotaOrder"
+                            value={sortOption} onChange={(e) => setSortOption(e.target.value)}
+                            id="sortNotaOrder" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
                             <option value="" disabled>-- Pilih Opsi --</option>
                             <option value="name-asc">Sort berdasarkan A - Z</option>
                             <option value="name-desc">Sort berdasarkan Z - A</option>
-                            <option value="latest-item">Sort berdasarkan data terbaru</option>
-                            <option value="oldest-item">Sort berdasarkan data terlama</option>
+                            <option value="date-desc">Sort berdasarkan data terbaru</option>
+                            <option value="date-asc">Sort berdasarkan data terlama</option>
                             <option value="">Reset</option>
                         </select>
                     </div>
                     <div className="w-1/2 h-fit flex gap-2 justify-end">
                         <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        {/* <DialogCreateProduct createProductItem={createProductItem} isPending={isPending} /> */}
                     </div>
                 </div>
 
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tanggal dibuat</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
-                            </tr>
-                        </thead>
+                        <TableHeadLayout>
+                            <TableHeadNotaOrder />
+                        </TableHeadLayout>
                         <tbody>
                             {dataCreateOrder?.orders?.length > 0 ? (
-                                dataCreateOrder?.orders?.map((order: any, i: number) => {
-                                    return (
-                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words"> {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Menunggu Pembuatan Nota Order' : ""}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{new Date(order?.createdAt).toLocaleDateString()}</td>
-                                            <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <div className='flex gap-2'>
-                                                    <ConfirmAlert
-                                                        // disabled={isPendingDelete} 
-                                                        caption="Apakah anda yakin ingin menghapus data ini?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => alert(order?.id)}>
-                                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
-                                                    </ConfirmAlert>
-                                                    {/* <DialogUpdateProduct handleUpdateItem={handleUpdateItem} product={prod} isPendingUpdate={isPendingUpdate} /> */}
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">tes</td>
-                                </tr>
-                            )}
+                                dataCreateOrder?.orders?.map((order: any, i: number) => (
+                                    <TableBodyContent key={order?.id || i} index={i} limit={limit} order={order} page={page} />
+                                ))
+                            ) : (<TableBodyNotFound />)}
                         </tbody>
                     </table>
                     <PaginationWebLayout currentPage={page} totalPages={totalPages}>

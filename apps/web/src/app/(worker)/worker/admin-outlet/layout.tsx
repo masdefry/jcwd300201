@@ -59,12 +59,12 @@ export default function Layout({ children }: { children: ReactNode }) {
                         <FaCartArrowDown />Nota Order</Link>
                     <Link href='/worker/admin-outlet/order' className={`w-full flex ${pathname.startsWith('/admin/worker') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaMoneyBillWave /> History Order</Link>
-                    <Link href='/' className={`w-full ${pathname.startsWith('/worker/driver') ? 'hidden' : 'flex'} ${pathname == '/admin/category' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaHouseDamage /> {role == 'OUTLET_ADMIN' ? 'Resolve Order' : 'Menu Order'}</Link>
+                    <Link href='/worker/admin-outlet/p' className={`w-full ${pathname.startsWith('/worker/admin-outlet/p') ? 'hidden' : 'flex'} ${pathname == '/admin/category' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaHouseDamage /> Laporan Order</Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">
-                    <Link href='/admin/settings' className={`w-full flex ${pathname == '/admin/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/worker/admin-outlet/settings' className={`w-full flex ${pathname == '/worker/admin-outlet/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>
                     <span className={`w-full  cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
                         <RiProfileFill /> Profile</span>
