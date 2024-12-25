@@ -138,6 +138,7 @@ model Order {
   discount      Float?
   deliveryFee   Int
   paymentProof  String?
+  paymentMethod Payment
   isPaid        Boolean
   isProcessed   Boolean?
   isDone        Boolean?
@@ -263,3 +264,9 @@ enum Role {
   PACKING_WORKER
   DRIVER
 }
+enum Payment {
+  MIDTRANS
+  TF_MANUAL
+}
+
+

@@ -179,6 +179,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                             quantity: item.quantity,
                                         }));
                                         const isDataMatching = compareData(itemOrder, dataOrderDetail);
+                                        console.log(itemOrder,'1')
+                                        console.log(dataOrderDetail,'2')
                                         if (isDataMatching) {
                                             console.log("Data is matching, submitting form...");
                                             submitForm()

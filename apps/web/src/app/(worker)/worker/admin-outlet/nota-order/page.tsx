@@ -100,7 +100,7 @@ export default function HistoryOrderWashing() {
                     <main className="w-full">
                         <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
                             <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> HISTORY ORDER
+                                <Link href='/admin/settings'><FaArrowLeft /></Link> BUAT NOTA ORDER
                             </div>
                         </section>
                         <div className="py-28 mx-4 space-y-4">

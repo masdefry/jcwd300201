@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 import { Prisma } from "@prisma/client";
 import { Status } from "@prisma/client";
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService } from "@/service/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService } from "@/service/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
 import dotenv from 'dotenv'
 
@@ -425,7 +425,7 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
     const { orderId } = req.params
     const { email, userId, totalWeight, laundryPrice, items } = req.body
 
-    const { updatedOrder, updatedOrderWithPaymentUrl, dataItems, orderStatus } = await createOrderService({ orderId, email, userId, totalWeight, laundryPrice, items });
+    const { updatedOrder, dataItems, orderStatus } = await createOrderService({ orderId, email, userId, totalWeight, laundryPrice, items });
 
     res.status(200).json({
       error: false,
@@ -433,7 +433,6 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
       order: updatedOrder,
       orderDetails: dataItems,
       orderStatus: orderStatus,
-      OrderUrl: updatedOrderWithPaymentUrl
     });
 
   } catch (error) {
@@ -1217,6 +1216,109 @@ export const getAllOrderForUser = async (req: Request, res: Response, next: Next
     const { totalPage, orders: paginatedOrders } = await getAllOrderForUserService(
       {
         userId,
+        page: pageTypes,
+        limit_data: limitTypes,
+        search: searchTypes,
+        sort: sortTypes,
+        tab: tabTypes,
+        dateFrom: dateFromTypes,
+        dateUntil: dateUntilTypes,
+      }
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+
+export const paymentOrderVA = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const { updatedOrderWithPaymentUrl } = await paymentOrderVAService({ orderId, email, userId });
+
+    res.status(200).json({
+      error: false,
+      message: 'Payment terbentuk, anda akan diarahkan ke pembayaran',
+      OrderUrl: updatedOrderWithPaymentUrl
+    });
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const paymentOrderTf = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const paymentProof: any = req.files
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    if (!paymentProof) throw { msg: 'Bukti pembayaran harus dilampirkan', status: 400 }
+
+    const dataImage: string[] = paymentProof?.images?.map((img: any) => {
+      return img?.filename
+    })
+
+    await paymentOrderTfService({ paymentProof: dataImage[0], orderId, email, userId });
+
+    res.status(200).json({
+      error: false,
+      message: 'Payment terbentuk, anda akan diarahkan ke pembayaran',
+    });
+
+  } catch (error) {
+    next(error)
+  }
+}
+
+
+export const paymentVerification = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { email, userId } = req.body
+    const { orderId } = req.params
+
+  } catch (error) {
+
+  }
+}
+
+export const getPaymentOrderForAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const {
+      page = '1',
+      limit_data = '5',
+      search = '',
+      sort = 'date-asc',
+      tab = '',
+      dateFrom,
+      dateUntil,
+    } = req.query
+
+    const searchTypes = typeof search !== 'string' ? "" : search
+    const sortTypes = typeof sort !== 'string' ? "" : sort
+    const pageTypes = typeof page !== 'string' ? "" : page
+    const limitTypes = typeof limit_data !== 'string' ? "" : limit_data
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const dateFromTypes = typeof dateFrom !== 'string' ? "" : dateFrom
+    const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
+
+    const { totalPage, orders: paginatedOrders } = await getPaymentOrderForAdminService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
         page: pageTypes,
         limit_data: limitTypes,
         search: searchTypes,
