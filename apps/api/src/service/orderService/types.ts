@@ -117,6 +117,22 @@ export interface ICreateOrder {
     laundryPrice: number,
     items: { itemName: string, quantity: number }[],
 }
+export interface IPaymentOrder {
+    orderId: string,
+    email: string,
+    userId: string,
+}
+export interface IPaymentOrderTf {
+    orderId: string,
+    email: string,
+    userId: string,
+    paymentProof:string
+}
+export interface IPaymentTfOrder {
+    orderId: string,
+    email: string,
+    userId: string,
+}
 
 export interface IWashingProcessDone {
     orderId: string,

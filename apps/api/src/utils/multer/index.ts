@@ -14,7 +14,7 @@ const storage = multer.diskStorage({
 
 /* Filtering extension */
 const fileFilter = (req: any, file: any, cb: any) => {
-    const extensionAccepted = ['jpg', 'png', 'jpeg', 'webp', 'svg']
+    const extensionAccepted = ['jpg', 'jpeg', 'png', 'gif']
 
     const imagesExt = file.originalname.split('.')
     if (!extensionAccepted.includes(imagesExt[imagesExt.length - 1])) {
@@ -28,5 +28,5 @@ const fileFilter = (req: any, file: any, cb: any) => {
 export const uploadMulter = multer({
     storage: storage,
     fileFilter: fileFilter,
-    limits: { fileSize: 5000000 }
+    limits: { fileSize: 1 * 1024 * 1024 }
 })

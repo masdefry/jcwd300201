@@ -12,6 +12,12 @@ import { useToast } from "@/components/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import React, { useEffect } from 'react';
 import { useRouter } from "next/navigation";
+import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { useState } from "react";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { values } from "cypress/types/lodash";
+
 
 const validationSchema = Yup.object().shape({
     customerName: Yup.string().required("Customer name is required"),
@@ -45,6 +51,7 @@ type Iitem = {
 };
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
+    const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
 
     const { slug } = React.use(params);
     const router = useRouter()
@@ -54,33 +61,55 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     console.log(token)
     const { toast } = useToast();
 
-    // const { mutate: handleCreateNotaOrder, isPending } = useMutation({
-    //     mutationFn: async ({ email, totalWeight, laundryPrice, items }: any) => {
-    //         return await instance.post(`/order/order/${slug}`, { email, totalWeight, laundryPrice, items }, {
-    //             headers: {
-    //                 Authorization: `Bearer ${token}`
-    //             }
-    //         })
-    //     },
-    //     onSuccess: (res: any) => {
-    //         console.log(res)
-    //         toast({
-    //             description: res?.data?.message,
-    //             className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-    //         })
-    //         setTimeout(() => {
-    //             router.push('/worker/admin-outlet/nota-order');
-    //         }, 1000);
-    //     },
-    //     onError: (err: any) => {
-    //         console.log(err)
-    //         toast({
-    //             description: err?.response?.data?.message,
-    //             className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
-    //         })
-    //     }
-    // })
+    const { mutate: handlePaymmentOrder, isPending } = useMutation({
+        mutationFn: async ({ email }: any) => {
+            return await instance.post(`/order/payment/${slug}`, { email }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res: any) => {
+            console.log(res)
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            setTimeout(() => {
+                router.push(res?.data?.OrderUrl?.paymentProof);
+            }, 1000);
+        },
+        onError: (err: any) => {
+            console.log(err)
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+        }
+    })
 
+    const { mutate: uploadPaymentProof, isPending: isUploading } = useMutation({
+        mutationFn: async (fd: FormData) => {
+            return await instance.post(`/order/payment-tf/${slug}`, fd, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+        },
+        onSuccess: (res) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-green-500 text-white p-4 rounded-lg shadow-lg",
+            });
+            setIsUploadDialogOpen(false);
+        },
+        onError: (error: any) => {
+            toast({
+                description: error.response?.data?.message || "Upload failed",
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg",
+            });
+        },
+    });
 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],
@@ -92,8 +121,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             return res?.data?.data;
         },
     });
-
-    // console.log(dataOrderNote)
 
 
     if (dataOrderNote == undefined) return <div></div>
@@ -121,7 +148,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     />
                                 </div>
 
-                                <div className="flex flex-col col-span-2">
+                                <div className="flex flex-col">
                                     <label className="text-sm">Delivery Fee</label>
                                     <input
                                         type="text"
@@ -131,7 +158,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     />
                                 </div>
 
-                                <div className="flex flex-col col-span-2">
+                                <div className="flex flex-col">
                                     <label className="text-sm">Laundry Price</label>
                                     <input
                                         type="text"
@@ -152,20 +179,99 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                             </div>
 
 
+                            {dataOrderNote?.order?.isPaid === false && !dataOrderNote?.order?.paymentProof ? (
+                                <section className="flex justify-center mt-8 flex-col border- rounded-lg border border-gray-300 shadow-lg p-4">
+                                    <div className="text-lg font-bold text-center">Pilih Metode Pembayaran</div>
+                                    <ConfirmAlert
+                                        caption="Apakah anda yakin ingin melakukan pembayaran melalui VA/e-Wallet/Kartu Kredit?"
+                                        onClick={() => handlePaymmentOrder(dataOrderNote?.order?.id)}
+                                        description='Anda tidak bisa mengganti metode pembayaran setelah memilih'
+                                        colorConfirmation="blue"
+                                    >
+                                        <button
+                                            className="bg-blue-500 text-white rounded-md p-3 mt-4"
+                                        >
+                                            VA / e-Wallet / Kartu Kredit
+                                        </button>
+                                    </ConfirmAlert>
+                                    <div className="mt-4 text-center text-gray-700">atau</div>
+                                    <ConfirmAlert
+                                        caption="Apakah anda yakin ingin melakukan pembayaran melalui transfer manual?"
+                                        onClick={() => setIsUploadDialogOpen(true)}
+                                        description='Anda tidak bisa mengganti metode pembayaran setelah memilih'
+                                        colorConfirmation="blue"
+                                    >
+                                        <button
+                                            className="bg-blue-500 text-white rounded-md p-3 mt-4"
+                                        >
+                                            Transfer Manual
+                                        </button>
+                                    </ConfirmAlert>
+                                </section>
+                            ) : (
+                                <div className="flex text-center text-lg justify-center mt-8 flex-col border- rounded-lg border border-gray-300 shadow-lg p-4">
+                                        <div className="font-bold">
+                                            Terima kasih,
+                                        </div>
+                                        <div>
+                                            Anda Telah Melakukan Pembayaran!
+                                        </div>
+                                </div>
+                            )}
 
-                            <div>Pilih Metode Pembayaran</div>
-                            <button
-                                className="bg-blue-500 text-white rounded-md p-3 mt-4"
-                                >
-                                VA / e-Wallet / Kartu Kredit
-                            </button>
-                                <div>atau</div>
-                            <button
-                                className="bg-blue-500 text-white rounded-md p-3 mt-4"
-                                >
-                                Transfer Manual
-                            </button>
-
+                            <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+                                <DialogContent>
+                                    <DialogHeader>
+                                        <DialogTitle>Upload Bukti Pembayaran</DialogTitle>
+                                        <DialogDescription>
+                                            Silakan unggah bukti pembayaran Anda di bawah ini.
+                                        </DialogDescription>
+                                    </DialogHeader>
+                                    <Formik
+                                        initialValues={{ images: null }}
+                                        onSubmit={(values: any) => {
+                                            const fd = new FormData();
+                                            fd.append("images", values.images);
+                                            fd.append("orderId", slug);
+                                            uploadPaymentProof(fd)
+                                        }}
+                                    >
+                                        {({ setFieldValue }) => (
+                                            <Form>
+                                                <div className="mt-4">
+                                                    <label className="block mb-2 text-sm font-medium text-gray-600">
+                                                        Upload File
+                                                    </label>
+                                                    <input
+                                                        type="file"
+                                                        accept="image/*"
+                                                        onChange={(event: any) => {
+                                                            setFieldValue("images", event.currentTarget.files[0]);
+                                                        }}
+                                                        className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                                    />
+                                                </div>
+                                                <DialogFooter>
+                                                    <Button
+                                                        variant="secondary"
+                                                        onClick={() => setIsUploadDialogOpen(false)}
+                                                        disabled={isUploading}
+                                                    >
+                                                        Cancel
+                                                    </Button>
+                                                    <Button
+                                                        type="submit"
+                                                        className="bg-blue-600 hover:bg-blue-700"
+                                                        disabled={isUploading}
+                                                    >
+                                                        {isUploading ? "Uploading..." : "Upload"}
+                                                    </Button>
+                                                </DialogFooter>
+                                            </Form>
+                                        )}
+                                    </Formik>
+                                </DialogContent>
+                            </Dialog>
                         </section>
                     </main>
                 </section>
