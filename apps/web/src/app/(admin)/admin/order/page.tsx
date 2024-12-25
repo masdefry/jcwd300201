@@ -54,6 +54,7 @@ export default function OrderList() {
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [outletId, setOutletId] = useState(params.get("outletId") || null);
 
+
     const limit = 5;
 
     const { data: dataOrderList, refetch, isLoading: dataOrderListLoading, isError: dataOrderListError } = useQuery({

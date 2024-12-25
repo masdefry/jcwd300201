@@ -259,13 +259,13 @@ export const getOrderItemDetail = async (req: Request, res: Response, next: Next
   try {
     const { orderId } = req.params
 
-    const DetailListItem = await getOrderItemDetailService(orderId);
+    const { detailListItem } = await getOrderItemDetailService(orderId);
 
 
     res.status(200).json({
       error: false,
       message: 'Detail item order berhasil didapatkan',
-      data: DetailListItem
+      data: detailListItem
     });
 
   } catch (error) {

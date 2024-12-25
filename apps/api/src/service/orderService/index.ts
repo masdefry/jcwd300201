@@ -8,8 +8,6 @@ import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOu
 import { Prisma, Role, Status } from "@prisma/client"
 import { addHours, isBefore } from "date-fns"
 import { formatOrder } from "@/utils/formatOrder"
-
-import { sortAndDeduplicateDiagnostics } from "typescript"
 import snap from "@/utils/midtrans"
 
 
@@ -106,7 +104,7 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
       LIMIT 1;
     `;
 
-  if (nearestStores.length === 0) throw { msg: 'Tidak ada toko Laundry kami di dekat anda', status: 404 }
+  if (nearestStores.length === 0) throw { msg: 'Tidak ada toko laundry kami di dekat anda', status: 404 }
   return { nearestStores }
 }
 
@@ -119,10 +117,10 @@ export const getUserOrderService = async ({ userId, limit_data, page, search, da
       search
         ? {
           OR: [
-            { id: { contains: search as string, mode: 'insensitive' } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' } } }
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } }
           ]
         }
         : {},
@@ -320,7 +318,7 @@ export const acceptOrderService = async ({ email, orderId, userId }: IAcceptOrde
     where: { email }
   })
 
-  if (!findWorker) throw { msg: "driver tidak tersedia", status: 404 }
+  if (!findWorker) throw { msg: "Driver tidak tersedia", status: 404 }
 
   const order = await prisma.order.findFirst({
     where: { id: orderId },
@@ -434,12 +432,12 @@ export const getOrderItemDetailService = async (orderId: string) => {
     },
   });
 
-  const DetailListItem = listItem.map(item => ({
+  const detailListItem = listItem.map(item => ({
     laundryItemId: item.laundryItemId,
     quantity: item.quantity,
   }));
 
-  return { DetailListItem };
+  return { detailListItem };
 };
 
 export const getOrdersForWashingService = async ({
@@ -498,9 +496,9 @@ export const getOrdersForWashingService = async ({
         ? {
           OR: [
             { id: { contains: search } },
-            { User: { firstName: { contains: search } } },
-            { User: { lastName: { contains: search } } },
-            { User: { phoneNumber: { contains: search } } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -730,11 +728,9 @@ export const getOrdersForIroningService = async ({
     return statusFilter.includes(latestStatus)
 
   });
-
+  
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
-
   const totalCount = filteredOrders.length;
-
   const totalPage = Math.ceil(totalCount / Number(limit_data));
 
   return {
@@ -754,7 +750,7 @@ export const createOrderService = async ({
   const findWorker = await prisma.worker.findFirst({
     where: { email }
   });
-  if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 };
+  if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 };
 
   const existingOrder = await prisma.order.findUnique({
     where: { id: String(orderId) },
@@ -767,7 +763,7 @@ export const createOrderService = async ({
         }
       }
     }
-  });
+  })
   if (!existingOrder) throw { msg: "Order tidak ditemukan", status: 404 };
 
   const totalPrice = (laundryPrice || 0) + (existingOrder.deliveryFee || 0);
@@ -817,7 +813,7 @@ export const washingProcessDoneService = async ({ orderId, email, userId }: IWas
     where: { email }
   })
 
-  if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+  if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 }
 
   const order = await prisma.order.findUnique({
     where: { id: String(orderId) },
@@ -876,7 +872,7 @@ export const ironingProcessDoneService = async ({ orderId, email, userId }: IIro
     where: { email }
   })
 
-  if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+  if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 }
 
   const order = await prisma.order.findUnique({
     where: { id: String(orderId) },
@@ -1104,10 +1100,10 @@ export const getPackingHistoryService = async ({ userId, authorizationRole, stor
       search
         ? {
           OR: [
-            { id: { contains: search as string, mode: 'insensitive' } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -1208,10 +1204,10 @@ export const getIroningHistoryService = async ({ userId, authorizationRole, stor
       search
         ? {
           OR: [
-            { id: { contains: search as string, mode: 'insensitive' } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -1319,10 +1315,10 @@ export const getWashingHistoryService = async ({ userId, authorizationRole, stor
       search
         ? {
           OR: [
-            { id: { contains: search as string, mode: 'insensitive' } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -1422,10 +1418,10 @@ export const getNotesService = async ({ userId, authorizationRole, tab, limit_da
       search
         ? {
           OR: [
-            { id: { contains: search as string, mode: 'insensitive' } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -1512,7 +1508,7 @@ export const packingProcessService = async ({ email, orderId, userId }: { email:
     },
   });
 
-  if (!orderStatuses) throw { msg: "tidak ada order dengan status 'IN_IRONING_PROCESS'" };
+  if (!orderStatuses) throw { msg: "Tidak ada order dengan status 'IN_IRONING_PROCESS'", status: 404 };
 
   await prisma.orderStatus.update({
     where: { id: orderStatuses.id },
@@ -2303,10 +2299,10 @@ export const getDriverHistoryService = async ({ tab, userId, authorizationRole, 
       search
         ? {
           OR: [
-            { id: { contains: search as string, mode: 'insensitive' } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
