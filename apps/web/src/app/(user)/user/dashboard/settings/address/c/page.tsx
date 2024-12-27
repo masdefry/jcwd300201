@@ -365,9 +365,7 @@ export default function Page() {
                                             </option>
                                             {citiesLoading ? (<option disabled>Loading...</option>) : (
                                                 cities?.map((city: any) => (
-                                                    <option key={city.city_id} value={city.city_name}>
-                                                        {city.city_name}
-                                                    </option>
+                                                    <option key={city.city_id} value={city.city_name}>{city.city_name}</option>
                                                 ))
                                             )}
                                         </Field>

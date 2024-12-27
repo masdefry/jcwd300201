@@ -290,7 +290,7 @@ export default function DeliveryRequest() {
                                                     <div className="border rounded-lg border-gray-700 p-2 shadow-md">
                                                         <div className="font-semibold">Delivery Driver:</div>
                                                         <div>
-                                                            {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERTLET" ? (
+                                                            {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERT" ? (
                                                                 <>
                                                                     <div>
                                                                         {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
@@ -343,7 +343,11 @@ export default function DeliveryRequest() {
                                             <div className="flex justify-center">
                                                 <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Bayar Sekarang</ButtonCustom>
                                             </div>
-                                            : ''
+                                            : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof ?
+                                                <div className="flex justify-center">
+                                                    <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Menunggu Verivikasi Admin</ButtonCustom>
+                                                </div>
+                                                : ''
                                     }
                                 </DialogContent>
                             </Dialog>

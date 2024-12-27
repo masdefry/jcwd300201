@@ -9,7 +9,6 @@ import { FaWhatsapp } from "react-icons/fa";
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 import ContentWebLayout from "@/components/core/webSessionContent"
-import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout"
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import TableHeadNotaOrder from "@/features/adminOutlet/components/tableHeadNotaOrder"
@@ -17,6 +16,7 @@ import TableHeadLayout from "@/features/adminOutlet/components/tableHeadLayout"
 import TableBodyNotFound from "@/features/adminOutlet/components/tableBodyDataNotFound"
 import TableBodyContent from "@/features/adminOutlet/components/tableBodyContent"
 import { useNotaOrderHooks } from "@/features/adminOutlet/hooks/useNotaOrderHooks"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
 
 export default function HistoryOrderWashing() {
     const { page, totalPages, sortOption, dateFrom, dateUntil, limit,
@@ -32,7 +32,7 @@ export default function HistoryOrderWashing() {
                     <main className="w-full">
                         <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
                             <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> HISTORY ORDER
+                                <Link href='/admin/settings'><FaArrowLeft /></Link> BUAT NOTA ORDER
                             </div>
                         </section>
                         <div className="py-28 mx-4 space-y-4">

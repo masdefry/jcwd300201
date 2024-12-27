@@ -1,26 +1,35 @@
 'use client'
 
+import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
+import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
-import { CgProfile } from "react-icons/cg";
-import { FaArrowLeft, FaArrowRight, FaCartArrowDown, FaDashcube, FaHouseDamage, FaIceCream, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
-import { RiProfileFill } from "react-icons/ri";
+import { FaArrowLeft, FaArrowRight, FaCartArrowDown, FaDashcube, FaExclamationTriangle, FaHistory, FaHouseDamage, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import Cookies from 'js-cookie'
+import { toast } from "@/components/hooks/use-toast";
+import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { FaFileInvoice, FaTruck } from "react-icons/fa6";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 
 export default function Layout({ children }: { children: ReactNode }) {
     const [isClose, setIsClose] = useState<boolean>(false)
+    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
     const profilePicture = authStore((state) => state?.profilePicture)
     const role = authStore((state) => state?.role)
     const name = authStore((state) => state?.firstName)
+    const email = authStore((state) => state?.email)
+    const token = authStore((state) => state?.token)
+    const resetAuth = authStore((state) => state?.resetAuth)
     const router = useRouter()
     const pathname = usePathname()
     const handleCloseSideBar = () => {
         setIsClose(!isClose)
     }
+
 
     const dashboardMenuUrl: any = {
         OUTLET_ADMIN: '/worker/admin-outlet/dashboard',
@@ -32,13 +41,43 @@ export default function Layout({ children }: { children: ReactNode }) {
 
     const dashboardUrl = dashboardMenuUrl[role] || ''
 
+    const { mutate: handleLogoutAdmin, isPending } = useMutation({
+        mutationFn: async () => {
+            return await instance.post('/auth/worker/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
+        },
+        onSuccess: (res) => {
+            if (res) {
+                Cookies.remove('__rolx')
+                Cookies.remove('__toksed')
+                resetAuth()
+
+                toast({
+                    description: res?.data?.message,
+                    className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+                })
+
+                setIsDisabledSucces(true)
+
+                window.location.href = '/worker/login'
+                console.log(res)
+            }
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            console.log(err)
+        }
+    })
+
     return (
         <main className="w-full h-fit md:h-screen md:flex flex-none">
             <section className={`w-3/12 h-full hidden md:flex bg-white ${isClose ? 'md:hidden' : 'animate-fade-right md:flex'} flex-col px-2 text-white`}>
                 <div className="h-fit py-10 gap-5 flex justify-start px-5 items-center w-full">
                     <div className="w-12 h-12 rounded-full">
                         <Image
-                            src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict} 
+                            src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
                             width={600}
                             height={600}
                             alt="user-profile"
@@ -51,23 +90,27 @@ export default function Layout({ children }: { children: ReactNode }) {
                     </div>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Menu</h1>
-                <div className="w-full h-full flex flex-col gap-4">
+                <div className="w-full h-full flex flex-col gap-2">
                     <Link href={dashboardUrl} className={`w-full flex 
                         ${Object.values(dashboardMenuUrl).includes(pathname) ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/worker/admin-outlet/nota-order' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/nota-order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaCartArrowDown />Nota Order</Link>
+                        <FaFileInvoice />Nota Pesanan</Link>
                     <Link href='/worker/admin-outlet/order' className={`w-full flex ${pathname.startsWith('/admin/worker') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaMoneyBillWave /> History Order</Link>
-                    <Link href='/worker/admin-outlet/p' className={`w-full ${pathname.startsWith('/worker/admin-outlet/p') ? 'hidden' : 'flex'} ${pathname == '/admin/category' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaHouseDamage /> Laporan Order</Link>
+                        <FaHistory /> Riwayat</Link>
+                    <Link href='/worker/admin-outlet/d' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/d') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaTruck /> Pengiriman</Link>
+                    <Link href='/worker/admin-outlet/p' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/p') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaExclamationTriangle /> Laporan</Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">
                     <Link href='/worker/admin-outlet/settings' className={`w-full flex ${pathname == '/worker/admin-outlet/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>
-                    <span className={`w-full  cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
-                        <RiProfileFill /> Profile</span>
+                    <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                        <span className={`w-full cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
+                            <FaSignOutAlt /> Logout</span>
+                    </ConfirmAlert>
                 </div>
             </section>
             <section className="w-full h-fit md:h-screen md:bg-white md:px-1 md:py-1 relative">

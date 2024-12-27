@@ -94,8 +94,8 @@ export default function Layout({ children }: { children: ReactNode }) {
                         ${Object.values(dashboardMenuUrl).includes(pathname) ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard
                     </Link>
-                    <Link href={dashboardUrl} className={`w-full flex 
-                        ${Object.values(dashboardMenuUrl).includes(pathname) ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/worker/washing-worker/order' className={`w-full flex 
+                        ${pathname.startsWith('/worker/washing-worker/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaCartArrowDown /> Pesanan
                     </Link>
                 </div>

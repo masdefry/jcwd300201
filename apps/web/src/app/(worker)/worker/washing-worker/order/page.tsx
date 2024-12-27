@@ -17,10 +17,10 @@ import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 import ContentWebLayout from "@/components/core/webSessionContent"
-import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout"
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
 
 export default function Page() {
     const params = useSearchParams();
@@ -43,19 +43,13 @@ export default function Page() {
     const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const tabValue =
-                activeTab === "not-washed" ? "AWAITING_PAYMENT" :
-                    activeTab === "in-washing" ? "IN_WASHING_PROCESS" :
-                        activeTab === "completed" ? "IN_IRONING_PROCESS" :
-                            "";
-
             const res = await instance.get('/order/order-washing', {
                 params: {
                     page,
                     limit_data: limit,
                     search: searchInput || "",
                     sort: sortOption,
-                    tab: tabValue,
+                    tab: activeTab,
                     dateFrom: dateFrom ?? '',
                     dateUntil: dateUntil ?? '',
                 },
@@ -316,6 +310,7 @@ export default function Page() {
                         <tbody>
                             {dataOrderWashingProcess?.orders?.length > 0 ? (
                                 dataOrderWashingProcess?.orders?.map((order: any, i: number) => {
+                                    console.log(order?.orderStatus[0]?.status, '<< status')
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
