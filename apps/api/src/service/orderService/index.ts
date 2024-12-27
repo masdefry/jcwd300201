@@ -1564,6 +1564,7 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
         ? {
           OR: [
             { id: { contains: search as string } },
+
             { User: { firstName: { contains: search as string } } },
             { User: { lastName: { contains: search as string } } },
             { User: { phoneNumber: { contains: search as string } } },
@@ -1629,7 +1630,7 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
     return statusFilter.includes(latestStatus)
-  });
+
 
 
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
