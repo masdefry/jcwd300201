@@ -1,4 +1,4 @@
-import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory, getAllOrderForUser, paymentOrderVA, paymentOrderTf, paymentVerification, getPaymentOrderForAdmin, PaymentDone } from "@/controllers/orderController";
+import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory, getAllOrderForUser, paymentOrderVA, paymentOrderTf, getPaymentOrderForAdmin, paymentDone, userConfirmOrder } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
 import { limiter } from "@/middleware/rateLimit";
 import { roleCheckAdmin, roleCheckCustomer, roleCheckSuperAdmin } from "@/middleware/roleCheck";
@@ -77,7 +77,8 @@ orderRouter.post('/confirm/:orderId', tokenValidation,)
 orderRouter.post('/payment/:orderId', tokenValidation, paymentOrderVA)
 orderRouter.post('/payment-tf/:orderId', tokenValidation, uploader, paymentOrderTf)
 orderRouter.get('/payment/', tokenValidation, getPaymentOrderForAdmin)
-orderRouter.post('/payment-done/:orderId', tokenValidation, PaymentDone)
+orderRouter.post('/payment-done/:orderId', tokenValidation, paymentDone)
 
-// 
+// Konfirmasi Order by Cust
+orderRouter.post('/confirm/:orderId', tokenValidation, userConfirmOrder)
 export default orderRouter

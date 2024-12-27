@@ -3,7 +3,7 @@ import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 import { Prisma } from "@prisma/client";
 import { Status } from "@prisma/client";
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService } from "@/service/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService } from "@/service/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
 import dotenv from 'dotenv'
 
@@ -1283,15 +1283,6 @@ export const paymentOrderTf = async (req: Request, res: Response, next: NextFunc
 }
 
 
-export const paymentVerification = async (req: Request, res: Response, next: NextFunction) => {
-  try {
-    const { email, userId } = req.body
-    const { orderId } = req.params
-
-  } catch (error) {
-
-  }
-}
 
 export const getPaymentOrderForAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -1342,12 +1333,31 @@ export const getPaymentOrderForAdmin = async (req: Request, res: Response, next:
   }
 };
 
-export const PaymentDone = async (req: Request, res: Response, next: NextFunction) => {
+export const paymentDone = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
     const { email, userId } = req.body
 
     const { orderStatus } = await PaymentDoneService({ orderId, email, userId })
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        orderStatus,
+      },
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const userConfirmOrder = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const { orderUpdate } = await userConfirmOrderService({ orderId, email, userId })
 
     res.status(200).json({
       error: false,

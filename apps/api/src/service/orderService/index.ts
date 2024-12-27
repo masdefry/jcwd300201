@@ -2815,3 +2815,41 @@ export const PaymentDoneService = async ({ orderId, email, userId }: IIroningPro
 
   return { orderStatus };
 };
+
+
+export const userConfirmOrderService = async ({ orderId, email, userId }: IIroningProcessDone) => {
+  const findUser = await prisma.user.findFirst({
+    where: { email }
+  })
+
+  if (!findUser) throw { msg: "Worker tidak tersedia", status: 404 }
+
+  const order = await prisma.order.findUnique({
+    where: {
+      id: String(orderId)
+    },
+  });
+
+  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+  const orderPayment = await prisma.order.findUnique({
+    where: {
+      id: String(orderId),
+      isPaid:true
+    },
+  });
+
+  if (!orderPayment) throw { msg: "Order belum dibayar", status: 404 };
+
+
+  const orderUpdate = await prisma.order.update({
+    where: { id: order.id },
+    data: {
+      isConfirm: true
+    }
+  })
+
+  if (!orderUpdate) throw { msg: "Data konfirmasi order gagal dibuat", status: 404 };
+
+  return { orderUpdate };
+};
