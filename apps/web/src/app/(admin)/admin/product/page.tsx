@@ -8,8 +8,8 @@ import { useProductLaundryHooks } from "@/features/superAdmin/hooks/useProductLa
 import DialogCreateProduct from "@/features/superAdmin/components/dialogCreateProductLaundry";
 import DialogUpdateProduct from "@/features/superAdmin/components/dialogUpdateProductLaundry";
 import ContentWebLayout from "@/components/core/webSessionContent";
-import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout";
 import { BsTrash } from "react-icons/bs";
+import PaginationWebLayout from "@/components/core/paginationWebLayout";
 
 export default function Page() {
     const { currentPage, entriesPerPage, sortProduct, setSortProduct, isFetching, createProductItem,

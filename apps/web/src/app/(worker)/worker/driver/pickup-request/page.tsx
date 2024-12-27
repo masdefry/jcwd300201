@@ -23,7 +23,7 @@ import { FaPlus } from "react-icons/fa6"
 import ContentWebLayout from "@/components/core/webSessionContent"
 import Pagination from "@/components/core/pagination"
 import FilterWorker from "@/components/core/filter"
-import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
 
 export default function Page() {
     const params = useSearchParams();
@@ -313,7 +313,7 @@ export default function Page() {
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' : 'Layanan Laundry'}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                 {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Pickup' :
                                                     order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Perjalanan Menuju Outlet' :

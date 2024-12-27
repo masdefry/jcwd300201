@@ -17,12 +17,12 @@ import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 import ContentWebLayout from "@/components/core/webSessionContent"
-import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout"
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
 
-export default function DriverPickUp() {
+export default function Page() {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -306,6 +306,7 @@ export default function DriverPickUp() {
                         <tbody>
                             {dataOrderWashingProcess?.orders?.length > 0 ? (
                                 dataOrderWashingProcess?.orders?.map((order: any, i: number) => {
+                                    console.log(order?.orderStatus[0]?.status, '<< status')
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
@@ -346,13 +347,12 @@ export default function DriverPickUp() {
                                                     onClick={() => {
                                                         if (order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false) {
                                                             router.push(`/worker/washing-worker/order/c/${order?.id}`);
-                                                        } else if (order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' && order?.isProcessed === true) {
-                                                            handleProcessWashing(order?.id);
-                                                            console.log('trigger')
+                                                        } else {
+                                                            handleProcessWashing(order?.id)
                                                         }
                                                     }}>
                                                     <button className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                        Proses
+                                                        {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' ? 'Proses' : 'Selesaikan'}
                                                     </button>
                                                 </ConfirmAlert>
                                             </td>
@@ -361,7 +361,7 @@ export default function DriverPickUp() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold text-3xl text-neutral-300">Data Tersedia</td>
+                                    <td colSpan={6} className="text-center py-20 font-bold text-3xl text-neutral-300">Data tidak Tersedia</td>
                                 </tr>
                             )}
                         </tbody>

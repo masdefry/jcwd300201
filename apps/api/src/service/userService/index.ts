@@ -138,12 +138,28 @@ export const getAllUserAddressesService = async ({ userId, search }: { userId: s
                     { province: { contains: search as string } },
                     { country: { contains: search as string } },
                 ]
+            },
+            include: {
+                User: {
+                    select: {
+                        firstName: true,
+                        lastName: true
+                    }
+                }
             }
         })
     } else {
         addresses = await prisma.userAddress.findMany({
             where: { userId },
             orderBy: { isMain: 'desc' },
+            include: {
+                User: {
+                    select: {
+                        firstName: true,
+                        lastName: true
+                    }
+                }
+            }
         });
     }
 
@@ -159,6 +175,14 @@ export const getUserMainAddressService = async ({ userId }: { userId: string }) 
             userId: userId,
             isMain: true,
         },
+        include: {
+            User: {
+                select: {
+                    firstName: true,
+                    lastName: true
+                }
+            }
+        }
     });
 
     if (!mainAddress) throw { msg: "Alamat utama tidak ditemukan" }

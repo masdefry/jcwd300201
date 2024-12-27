@@ -15,8 +15,8 @@ import ButtonCustom from "@/components/core/button";
 import { ChangeEvent } from "react";
 import SearchInputCustom from "@/components/core/searchBar";
 import { useWorkerHooks } from "@/features/superAdmin/hooks/useWorkerHooks";
-import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout";
 import ContentWebLayout from "@/components/core/webSessionContent";
+import PaginationWebLayout from "@/components/core/paginationWebLayout";
 
 export default function Page() {
     const { currentPage, entriesPerPage, sortWorker, setSortWorker, isFetching,

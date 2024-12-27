@@ -9,7 +9,6 @@ import { FaWhatsapp } from "react-icons/fa";
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 import ContentWebLayout from "@/components/core/webSessionContent"
-import PaginationWebLayout from "@/features/superAdmin/components/paginationWebLayout"
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import TableHeadNotaOrder from "@/features/adminOutlet/components/tableHeadNotaOrder"
@@ -17,6 +16,7 @@ import TableHeadLayout from "@/features/adminOutlet/components/tableHeadLayout"
 import TableBodyNotFound from "@/features/adminOutlet/components/tableBodyDataNotFound"
 import TableBodyContent from "@/features/adminOutlet/components/tableBodyContent"
 import { useNotaOrderHooks } from "@/features/adminOutlet/hooks/useNotaOrderHooks"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
 
 export default function HistoryOrderWashing() {
     const { page, totalPages, sortOption, dateFrom, dateUntil, limit,
