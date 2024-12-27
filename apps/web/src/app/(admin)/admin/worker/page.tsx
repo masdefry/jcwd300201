@@ -32,13 +32,13 @@ export default function Page() {
                             <Link href='/admin/settings'><FaArrowLeft /></Link> PEKERJA
                         </section>
                         <div className="py-28 space-y-4">
-                            <Tabs defaultValue="semua" className="fit">
+                            <Tabs defaultValue="all" className="fit">
                                 <TabsList className="grid w-full grid-cols-3">
-                                    <TabsTrigger value="semua">Semua</TabsTrigger>
+                                    <TabsTrigger value="all">Semua</TabsTrigger>
                                     <TabsTrigger value="pekerja">Pekerja</TabsTrigger>
                                     <TabsTrigger value="driver">Driver</TabsTrigger>
                                 </TabsList>
-                                <TabsContent value="semua">
+                                <TabsContent value="all">
                                     <Card>
                                         <CardContent className="space-y-2 pt-4">
                                             <LocationAndSearch />

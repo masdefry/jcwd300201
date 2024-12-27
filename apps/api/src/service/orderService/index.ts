@@ -5,7 +5,7 @@ import fs, { rmSync } from 'fs'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
 import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory, IPaymentOrder, IPaymentOrderTf } from "./types"
-import { Prisma, Role, Status } from "@prisma/client"
+import { Prisma, Role, Status, Payment } from "@prisma/client"
 import { addHours, isBefore } from "date-fns"
 import { formatOrder } from "@/utils/formatOrder"
 import snap from "@/utils/midtrans"
@@ -483,7 +483,7 @@ export const getOrdersForWashingService = async ({
     statusFilter = ['AWAITING_PAYMENT'];
   } else if (tab === "in-washing") {
     statusFilter = ['IN_WASHING_PROCESS'];
-  } else if (tab === "completed") {
+  } else if (tab === "done") {
     statusFilter = ['IN_IRONING_PROCESS'];
   } else if (tab === "all") {
     statusFilter = ['AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS'];
@@ -584,6 +584,8 @@ export const getOrdersForWashingService = async ({
 
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
+    console.log(order.id, 'orderid')
+    console.log(latestStatus, 'lateststatus')
     return statusFilter.includes(latestStatus)
   });
 
@@ -638,9 +640,9 @@ export const getOrdersForIroningService = async ({
     statusFilter = ['IN_IRONING_PROCESS'];
   } else if (tab === "belumDisetrika") {
     statusFilter = ['IN_IRONING_PROCESS'];
-  } else if (tab === "selesai") {
+  } else if (tab === "done") {
     statusFilter = ['IN_PACKING_PROCESS'];
-  } else if (tab === "semua") {
+  } else if (tab === "all") {
     statusFilter = ['IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
   } else if (tab) {
     statusFilter = [tab];
@@ -962,13 +964,13 @@ export const getOrdersForPackingService = async ({
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
   let statusFilter: any;
-  if (tab === "prosesPacking") {
+  if (tab === "packing-process") {
     statusFilter = ['IN_PACKING_PROCESS'];
-  } else if (tab === "belumPacking") {
+  } else if (tab === "not-packed-yet") {
     statusFilter = ['IN_PACKING_PROCESS'];
-  } else if (tab === "selesai") {
+  } else if (tab === "done") {
     statusFilter = ['IN_PACKING_PROCESS'];
-  } else if (tab === "semua") {
+  } else if (tab === "all") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab) {
     statusFilter = [tab];
@@ -984,7 +986,7 @@ export const getOrdersForPackingService = async ({
     orderStatus: {
       some: {
         status: { in: statusFilter },
-        ...(tab === 'prosesPacking' ? { workerId: userId } : {}),
+        ...(tab === 'packing-process' ? { workerId: userId } : {}),
       },
     },
     AND: [
@@ -998,9 +1000,9 @@ export const getOrdersForPackingService = async ({
           ],
         }
         : {},
-      ...(tab === 'belumPacking' ? [{ isProcessed: false }, { isDone: false }] : []),
-      ...(tab === 'prosesPacking' ? [{ isProcessed: true }] : []),
-      ...(tab === 'selesai' ? [{ isDone: true }, { isProcessed: false }] : []),
+      ...(tab === 'not-packed-yet' ? [{ isProcessed: false }, { isDone: false }] : []),
+      ...(tab === 'packing-process' ? [{ isProcessed: true }] : []),
+      ...(tab === 'done' ? [{ isDone: true }, { isProcessed: false }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
     ].filter((condition) => Object.keys(condition).length > 0),
@@ -1424,7 +1426,7 @@ export const getNotesService = async ({ userId, authorizationRole, tab, limit_da
   let tabFilter: Prisma.OrderWhereInput = {};
   if (tab === 'bermasalah') {
     tabFilter = { isSolved: false, notes: { not: null } };
-  } else if (tab === 'selesai') {
+  } else if (tab === 'done') {
     tabFilter = { isSolved: true, notes: { not: null } };
   }
 
@@ -1566,8 +1568,8 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
           OR: [
             { id: { contains: search as string } },
 
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
+            { User: { firstName: { contains: search as string  } } },
+            { User: { lastName: { contains: search as string  } } },
             { User: { phoneNumber: { contains: search as string } } },
           ],
         }
@@ -1679,9 +1681,9 @@ export const getOrdersForDeliveryService = async ({
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
   let statusFilter: any;
-  if (tab === "menungguPembayaran") {
+  if (tab === "waiting-payment") {
     statusFilter = ['IN_PACKING_PROCESS'];
-  } else if (tab === "siapKirim") {
+  } else if (tab === "ready-to-deliver") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else {
     statusFilter = ['IN_PACKING_PROCESS'];
@@ -1708,8 +1710,8 @@ export const getOrdersForDeliveryService = async ({
           ],
         }
         : {},
-      ...(tab === 'menungguPembayaran' ? [{ isPaid: false, isProcessed: false, isDone: true }] : []),
-      ...(tab === 'siapKirim' ? [{ isPaid: true, isProcessed: false, isDone: true, isReqDelivery: false }] : []),
+      ...(tab === 'waiting-payment' ? [{ isPaid: false, isProcessed: false, isDone: true }] : []),
+      ...(tab === 'ready-to-deliver' ? [{ isPaid: true, isProcessed: false, isDone: true, isReqDelivery: false }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
     ].filter((condition) => Object.keys(condition).length > 0),
@@ -1854,7 +1856,7 @@ export const getOrdersForDriverDeliveryService = async ({
     statusFilter = ['DRIVER_TO_CUSTOMER'];
   } else if (tab === "terkirim") {
     statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
-  } else if (tab === "semua") {
+  } else if (tab === "all") {
     statusFilter = ['IN_PACKING_PROCESS', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
     statusFilter = [tab];
@@ -1887,7 +1889,7 @@ export const getOrdersForDriverDeliveryService = async ({
         : {},
       ...(tab === 'menungguDriver' ? [{ isProcessed: false, isReqDelivery: true, isPaid: true, isDone: true }] : []),
       ...(tab === 'proses' ? [{ isProcessed: true }] : []),
-      ...(tab === 'semua' ? [{ isPaid: true }] : []),
+      ...(tab === 'all' ? [{ isPaid: true }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
     ].filter((condition) => Object.keys(condition).length > 0),
@@ -2123,7 +2125,7 @@ export const getAllOrderForAdminService = async ({
   let statusFilter: any;
   if (tab === "proses") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
-  } else if (tab === "selesai") {
+  } else if (tab === "done") {
     statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
     statusFilter = [tab];
@@ -2152,7 +2154,7 @@ export const getAllOrderForAdminService = async ({
         }
         : {},
       ...(tab === 'proses' ? [{ isConfirm: false }] : []),
-      ...(tab === 'selesai' ? [{ isConfirm: true }] : []),
+      ...(tab === 'done' ? [{ isConfirm: true }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
     ].filter((condition) => Object.keys(condition).length > 0),
@@ -2424,11 +2426,11 @@ export const getAllOrderForUserService = async ({
   if (!user) throw { msg: "User tidak tersedia", status: 404 }
 
   let statusFilter: any;
-  if (tab === "menungguPembayaran") {
+  if (tab === "waiting-payment") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab === "proses") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
-  } else if (tab === "selesai") {
+  } else if (tab === "done") {
     statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
     statusFilter = [tab];
@@ -2456,9 +2458,9 @@ export const getAllOrderForUserService = async ({
           ],
         }
         : {},
-      ...(tab === 'menungguPembayaran' ? [{ isPaid: false }] : []),
+      ...(tab === 'waiting-payment' ? [{ isPaid: false }] : []),
       ...(tab === 'proses' ? [{ isConfirm: false }] : []),
-      ...(tab === 'selesai' ? [{ isConfirm: true }] : []),
+      ...(tab === 'done' ? [{ isConfirm: true }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
     ].filter((condition) => Object.keys(condition).length > 0),
@@ -2587,7 +2589,8 @@ export const paymentOrderVAService = async ({
   const updatedOrderWithPaymentUrl = await prisma.order.update({
     where: { id: String(orderId) },
     data: {
-      paymentProof: paymentUrl
+      paymentProof: paymentUrl,
+      paymentMethod: 'MIDTRANS'
     },
   });
 
@@ -2625,6 +2628,7 @@ export const paymentOrderTfService = async ({
     where: { id: String(orderId) },
     data: {
       paymentProof,
+      paymentMethod: 'TF_MANUAL'
     }
   });
   if (!updatedOrder) {
@@ -2671,11 +2675,11 @@ export const getPaymentOrderForAdminService = async ({
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
   let statusFilter: any;
-  if (tab === "verifikasi") {
+  if (tab === "verification") {
     statusFilter = ['AWAITING_PAYMENT'];
-  } else if (tab === "proses") {
+  } else if (tab === "waiting-payment") {
     statusFilter = ['AWAITING_PAYMENT'];
-  } else if (tab === "selesai") {
+  } else if (tab === "done") {
     statusFilter = ['PAYMENT_DONE'];
   } else if (tab) {
     statusFilter = [tab];
@@ -2703,9 +2707,9 @@ export const getPaymentOrderForAdminService = async ({
           ],
         }
         : {},
-      ...(tab === 'verifikasi' ? [{ isPaid: false }] : []),
-      ...(tab === 'proses' ? [{ isPaid: false }] : []),
-      ...(tab === 'selesai' ? [{ isPaid: true }] : []),
+      ...(tab === 'verification' ? [{ isPaid: false, paymentMethod: { equals: Payment.TF_MANUAL } }] : []),
+      ...(tab === 'waiting-payment' ? [{ isPaid: false }] : []),
+      ...(tab === 'done' ? [{ isPaid: true }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
     ].filter((condition) => Object.keys(condition).length > 0),
@@ -2766,15 +2770,10 @@ export const getPaymentOrderForAdminService = async ({
     },
   });
 
-  const filteredOrders = orders.filter(order => {
-    const latestStatus = order.orderStatus[0]?.status;
-    return statusFilter.includes(latestStatus)
 
-  });
+  const paginatedOrders = orders.slice(offset, offset + Number(limit_data));
 
-  const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
-
-  const totalCount = filteredOrders.length;
+  const totalCount = orders.length;
 
   const totalPage = Math.ceil(totalCount / Number(limit_data));
 
@@ -2783,3 +2782,40 @@ export const getPaymentOrderForAdminService = async ({
     orders: paginatedOrders,
   };
 }
+
+export const PaymentDoneService = async ({ orderId, email, userId }: IIroningProcessDone) => {
+  const findWorker = await prisma.worker.findFirst({
+    where: { email }
+  })
+
+  if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 }
+
+  const order = await prisma.order.findUnique({
+    where: { id: String(orderId) },
+  });
+
+  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+
+  const orderStatus = await prisma.orderStatus.create({
+    data: {
+      status: 'PAYMENT_DONE',
+      orderId: order.id,
+      createdAt: addHours(new Date(), 7),
+      workerId: userId
+    },
+  });
+
+  if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
+
+  const orderUpdate = await prisma.order.update({
+    where: { id: String(orderId) },
+    data: {
+      isPaid: true
+    }
+  })
+
+  if (!orderUpdate) throw { msg: "Data order update gagal dibuat", status: 404 };
+
+  return { orderStatus };
+};

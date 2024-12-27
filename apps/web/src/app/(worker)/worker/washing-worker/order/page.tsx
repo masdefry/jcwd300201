@@ -141,7 +141,7 @@ export default function Page() {
                                     <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
                                     <TabsTrigger value="not-washed" onClick={() => { setActiveTab("not-washed"); setPage(1) }} >Belum Dicuci</TabsTrigger>
                                     <TabsTrigger value="in-washing" onClick={() => { setActiveTab("in-washing"); setPage(1) }} >Proses Cuci</TabsTrigger>
-                                    <TabsTrigger value="completed" onClick={() => { setActiveTab("completed"); setPage(1) }}>Selesai</TabsTrigger>
+                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }}>Selesai</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
@@ -315,7 +315,7 @@ export default function Page() {
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencucci dan Strika' : ''}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                 {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
                                                     ? 'Menunggu Persetujuan Admin'

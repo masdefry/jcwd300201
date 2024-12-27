@@ -31,7 +31,7 @@ export default function DriverDelivery() {
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
-    const [activeTab, setActiveTab] = useState(params.get("tab") || "semua");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -158,7 +158,7 @@ export default function DriverDelivery() {
                         <div className="py-28 mx-4 space-y-4">
                             <Tabs defaultValue={activeTab} className="fit">
                                 <TabsList className="grid w-full grid-cols-4">
-                                    <TabsTrigger value="semua" onClick={() => { setActiveTab("semua"); setPage(1) }} >Semua</TabsTrigger>
+                                    <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
                                     <TabsTrigger value="menungguDriver" onClick={() => { setActiveTab("menungguDriver"); setPage(1) }} >Belum Dikirim</TabsTrigger>
                                     <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
                                     <TabsTrigger value="terkirim" onClick={() => { setActiveTab("terkirim"); setPage(1) }} >Terkirim</TabsTrigger>

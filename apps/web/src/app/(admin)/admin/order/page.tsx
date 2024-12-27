@@ -192,7 +192,7 @@ export default function OrderList() {
                             <Tabs defaultValue={activeTab} className="fit">
                                 <TabsList className="grid w-full grid-cols-2">
                                     <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
-                                    <TabsTrigger value="selesai" onClick={() => { setActiveTab("selesai"); setPage(1) }} >Selesai</TabsTrigger>
+                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">

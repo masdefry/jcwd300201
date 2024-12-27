@@ -37,7 +37,7 @@ export default function DeliveryRequest() {
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
-    const [activeTab, setActiveTab] = useState(params.get("tab") || "menungguPembayaran");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "ready-to-deliver");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -66,7 +66,7 @@ export default function DeliveryRequest() {
     });
 
     const { mutate: handleRequestDelivery, isPending } = useMutation({
-        mutationFn: async ( orderId : any) => {
+        mutationFn: async (orderId: any) => {
             return await instance.patch(`/order/order-delivery/${orderId}`, { email }, {
 
                 headers: {
@@ -142,9 +142,8 @@ export default function DeliveryRequest() {
                         </section>
                         <div className="py-28 mx-4 space-y-4">
                             <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-2">
-                                    <TabsTrigger value="menungguPembayaran" onClick={() => { setActiveTab("menungguPembayaran"); setPage(1) }} >Menunggu Pembayaran</TabsTrigger>
-                                    <TabsTrigger value="siapKirim" onClick={() => { setActiveTab("siapKirim"); setPage(1) }} >Siap Kirim</TabsTrigger>
+                                <TabsList className="hidden w-full">
+                                    <TabsTrigger value="ready-to-deliver" onClick={() => { setActiveTab("ready-to-deliver"); setPage(1) }} >Siap Kirim</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">

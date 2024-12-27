@@ -49,7 +49,7 @@ export default function DeliveryRequest() {
 
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
-    const [activeTab, setActiveTab] = useState(params.get("tab") || "menungguPembayaran");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "waiting-payment");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
@@ -160,9 +160,9 @@ export default function DeliveryRequest() {
                         <div className="py-28 mx-4 space-y-4">
                             <Tabs defaultValue={activeTab} className="fit">
                                 <TabsList className="grid w-full grid-cols-3">
-                                    <TabsTrigger value="menungguPembayaran" onClick={() => { setActiveTab("menungguPembayaran"); setPage(1) }} >Belum Bayar</TabsTrigger>
+                                    <TabsTrigger value="waiting-payment" onClick={() => { setActiveTab("waiting-payment"); setPage(1) }} >Belum Bayar</TabsTrigger>
                                     <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
-                                    <TabsTrigger value="selesai" onClick={() => { setActiveTab("selesai"); setPage(1) }} >Selesai</TabsTrigger>
+                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
