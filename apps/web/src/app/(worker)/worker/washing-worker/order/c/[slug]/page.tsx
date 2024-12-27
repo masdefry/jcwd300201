@@ -393,24 +393,19 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         {({ values, setFieldValue, submitForm }) => {
                             const handleCustomSubmit = () => {
                                 const itemOrder = values.items.map((item: any) => ({
-                                    laundryItemId: Number(item.itemName),
+                                    laundryItemId: item.itemName,
                                     quantity: item.quantity,
                                 }));
                                 const isDataMatching = compareData(itemOrder, dataOrderDetail);
                                 if (isDataMatching) {
-                                    console.log("Data is matching, submitting form...");
                                     submitForm()
-                                    console.log('<< trigger if')
                                 } else {
-                                    console.log('<< trigger else')
                                     const initialNotes = values.items
                                         .map((item: any) => {
                                             const itemDetails = dataItemName.find((data: any) => Number(data.id) === Number(item.itemName));
                                             return `Item: ${itemDetails?.itemName}, Quantity: ${item.quantity}`;
                                         })
                                         .join("\n");
-
-
                                     setDialogNotes(initialNotes);
                                     setShowDialog(true);
                                 }

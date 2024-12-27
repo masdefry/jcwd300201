@@ -138,7 +138,7 @@ model Order {
   discount      Float?
   deliveryFee   Int
   paymentProof  String?
-  paymentMethod Payment
+  paymentMethod Payment?
   isPaid        Boolean
   isProcessed   Boolean?
   isDone        Boolean?

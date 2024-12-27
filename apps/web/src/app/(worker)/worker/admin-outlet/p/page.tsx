@@ -77,7 +77,7 @@ export default function DriverPickUp() {
     });
 
     const { mutate: handleLaundryProblem, isPending } = useMutation({
-        mutationFn: async ({ orderId, notes }:any) => {
+        mutationFn: async ({ orderId, notes }: any) => {
             return await instance.patch(`/order/order-notes/${orderId}`, { notes }, {
 
                 headers: {
@@ -155,7 +155,7 @@ export default function DriverPickUp() {
                             <Tabs defaultValue={activeTab} className="fit">
                                 <TabsList className="grid w-full grid-cols-2">
                                     <TabsTrigger value="bermasalah" onClick={() => { setActiveTab("bermasalah"); setPage(1) }} >Bermasalah</TabsTrigger>
-                                    <TabsTrigger value="selesai" onClick={() => { setActiveTab("selesai"); setPage(1) }} >Selesai</TabsTrigger>
+                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
@@ -209,7 +209,7 @@ export default function DriverPickUp() {
                                                                     onSubmit={async (values) => {
                                                                         handleLaundryProblem({
                                                                             notes: values.notes,
-                                                                            orderId : order?.id
+                                                                            orderId: order?.id
                                                                         });
                                                                     }}
                                                                 >
