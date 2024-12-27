@@ -83,27 +83,25 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
     longitude: number;
     distance: number;
   }[]>`
-      SELECT 
-          id, 
-          storeName, 
-          address,
-          city,
-          province,
-          country,
-          latitude,
-          longitude,
-          (
-              6371 * acos(
-                  cos(radians(${userLatitude})) * cos(radians(latitude)) * 
-                  cos(radians(longitude) - radians(${userLongitude})) + 
-                  sin(radians(${userLatitude})) * sin(radians(latitude))
-              )
-          ) AS distance
-      FROM stores
-      HAVING distance <= 100
-      ORDER BY distance ASC
-      LIMIT 1;
-    `;
+SELECT
+  id,
+  storeName,
+  address,
+  city,
+  province,
+  country,
+  latitude,
+  longitude,
+  ST_Distance(
+    ST_SetSRID(ST_MakePoint(${userLongitude}, ${userLatitude}), 4326), 
+    ST_SetSRID(ST_MakePoint(longitude, latitude), 4326)
+  ) AS distance
+FROM stores
+HAVING distance <= 100000 -- distance in meters
+ORDER BY distance ASC
+LIMIT 1;
+`;
+
 
   if (nearestStores.length === 0) throw { msg: 'Tidak ada toko laundry kami di dekat anda', status: 404 }
   return { nearestStores }
@@ -503,8 +501,8 @@ export const getOrdersForWashingService = async ({
       some: {
         status: { in: statusFilter },
         // ...(tab === 'IN_WASHING_PROCESS'
-          // ? { workerId: userId }
-          // : {}),
+        // ? { workerId: userId }
+        // : {}),
       },
     },
     AND: [
@@ -1536,7 +1534,17 @@ export const packingProcessService = async ({ email, orderId, userId }: { email:
   })
 }
 
-export const getCreateNoteOrderService = async ({ userId, authorizationRole, storeId, limit_data, page, search, dateFrom, dateUntil, sort }: IGetWashingHistory) => {
+export const getCreateNoteOrderService = async ({
+  userId,
+  authorizationRole,
+  storeId,
+  limit_data,
+  page,
+  search,
+  dateFrom,
+  dateUntil,
+  sort
+}: IGetWashingHistory) => {
   const worker = await prisma.worker.findFirst({
     where: {
       id: userId,
@@ -1545,9 +1553,7 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
     }
   });
 
-
-  if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 }
-
+  if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 };
 
   const offset = Number(limit_data) * (Number(page) - 1);
 
@@ -1558,7 +1564,7 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
     orderStatus: {
       some: {
         status: {
-          in: statusFilter,
+          in: statusFilter,  
         },
       },
     },
@@ -1567,13 +1573,13 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
         ? {
           OR: [
             { id: { contains: search as string } },
-
-            { User: { firstName: { contains: search as string  } } },
-            { User: { lastName: { contains: search as string  } } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
             { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
+
       dateFrom && dateUntil
         ? { createdAt: { gte: new Date(dateFrom as string), lte: new Date(dateUntil as string) } }
         : dateFrom
@@ -1584,6 +1590,7 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
     ],
   };
 
+  // Sorting logic
   let orderBy: any;
   if (sort === 'date-asc') {
     orderBy = { createdAt: 'asc' };
@@ -1609,7 +1616,7 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
     orderBy = { createdAt: 'desc' };
   }
 
-
+  
   const orders = await prisma.order.findMany({
     where: whereConditions,
     include: {
@@ -1621,20 +1628,20 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
         select: {
           firstName: true,
           lastName: true,
-          phoneNumber: true
+          phoneNumber: true,
         }
       },
     },
-    skip: offset,
+    skip: offset, 
     take: Number(limit_data),
-    orderBy,
+    orderBy, 
   });
 
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
     return statusFilter.includes(latestStatus)
-  })
 
+  });
 
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
 
@@ -1642,8 +1649,12 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
 
   const totalPage = Math.ceil(totalCount / Number(limit_data));
 
-  return { totalPage, orders: paginatedOrders }
+  return {
+    totalPage,
+    orders: paginatedOrders,
+  };
 }
+
 
 export const getOrdersForDeliveryService = async ({
   userId,
@@ -2839,7 +2850,7 @@ export const userConfirmOrderService = async ({ orderId, email, userId }: IIroni
   const orderPayment = await prisma.order.findUnique({
     where: {
       id: String(orderId),
-      isPaid:true
+      isPaid: true
     },
   });
 

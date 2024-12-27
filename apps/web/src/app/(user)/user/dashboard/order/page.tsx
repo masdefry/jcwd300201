@@ -187,7 +187,6 @@ export default function DeliveryRequest() {
 
                                                 <div
                                                     onClick={() => {
-
                                                         setOrderData(null);
                                                         handleOrderDetail(order?.id);
                                                         setOpenDialog(true)
@@ -210,19 +209,24 @@ export default function DeliveryRequest() {
                                                                         ? 'Proses Laundry'
                                                                         : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
                                                                             ? 'Proses Delivery'
-                                                                            : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
-                                                                                ? 'Laundry Sampai'
-                                                                                : 'Status tidak dikenal'}
+                                                                            : 'Status tidak dikenal'}
                                                         </div>
                                                         <p className="text-xs text-gray-500">
                                                             {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
                                                         </p>
                                                     </div>
                                                 </div>
-
-                                                <div className="flex gap-1">
-
-                                                </div>
+                                                {
+                                                    order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === false ?
+                                                        <div className="border text-center w-fit text-sm px-1 rounded-md bg-yellow-200 border-yellow-600 text-yellow-600">
+                                                            Konfirmasi Order
+                                                        </div>
+                                                        : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === true ?
+                                                            <div className="border w-fit text-sm px-1 rounded-md bg-green-200 border-green-600 text-green-600">
+                                                                Terkonfirmasi
+                                                            </div>
+                                                            : ''    
+                                                }
                                             </section>
                                         ))}
                                         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
@@ -245,7 +249,7 @@ export default function DeliveryRequest() {
                                                         <h2 className="text-base">{orderData?.order?.OrderType?.type}</h2>
 
                                                         {orderData?.order?.isPaid ?
-                                                            <div className="border w-fit px-1 rounded-md bg-green-200 border-green-600 text-green-600">
+                                                            <div className="border w-fit px-1 mt-1 rounded-md bg-green-200 border-green-600 text-green-600">
                                                                 Pembayaran Berhasil
                                                             </div>
                                                             :
@@ -269,7 +273,7 @@ export default function DeliveryRequest() {
                                                     Proses :
                                                     <HorizontalTimeline orderStatus={orderData?.orderStatus} />
                                                 </div>
-                                                <div className="space-y-3">
+                                                <div className="space-y-3 my-3">
                                                     <div className="border rounded-lg border-gray-700 p-2 shadow-md">
                                                         <div className="font-semibold">Driver Pickup:</div>
                                                         <div>
@@ -308,16 +312,16 @@ export default function DeliveryRequest() {
                                             </div>
 
                                             {/* Map Order Items */}
-                                            {/* <div className="text-center">
+                                            <div className="text-center">
                                                 <h3 className="font-medium">Order Items</h3>
-                                                <div className="grid grid-cols-2  justify-items-center">
+                                                <div className="grid grid-cols-2  justify-items-center overflow-y-auto max-h-20">
                                                     {orderData.orderDetail?.map((item: any, index: number) => (
                                                         <div key={index} className="border-b border-black py-1 flex items-center justify-center">
                                                             <span>{item?.quantity}x {item?.LaundryItem?.itemName}</span>
                                                         </div>
                                                     ))}
                                                 </div>
-                                            </div> */}
+                                            </div>
                                             {/* Delivery Fee and Total Price */}
                                             <div className="flex justify-between">
                                                 <span className="font-medium">Biaya Kirim:</span>
@@ -335,7 +339,8 @@ export default function DeliveryRequest() {
                                     ) : (
                                         <div>Loading order details...</div>
                                     )}
-                                    {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false ?
+                                    {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true ?
+
                                         <div className="flex justify-center">
                                             <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
                                         </div>
