@@ -449,7 +449,7 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
       where: { email }
     })
 
-    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+    if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 }
 
     const order = await prisma.order.findUnique({
       where: { id: String(orderId) },
@@ -457,7 +457,6 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
     });
 
     if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
-
     if (order.orderTypeId === 2) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 }
 
     let updatedOrder = null;
@@ -473,9 +472,7 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
         },
       });
 
-      if (!updatedOrder) {
-        throw { msg: "Order gagal diupdate", status: 404 };
-      }
+      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 }
       return res.status(201).json({
         error: false,
         message: "Approval request terhadap admin telah diajukan!",
@@ -495,24 +492,17 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
         },
       });
 
-      if (!updatedOrder) {
-        throw { msg: "Order gagal diupdate", status: 404 };
-      }
-
-      if (updatedOrder.isSolved === false) {
-        throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
-      }
+      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 }
+      if (updatedOrder.isSolved === false) throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 }
 
       const existingStatus = await prisma.orderStatus.findFirst({
         where: {
           orderId: String(orderId),
           status: 'AWAITING_PAYMENT',
         },
-      });
+      })
 
-      if (!existingStatus) {
-        throw { msg: "Order tidak dapat diproses karena belum dibuat nota order oleh oulet admin", status: 400 };
-      }
+      if (!existingStatus) throw { msg: "Order tidak dapat diproses karena belum dibuat nota order oleh oulet admin", status: 400 }
 
       const orderStatus = await prisma.orderStatus.create({
         data: {
@@ -520,7 +510,8 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
           orderId: String(orderId),
           workerId: userId,
         },
-      });
+      })
+
       if (!orderStatus) throw { msg: "data order status gagal dibuat", status: 404 }
 
       res.status(200).json({

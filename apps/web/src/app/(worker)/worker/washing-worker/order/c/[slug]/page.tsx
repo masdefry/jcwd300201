@@ -11,22 +11,12 @@ import { useToast } from "@/components/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import React, { useState } from 'react';
 import { useRouter } from "next/navigation";
-
-import {
-    Dialog,
-    DialogTrigger,
-    DialogContent,
-    DialogHeader,
-    DialogFooter,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog";
+import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import ButtonCustom from "@/components/core/button";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import NotaHeader from "@/features/adminOutlet/components/notaHeader";
 import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionContent";
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
-
 
 const validationSchema = Yup.object().shape({
     customerName: Yup.string().required("Customer name is required"),
@@ -103,7 +93,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         },
     });
 
-    const { mutate: handleStatusOrder } = useMutation({
+    const { mutate: handleStatusOrder, isPending: isPendingStatus } = useMutation({
         mutationFn: async ({ email, notes }: any) => {
             return await instance.post(`/order/washing-process/${slug}`, { email, notes }, {
                 headers: {
@@ -494,7 +484,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                             return (
                                                                 <tr key={index} className="hover:bg-gray-100 border-b">
                                                                     <td className="py-3 px-6 text-center text-sm text-gray-600 break-words">{index + 1}</td>
-                                                                    <td className="py-3 px-6 text-center text-sm text-gray-600 break-words">{selectedItem ? selectedItem.itemName : 'Item not found'}</td>
+                                                                    <td className="py-3 px-6 text-center text-sm text-gray-600 break-words">{selectedItem ? selectedItem.itemName : 'Data tidak tersedia'}</td>
                                                                     <td className="py-3 px-6 text-center text-sm text-gray-600 break-words">{item?.quantity ? item?.quantity : '0'}</td>
                                                                     <td className="py-3 px-6 text-center text-sm text-gray-600 break-words">
                                                                         <button onClick={() => {
@@ -512,9 +502,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <ButtonCustom width="w-full" disabled={values?.items?.length === 0}
-                                            onClick={handleCustomSubmit}
-                                            btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
+                                        <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isPendingStatus} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
                                             Buat Nota Order
                                         </ButtonCustom>
                                     </div>

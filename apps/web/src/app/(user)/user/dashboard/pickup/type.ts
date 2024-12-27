@@ -18,5 +18,10 @@ export interface IAddress {
     addressName: string;
     addressDetail: string;
     city: string;
-    province: string
+    province: string;
+    User?: {
+        firstName?: string;
+        lastName?: string
+    },
+    zipCode?: string
 }

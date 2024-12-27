@@ -32,7 +32,8 @@ export const requestPickUpService = async ({ userId, deliveryFee, outletId, orde
       userAddressId,
       isPaid: false,
       createdAt: dateNow,
-      updatedAt: dateNow
+      updatedAt: dateNow,
+      paymentMethod: 'TF_MANUAL'
     },
   });
 
@@ -473,6 +474,8 @@ export const getOrdersForWashingService = async ({
     select: { storeId: true },
   });
 
+  console.log(worker, '<< worker line 477')
+
   if (!worker) throw { msg: "Driver tidak tersedia", status: 404 };
 
   let statusFilter: any;
@@ -499,9 +502,9 @@ export const getOrdersForWashingService = async ({
     orderStatus: {
       some: {
         status: { in: statusFilter },
-        ...(tab === 'IN_WASHING_PROCESS'
-          ? { workerId: userId }
-          : {}),
+        // ...(tab === 'IN_WASHING_PROCESS'
+          // ? { workerId: userId }
+          // : {}),
       },
     },
     AND: [
@@ -1565,8 +1568,8 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
           OR: [
             { id: { contains: search as string } },
 
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
+            { User: { firstName: { contains: search as string  } } },
+            { User: { lastName: { contains: search as string  } } },
             { User: { phoneNumber: { contains: search as string } } },
           ],
         }
@@ -1630,7 +1633,7 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
     return statusFilter.includes(latestStatus)
-
+  })
 
 
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
