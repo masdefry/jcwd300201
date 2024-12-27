@@ -58,8 +58,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { toast } = useToast();
     const [showDialog, setShowDialog] = useState(false);
     const [dialogNotes, setDialogNotes] = useState("");
-
-
+    const [isCheckedItem, setIsCheckedItem] = useState<boolean>(true)
 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],
@@ -416,7 +415,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                             as="select"
                                                             name="itemName"
                                                             onChange={(e: any) => {
-                                                                // setIsCheckedItem(false)
+                                                                setIsCheckedItem(false)
                                                                 setFieldValue('itemName', e.target.value)
                                                             }}
                                                             className="w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500 rounded-md">
@@ -435,7 +434,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     </div>
                                                     <div className='flex flex-col items-end'>
                                                         <ButtonCustom type="button"
-                                                            // disabled={isCheckedItem} 
+                                                            disabled={isCheckedItem} 
                                                             onClick={() => {
                                                                 const existingItemIndex = values.items.findIndex(
                                                                     (item: Iitem) => item.itemName === values.itemName
@@ -457,7 +456,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
                                                                 setFieldValue("itemName", "");
                                                                 setFieldValue("quantity", 1);
-                                                                // setIsCheckedItem(true)
+                                                                setIsCheckedItem(true)
                                                             }} btnColor="bg-orange-500 hover:bg-orange-500" width="w-fit">
                                                             +
                                                         </ButtonCustom>

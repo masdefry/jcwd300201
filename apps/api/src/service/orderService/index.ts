@@ -19,7 +19,6 @@ export const requestPickUpService = async ({ userId, deliveryFee, outletId, orde
   const findUser = await prisma.user.findFirst({ where: { id: userId } })
 
   const { orderId } = formatOrder()
-  const dateNow = addHours(new Date(), 7)
 
   const newOrder: any = await prisma.order.create({
     data: {
@@ -31,18 +30,13 @@ export const requestPickUpService = async ({ userId, deliveryFee, outletId, orde
       orderTypeId: parseInt(orderTypeId),
       userAddressId,
       isPaid: false,
-      createdAt: dateNow,
-      updatedAt: dateNow,
-      paymentMethod: 'TF_MANUAL'
     },
   });
 
   await prisma.orderStatus.create({
     data: {
       status: "AWAITING_DRIVER_PICKUP",
-      orderId: newOrder.id,
-      createdAt: addHours(new Date(), 7),
-
+      orderId: newOrder.id
     },
   });
 
@@ -502,9 +496,9 @@ export const getOrdersForWashingService = async ({
     orderStatus: {
       some: {
         status: { in: statusFilter },
-        // ...(tab === 'IN_WASHING_PROCESS'
-          // ? { workerId: userId }
-          // : {}),
+        ...(tab === 'IN_WASHING_PROCESS'
+          ? { workerId: userId }
+          : {}),
       },
     },
     AND: [

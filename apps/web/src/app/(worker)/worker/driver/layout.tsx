@@ -8,12 +8,13 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import Cookies from 'js-cookie'
-import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import { FaCartArrowDown, FaCogs, FaDashcube, FaHistory, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { RiProfileFill } from "react-icons/ri";
 import { toast } from "@/components/hooks/use-toast";
 import ButtonCustom from "@/components/core/button";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { FaBoxOpen, FaTruck } from "react-icons/fa6";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Layout({ children }: { children: ReactNode }) {
@@ -65,7 +66,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
             console.log(err)
         }
@@ -95,14 +96,16 @@ export default function Layout({ children }: { children: ReactNode }) {
                         ${Object.values(dashboardMenuUrl).includes(pathname) ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/worker/driver/delivery-request' className={`w-full flex ${pathname.startsWith('/worker/driver/delivery-request') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaCartArrowDown /> Delivery Request</Link>
+                        <FaTruck /> Pengantaran</Link>
                     <Link href='/worker/driver/pickup-request' className={`w-full flex ${pathname.startsWith('/worker/driver/pickup-request') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaMoneyBillWave /> Pickup Request</Link>
+                        <FaBoxOpen /> Penjemputan</Link>
+                    <Link href='/worker/driver/history' className={`w-full flex ${pathname.startsWith('/worker/driver/history') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaHistory /> Riwayat</Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">
                     <Link href='/worker/driver/settings' className={`w-full flex ${pathname == '/worker/driver/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaUserCheck /> Pengaturan</Link>
+                        <FaCogs /> Pengaturan</Link>
                     <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
                         <span className={`w-full cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
                             <FaSignOutAlt /> Logout</span>
