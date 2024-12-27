@@ -43,19 +43,13 @@ export default function DriverPickUp() {
     const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const tabValue =
-                activeTab === "not-washed" ? "AWAITING_PAYMENT" :
-                    activeTab === "in-washing" ? "IN_WASHING_PROCESS" :
-                        activeTab === "completed" ? "IN_IRONING_PROCESS" :
-                            "";
-
             const res = await instance.get('/order/order-washing', {
                 params: {
                     page,
                     limit_data: limit,
                     search: searchInput || "",
                     sort: sortOption,
-                    tab: tabValue,
+                    tab: activeTab,
                     dateFrom: dateFrom ?? '',
                     dateUntil: dateUntil ?? '',
                 },
@@ -147,7 +141,7 @@ export default function DriverPickUp() {
                                     <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
                                     <TabsTrigger value="not-washed" onClick={() => { setActiveTab("not-washed"); setPage(1) }} >Belum Dicuci</TabsTrigger>
                                     <TabsTrigger value="in-washing" onClick={() => { setActiveTab("in-washing"); setPage(1) }} >Proses Cuci</TabsTrigger>
-                                    <TabsTrigger value="completed" onClick={() => { setActiveTab("completed"); setPage(1) }}>Selesai</TabsTrigger>
+                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }}>Selesai</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
@@ -320,7 +314,7 @@ export default function DriverPickUp() {
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencucci dan Strika' : ''}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                 {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
                                                     ? 'Menunggu Persetujuan Admin'

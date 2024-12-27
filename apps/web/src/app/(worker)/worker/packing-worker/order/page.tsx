@@ -30,7 +30,7 @@ export default function DriverPickUp() {
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
-    const [activeTab, setActiveTab] = useState(params.get("tab") || "semua");
+    const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
     const limit = 5;
@@ -131,10 +131,10 @@ export default function DriverPickUp() {
                         <div className="py-28 mx-4 space-y-4">
                             <Tabs defaultValue={activeTab} className="fit">
                                 <TabsList className="grid w-full grid-cols-4">
-                                    <TabsTrigger value="semua" onClick={() => { setActiveTab("semua"); setPage(1) }} >Semua</TabsTrigger>
-                                    <TabsTrigger value="belumPacking" onClick={() => { setActiveTab("belumPacking"); setPage(1) }} >Belum Packing</TabsTrigger>
-                                    <TabsTrigger value="prosesPacking" onClick={() => { setActiveTab("prosesPacking"); setPage(1) }} >Proses Packing</TabsTrigger>
-                                    <TabsTrigger value="selesai" onClick={() => { setActiveTab("selesai"); setPage(1) }}>Selesai</TabsTrigger>
+                                    <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
+                                    <TabsTrigger value="not-packed-yet" onClick={() => { setActiveTab("not-packed-yet"); setPage(1) }} >Belum Packing</TabsTrigger>
+                                    <TabsTrigger value="packing-process" onClick={() => { setActiveTab("packing-process"); setPage(1) }} >Proses Packing</TabsTrigger>
+                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }}>Selesai</TabsTrigger>
                                 </TabsList>
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
