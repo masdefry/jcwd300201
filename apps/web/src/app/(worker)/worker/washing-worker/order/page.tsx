@@ -38,6 +38,7 @@ export default function Page() {
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
     const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
     const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
     const limit = 5;
 
     const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
@@ -55,7 +56,6 @@ export default function Page() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });
@@ -63,7 +63,6 @@ export default function Page() {
     const { mutate: handleProcessWashing, isPending } = useMutation({
         mutationFn: async (id: any) => {
             return await instance.post(`/order/washing-done/${id}`, { email }, {
-
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -75,6 +74,7 @@ export default function Page() {
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
             refetch()
+            setIsDisabledSucces(true)
         },
         onError: (err: any) => {
             toast({
@@ -355,7 +355,7 @@ export default function Page() {
                                                             handleProcessWashing(order?.id)
                                                         }
                                                     }}>
-                                                    <button className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
+                                                    <button disabled={isDisabledSucces} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
                                                         {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' ? 'Proses' : 'Selesaikan'}
                                                     </button>
                                                 </ConfirmAlert>

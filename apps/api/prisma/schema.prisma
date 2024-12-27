@@ -1,22 +1,21 @@
-// generator client {
-//   provider = "prisma-client-js"
-// }
-
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-//   directUrl = env("DIRECT_URL")
-
-// }
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
+
+// generator client {
+//   provider = "prisma-client-js"
+// }
+
+// datasource db {
+//   provider = "mysql"
+//   url      = env("DATABASE_URL")
+// }
 
 model User {
   id                     String        @id @default(uuid())
@@ -98,7 +97,7 @@ model Worker {
   lastName            String
   phoneNumber         String  @db.VarChar(20)
   profilePicture      String  @db.VarChar(255)
-  identityNumber      String? @db.LongText
+  identityNumber      String? @db.Text
   motorcycleType      String?
   plateNumber         String?
   changePasswordToken String? @db.VarChar(500)
@@ -118,7 +117,7 @@ model Worker {
 }
 
 model Shift {
-  id        Int      @id @default(autoincrement())
+  id        Int       @id @default(autoincrement())
   startTime DateTime? @db.Time()
   endTime   DateTime? @db.Time()
   worker    Worker[]
@@ -264,9 +263,8 @@ enum Role {
   PACKING_WORKER
   DRIVER
 }
+
 enum Payment {
   MIDTRANS
   TF_MANUAL
 }
-
-

@@ -11,7 +11,7 @@ import { FaArrowLeft, FaArrowRight, FaCartArrowDown, FaDashcube, FaExclamationTr
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
-import { FaFileInvoice, FaTruck } from "react-icons/fa6";
+import { FaCreditCard, FaFileInvoice, FaTruck } from "react-icons/fa6";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 
@@ -65,7 +65,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
             console.log(err)
         }
@@ -96,14 +96,16 @@ export default function Layout({ children }: { children: ReactNode }) {
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/worker/admin-outlet/nota-order' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/nota-order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaFileInvoice />Nota Pesanan</Link>
-                    <Link href='/worker/admin-outlet/order' className={`w-full flex ${pathname.startsWith('/admin/worker') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/worker/admin-outlet/order' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaHistory /> Riwayat</Link>
-                    <Link href='/worker/admin-outlet/d' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/d') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/worker/admin-outlet/delivery' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/delivery') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaTruck /> Pengiriman</Link>
-                    <Link href='/worker/admin-outlet/p' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/p') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/worker/admin-outlet/payment' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/p') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaCreditCard /> Transaksi</Link>
+                    <Link href='/worker/admin-outlet/p' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/payment') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaExclamationTriangle /> Laporan</Link>
                 </div>
-                <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
+                <h1 className="px-4 text-sm text-neutral-600 py-2 pt-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">
                     <Link href='/worker/admin-outlet/settings' className={`w-full flex ${pathname == '/worker/admin-outlet/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>

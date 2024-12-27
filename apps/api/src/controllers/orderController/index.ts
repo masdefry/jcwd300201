@@ -6,6 +6,7 @@ import { Status } from "@prisma/client";
 import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService } from "@/service/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
 import dotenv from 'dotenv'
+import { addHours } from "date-fns";
 
 interface IStore {
   id: string;
@@ -468,7 +469,8 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
         data: {
           notes,
           isSolved: false,
-          isProcessed: false
+          isProcessed: false,
+          updatedAt: addHours(new Date(), 7)
         },
       });
 
@@ -489,6 +491,7 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
         },
         data: {
           isProcessed: true,
+          updatedAt: addHours(new Date(), 7)
         },
       });
 
@@ -509,6 +512,7 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
           status: 'IN_WASHING_PROCESS',
           orderId: String(orderId),
           workerId: userId,
+          createdAt: addHours(new Date(), 7)
         },
       })
 
