@@ -183,11 +183,13 @@ export default function DriverPickUp() {
                                                             <p className="text-xs text-gray-500">
                                                                 {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false
                                                                     ? 'Belum Disetrika'
-                                                                    : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                        ? 'Proses Setrika'
-                                                                        : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                            ? 'Selesai'
-                                                                            : order?.orderStatus[0]?.status}
+                                                                    : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false
+                                                                        ? 'Belum Disetrika'
+                                                                        : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
+                                                                            ? 'Proses Setrika'
+                                                                            : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                                                ? 'Selesai'
+                                                                                : order?.orderStatus[0]?.status}
                                                             </p>
                                                             <p className="text-xs text-gray-500">
                                                                 {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
@@ -206,9 +208,13 @@ export default function DriverPickUp() {
                                                                     order?.isProcessed === false &&
                                                                     order?.isSolved === true
                                                                     ? 'Apakah anda yakin ingin melakukan proses setrika pada order ini?'
-                                                                    : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                        ? 'Apakah anda yakin ingin menyelesaikan proses setrika pada order ini?'
-                                                                        : ''
+                                                                    : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' &&
+                                                                        order?.isProcessed === false &&
+                                                                        order?.isSolved === true
+                                                                        ? 'Apakah anda yakin ingin melakukan proses setrika pada order ini?'
+                                                                        : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
+                                                                            ? 'Apakah anda yakin ingin menyelesaikan proses setrika pada order ini?'
+                                                                            : ''
                                                         }
                                                         description={
                                                             order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
@@ -219,13 +225,17 @@ export default function DriverPickUp() {
                                                                     order?.isProcessed === false &&
                                                                     order?.isSolved === true
                                                                     ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                    : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
+                                                                    : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' &&
+                                                                        order?.isProcessed === false &&
+                                                                        order?.isSolved === true
                                                                         ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                        : ''
+                                                                        : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
+                                                                            ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                            : ''
                                                         }
-                                                        hideButtons={order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isSolved === false}
+                                                            hideButtons={(order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isSolved === false}
                                                         onClick={() => {
-                                                            if (order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false) {
+                                                            if ((order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isProcessed === false) {
                                                                 router.push(`/worker/ironing-worker/c/${order?.id}`);
                                                             } else if (order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true) {
                                                                 handleProcessIroning(order?.id);
@@ -240,11 +250,13 @@ export default function DriverPickUp() {
                                                                 <p className="text-xs text-gray-500">
                                                                     {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false
                                                                         ? 'Belum Disetrika'
-                                                                        : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                            ? 'Proses Setrika'
-                                                                            : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                                ? 'Selesai'
-                                                                                : order?.orderStatus[0]?.status}
+                                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false
+                                                                            ? 'Belum Disetrika'
+                                                                            : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
+                                                                                ? 'Proses Setrika'
+                                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                                                    ? 'Selesai'
+                                                                                    : order?.orderStatus[0]?.status}
                                                                 </p>
                                                                 <p className="text-xs text-gray-500">
                                                                     {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
@@ -254,7 +266,7 @@ export default function DriverPickUp() {
                                                     </ConfirmAlert>
                                                 )}
 
-                                              
+
                                             </section>
                                         ))}
 

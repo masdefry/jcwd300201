@@ -15,6 +15,10 @@ import ButtonCustom from "@/components/core/button";
 import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
 import { createOutletValidation } from "@/features/superAdmin/schemas/createOutletValidation";
+import HeaderMobile from "@/components/core/headerMobile";
+import Link from "next/link";
+import { FaArrowLeft } from "react-icons/fa6";
+import { CardContent } from "@/components/ui/card";
 
 export default function Page() {
     const latitudeGlobal = locationStore((state) => state?.latitude);
@@ -104,9 +108,140 @@ export default function Page() {
     }, []);
 
     const time = useMemo(() => new Date().getTime(), [])
+
     return (
         <>
+            <main className='w-full h-fit md:hidden block'>
+                <section className="w-full h-fit">
+                    <HeaderMobile />
+                    <main className="w-full">
+                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
+                            <div className="mx-8 flex justify-between gap-2 items-center font-bold w-screen pr-16">
+                                <div className="flex justify-center items-center gap-2"><Link href='/admin/settings'><FaArrowLeft /></Link> ORDER</div>
+                            </div>
+                            <section
+                                className="flex justify-between items-center border-b py-2"
+                            >
+                            </section>
+                            <CardContent className="space-y-2 pt-2">
+                                < Formik
+                                    onSubmit={(values, { setSubmitting, resetForm }) => {
+                                        handleSubmitAddStore({
+                                            storeName: values?.storeName,
+                                            address: values?.address,
+                                            province: values?.province,
+                                            city: values?.city,
+                                            zipCode: values?.zipCode,
+                                            latitude: values?.latitude.toString(),
+                                            longitude: values?.longitude.toString()
+                                        }, {
+                                            onSuccess: () => {
+                                                resetForm()
+                                                setSubmitting(false)
+                                            },
+                                            onError: () => {
+                                                setSubmitting(false)
+                                            }
+                                        })
 
+                                    }
+                                    }
+                                    validationSchema={createOutletValidation}
+                                    initialValues={{
+                                        storeName: "",
+                                        address: "",
+                                        province: "",
+                                        city: "",
+                                        zipCode: "",
+                                        latitude: isPosition?.lat,
+                                        longitude: isPosition?.lng,
+                                    }}
+                                >
+                                    {({ setFieldValue, values, handleChange }) => (
+                                        <Form className="flex gap-5 h-fit w-full justify-center">
+                                            <div className="h-fit w-fit relative mt-28">
+                                                <MapContainer id="map-container" key={time} center={isPosition} zoom={13} className="w-fit h-fit rounded-2xl">
+                                                    <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+                                                    <LocationPicker setFieldValue={setFieldValue} position={isPosition} setPosition={setIsPosition} />
+                                                </MapContainer>
+                                            </div>
+                                            <div className="flex flex-col pr-2 justify-center gap-4 w-full h-full overflow-y-auto">
+                                                <div className="w-full flex flex-col gap-2 relative">
+                                                    <label htmlFor="storeName" className="font-semibold">Nama Outlet <span className="text-red-600">*</span></label>
+                                                    <Field type='text' name='storeName' placeholder='CNC - Example 220' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
+                                                    <ErrorMessage component='div' name="storeName" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
+                                                </div>
+                                                <div className="w-full flex flex-col gap-2 relative">
+                                                    <label htmlFor="address" className="font-semibold">Alamat Lengkap <span className="text-red-600">*</span></label>
+                                                    <Field type='text' name='address' placeholder='Masukan alamat lengkap anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
+                                                    <ErrorMessage component='div' name="address" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
+                                                </div>
+                                                <div className="w-full flex flex-col gap-2 relative">
+                                                    <label htmlFor="province" className="font-semibold">Provinsi <span className="text-red-600">*</span></label>
+                                                    <Field
+                                                        as="select"
+                                                        id="province"
+                                                        name="province"
+                                                        value={values.province}
+                                                        className="border focus:border-orange-500 focus:outline-none text-sm p-2 w-full"
+                                                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                                            const selectedValue = e.target.value
+                                                            setFieldValue("province", selectedValue)
+                                                            setSelectedProvince(selectedValue)
+                                                            setFieldValue("city", "")
+                                                        }}>
+                                                        <option value="" disabled>Pilih Provinsi</option>
+                                                        {provincesLoading ? (<option disabled>Loading...</option>) : (
+                                                            provinces?.map((province: any) => (
+                                                                <option key={province.province_id} value={province.province_id}>
+                                                                    {province.province}
+                                                                </option>
+                                                            ))
+                                                        )}
+                                                    </Field>
+                                                    <ErrorMessage component='div' name="province" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
+                                                </div>
+                                                <div className="w-full flex flex-col gap-2 relative">
+                                                    <label htmlFor="city" className="font-semibold">Kota <span className="text-red-600">*</span></label>
+                                                    <Field
+                                                        as="select"
+                                                        id="city"
+                                                        name="city"
+                                                        value={values.city}
+                                                        onChange={handleChange}
+                                                        disabled={!selectedProvince}
+                                                        className="border focus:border-orange-500 focus:outline-none text-sm p-2 w-full">
+                                                        <option value="">
+                                                            {!selectedProvince ? "Silahkan Pilih Provinsi" : "Pilih Kota"}
+                                                        </option>
+                                                        {citiesLoading ? (<option disabled>Loading...</option>) : (
+                                                            cities?.map((city: any) => (
+                                                                <option key={city.city_id} value={city.city_name}>
+                                                                    {city.city_name}
+                                                                </option>
+                                                            ))
+                                                        )}
+                                                    </Field>
+                                                    <ErrorMessage component='div' name="city" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
+                                                </div>
+                                                <div className="w-full flex flex-col gap-2 relative">
+                                                    <label htmlFor="zipCode" className="font-semibold">Kode Pos <span className="text-red-600">*</span></label>
+                                                    <Field type='text' name='zipCode' placeholder='Masukan kode pos anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
+                                                    <ErrorMessage component='div' name="zipCode" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
+                                                </div>
+                                                <ButtonCustom disabled={isPending} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
+                                                    Tambah Alamat
+                                                </ButtonCustom>
+                                            </div>
+                                        </Form>
+                                    )}
+                                </Formik >
+                            </CardContent>
+
+                        </section>
+                    </main>
+                </section>
+            </main>
             {/* web session */}
             <ContentWebLayout caption="Tambah outlet baru">
                 <div className='w-full h-full flex'>

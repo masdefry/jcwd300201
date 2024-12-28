@@ -367,11 +367,13 @@ export default function DeliveryRequest() {
                                     )}
                                     {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true ?
                                         <ConfirmAlert
+                                            disabled={isPending}
                                             caption="Apakah anda yakin ingin mengkonfirmasi order laundry berikut?"
                                             description="Pastikan laundry telah sampai di lokasi anda"
                                             onClick={() => { handleOrderConfirmation(orderData?.order?.id) }}>
+                                            
                                             <div className="flex justify-center">
-                                                <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
+                                                <ButtonCustom disabled={isPending} btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
                                             </div>
                                         </ConfirmAlert>
                                         : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false ?

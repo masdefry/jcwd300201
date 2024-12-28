@@ -568,6 +568,17 @@ export const ironingProcess = async (req: Request, res: Response, next: NextFunc
 
     if (order.orderTypeId === 1) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
 
+    if (order.orderTypeId === 2) {
+      const createOrderStatus = await prisma.orderStatus.create({
+        data: {
+          status: 'IN_IRONING_PROCESS',
+          orderId: String(orderId),
+          createdAt: addHours(new Date(), 7),
+        },
+      });
+      if (!createOrderStatus) throw {msg:'order status gagal dibuat,silahkan coba lagi'}
+    }
+
     const orderStatuses = await prisma.orderStatus.findFirst({
       where: {
         orderId,
