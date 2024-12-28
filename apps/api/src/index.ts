@@ -1,6 +1,6 @@
 import express, { Express, NextFunction, Request, Response } from 'express'
 import cors from 'cors'
-import router from './router'
+import router from './routes'
 import dotenv from 'dotenv'
 import { dbConnect } from './connection'
 import { portConnect } from './utils/asciiText/dbConnect'

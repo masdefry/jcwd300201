@@ -3,8 +3,8 @@ import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
 import { Prisma } from "@prisma/client";
 import { Status } from "@prisma/client";
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService } from "@/service/orderService";
-import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/service/orderService/types";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService } from "@/services/orderService";
+import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/services/orderService/types";
 import dotenv from 'dotenv'
 import { addHours } from "date-fns";
 
@@ -491,6 +491,7 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
         },
         data: {
           isProcessed: true,
+          updatedAt: addHours(new Date(), 7)
         },
       });
 
@@ -512,7 +513,6 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
           orderId: String(orderId),
           workerId: userId,
           createdAt: addHours(new Date(), 7)
-
         },
       })
 
@@ -1360,7 +1360,7 @@ export const userConfirmOrder = async (req: Request, res: Response, next: NextFu
       error: false,
       message: "Order berhasil diupdate!",
       data: {
-        orderStatus,
+        orderUpdate,
       },
     });
   } catch (error) {

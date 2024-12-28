@@ -1,21 +1,11 @@
-// generator client {
-//   provider = "prisma-client-js"
-// }
-
-// datasource db {
-//   provider = "postgresql"
-//   url      = env("DATABASE_URL")
-//   directUrl = env("DIRECT_URL")
-
-// }
-
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "mysql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
 
 model User {
@@ -33,21 +23,20 @@ model User {
   isGooglePasswordChange Boolean?      @default(false)
   forgotPasswordToken    String?       @db.VarChar(300)
   isDiscountUsed         Boolean       @default(false)
+  createdAt              DateTime      @default(now())
+  updatedAt              DateTime      @updatedAt
+  deletedAt              DateTime?
+  contact                Contact[]
   order                  Order[]
   userAddress            UserAddress[]
-  contact                Contact[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
 
   @@map("users")
 }
 
 model UserAddress {
-  id            Int     @id @default(autoincrement())
+  id            Int       @id @default(autoincrement())
   addressName   String
-  addressDetail String  @db.VarChar(255)
+  addressDetail String    @db.VarChar(255)
   city          String
   isMain        Boolean
   province      String
@@ -56,20 +45,17 @@ model UserAddress {
   latitude      Float
   longitude     Float
   userId        String?
-
-  order Order[]
-
-  User User? @relation(fields: [userId], references: [id])
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  deletedAt     DateTime?
+  order         Order[]
+  User          User?     @relation(fields: [userId], references: [id])
 
   @@map("usersAddresses")
 }
 
 model Store {
-  id        String @id @default(uuid())
+  id        String    @id @default(uuid())
   storeName String
   address   String
   city      String
@@ -78,60 +64,54 @@ model Store {
   zipCode   String
   latitude  Float
   longitude Float
-
-  worker Worker[]
-  order  Order[]
-
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  order     Order[]
+  worker    Worker[]
 
   @@map("stores")
 }
 
 model Worker {
-  id                  String  @id @default(uuid())
-  email               String  @unique
+  id                  String        @id @default(uuid())
+  email               String        @unique
   password            String
   workerRole          Role
   firstName           String
   lastName            String
-  phoneNumber         String  @db.VarChar(20)
-  profilePicture      String  @db.VarChar(255)
-  identityNumber      String? @db.LongText
+  phoneNumber         String        @db.VarChar(20)
+  profilePicture      String        @db.VarChar(255)
+  identityNumber      String?
   motorcycleType      String?
   plateNumber         String?
-  changePasswordToken String? @db.VarChar(500)
+  changePasswordToken String?       @db.VarChar(500)
   storeId             String?
   shiftId             Int?
-
-  orderstatus OrderStatus[]
-
-  Shift Shift? @relation(fields: [shiftId], references: [id])
-  Store Store? @relation(fields: [storeId], references: [id])
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  deletedAt           DateTime?
+  orderstatus         OrderStatus[]
+  Shift               Shift?        @relation(fields: [shiftId], references: [id])
+  Store               Store?        @relation(fields: [storeId], references: [id])
 
   @@map("workers")
 }
 
 model Shift {
-  id        Int      @id @default(autoincrement())
-  startTime DateTime? @db.Time()
-  endTime   DateTime? @db.Time()
-  worker    Worker[]
-
+  id        Int       @id @default(autoincrement())
+  startTime DateTime? @db.Time(6)
+  endTime   DateTime? @db.Time(6)
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  worker    Worker[]
 
   @@map("shifts")
 }
 
 model Order {
-  id            String   @id @default(uuid())
+  id            String        @id @default(uuid())
   totalPrice    Int?
   laundryPrice  Int?
   totalWeight   Int?
@@ -144,40 +124,33 @@ model Order {
   isDone        Boolean?
   isReqDelivery Boolean?
   isConfirm     Boolean?
-
-  isSolved Boolean?
-  notes    String?
-
+  isSolved      Boolean?
+  notes         String?
   storeId       String?
   userId        String?
   orderTypeId   Int?
   userAddressId Int?
-
-  orderStatus OrderStatus[]
-  orderDetail OrderDetail[]
-
-  Store       Store?       @relation(fields: [storeId], references: [id])
-  User        User?        @relation(fields: [userId], references: [id])
-  OrderType   OrderType?   @relation(fields: [orderTypeId], references: [id])
-  UserAddress UserAddress? @relation(fields: [userAddressId], references: [id])
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime?
+  orderDetail   OrderDetail[]
+  orderStatus   OrderStatus[]
+  OrderType     OrderType?    @relation(fields: [orderTypeId], references: [id])
+  Store         Store?        @relation(fields: [storeId], references: [id])
+  UserAddress   UserAddress?  @relation(fields: [userAddressId], references: [id])
+  User          User?         @relation(fields: [userId], references: [id])
 
   @@map("orders")
 }
 
 model OrderType {
-  id    Int     @id @default(autoincrement())
-  type  String?
-  price Int?
-
-  order Order[]
-
+  id        Int       @id @default(autoincrement())
+  type      String?
+  price     Int?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+  order     Order[]
 
   @@map("orderTypes")
 }
@@ -187,12 +160,11 @@ model OrderDetail {
   orderId       String?
   quantity      Int?
   laundryItemId Int?
-  Order         Order?       @relation(fields: [orderId], references: [id])
+  createdAt     DateTime     @default(now())
+  deletedAt     DateTime?
+  updatedAt     DateTime     @updatedAt
   LaundryItem   LaundryItem? @relation(fields: [laundryItemId], references: [id])
-
-  createdAt DateTime  @default(now())
-  deletedAt DateTime?
-  updatedAt DateTime  @updatedAt
+  Order         Order?       @relation(fields: [orderId], references: [id])
 
   @@map("orderDetails")
 }
@@ -200,58 +172,61 @@ model OrderDetail {
 model LaundryItem {
   id          Int           @id @default(autoincrement())
   itemName    String
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  deletedAt   DateTime?
   orderDetail OrderDetail[]
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
 
   @@map("laundryItems")
 }
 
 model OrderStatus {
-  id       Int     @id @default(autoincrement())
-  status   Status
-  orderId  String?
-  workerId String?
-
+  id        Int       @id @default(autoincrement())
+  status    Status
+  orderId   String?
+  workerId  String?
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
-
-  Order  Order?  @relation(fields: [orderId], references: [id])
-  Worker Worker? @relation(fields: [workerId], references: [id])
+  Order     Order?    @relation(fields: [orderId], references: [id])
+  Worker    Worker?   @relation(fields: [workerId], references: [id])
 
   @@map("orderStatuses")
 }
 
 model Contact {
-  id          Int     @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   email       String
-  phoneNumber String  @db.VarChar(20)
-  textHelp    String  @db.VarChar(255)
-  User        User?   @relation(fields: [userId], references: [id])
+  phoneNumber String    @db.VarChar(20)
+  textHelp    String    @db.VarChar(255)
   userId      String?
-
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  deletedAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
+  User        User?     @relation(fields: [userId], references: [id])
 
   @@map("contacts")
+}
+
+/// This table contains check constraints and requires additional setup for migrations. Visit https://pris.ly/d/check-constraints for more info.
+model spatial_ref_sys {
+  srid      Int     @id
+  auth_name String? @db.VarChar(256)
+  auth_srid Int?
+  srtext    String? @db.VarChar(2048)
+  proj4text String? @db.VarChar(2048)
 }
 
 enum Status {
   AWAITING_DRIVER_PICKUP
   DRIVER_TO_OUTLET
   DRIVER_ARRIVED_AT_OUTLET
-
   AWAITING_PAYMENT
   IN_WASHING_PROCESS
   IN_IRONING_PROCESS
   IN_PACKING_PROCESS
   PAYMENT_DONE
-
   DRIVER_TO_CUSTOMER
   DRIVER_DELIVERED_LAUNDRY
 }
@@ -264,9 +239,8 @@ enum Role {
   PACKING_WORKER
   DRIVER
 }
+
 enum Payment {
   MIDTRANS
   TF_MANUAL
 }
-
-

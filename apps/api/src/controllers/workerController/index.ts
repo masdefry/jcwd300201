@@ -1,7 +1,7 @@
 import prisma from "@/connection";
 import dotenv from 'dotenv'
 import { NextFunction, Request, Response } from "express";
-import { changePasswordWorkerService, createNotesService, deleteDataWorkerByIdService, deleteProfilePictureWorkerService, getAllWorkerService, updateProfileWorkerService } from "@/service/workerService";
+import { changePasswordWorkerService, createNotesService, deleteDataWorkerByIdService, deleteProfilePictureWorkerService, getAllWorkerService, updateProfileWorkerService } from "@/services/workerService";
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string

@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select"
 import { FaPlus } from "react-icons/fa6";
 import HorizontalTimeline from "@/components/core/timelineUser"
+import { ConfirmAlert } from "@/components/core/confirmAlert"
 
 
 export default function DeliveryRequest() {
@@ -75,9 +76,34 @@ export default function DeliveryRequest() {
             return res?.data?.data;
         },
     });
+
+
+    const { mutate: handleOrderConfirmation, isPending } = useMutation({
+        mutationFn: async (id: any) => {
+            return await instance.post(`/order/confirm/${id}`, { email }, {
+
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res: any) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            refetch()
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+        }
+    })
+
     const [openDialog, setOpenDialog] = useState(false);
     const [orderData, setOrderData] = useState<any>(null);
-    console.log(orderData)
 
     const { mutate: handleOrderDetail } = useMutation({
         mutationFn: async (id: any) => {
@@ -225,7 +251,7 @@ export default function DeliveryRequest() {
                                                             <div className="border w-fit text-sm px-1 rounded-md bg-green-200 border-green-600 text-green-600">
                                                                 Terkonfirmasi
                                                             </div>
-                                                            : ''    
+                                                            : ''
                                                 }
                                             </section>
                                         ))}
@@ -340,10 +366,14 @@ export default function DeliveryRequest() {
                                         <div>Loading order details...</div>
                                     )}
                                     {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true ?
-
-                                        <div className="flex justify-center">
-                                            <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
-                                        </div>
+                                        <ConfirmAlert
+                                            caption="Apakah anda yakin ingin mengkonfirmasi order laundry berikut?"
+                                            description="Pastikan laundry telah sampai di lokasi anda"
+                                            onClick={() => { handleOrderConfirmation(orderData?.order?.id) }}>
+                                            <div className="flex justify-center">
+                                                <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
+                                            </div>
+                                        </ConfirmAlert>
                                         : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false ?
                                             <div className="flex justify-center">
                                                 <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Bayar Sekarang</ButtonCustom>
