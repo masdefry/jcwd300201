@@ -1,4 +1,12 @@
-export default function ServicePage() {
+'use client'
+import ButtonCustom from "@/components/core/button";
+import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { FaHandsWash } from "react-icons/fa";
+
+export default function Page() {
+    const router = useRouter()
     const services = [
         {
             title: "Dry Cleaning",
@@ -17,31 +25,106 @@ export default function ServicePage() {
         }
     ];
 
-    return (
-        <main className='w-full h-fit flex flex-col pt-[90px] bg-gray-100'>
-            <section className="w-full py-12 px-10 bg-orange-500 text-white text-center">
-                <h1 className="text-4xl font-bold mb-4">Layanan Laundry Kami</h1>
-                <p className="text-lg">Cepat, Terpercaya, dan Terjangkau untuk Kebutuhan Laundry Anda</p>
-            </section>
+    const productArr = [
+        { img: '/images/wash.jpg', caption: 'Layanan Mencuci' },
+        { img: '/images/ironing.jpg', caption: 'Layanan Setrika' },
+        { img: 'https://img.okezone.com/content/2022/03/16/12/2562573/ini-tips-mencuci-dengan-mesin-cuci-yang-benar-dan-hemat-XjnK5p6qex.jpg', caption: 'Layanan Mencuci dan Setrika' },
+        { img: '/images/laundry-img.webp', caption: 'Layanan Mencuci dan Setrika' },
+        { img: '/images/wash.jpg', caption: 'Layanan Mencuci' },
+        { img: '/images/ironing.jpg', caption: 'Layanan Setrika' },
+    ]
 
-            <section className="flex flex-col w-full h-full py-12 px-10 gap-12 bg-gray-50">
-                <h2 className="text-3xl font-semibold text-center text-gray-800">Pilihan Layanan</h2>
-                <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {services.map((service, index) => (
-                        <div key={index} className="w-full h-auto bg-white shadow-lg rounded-lg p-8 flex flex-col items-center text-center">
-                            <h3 className="text-2xl font-semibold text-gray-800">{service.title}</h3>
-                            <p className="text-gray-600 mt-4">{service.description}</p>
-                            <button className="mt-6 bg-fuchsia-800 text-white py-2 px-6 rounded hover:bg-fuchsia-900">{service.button}</button>
-                        </div>
-                    ))}
+    return (
+        <main className='w-full h-fit flex flex-col pt-[90px]'>
+
+            <section className="w-full h-fit pt-10 pb-5 mt-6 bg-gradient-to-t from-sky-100 via-orange-100 to-white px-10 rounded-tl-full">
+                <div className="flex flex-wrap justify-between items-start w-full">
+                    <div className="text-left space-y-4">
+                        <h1 className="text-5xl font-bold text-neutral-700">Layanan <span className="text-orange-500">Laundry Kami</span></h1>
+                        <p className="text-lg">Cepat, Terpercaya, dan Terjangkau untuk Kebutuhan Laundry Anda</p>
+                    </div>
+                </div>
+                <div className='w-full py-16 flex justify-center'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5'>
+                        {productArr?.map((prod, index) => (
+                            <Link href='/user/dashboard/pickup' key={index} className='w-full relative rounded-2xl overflow-hidden shadow-lg transform hover:scale-105 transition-transform duration-300 group'>
+                                <div className='w-full h-60 relative'>
+                                    <Image src={prod?.img} width={500} height={500}
+                                        alt={prod?.caption} className='w-full h-full object-cover rounded-2xl transition-opacity' />
+                                    <div className='absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-50 transition-opacity'></div>
+                                </div>
+                                <div className='absolute bottom-5 left-5 right-5 py-4 px-6 bg-neutral-300 rounded-2xl shadow-md bg-opacity-80 border-b-4 border-orange-500 group-hover:bg-opacity-90 transition-all'>
+                                    <h1 className='font-semibold text-sm text-neutral-700 flex items-center gap-2'>
+                                        <FaHandsWash className='text-xl' />
+                                        {prod?.caption}
+                                    </h1>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            </section>
+            <section className="w-full h-fit px-10 pb-10 bg-gradient-to-b from-sky-100 via-orange-100 to-white">
+                <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16">
+                    <div className="w-full md:w-1/2 h-72">
+                        <Image src="/images/wash.jpg" width={500} height={400}
+                            alt="Layanan Mencuci" className="w-full h-full object-cover rounded-2xl shadow-lg" />
+                    </div>
+                    <div className="w-full md:w-1/2 space-y-6">
+                        <h2 className="text-3xl font-semibold text-neutral-700">Layanan Mencuci</h2>
+                        <p className="text-neutral-600">
+                            Kami menyediakan layanan mencuci yang dirancang untuk memberikan kebersihan optimal pada pakaian Anda.
+                            Menggunakan teknologi modern dan detergen ramah lingkungan, pakaian Anda akan selalu segar dan bersih.
+                        </p>
+                        <ButtonCustom onClick={() => router.push('/service/wash')} rounded="rounded-lg" btnColor="bg-orange-500 hover:bg-orange-400 font-bold" type="button">
+                            Pelajari Lebih Lanjut
+                        </ButtonCustom>
+                    </div>
+                </div>
+
+                <div className="flex flex-col-reverse md:flex-row items-center justify-between gap-8 mb-16">
+                    <div className="w-full md:w-1/2 space-y-6">
+                        <h2 className="text-3xl font-semibold text-neutral-700">Layanan Setrika</h2>
+                        <p className="text-neutral-600">
+                            Dapatkan pakaian rapi dan tanpa kerutan dengan layanan setrika profesional kami.
+                            Kami memastikan setiap pakaian disetrika dengan hati-hati agar terlihat seperti baru.
+                        </p>
+                        <ButtonCustom onClick={() => router.push('/service/ironing')} rounded="rounded-lg" btnColor="bg-orange-500 hover:bg-orange-400 font-bold" type="button">
+                            Pelajari Lebih Lanjut
+                        </ButtonCustom>
+                    </div>
+                    <div className="w-full md:w-1/2 h-72">
+                        <Image src="/images/ironing.jpg" width={500} height={400}
+                            alt="Layanan Setrika" className="w-full h-full object-cover rounded-2xl shadow-lg" />
+                    </div>
+                </div>
+
+                <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+                    <div className="w-full md:w-1/2 h-72">
+                        <Image src="/images/laundry-img.webp" width={500} height={400}
+                            alt="Layanan Mencuci dan Setrika" className="w-full h-full object-cover rounded-2xl shadow-lg" />
+                    </div>
+                    <div className="w-full md:w-1/2 space-y-6">
+                        <h2 className="text-3xl font-semibold text-neutral-700">Layanan Mencuci dan Setrika</h2>
+                        <p className="text-neutral-600">
+                            Solusi lengkap untuk pakaian Anda! Kami menawarkan layanan mencuci dan setrika dalam satu paket praktis.
+                            Hemat waktu dan tenaga Anda dengan mempercayakan pakaian kepada kami.
+                        </p>
+                        <ButtonCustom onClick={() => router.push('/user/dashboard/pickup')} rounded="rounded-lg" btnColor="bg-orange-500 hover:bg-orange-400 font-bold" type="button">
+                            Pelajari Lebih Lanjut
+                        </ButtonCustom>
+                    </div>
                 </div>
             </section>
 
-            <section className="w-full py-16 px-10 bg-blue-600 text-white text-center relative">
-                <h2 className="text-3xl font-bold">Siap Mencoba Layanan Laundry Terbaik?</h2>
-                <p className="text-lg mt-4">Hubungi kami sekarang dan biarkan kami menangani kebutuhan laundry Anda!</p>
-                <div className="mt-8">
-                    <button className="bg-white text-blue-600 py-3 px-8 rounded shadow-md hover:bg-gray-200">Pesan Sekarang</button>
+
+            <section className="w-full px-10 h-fit pb-5 bg-opacity-80 flex flex-col justify-center items-center">
+                <div className="w-full rounded-2xl bg-blue-600 flex py-20 justify-center items-center flex-col">
+                    <div className="text-center pb-5">
+                        <h1 className="text-white text-3xl font-bold mb-2">Solusi Terbaik untuk <span className="text-white">Kebutuhan Laundry Anda</span></h1>
+                        <p className="text-neutral-300 text-lg">Kami menghadirkan layanan laundry berkualitas tinggi, cepat, dan terpercaya.</p>
+                    </div>
+                    <ButtonCustom onClick={() => router.push('/user/dashboard/pickup')} rounded="rounded-full" btnColor="bg-orange-500 hover:bg-orange-500 font-bold" type="button">Pesan Sekarang</ButtonCustom>
                 </div>
             </section>
         </main>

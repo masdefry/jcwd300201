@@ -1,17 +1,23 @@
 'use client'
 
-import { IoAddCircleSharp, IoSearchSharp, IoPersonSharp } from "react-icons/io5";
-import { GrUserWorker } from "react-icons/gr";
-import { FaWhatsapp, FaStore } from "react-icons/fa";
-import { MdDashboard, MdOutlineStickyNote2 } from "react-icons/md";
+import { IoAddCircleSharp } from "react-icons/io5";
+import { FaTint, FaWhatsapp } from "react-icons/fa";
+import { MdOutlineStickyNote2 } from "react-icons/md";
 import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import ChartComponents from "@/components/core/chart";
-import { FaFirstOrderAlt, FaMoneyBillWave } from "react-icons/fa6";
+import { FaArrowRight, FaClipboardCheck, FaMoneyBillWave, FaNoteSticky } from "react-icons/fa6";
 import { FaRegPlusSquare } from "react-icons/fa";
 import { MdOutlineReportProblem } from "react-icons/md";
 import { GrUnorderedList } from "react-icons/gr";
+import { FaCloud, FaTemperatureHigh } from "react-icons/fa6";
+import * as React from "react"
+import { Calendar } from "@/components/ui/calendar"
+import axios from "axios";
+import { locationStore } from "@/zustand/locationStore";
+import Link from "next/link";
+
 
 const iconButtons = [
     { icon: FaRegPlusSquare, label: "Create Nota Order" },
@@ -22,11 +28,13 @@ const iconButtons = [
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
-    const totalWorker = authStore((state) => state?.totalWorker)
-    const productLaundry = authStore((state) => state?.productLaundry)
-    const store = authStore((state) => state?.store)
+    const lat = locationStore((state) => state?.latitude)
+    const lng = locationStore((state) => state?.longitude)
+    const token = authStore((state) => state?.token)
     const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
+    const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
+    const [date, setDate] = useState<Date | undefined>(new Date())
 
     const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
@@ -42,6 +50,24 @@ export default function Page() {
         setIsDay(isDayNow)
     }, [])
 
+
+
+    useEffect(() => {
+        if (lat && lng) {
+            const handleCurrentWeither = async () => {
+                try {
+                    const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${process.env.NEXT_PUBLIC_OPEN_WEITHER}&lang=id`)
+
+                    setIsCurrentWeither(res?.data)
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+
+            handleCurrentWeither()
+        }
+    }, [lat, lng])
+
     return (
         <>
             <main className="w-full h-fit">
@@ -51,7 +77,6 @@ export default function Page() {
                             height={500} width={500} />
                     </section>
 
-                    {/* Location Section */}
                     <section className="border border-gray-400 rounded-t-lg p-4 mt-4 mx-8">
                         <div className="flex justify-between items-center">
                             <div className="font-semibold text-gray-600">CnC Jakarta</div>
@@ -61,7 +86,6 @@ export default function Page() {
                         </div>
                     </section>
 
-                    {/* Orders Section */}
                     <section className="border border-gray-400 bg-sky-200 rounded-b-lg text-sm p-4 mx-8 text-gray-700">
                         <div className="flex justify-between">
                             <div className="flex items-center gap-1">
@@ -130,38 +154,64 @@ export default function Page() {
                             />
                         </div>
                     </div>
-                    <div className="w-full rounded-xl h-full space-y-2">
-                        <div className="flex flex-col w-full h-full gap-2">
-                            <div className="flex w-full h-full gap-2">
-                                <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg relative">
-                                    <div className="absolute top-[30%] opacity-60 flex items-center gap-2">
-                                        <MdDashboard className="text-6xl" />
-                                        <div className="flex items-center gap-3">
-                                            <h1 className="font-bold text-3xl text-center">{totalWorker ? totalWorker : '0'}</h1>
-                                            <p className="font-bold text-2xl">Pekerja</p>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="w-full h-full bg-gradient-to-r from-blue-500 to-blue-700 text-white rounded-xl shadow-lg relative">
-                                    <div className="absolute top-[30%] left-2 opacity-60 flex items-center gap-2">
-                                        <FaFirstOrderAlt className="text-6xl" />
-                                        <div className="flex items-center gap-3">
-                                            <h1 className="font-bold text-3xl text-center">{totalWorker ? totalWorker : '0'}</h1>
-                                            <p className="font-bold text-2xl">Order</p>
-                                        </div>
-                                    </div>
+                    <div className="w-full rounded-xl h-full bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-2 gap-2 flex items-center">
+                        <div className="w-1/2 h-full flex items-center px-2 flex-col justify-center rounded-xl bg-white bg-opacity-45">
+                            <div className="text-center">
+                                <h2 className="text-xl font-semibold text-gray-700">Status Cuaca</h2>
+                                <div className="flex justify-center items-center py-4">
+                                    {isCurrentWeither?.weather ? (
+                                        <p className='text-6xl text-neutral-700 font-bold'> {isCurrentWeither?.main?.temp
+                                            ? `${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C`
+                                            : '- °C'}
+                                        </p>
+                                    ) : (
+                                        <span className="text-gray-500">Cuaca tidak tersedia</span>
+                                    )}
                                 </div>
                             </div>
-
-                            <div className="flex w-full h-full gap-2 bg-white rounded-xl">
-
+                            <div>
+                                <p className="text-lg text-gray-600">
+                                    {isCurrentWeither?.weather && isCurrentWeither.weather[0]?.description
+                                        ?
+                                        <span className='flex gap-2 items-center '>
+                                            <FaCloud className="text-gray-200" />
+                                            {isCurrentWeither.weather[0].description.toUpperCase()}
+                                        </span>
+                                        : 'Data cuaca tidak tersedia'}
+                                </p>
                             </div>
+                            <div className="py-4 space-y-2 w-full">
+                                <div className="flex items-center space-x-3 bg-white bg-opacity-70 w-full py-1 px-4 rounded-full">
+                                    <FaTint className="text-neutral-400" />
+                                    <p className="text-neutral-700 text-sm">{isCurrentWeither?.main?.humidity ? `${isCurrentWeither.main.humidity}%` : '- %'}</p>
+                                </div>
+                                <div className="flex items-center space-x-3 bg-white bg-opacity-70 w-full py-1 px-4 rounded-full">
+                                    <FaTemperatureHigh className="text-neutral-400" />
+                                    <p className="text-neutral-700 text-sm"> {isCurrentWeither?.main?.temp
+                                        ? `${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C`
+                                        : '- °C'}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-1/2 h-full bg-white bg-opacity-45 rounded-xl">
+                            <Calendar
+                                mode="single"
+                                selected={date}
+                                onSelect={setDate}
+                                className="rounded-md"
+                            />
                         </div>
                     </div>
                 </section>
-                <section className="w-full h-1/2 bg-white rounded-xl p-5">
-                    <ChartComponents />
+                <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
+                    <div className="w-full h-full space-y-2 rounded-2xl">
+                        <Link href='/admin-outlet/nota-order' className="w-full py-2 flex items-center justify-between bg-white bg-opacity-45 rounded-full px-3">
+                            <h1 className="text-neutral-600 font-semibold hover:text-neutral-700">Buat Nota Pesanan</h1>
+                            <span className="p-2 rounded-full hover:animate-wiggle-more bg-neutral-400"><FaArrowRight className="text-white text-xl"/> </span>
+                        </Link>
+                    </div>
+                    <div className="w-full h-full bg-white bg-opacity-45 rounded-2xl"></div>
+                    <div className="w-full h-full bg-white bg-opacity-45 rounded-2xl"></div>
                 </section>
             </main>
         </>

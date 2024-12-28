@@ -121,10 +121,10 @@ export default function HistoryOrderWashing() {
                         </tbody>
                     </table>
                     <PaginationWebLayout currentPage={page} totalPages={totalPages}>
-                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => alert(page - 1)}>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => setPage(page - 1)}>
                             Sebelumnya
                         </ButtonCustom>
-                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => alert(page + 1)}>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => setPage(page + 1)}>
                             Selanjutnya
                         </ButtonCustom>
                     </PaginationWebLayout>

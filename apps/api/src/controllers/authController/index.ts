@@ -1,5 +1,5 @@
 import prisma from "@/connection"
-import { createWorkerService, resendEmailUserService, resendEmailWorkerService, setPasswordUserService, setPasswordWorkerService, signInWithGoogleService, userLoginService, userRegisterService, workerLoginService } from "@/service/authService";
+import { createWorkerService, resendEmailUserService, resendEmailWorkerService, setPasswordUserService, setPasswordWorkerService, signInWithGoogleService, userLoginService, userRegisterService, workerLoginService } from "@/services/authService";
 import { NextFunction, Request, Response } from "express";
 import { nanoid } from "nanoid";
 import jwt from 'jsonwebtoken'

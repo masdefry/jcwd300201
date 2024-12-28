@@ -82,11 +82,11 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <Link href='/user/dashboard/home' className={`w-full flex ${pathname.startsWith('/user/dashboard/home') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/user/dashboard/pickup' className={`w-full flex ${pathname.startsWith('/user/dashboard/pickup') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <MdSportsMotorsports /> Pickup Request</Link>
+                        <MdSportsMotorsports /> Permintaan Pickup</Link>
                     <Link href='/user/dashboard/order' className={`w-full flex ${pathname.startsWith('/user/dashboard/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaCartShopping /> Order Saya</Link>
+                        <FaCartShopping /> Pesanan</Link>
                     <Link href='/user/dashboard/settings/address' className={`w-full flex ${pathname.startsWith('/user/dashboard/settings/address') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaAddressCard /> Alamat Saya</Link>
+                        <FaAddressCard /> Alamat</Link>
                     <Link href='/' className={`w-full flex hover:text-white text-neutral-700 hover:bg-orange-500 items-center gap-2 py-2 rounded-full px-4`}>
                         <FaMoneyBillWave /> Tagihan</Link>
                 </div>

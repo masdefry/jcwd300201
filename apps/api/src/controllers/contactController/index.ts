@@ -1,5 +1,5 @@
 import prisma from "@/connection";
-import { createContactMessageService, getContactMessageService } from "@/service/contactService";
+import { createContactMessageService, getContactMessageService } from "@/services/contactService";
 import { NextFunction, Request, Response } from "express";
 
 export const createContactMessage = async (req: Request, res: Response, next: NextFunction) => {

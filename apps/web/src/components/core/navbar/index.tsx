@@ -114,14 +114,15 @@ export default function Header() {
       || pathname.startsWith('/user/dashboard') ? 'md:hidden' : ''}`}>
       <div className="w-full h-fit bg-white border-b flex justify-between items-center px-10 py-3 z-50 relative">
         <div className="w-fit h-16">
-          <Link href='/'>
+          <Link href='/' className='flex gap-2 items-center'>
             <Image
-              src="/images/logo.png"
+              src="/images/logo-no-text.png"
               alt='logo'
               width={150}
               height={150}
               className="w-fit h-16"
             />
+            <h1 className="font-bold text-xl text-orange-500">CLEAN&CLICK</h1>
           </Link>
         </div>
 
