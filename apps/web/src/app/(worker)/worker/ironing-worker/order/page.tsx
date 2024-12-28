@@ -254,11 +254,7 @@ export default function DriverPickUp() {
                                                     </ConfirmAlert>
                                                 )}
 
-                                                <div className="flex gap-1">
-                                                    <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                        <FaWhatsapp />
-                                                    </Link>
-                                                </div>
+                                              
                                             </section>
                                         ))}
 

@@ -68,6 +68,11 @@ const useNotaOrderHooks = () => {
         } else {
             currentUrl.delete(`date-until`)
         }
+        if (page) {
+            currentUrl.set(`page`, page?.toString())
+        } else {
+            currentUrl.delete(`page`)
+        }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
     }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
