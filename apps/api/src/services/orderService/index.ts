@@ -2234,6 +2234,7 @@ export const getAllOrderForAdminService = async ({
           type: true,
         },
       },
+      Store: true,
     },
   });
 

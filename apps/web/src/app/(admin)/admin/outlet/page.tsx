@@ -11,7 +11,12 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { BsPencil, BsTrash } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { useDebouncedCallback } from "use-debounce";
-
+import HeaderMobile from "@/components/core/headerMobile";
+import { FaEdit, FaTrashAlt, FaArrowLeft } from 'react-icons/fa';
+import Image from "next/image";
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
+import Link from "next/link";
+import Loading from "@/components/core/loading";
 export default function Page() {
     const token = authStore((state) => state?.token)
     const params = useSearchParams()
@@ -78,9 +83,76 @@ export default function Page() {
 
     return (
         <>
+            <HeaderMobile />
+            <main className="mx-8 md:hidden block">
+                <section className="flex justify-between bg-white w-full pr-14 font-bold fixed pt-16 text-lg border-b-2 pb-4">
+                    <div className="flex items-center gap-2"> <Link href='/admin/settings'><FaArrowLeft /></Link> OUTLET</div>
+                    <div> <ButtonCustom btnColor="bg-blue-500">+ Tambah Outlet</ButtonCustom> </div>
+                </section>
+                <div className="py-32 space-y-4">
+                    {getDataStore?.length > 0 ? (
+                        getDataStore?.map((store: any, i: number) => {
+                            const address = `${store?.address}, ${store?.city}, ${store?.province}`
+                            return (< div
+                                key={i}
+                                className="flex items-center justify-between bg-white py-4 px-2 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100"
+                            >
+                                <div className="flex items-center">
+                                    <div className="flex-shrink-0 p-1 bg-orange-400 rounded-lg">
+                                        <Image
+                                            src="https://img.freepik.com/premium-vector/shopping-store-building-icon-vector_620118-14.jpg?semt=ais_hybrid"
+                                            alt="store"
+                                            height={200}
+                                            width={200}
+                                            className="h-10 w-10 rounded-lg object-cover"
+                                        />
+                                    </div>
+                                    <div className="ml-2">
+                                        <h2 className="font-medium text-gray-900">{store?.storeName?.toUpperCase()}</h2>
+                                        <p className="text-xs text-gray-500">{address?.length > 50 ? `${address?.slice(0, 50)}..` : address}</p>
+                                        <p className="text-xs text-gray-500">{new Date(store?.createdAt).toLocaleDateString()}</p>
+                                    </div>
+                                </div>
 
+                                <div className="flex space-x-1">
+                                    <button className="flex items-center justify-center space-x-2 px-2 py-2 w-12 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
+                                        <FaEdit />
+                                    </button>
+                                    <button className="flex items-center space-x-2 px-2 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <div className="flex items-center justify-center space-x-2 px-2 py-2 w-9  bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
+                                                    <FaTrashAlt />
+                                                </div>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Hapus &quot;Nama Outlet&quot;?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Batal</AlertDialogCancel>
+                                                    <AlertDialogAction>Hapus</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    </button>
+
+                                </div>
+                            </div>
+                            )
+                        })
+                    ) : (
+                        <div>
+                            <div className="text-center py-20 font-bold">{isFetching ? <Loading /> : 'Data tidak tersedia'}</div>
+                        </div>
+                    )}
+                </div>
+            </main>
             {/* web */}
-            <ContentWebLayout caption='Data Outlet'>
+            < ContentWebLayout caption='Data Outlet' >
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 h-fit flex items-center">
                         <select name="searchWorker"
@@ -123,7 +195,7 @@ export default function Page() {
                                             <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
                                                 <div className='flex gap-2'>
                                                     <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
-                                                    <button className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </button>
+                                                    <Link href={`/admin/outlet/e/${store?.id}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </Link>
                                                 </div>
                                             </td>
                                         </tr>
@@ -131,7 +203,7 @@ export default function Page() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? 'Mohon tunggu...' : 'Data tidak tersedia'}</td>
+                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? <Loading /> : 'Data tidak tersedia'}</td>
                                 </tr>
                             )}
                         </tbody>
@@ -150,7 +222,7 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-            </ContentWebLayout>
+            </ContentWebLayout >
         </>
     );
 }

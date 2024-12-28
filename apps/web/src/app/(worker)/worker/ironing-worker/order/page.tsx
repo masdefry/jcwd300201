@@ -229,10 +229,10 @@ export default function DriverPickUp() {
                                                                             ? 'Pastikan anda memilih order yang tepat/benar'
                                                                             : ''
                                                         }
-                                                        hideButtons={(order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isSolved === false}
+                                                            hideButtons={(order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isSolved === false}
                                                         onClick={() => {
                                                             if ((order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isProcessed === false) {
-                                                                router.push(`/worker/ironing-worker/order/c/${order?.id}`);
+                                                                router.push(`/worker/ironing-worker/c/${order?.id}`);
                                                             } else if (order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true) {
                                                                 handleProcessIroning(order?.id);
                                                             }
