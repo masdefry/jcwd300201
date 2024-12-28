@@ -14,9 +14,9 @@ import { useRouter } from "next/navigation";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import ButtonCustom from "@/components/core/button";
 import ContentWebLayout from "@/components/core/webSessionContent";
-import NotaHeader from "@/features/adminOutlet/components/notaHeader";
 import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionContent";
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
+import NotaHeader from "@/components/core/createNotaHeaders";
 
 const validationSchema = Yup.object().shape({
     customerName: Yup.string().required("Customer name is required"),
@@ -60,8 +60,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const [showDialog, setShowDialog] = useState(false);
     const [dialogNotes, setDialogNotes] = useState("");
     const [isCheckedItem, setIsCheckedItem] = useState<boolean>(true)
-
-
 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],

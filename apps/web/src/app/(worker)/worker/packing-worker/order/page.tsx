@@ -11,7 +11,6 @@ import authStore from "@/zustand/authstore"
 import { useState, useEffect, ChangeEvent } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
@@ -241,11 +240,7 @@ export default function DriverPickUp() {
                                                     </ConfirmAlert>
                                                 )}
 
-                                                <div className="flex gap-1">
-                                                    <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                        <FaWhatsapp />
-                                                    </Link>
-                                                </div>
+                                               
                                             </section>
                                         ))}
 
@@ -285,9 +280,6 @@ export default function DriverPickUp() {
                     </div>
                     <div className="w-1/2 h-fit flex gap-2 justify-end">
                         <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <Link href='/admin/worker/c'>
-                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
-                        </Link>
                     </div>
                 </div>
 

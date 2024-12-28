@@ -36,17 +36,17 @@ export const handleMidtransNotificationService = async ({ orderId, transactionSt
             },
         });
 
-        
-      const order = await prisma.order.update({
+
+        const order = await prisma.order.update({
             where: {
                 id: orderId
             },
             data: {
                 isPaid: true
             }
-      })
-    
-        if(!order) throw {msg:'order tidak ditemukan', status:404}
+        })
+
+        if (!order) throw { msg: 'order tidak ditemukan', status: 404 }
 
     } else {
         throw new Error(`Invalid transaction status: ${transactionStatus}`);

@@ -186,7 +186,6 @@ export default function DeliveryRequest() {
 
                                                 <div
                                                     onClick={() => {
-
                                                         setOrderData(null);
                                                         handleOrderDetail(order?.id);
                                                         setOpenDialog(true)
@@ -223,12 +222,6 @@ export default function DeliveryRequest() {
                                                             {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
                                                         </p>
                                                     </div>
-                                                </div>
-
-                                                <div className="flex gap-1">
-                                                    <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                        <FaWhatsapp />
-                                                    </Link>
                                                 </div>
                                             </section>
                                         ))}

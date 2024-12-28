@@ -50,23 +50,22 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
     userAddress = await prisma.userAddress.findFirst({
       where: {
         userId: userId,
-        id: Number(address)
-      }
+        id: Number(address),
+      },
     });
   } else {
     userAddress = await prisma.userAddress.findFirst({
       where: {
         userId: userId,
-        isMain: true
-      }
-    })
+        isMain: true,
+      },
+    });
   }
 
   if (!userAddress) throw { msg: 'Alamat utama tidak ditemukan', status: 404 };
 
   const { latitude: userLatitude, longitude: userLongitude } = userAddress;
-  console.log(userLatitude, '< lat') 
-  console.log(userLongitude, '< lng') 
+
   const nearestStores = await prisma.$queryRaw<{
     id: number;
     storeName: string;
@@ -77,30 +76,36 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
     latitude: number;
     longitude: number;
     distance: number;
-  }[]>
-  `SELECT 
-    id, 
-    "storeName", 
-    address, 
-    city, 
-    province, 
-    country, 
-    latitude, 
-    longitude,
-    ST_DistanceSphere(
-      ST_MakePoint(${userLongitude}, ${userLatitude}), 
-      ST_MakePoint(longitude, latitude)
-    ) AS distance
-  FROM public.stores
-  WHERE ST_DistanceSphere(
-      ST_MakePoint(${userLongitude}, ${userLatitude}), 
-      ST_MakePoint(longitude, latitude)
-    ) <= 100000 -- within 100 km
-  ORDER BY distance ASC
-  LIMIT 1;
-`; /* ganti ke 5 km */
+  }>`
+    SELECT 
+      id, 
+      "storeName", 
+      address, 
+      city, 
+      province, 
+      country, 
+      latitude, 
+      longitude,
+      ( 
+        6371000 * acos( 
+          cos(radians(${userLatitude})) * cos(radians(latitude)) * 
+          cos(radians(longitude) - radians(${userLongitude})) + 
+          sin(radians(${userLatitude})) * sin(radians(latitude))
+        ) 
+      ) AS distance
+    FROM public.stores
+    WHERE ( 
+      6371000 * acos( 
+        cos(radians(${userLatitude})) * cos(radians(latitude)) * 
+        cos(radians(longitude) - radians(${userLongitude})) + 
+        sin(radians(${userLatitude})) * sin(radians(latitude))
+      ) 
+    ) <= 5000 -- within 5 km
+    ORDER BY distance ASC
+    LIMIT 1;
+  `;
 
-  if (nearestStores.length === 0) throw { msg: 'Tidak ada toko laundry kami di dekat anda', status: 404 }
+  // if (nearestStores.length === 0) throw { msg: 'Tidak ada toko laundry kami di dekat anda', status: 404 }
   return { nearestStores }
 }
 
@@ -113,10 +118,10 @@ export const getUserOrderService = async ({ userId, limit_data, page, search, da
       search
         ? {
           OR: [
-            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } }
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } }
           ]
         }
         : {},
@@ -229,10 +234,10 @@ export const getOrdersForDriverService = async ({ authorizationRole, tab, storeI
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -634,15 +639,15 @@ export const getOrdersForIroningService = async ({
   if (tab === "prosesSetrika") {
     statusFilter = ['IN_IRONING_PROCESS'];
   } else if (tab === "belumDisetrika") {
-    statusFilter = ['IN_IRONING_PROCESS'];
+    statusFilter = ['AWAITING_PAYMENT', 'IN_IRONING_PROCESS'];
   } else if (tab === "done") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "all") {
-    statusFilter = ['IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
+    statusFilter = ['AWAITING_PAYMENT', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
   } else if (tab) {
     statusFilter = [tab];
   } else {
-    statusFilter = ['IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
+    statusFilter = ['AWAITING_PAYMENT', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
   }
   const parsedDateFrom = dateFrom ? new Date(dateFrom as string) : undefined;
   const parsedDateUntil = dateUntil ? new Date(dateUntil as string) : undefined;
@@ -662,7 +667,7 @@ export const getOrdersForIroningService = async ({
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
             { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
             { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
             { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
@@ -765,9 +770,10 @@ export const createOrderService = async ({
   });
   if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 };
 
-  const existingOrder = await prisma.order.findUnique({
+  const existingOrder = await prisma.order.findFirst({
     where: { id: String(orderId) },
     include: {
+      orderStatus: true,
       User: {
         select: {
           firstName: true,
@@ -808,15 +814,21 @@ export const createOrderService = async ({
     data: dataItems,
   });
 
+
+  const existingStatus = existingOrder.orderStatus.find((status) => status.status === "AWAITING_PAYMENT");
+  if (existingStatus) throw { msg: "Order sudah diproses oleh outlet admin lain", status: 404 };
+
+
   const orderStatus = await prisma.orderStatus.create({
     data: {
       status: 'AWAITING_PAYMENT',
       orderId: String(orderId),
       workerId: userId,
       createdAt: addHours(new Date(), 7),
-
     },
   });
+
+
   return { updatedOrder, dataItems, orderStatus };
 };
 
@@ -988,7 +1000,7 @@ export const getOrdersForPackingService = async ({
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
             { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
             { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
             { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
@@ -1113,10 +1125,10 @@ export const getPackingHistoryService = async ({ userId, authorizationRole, stor
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -1217,10 +1229,10 @@ export const getIroningHistoryService = async ({ userId, authorizationRole, stor
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -1328,10 +1340,10 @@ export const getWashingHistoryService = async ({ userId, authorizationRole, stor
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -1431,10 +1443,10 @@ export const getNotesService = async ({ userId, authorizationRole, tab, limit_da
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -1531,7 +1543,17 @@ export const packingProcessService = async ({ email, orderId, userId }: { email:
   })
 }
 
-export const getCreateNoteOrderService = async ({ userId, authorizationRole, storeId, limit_data, page, search, dateFrom, dateUntil, sort }: IGetWashingHistory) => {
+export const getCreateNoteOrderService = async ({
+  userId,
+  authorizationRole,
+  storeId,
+  limit_data,
+  page,
+  search,
+  dateFrom,
+  dateUntil,
+  sort
+}: IGetWashingHistory) => {
   const worker = await prisma.worker.findFirst({
     where: {
       id: userId,
@@ -1539,11 +1561,13 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
       storeId: storeId
     }
   });
-  if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 }
+
+  if (!worker) throw { msg: "Data worker tidak tersedia", status: 404 };
 
   const offset = Number(limit_data) * (Number(page) - 1);
+
   const statusFilter: Status[] = [Status.DRIVER_ARRIVED_AT_OUTLET];
-  
+
   const whereConditions: any = {
     storeId,
     orderStatus: {
@@ -1558,13 +1582,13 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
         ? {
           OR: [
             { id: { contains: search as string } },
-
             { User: { firstName: { contains: search as string } } },
             { User: { lastName: { contains: search as string } } },
             { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
+
       dateFrom && dateUntil
         ? { createdAt: { gte: new Date(dateFrom as string), lte: new Date(dateUntil as string) } }
         : dateFrom
@@ -1574,7 +1598,7 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
             : {},
     ],
   };
-  
+
   let orderBy: any;
   if (sort === 'date-asc') {
     orderBy = { createdAt: 'asc' };
@@ -1599,8 +1623,8 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
   } else {
     orderBy = { createdAt: 'desc' };
   }
-  
-  
+
+
   const orders = await prisma.order.findMany({
     where: whereConditions,
     include: {
@@ -1612,27 +1636,31 @@ export const getCreateNoteOrderService = async ({ userId, authorizationRole, sto
         select: {
           firstName: true,
           lastName: true,
-          phoneNumber: true
+          phoneNumber: true,
         }
       },
     },
-    // skip: offset,
-    // take: Number(limit_data),
-    // orderBy,
+    orderBy,
   });
-  
+
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
-    return statusFilter.includes(latestStatus)
-  })
-  
+    console.log(order.id)
+    return statusFilter.includes(latestStatus);
+  });
+
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
+
   const totalCount = filteredOrders.length;
 
   const totalPage = Math.ceil(totalCount / Number(limit_data));
-
-  return { totalPage, orders: paginatedOrders }
+  console.log(totalPage)
+  return {
+    totalPage,
+    orders: paginatedOrders,
+  };
 }
+
 
 export const getOrdersForDeliveryService = async ({
   userId,
@@ -1692,10 +1720,10 @@ export const getOrdersForDeliveryService = async ({
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -1869,10 +1897,10 @@ export const getOrdersForDriverDeliveryService = async ({
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -2135,10 +2163,10 @@ export const getAllOrderForAdminService = async ({
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -2307,10 +2335,10 @@ export const getDriverHistoryService = async ({ tab, userId, authorizationRole, 
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -2440,10 +2468,10 @@ export const getAllOrderForUserService = async ({
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -2689,10 +2717,10 @@ export const getPaymentOrderForAdminService = async ({
       search
         ? {
           OR: [
-         { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
-            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { id: { contains: search as string } },
+            { User: { firstName: { contains: search as string } } },
+            { User: { lastName: { contains: search as string } } },
+            { User: { phoneNumber: { contains: search as string } } },
           ],
         }
         : {},
@@ -2807,4 +2835,42 @@ export const PaymentDoneService = async ({ orderId, email, userId }: IIroningPro
   if (!orderUpdate) throw { msg: "Data order update gagal dibuat", status: 404 };
 
   return { orderStatus };
+};
+
+
+export const userConfirmOrderService = async ({ orderId, email, userId }: IIroningProcessDone) => {
+  const findUser = await prisma.user.findFirst({
+    where: { email }
+  })
+
+  if (!findUser) throw { msg: "Worker tidak tersedia", status: 404 }
+
+  const order = await prisma.order.findUnique({
+    where: {
+      id: String(orderId)
+    },
+  });
+
+  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+  const orderPayment = await prisma.order.findUnique({
+    where: {
+      id: order.id,
+      isPaid: true
+    },
+  });
+
+  if (!orderPayment) throw { msg: "Order belum dibayar", status: 404 };
+
+
+  const orderUpdate = await prisma.order.update({
+    where: { id: order.id },
+    data: {
+      isConfirm: true
+    }
+  })
+
+  if (!orderUpdate) throw { msg: "Data konfirmasi order gagal dibuat", status: 404 };
+
+  return { orderUpdate };
 };

@@ -8,7 +8,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import Cookies from 'js-cookie'
-import { FaDashcube, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import { FaDashcube, FaHistory, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { toast } from "@/components/hooks/use-toast";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
@@ -93,9 +93,13 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <Link href={dashboardUrl} className={`w-full flex 
                         ${Object.values(dashboardMenuUrl).includes(pathname) ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
-                        <Link href='/worker/packing-worker/order' className={`w-full flex 
+                    <Link href='/worker/packing-worker/order' className={`w-full flex 
                         ${pathname.startsWith('/worker/packing-worker/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaCartArrowDown /> Pesanan
+                    </Link>
+                    <Link href='/worker/packing-worker/history' className={`w-full flex 
+                        ${pathname.startsWith('/worker/packing-worker/history') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaHistory /> Riwayat
                     </Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>

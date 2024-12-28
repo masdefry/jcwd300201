@@ -105,8 +105,8 @@ export const resendEmailUserService = async ({ email }: { email: string }) => {
         where: { id: findUser?.id },
         data: { forgotPasswordToken: token }
     })
-    
-    if(updateToken) {
+
+    if (updateToken) {
         const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
         let compiledHtml: any = compile(readEmailHtml)
         compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
@@ -193,7 +193,7 @@ export const setPasswordWorkerService = async ({ authorization, userId, password
         const emailRead = fs.readFileSync('./src/public/sendMail/verifyEmailSucces.html', 'utf-8')
         let compiledHtml: any = compile(emailRead)
         compiledHtml = compiledHtml({ firstName: updatedPassword?.firstName, url: 'http://localhost:3000/worker/login' })
-       
+
         await transporter.sendMail({
             to: updatedPassword?.email,
             subject: `Selamat datang ${updatedPassword?.firstName}`,
