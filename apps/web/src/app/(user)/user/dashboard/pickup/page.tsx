@@ -141,7 +141,7 @@ export default function PickupLaundry() {
                             <Formik
                                 enableReinitialize
                                 initialValues={{
-                                    deliveryFee: dataNearestStore && dataNearestStore[0] ? (Math.ceil(dataNearestStore[0]?.distance) * 8000) : 0,
+                                    deliveryFee: dataNearestStore && dataNearestStore[0] ? (Math.ceil(dataNearestStore[0]?.distance / 1000) * 8000) : 0,
                                     outletId: dataNearestStore && dataNearestStore[0] ? dataNearestStore[0]?.id : '',
                                     orderTypeId: '',
                                     userAddressId: !selectedAddress ? dataMainAddress?.id : selectedAddress?.id,
@@ -197,7 +197,7 @@ export default function PickupLaundry() {
                                                     <div>
                                                         <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
                                                         <p className="text-gray-600">{dataNearestStore[0]?.address}</p>
-                                                        <p className="text-gray-600">Jarak: {dataNearestStore[0]?.distance.toFixed(2)} km</p>
+                                                        <p className="text-gray-600">Jarak: {(dataNearestStore[0]?.distance / 1000).toFixed(2)} km</p>
                                                     </div>
                                                 ) : (
                                                     <span className="text-red-500">Tidak ada store di dekatmu. Nantikan kedatangan kami!</span>
@@ -210,7 +210,7 @@ export default function PickupLaundry() {
                                             <div className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50">
                                                 {dataNearestStore && dataNearestStore.length > 0 ? (
                                                     <span className="text-lg font-semibold text-gray-800">
-                                                        Rp{(Math.ceil(dataNearestStore[0]?.distance) * 8000).toLocaleString('id-ID')}
+                                                        Rp{(Math.ceil(dataNearestStore[0]?.distance / 1000) * 8000).toLocaleString('id-ID')}
                                                     </span>
                                                 ) : (
                                                     <span className="text-gray-500">Estimasi tidak tersedia.</span>
@@ -411,7 +411,7 @@ export default function PickupLaundry() {
                                                 <div>
                                                     <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
                                                     <p className="text-gray-600">{dataNearestStore[0]?.address} -{' '}
-                                                        <span className='text-sm'>{dataNearestStore[0]?.distance.toFixed(2)} km</span></p>
+                                                        <span className='text-sm'>{(dataNearestStore[0]?.distance / 1000).toFixed(2)} km</span></p>
                                                     <p className="text-gray-600"></p>
                                                 </div>
                                             ) : (
@@ -448,7 +448,7 @@ export default function PickupLaundry() {
                                             {dataNearestStore && dataNearestStore.length > 0 ? (
                                                 <h1 className="text-lg font-semibold text-gray-800">
                                                     {values?.orderTypeId ?
-                                                        <span>Rp{(Math.ceil(dataNearestStore[0]?.distance) * 8000).toLocaleString('id-ID') || '0'}</span>
+                                                        <span>Rp{(Math.ceil(dataNearestStore[0]?.distance / 1000) * 8000).toLocaleString('id-ID') || '0'}</span>
                                                         : '0'
                                                     }
                                                 </h1>

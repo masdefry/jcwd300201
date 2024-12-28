@@ -1,4 +1,4 @@
-import { createStoreByAdminService, getAllStoreService, getStoreService } from '@/service/storeService';
+import { createStoreByAdminService, getAllStoreService, getStoreService } from '@/services/storeService';
 import { Request, Response, NextFunction } from 'express'
 
 export const getStore = async (req: Request, res: Response, next: NextFunction) => {

@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express"
 import prisma from "@/connection"
-import { changeMainAddressUserServices, changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, deleteUserAddressService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, updateProfileUserService, userCreateAddressService, userEditAddressService } from "@/service/userService"
+import { changeMainAddressUserServices, changePasswordGoogleRegisterService, changePasswordUserService, deleteProfilePictureUserService, deleteUserAddressService, getAllUserAddressesService, getSingleAddressUserService, getUserMainAddressService, updateProfileUserService, userCreateAddressService, userEditAddressService } from "@/services/userService"
 import dotenv from 'dotenv'
 dotenv.config()
 

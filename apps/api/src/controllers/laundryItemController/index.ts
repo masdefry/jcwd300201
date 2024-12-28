@@ -1,4 +1,4 @@
-import { createLaundryItemsService, deleteLaundryItemsService, getLaundryItemsService, getListItemService, updateLaundryItemsService } from "@/service/laundryItemService";
+import { createLaundryItemsService, deleteLaundryItemsService, getLaundryItemsService, getListItemService, updateLaundryItemsService } from "@/services/laundryItemService";
 import { NextFunction, Request, Response } from "express";
 
 

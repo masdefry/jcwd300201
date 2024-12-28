@@ -2,7 +2,7 @@ import { Prisma } from "@prisma/client";
 import { Status } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
 import prisma from "@/connection";
-import { handleMidtransNotificationService } from "@/service/midtransService";
+import { handleMidtransNotificationService } from "@/services/midtransService";
 
 
 export const handleMidtransNotification = async (req: Request, res: Response, next: NextFunction) => {

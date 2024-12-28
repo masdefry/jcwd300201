@@ -1,11 +1,11 @@
 'use client'
 
-import { FaWhatsapp, FaStore } from "react-icons/fa";
+import { FaWhatsapp, FaStore, FaTint } from "react-icons/fa";
 import { MdDashboard, MdOutlineStickyNote2 } from "react-icons/md";
 import Image from "next/image";
 import { MdOutlineIron } from "react-icons/md";
 import { CgSmartHomeWashMachine } from "react-icons/cg";
-import { FaFirstOrderAlt, FaMotorcycle } from "react-icons/fa6";
+import { FaCloud, FaFirstOrderAlt, FaMotorcycle, FaTemperatureHigh } from "react-icons/fa6";
 import { IoLocationOutline } from "react-icons/io5";
 import { BsPerson } from "react-icons/bs";
 import ChartComponents from "@/components/core/chart";
@@ -13,6 +13,11 @@ import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
+import { instance } from "@/utils/axiosInstance";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import axios from "axios";
+import { locationStore } from "@/zustand/locationStore";
 
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
@@ -22,9 +27,13 @@ const iconButtons = [
 ];
 
 export default function Page() {
-    const [date, setDate] = useState<Date | undefined>(new Date())
+    const lat = locationStore((state) => state?.latitude)
+    const lng = locationStore((state) => state?.longitude)
+    const token = authStore((state) => state?.token)
     const name = authStore((state) => state?.firstName)
+    const [date, setDate] = useState<Date | undefined>(new Date())
     const [isDate, setIsDate] = useState<string>('')
+    const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
     const [isDay, setIsDay] = useState<number>(0)
 
     const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
@@ -40,6 +49,33 @@ export default function Page() {
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
+
+    const { data: dataOrderAwaitingPickup, refetch, isLoading: dataOrderAwaitingPickupLoading, isError: dataOrderAwaitingPickupError } = useQuery({
+        queryKey: ['get-order'],
+        queryFn: async () => {
+            const res = await instance.get('/order/order', {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            console.log(res)
+            return res?.data?.data;
+        },
+    });
+
+    useEffect(() => {
+        if (lat && lng) {
+            const handleCurrentWeither = async () => {
+                try {
+                    const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${process.env.NEXT_PUBLIC_OPEN_WEITHER}&lang=id`)
+
+                    setIsCurrentWeither(res?.data)
+                } catch (error) {
+                    console.log(error)
+                }
+            }
+
+            handleCurrentWeither()
+        }
+    }, [lat, lng])
 
     return (
         <>
@@ -109,7 +145,6 @@ export default function Page() {
                 </section>
             </main>
 
-            {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
                 <section className="w-full h-1/2 rounded-xl flex gap-2">
                     <div className="w-full rounded-xl h-full flex items-center bg-orange-500 p-5">
@@ -133,9 +168,45 @@ export default function Page() {
                             />
                         </div>
                     </div>
-                    <div className="w-full rounded-xl h-full gap-2 flex items-center">
-                        <div className="w-1/2 h-full rounded-xl bg-white"></div>
-                        <div className="w-1/2 h-full bg-white rounded-xl">
+                    <div className="w-full rounded-xl h-full bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-2 gap-2 flex items-center">
+                        <div className="w-1/2 h-full flex items-center px-2 flex-col justify-center rounded-xl bg-white bg-opacity-45">
+                            <div className="text-center">
+                                <h2 className="text-xl font-semibold text-gray-700">Status Cuaca</h2>
+                                <div className="flex justify-center items-center py-4">
+                                    {isCurrentWeither?.weather ? (
+                                        <p className='text-6xl text-neutral-700 font-bold'> {isCurrentWeither?.main?.temp
+                                            ? `${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C`
+                                            : '- °C'}
+                                        </p>
+                                    ) : (
+                                        <span className="text-gray-500">Cuaca tidak tersedia</span>
+                                    )}
+                                </div>
+                            </div>
+                            <div>
+                                <p className="text-lg text-gray-600">
+                                    {isCurrentWeither?.weather && isCurrentWeither.weather[0]?.description
+                                        ?
+                                        <span className='flex gap-2 items-center '>
+                                            <FaCloud className="text-gray-200" />
+                                            {isCurrentWeither.weather[0].description.toUpperCase()}
+                                        </span>
+                                        : 'Data cuaca tidak tersedia'}</p>
+                            </div>
+                            <div className="py-4 space-y-2 w-full">
+                                <div className="flex items-center space-x-3 bg-white bg-opacity-70 w-full py-1 px-4 rounded-full">
+                                    <FaTint className="text-neutral-400" />
+                                    <p className="text-neutral-700 text-sm">{isCurrentWeither?.main?.humidity ? `${isCurrentWeither.main.humidity}%` : '- %'}</p>
+                                </div>
+                                <div className="flex items-center space-x-3 bg-white bg-opacity-70 w-full py-1 px-4 rounded-full">
+                                    <FaTemperatureHigh className="text-neutral-400" />
+                                    <p className="text-neutral-700 text-sm"> {isCurrentWeither?.main?.temp
+                                        ? `${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C`
+                                        : '- °C'}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="w-1/2 h-full bg-white bg-opacity-45 rounded-xl">
                             <Calendar
                                 mode="single"
                                 selected={date}
@@ -145,9 +216,74 @@ export default function Page() {
                         </div>
                     </div>
                 </section>
-                <section className="w-full h-1/2 bg-white rounded-xl p-5">
-                    <ChartComponents />
+                <section className="w-full h-1/2 flex bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-5 gap-2">
+                    <div className="w-full h-full overflow-y-auto bg-white bg-opacity-45 rounded-xl p-4">
+                        <div className="flex items-center gap-4 pb-4">
+                            <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Pickup</h1>
+                            <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                        </div>
+                        <div className="w-full space-y-4">
+                            {dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => (
+                                <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
+                                    <div className="w-full flex items-center">
+                                        <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                        <div className='w-fit px-3'>
+                                            <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
+                                            <p className="text-gray-500 text-sm">
+                                                {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                            'Layanan Laundry'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <Link href='/worker/driver/pickup-request' className='text-blue-500 hover:text-blue-700 text-sm'>
+                                            Proses
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                            <Link href='/worker/driver/pickup-request' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                                Lihat Selengkapnya...
+                            </Link>
+                        </div>
+                    </div>
+                    <div className="w-full h-full overflow-y-auto bg-white bg-opacity-45 rounded-xl p-4">
+                        <div className="flex items-center gap-4 pb-4">
+                            <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Antar</h1>
+                            <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                        </div>
+                        <div className="w-full space-y-4">
+                            {dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => (
+                                <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
+                                    <div className="w-full flex items-center">
+                                        <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                        <div className='w-fit px-3'>
+                                            <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
+                                            <p className="text-gray-500 text-sm">
+                                                {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                            'Layanan Laundry'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <Link href='/worker/driver/pickup-request' className='text-blue-500 hover:text-blue-700 text-sm'>
+                                            Proses
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                            <Link href='/worker/driver/pickup-request' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                                Lihat Selengkapnya...
+                            </Link>
+                        </div>
+                    </div>
+
                 </section>
+
             </main>
         </>
     );
