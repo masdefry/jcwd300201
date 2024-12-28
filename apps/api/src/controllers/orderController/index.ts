@@ -554,46 +554,48 @@ export const ironingProcess = async (req: Request, res: Response, next: NextFunc
   try {
     const { orderId } = req.params
     const { email, userId, notes } = req.body
-    const findWorker = await prisma.worker.findFirst({
-      where: { email }
-    })
+    
+    await prisma.$transaction(async (tx) => {
+      const findWorker = await prisma.worker.findFirst({
+        where: { email }
+      })
 
-    if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
-    const order = await prisma.order.findUnique({
-      where: { id: String(orderId) },
-      select: { orderTypeId: true },
-    });
+      if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+      const order = await tx.order.findUnique({
+        where: { id: String(orderId) },
+        select: { orderTypeId: true },
+      });
 
-    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+      if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+      if (order.orderTypeId === 1) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
+      if (order.orderTypeId === 2) {
+        const createOrderStatus = await tx.orderStatus.create({
+          data: {
+            status: 'IN_IRONING_PROCESS',
+            orderId: String(orderId),
+            createdAt: addHours(new Date(), 7),
+          },
+        })
 
-    if (order.orderTypeId === 1) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
+        if (!createOrderStatus) throw { msg: 'order status gagal dibuat,silahkan coba lagi', status: 400 }
+      }
 
-    if (order.orderTypeId === 2) {
-      const createOrderStatus = await prisma.orderStatus.create({
-        data: {
-          status: 'IN_IRONING_PROCESS',
-          orderId: String(orderId),
-          createdAt: addHours(new Date(), 7),
+      const orderStatuses = await tx.orderStatus.findFirst({
+        where: {
+          orderId,
+          status: 'IN_IRONING_PROCESS'
         },
       });
-      if (!createOrderStatus) throw {msg:'order status gagal dibuat,silahkan coba lagi'}
-    }
 
-    const orderStatuses = await prisma.orderStatus.findFirst({
-      where: {
-        orderId,
-        status: 'IN_IRONING_PROCESS'
-      },
-    });
+      if (!orderStatuses) throw { msg: "tidak ada order dengan status 'IN_IRONING_PROCESS'" };
 
-    if (!orderStatuses) throw { msg: "tidak ada order dengan status 'IN_IRONING_PROCESS'" };
-
-    await prisma.orderStatus.update({
-      where: { id: orderStatuses.id },
-      data: {
-        workerId: userId,
-      },
-    });
+      await tx.orderStatus.update({
+        where: { id: orderStatuses.id },
+        data: {
+          workerId: userId,
+        },
+      });
+    })
 
     if (notes) {
       const updatedOrder = await prisma.order.update({
@@ -609,9 +611,8 @@ export const ironingProcess = async (req: Request, res: Response, next: NextFunc
         },
       });
 
-      if (!updatedOrder) {
-        throw { msg: "Order gagal diupdate", status: 404 };
-      }
+      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 }
+
       return res.status(201).json({
         error: false,
         message: "Approval request terhadap admin telah diajukan!",
@@ -646,9 +647,7 @@ export const ironingProcess = async (req: Request, res: Response, next: NextFunc
         },
       });
 
-      if (!existingStatus) {
-        throw { msg: "Order tidak dapat diproses karena belum dicuci", status: 400 };
-      }
+      if (!existingStatus) throw { msg: "Order tidak dapat diproses karena belum dicuci", status: 400 }
 
       res.status(200).json({
         error: false,

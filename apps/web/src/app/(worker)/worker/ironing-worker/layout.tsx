@@ -8,12 +8,13 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import Cookies from 'js-cookie'
-import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import { FaCartArrowDown, FaDashcube, FaExclamationTriangle, FaHistory, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { RiProfileFill } from "react-icons/ri";
 import { toast } from "@/components/hooks/use-toast";
 import ButtonCustom from "@/components/core/button";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { FaFileInvoice } from "react-icons/fa6";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Layout({ children }: { children: ReactNode }) {
@@ -90,16 +91,22 @@ export default function Layout({ children }: { children: ReactNode }) {
                     </div>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Menu</h1>
-                <div className="w-full h-fit pb-3 flex flex-col gap-4">
+                <div className="w-full h-full flex flex-col gap-2">
                     <Link href={dashboardUrl} className={`w-full flex 
                         ${Object.values(dashboardMenuUrl).includes(pathname) ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
+                    <Link href='/worker/ironing-worker/order' className={`w-full flex ${pathname.startsWith('/worker/ironing-worker/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaFileInvoice />Pesanan</Link>
+                    <Link href='/worker/ironing-worker/history' className={`w-full flex ${pathname.startsWith('/worker/ironing-worker/history') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaHistory /> Riwayat</Link>
+                    <Link href='/worker/ironing-worker/p' className={`w-full flex ${pathname.startsWith('/worker/ironing-worker/payment') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaExclamationTriangle /> Laporan</Link>
                 </div>
-                <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
+                <h1 className="px-4 text-sm text-neutral-600 py-2 pt-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">
-                    <Link href='/worker/ironing-worker/settings' className={`w-full flex ${pathname == '/worker/driver/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/worker/ironing-worker/settings' className={`w-full flex ${pathname == '/worker/admin-outlet/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>
-                    <ConfirmAlert caption="Apakah anda yakin ingin logout ?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                    <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
                         <span className={`w-full cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>
                             <FaSignOutAlt /> Logout</span>
                     </ConfirmAlert>

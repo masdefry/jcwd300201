@@ -9,7 +9,6 @@ import { FaRegTrashAlt } from "react-icons/fa";
 import React, { useEffect } from 'react';
 import ContentWebLayout from "@/components/core/webSessionContent";
 import ButtonCustom from "@/components/core/button";
-import NotaHeader from "@/features/adminOutlet/components/notaHeader";
 import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionContent";
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
 import TableHeadLayout from "@/features/adminOutlet/components/tableHeadLayout";
@@ -19,6 +18,7 @@ import TableContentProduct from "@/features/adminOutlet/components/tableBodyCont
 import TotalWeightComponent from "@/features/adminOutlet/components/totalWeightComponent";
 import TableWeightComponent from "@/features/adminOutlet/components/tableWeightNotaOrder";
 import { useCreateNotaOrderHooks } from "@/features/adminOutlet/hooks/useCreateNotaOrderHooks";
+import NotaHeader from "@/components/core/createNotaHeaders";
 
 const validationSchema = Yup.object().shape({
     customerName: Yup.string().required("Customer name is required"),

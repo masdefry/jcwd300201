@@ -12,19 +12,9 @@ import { BsPencil, BsTrash } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { useDebouncedCallback } from "use-debounce";
 import HeaderMobile from "@/components/core/headerMobile";
-import { FaUser, FaStore, FaEdit, FaTrashAlt, FaArrowLeft } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaArrowLeft } from 'react-icons/fa';
 import Image from "next/image";
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import Link from "next/link";
 import Loading from "@/components/core/loading";
 export default function Page() {
@@ -94,7 +84,7 @@ export default function Page() {
     return (
         <>
             <HeaderMobile />
-            <main className="mx-8">
+            <main className="mx-8 md:hidden block">
                 <section className="flex justify-between bg-white w-full pr-14 font-bold fixed pt-16 text-lg border-b-2 pb-4">
                     <div className="flex items-center gap-2"> <Link href='/admin/settings'><FaArrowLeft /></Link> OUTLET</div>
                     <div> <ButtonCustom btnColor="bg-blue-500">+ Tambah Outlet</ButtonCustom> </div>
@@ -156,11 +146,11 @@ export default function Page() {
                         })
                     ) : (
                         <div>
-                            <div className="text-center py-20 font-bold">{isFetching ? <Loading/> : 'Data tidak tersedia'}</div>
+                            <div className="text-center py-20 font-bold">{isFetching ? <Loading /> : 'Data tidak tersedia'}</div>
                         </div>
                     )}
                 </div>
-            </main >
+            </main>
             {/* web */}
             < ContentWebLayout caption='Data Outlet' >
                 <div className="w-full h-fit flex">
@@ -205,7 +195,7 @@ export default function Page() {
                                             <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
                                                 <div className='flex gap-2'>
                                                     <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
-                                                    <button className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </button>
+                                                    <Link href={`/admin/outlet/e/${store?.id}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </Link>
                                                 </div>
                                             </td>
                                         </tr>
@@ -213,7 +203,7 @@ export default function Page() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? <Loading/> : 'Data tidak tersedia'}</td>
+                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? <Loading /> : 'Data tidak tersedia'}</td>
                                 </tr>
                             )}
                         </tbody>

@@ -447,7 +447,6 @@ export default function OrderList() {
                             </tr>
                         </thead>
                         <tbody>
-                            {(dataOrderListLoading || isFetching) && <Loading />}
                             {dataOrderList?.orders?.length > 0 ? (
                                 dataOrderList?.orders?.map((order: any, i: number) => {
                                     return (
@@ -474,14 +473,14 @@ export default function OrderList() {
                                                                             : 'Status tidak dikenal'}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
                                             <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <div>View</div>
+                                                <p>View</p>
                                             </td>
                                         </tr>
                                     )
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold"><NoData /></td>
+                                    <td colSpan={6} className="text-center font-bold">{isFetching ?<span className="py-10"> <Loading /></span> : <NoData />}</td>
                                 </tr>
                             )}
                         </tbody>

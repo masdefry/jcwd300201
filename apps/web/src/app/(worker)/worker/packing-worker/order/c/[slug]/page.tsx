@@ -12,7 +12,7 @@ import { useQuery, useMutation } from "@tanstack/react-query";
 import React, { useState } from 'react';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { useRouter } from "next/navigation";
-import NotaHeader from "@/features/adminOutlet/components/notaHeader";
+import NotaHeader from "@/components/core/createNotaHeaders";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionContent";
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";

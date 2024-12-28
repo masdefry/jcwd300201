@@ -100,10 +100,6 @@ export default async function Page() {
                     </main>
                 </section>
             </main>
-
-
-
-
             <ContentWebLayout caption="Pesan Pelanggan">
                 <div className="w-full h-fit pb-4 flex flex-col gap-2">
                     {dataMessage?.map((message: any, i: number) => (

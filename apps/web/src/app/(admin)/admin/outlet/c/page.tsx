@@ -119,10 +119,7 @@ export default function Page() {
                             <div className="mx-8 flex justify-between gap-2 items-center font-bold w-screen pr-16">
                                 <div className="flex justify-center items-center gap-2"><Link href='/admin/settings'><FaArrowLeft /></Link> ORDER</div>
                             </div>
-                            <section
-                                className="flex justify-between items-center border-b py-2"
-                            >
-                            </section>
+                            <section className="flex justify-between items-center border-b py-2"></section>
                             <CardContent className="space-y-2 pt-2">
                                 < Formik
                                     onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -158,9 +155,9 @@ export default function Page() {
                                     }}
                                 >
                                     {({ setFieldValue, values, handleChange }) => (
-                                        <Form className="flex gap-5 h-fit w-full justify-center">
-                                            <div className="h-fit w-fit relative mt-28">
-                                                <MapContainer id="map-container" key={time} center={isPosition} zoom={13} className="w-fit h-fit rounded-2xl">
+                                        <Form className="flex flex-col gap-5 h-fit w-full justify-center">
+                                            <div className="h-44 w-full">
+                                                <MapContainer id="map-container-mobile" key={time} center={isPosition} zoom={13} className="w-full h-full rounded-2xl">
                                                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
                                                     <LocationPicker setFieldValue={setFieldValue} position={isPosition} setPosition={setIsPosition} />
                                                 </MapContainer>

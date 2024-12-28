@@ -6,7 +6,7 @@ export default function HeaderMobile() {
         <Image
             src={header}
             alt=""
-            className="fixed z-50"
+            className="fixed z-50 md:hidden block"
         />
     )
 }
