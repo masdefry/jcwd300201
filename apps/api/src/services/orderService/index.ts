@@ -639,15 +639,15 @@ export const getOrdersForIroningService = async ({
   if (tab === "prosesSetrika") {
     statusFilter = ['IN_IRONING_PROCESS'];
   } else if (tab === "belumDisetrika") {
-    statusFilter = ['IN_IRONING_PROCESS'];
+    statusFilter = ['AWAITING_PAYMENT', 'IN_IRONING_PROCESS'];
   } else if (tab === "done") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "all") {
-    statusFilter = ['IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
+    statusFilter = ['AWAITING_PAYMENT', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
   } else if (tab) {
     statusFilter = [tab];
   } else {
-    statusFilter = ['IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
+    statusFilter = ['AWAITING_PAYMENT', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
   }
   const parsedDateFrom = dateFrom ? new Date(dateFrom as string) : undefined;
   const parsedDateUntil = dateUntil ? new Date(dateUntil as string) : undefined;
@@ -2234,6 +2234,7 @@ export const getAllOrderForAdminService = async ({
           type: true,
         },
       },
+      Store: true,
     },
   });
 
