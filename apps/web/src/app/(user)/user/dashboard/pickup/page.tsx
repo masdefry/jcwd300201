@@ -141,7 +141,7 @@ export default function PickupLaundry() {
                             <Formik
                                 enableReinitialize
                                 initialValues={{
-                                    deliveryFee: dataNearestStore && dataNearestStore[0] ? (Math.ceil(dataNearestStore[0]?.distance/1000) * 8000) : 0,
+                                    deliveryFee: dataNearestStore && dataNearestStore[0] ? (Math.ceil(dataNearestStore[0]?.distance / 1000) * 8000) : 0,
                                     outletId: dataNearestStore && dataNearestStore[0] ? dataNearestStore[0]?.id : '',
                                     orderTypeId: '',
                                     userAddressId: !selectedAddress ? dataMainAddress?.id : selectedAddress?.id,

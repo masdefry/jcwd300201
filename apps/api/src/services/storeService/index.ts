@@ -1,6 +1,7 @@
 import prisma from "@/connection"
 import { ICreateStore, IGetAllStore, IStoreMap } from "./types"
 import axios from "axios"
+import { Prisma } from "@prisma/client"
 
 const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
 export const getStoreService = async () => {
@@ -20,9 +21,9 @@ export const getAllStoreService = async ({ search, sort, take, skip, limit }: IG
     if (search) {
         whereClause = {
             OR: [
-                { storeName: { contains: search as string } },
-                { city: { contains: search as string } },
-                { province: { contains: search as string } },
+                { storeName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+                { city: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+                { province: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
             ]
         }
     }

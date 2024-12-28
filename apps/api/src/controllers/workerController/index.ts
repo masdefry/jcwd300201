@@ -2,6 +2,7 @@ import prisma from "@/connection";
 import dotenv from 'dotenv'
 import { NextFunction, Request, Response } from "express";
 import { changePasswordWorkerService, createNotesService, deleteDataWorkerByIdService, deleteProfilePictureWorkerService, getAllWorkerService, updateProfileWorkerService } from "@/services/workerService";
+import { Prisma } from "@prisma/client";
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
@@ -101,10 +102,10 @@ export const getAllWorker = async (req: Request, res: Response, next: NextFuncti
     if (search) {
       whereClause = {
         OR: [
-          { id: { contains: search as string } },
-          { firstName: { contains: search as string } },
-          { lastName: { contains: search as string } },
-          { email: { contains: search as string } }
+          { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+          { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+          { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+          { email: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } }
         ]
       }
     } else if (typeof sort === 'string') {

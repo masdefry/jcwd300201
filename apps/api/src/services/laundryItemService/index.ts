@@ -1,5 +1,6 @@
 import prisma from "@/connection";
 import { IGetLaundryItems } from "./types";
+import { Prisma } from "@prisma/client";
 
 export const getListItemService = async ({ userId }: { userId: string }) => {
     const worker = await prisma.worker.findFirst({
@@ -35,7 +36,7 @@ export const getLaundryItemsService = async ({ limit, page, search, sort }: IGet
     if (search) {
         whereClause = {
             OR: [
-                { itemName: { contains: search as string } },
+                { itemName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
             ]
         }
     }

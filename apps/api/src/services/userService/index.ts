@@ -10,6 +10,7 @@ import { compile } from "handlebars"
 import { ICreateAddressUser, IEditAddressUser, IUpdateProfileUser } from "./types"
 import dotenv from 'dotenv'
 import axios from "axios"
+import { Prisma } from "@prisma/client"
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
@@ -132,11 +133,11 @@ export const getAllUserAddressesService = async ({ userId, search }: { userId: s
             where: {
                 userId,
                 OR: [
-                    { addressName: { contains: search as string } },
-                    { addressDetail: { contains: search as string } },
-                    { city: { contains: search as string } },
-                    { province: { contains: search as string } },
-                    { country: { contains: search as string } },
+                    { addressName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+                    { addressDetail: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+                    { city: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+                    { province: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+                    { country: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
                 ]
             },
             include: {
