@@ -1,7 +1,7 @@
 'use client'
 
 import { Card, CardContent } from "@/components/ui/card"
-import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { FaEdit, FaSearch, FaTrashAlt } from 'react-icons/fa';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import HeaderMobile from "@/components/core/headerMobile"
 import { FaArrowLeft } from 'react-icons/fa';
@@ -17,172 +17,96 @@ import SearchInputCustom from "@/components/core/searchBar";
 import { useWorkerHooks } from "@/features/superAdmin/hooks/useWorkerHooks";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import PaginationWebLayout from "@/components/core/paginationWebLayout";
+import { BsTrash } from "react-icons/bs";
+import { ConfirmAlert } from "@/components/core/confirmAlert";
+import Loading from "@/components/core/loading";
+import NoData from "@/components/core/noData";
 
 export default function Page() {
     const { currentPage, entriesPerPage, sortWorker, setSortWorker, isFetching,
-        dataWorker, totalPages, handlePageChange, debounce } = useWorkerHooks()
+        dataWorker, totalPages, handlePageChange, debounce, searchWorker, isLoading } = useWorkerHooks()
 
     return (
         <>
-            <main className="w-full h-fit">
-                <section className="w-full h-fit max-w-[425px] md:max-w-full md:w-full block md:hidden">
-                    <HeaderMobile />
-                    <main className="w-fit mx-8">
-                        <section className="flex gap-2 items-center bg-white font-bold w-full fixed pt-16 text-lg border-b-2 pb-4">
-                            <Link href='/admin/settings'><FaArrowLeft /></Link> PEKERJA
-                        </section>
-                        <div className="py-28 space-y-4">
-                            <Tabs defaultValue="all" className="fit">
-                                <TabsList className="grid w-full grid-cols-3">
-                                    <TabsTrigger value="all">Semua</TabsTrigger>
-                                    <TabsTrigger value="pekerja">Pekerja</TabsTrigger>
-                                    <TabsTrigger value="driver">Driver</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value="all">
-                                    <Card>
-                                        <CardContent className="space-y-2 pt-4">
-                                            <LocationAndSearch />
-                                            <section className="flex justify-between items-center">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 p-1">
-                                                        <Avatar>
-                                                            <AvatarImage src="https://github.com/shadcn.png" />
-                                                            <AvatarFallback>CN</AvatarFallback>
-                                                        </Avatar>
-                                                    </div>
-                                                    <div className="ml-2">
-                                                        <h2 className="font-medium text-gray-900">Nama Pekerja</h2>
-                                                        <p className="text-xs text-gray-500">Jabatan</p>
-                                                        <p className="text-xs text-gray-500">no Telp</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <button className="flex items-center h-fit space-x-2 px-2 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
-                                                        <FaEdit />
-                                                    </button>
+            <HeaderMobile />
 
-                                                    <AlertDialog>
-                                                        <AlertDialogTrigger asChild>
-                                                            <div className="flex items-center h-fit space-x-2 px-2 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                                                <FaTrashAlt />
-                                                            </div>
-                                                        </AlertDialogTrigger>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader>
-                                                                <AlertDialogTitle>Hapus &quot;Nama Outlet&quot;?</AlertDialogTitle>
-                                                                <AlertDialogDescription>
-                                                                    Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
-                                                                </AlertDialogDescription>
-                                                            </AlertDialogHeader>
-                                                            <AlertDialogFooter>
-                                                                <AlertDialogCancel>Batal</AlertDialogCancel>
-                                                                <AlertDialogAction>Hapus</AlertDialogAction>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialog>
-                                                </div>
-                                            </section>
-                                        </CardContent>
-                                    </Card>
-                                </TabsContent>
-                                <TabsContent value="pekerja">
-                                    <Card>
-                                        <CardContent className="space-y-2 pt-4">
-                                            <LocationAndSearch />
-                                            <section className="flex justify-between items-center">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 p-1">
-                                                        <Avatar>
-                                                            <AvatarImage src="https://github.com/shadcn.png" />
-                                                            <AvatarFallback>CN</AvatarFallback>
-                                                        </Avatar>
-                                                    </div>
-                                                    <div className="ml-2">
-                                                        <h2 className="font-medium text-gray-900">Nama Pekerja</h2>
-                                                        <p className="text-xs text-gray-500">Jabatan</p>
-                                                        <p className="text-xs text-gray-500">no Telp</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <button className="flex items-center h-fit space-x-2 px-2 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
-                                                        <FaEdit />
-                                                    </button>
-
-                                                    <AlertDialog>
-                                                        <AlertDialogTrigger asChild>
-                                                            <div className="flex items-center h-fit space-x-2 px-2 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                                                <FaTrashAlt />
-                                                            </div>
-                                                        </AlertDialogTrigger>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader>
-                                                                <AlertDialogTitle>Hapus &quot;Nama Outlet&quot;?</AlertDialogTitle>
-                                                                <AlertDialogDescription>
-                                                                    Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
-                                                                </AlertDialogDescription>
-                                                            </AlertDialogHeader>
-                                                            <AlertDialogFooter>
-                                                                <AlertDialogCancel>Batal</AlertDialogCancel>
-                                                                <AlertDialogAction>Hapus</AlertDialogAction>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialog>
-                                                </div>
-                                            </section>
-                                        </CardContent>
-                                    </Card>
-                                </TabsContent>
-                                <TabsContent value="Driver">
-                                    <Card>
-                                        <CardContent className="space-y-2 pt-4">
-                                            <LocationAndSearch />
-                                            <section className="flex justify-between items-center">
-                                                <div className="flex items-center">
-                                                    <div className="flex-shrink-0 p-1">
-                                                        <Avatar>
-                                                            <AvatarImage src="https://github.com/shadcn.png" />
-                                                            <AvatarFallback>CN</AvatarFallback>
-                                                        </Avatar>
-                                                    </div>
-                                                    <div className="ml-2">
-                                                        <h2 className="font-medium text-gray-900">Nama Pekerja</h2>
-                                                        <p className="text-xs text-gray-500">Jabatan</p>
-                                                        <p className="text-xs text-gray-500">no Telp</p>
-                                                    </div>
-                                                </div>
-                                                <div className="flex gap-1">
-                                                    <button className="flex items-center h-fit space-x-2 px-2 py-2 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
-                                                        <FaEdit />
-                                                    </button>
-
-                                                    <AlertDialog>
-                                                        <AlertDialogTrigger asChild>
-                                                            <div className="flex items-center h-fit space-x-2 px-2 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                                                <FaTrashAlt />
-                                                            </div>
-                                                        </AlertDialogTrigger>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader>
-                                                                <AlertDialogTitle>Hapus &quot;Nama Outlet&quot;?</AlertDialogTitle>
-                                                                <AlertDialogDescription>
-                                                                    Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
-                                                                </AlertDialogDescription>
-                                                            </AlertDialogHeader>
-                                                            <AlertDialogFooter>
-                                                                <AlertDialogCancel>Batal</AlertDialogCancel>
-                                                                <AlertDialogAction>Hapus</AlertDialogAction>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialog>
-                                                </div>
-                                            </section>
-                                        </CardContent>
-                                    </Card>
-                                </TabsContent>
-                            </Tabs>
-                        </div>
-                    </main>
+            <main className="mx-8 md:hidden block">
+                <section className="flex justify-between bg-white w-full pr-14 font-bold fixed pt-16 text-lg border-b-2 pb-4">
+                    <div className="flex items-center gap-2"> <Link href='/admin/settings'><FaArrowLeft /></Link> WORKER</div>
+                    <div> <ButtonCustom btnColor="bg-blue-500">+ Tambah Worker</ButtonCustom> </div>
                 </section>
+                <div className="py-32 space-y-4">
+                    <div className="w-full flex justify-between gap-1 items-center">
+                        <div className="w-1/2 flex justify-between gap-1 items-center">
+                            <div className="flex items-center justify-center">
+                                <div className="relative w-full max-w-md">
+                                    <input
+                                        type="text"
+                                        onChange={(e) => debounce(e.target.value)}
+                                        value={searchWorker}
+                                        placeholder="Search..."
+                                        className="w-full pl-10 pr-4 py-2 border z-0 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                                </div>
+                            </div>
+                        </div>
+                        <select name="searchWorker"
+                            value={sortWorker} onChange={(e) => setSortWorker(e.target.value)}
+                            id="searchWorker" className="w-1/2 px-4 py-2 h-10 border rounded-lg border-gray-300 text-sm text-neutral-600">
+                            <option value="" disabled>-- Pilih Opsi --</option>
+                            <option value="super_admin">Sort berdasarkan Super Admin</option>
+                            <option value="outlet_admin">Sort berdasarkan Outlet Admin</option>
+                            <option value="washing_worker">Sort berdasarkan Washing Worker</option>
+                            <option value="ironing_worker">Sort berdasarkan Ironing Worker</option>
+                            <option value="packing_worker">Sort berdasarkan Packing Worker</option>
+                            <option value="driver">Sort berdasarkan Driver</option>
+                            <option value="">Reset</option>
+                        </select>
+                    </div>
+
+                    {dataWorker?.length > 0 ? (
+                        dataWorker?.map((worker: any, i: number) => {
+                            return (< div
+                                key={i}
+                                className="flex items-center justify-between bg-white py-4 px-2 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100"
+                            >
+                                <div className="flex items-center">
+                                    <div className="ml-2">
+                                        <h2 className="font-medium text-gray-900">{ worker?.firstName}</h2>
+                                        <p className="text-xs text-gray-500">{worker?.email}</p>
+                                        <p className="text-xs text-gray-500">{worker?.phoneNumber}</p>
+                                        <p className="text-xs text-gray-500">{worker?.workerRole}</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex space-x-1">
+                                    <button className="flex items-center justify-center space-x-2 px-2 py-2 w-12 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
+                                        <FaEdit />
+                                    </button>
+                                    <button className="flex items-center space-x-2 px-2 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
+                                        <ConfirmAlert
+                                            caption={`Hapus "${worker?.firstName.toUpperCase()}"?`}
+                                            description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
+                                            onClick={() => { console.log('delete') }}
+                                        >
+
+                                            <div className="flex items-center justify-center space-x-2 px-2 py-2 w-9  bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
+                                                <BsTrash />
+                                            </div>
+                                        </ConfirmAlert>
+                                    </button>
+
+                                </div>
+                            </div>
+                            )
+                        })
+                    ) : (
+                        <div>
+                            <div className="text-center py-20 font-bold">{isLoading ? <Loading /> : <NoData />}</div>
+                        </div>
+                    )}
+                </div>
             </main>
 
             {/* web */}
@@ -191,12 +115,12 @@ export default function Page() {
                     <div className="w-1/2 h-fit flex items-center">
                         <select name="searchWorker" value={sortWorker} onChange={(e) => setSortWorker(e.target.value)} id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
                             <option value="" disabled>-- Pilih Opsi --</option>
-                            <option value="super_admin">Sort berdasarkan SUPER_ADMIN</option>
-                            <option value="outlet_admin">Sort berdasarkan OUTLET_ADMIN</option>
-                            <option value="washing_worker">Sort berdasarkan WASHING_WORKER</option>
-                            <option value="ironing_worker">Sort berdasarkan IRONING_WORKER</option>
-                            <option value="packing_worker">Sort berdasarkan PACKING_WORKER</option>
-                            <option value="driver">Sort berdasarkan DRIVER</option>
+                            <option value="super_admin">Sort berdasarkan Super Admin</option>
+                            <option value="outlet_admin">Sort berdasarkan Outlet Admin</option>
+                            <option value="washing_worker">Sort berdasarkan Washing Worker</option>
+                            <option value="ironing_worker">Sort berdasarkan Ironing Worker</option>
+                            <option value="packing_worker">Sort berdasarkan Packing Worker</option>
+                            <option value="driver">Sort berdasarkan Driver</option>
                             <option value="">Reset</option>
                         </select>
                     </div>

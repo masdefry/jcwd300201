@@ -19,7 +19,7 @@ const useProductLaundryHooks = () => {
     const router = useRouter()
     const pathname = usePathname()
 
-    const { data: dataItem, isFetching, refetch } = useQuery({
+    const { data: dataItem, isLoading, refetch } = useQuery({
         queryKey: ['get-data-item', searchItem],
         queryFn: async () => {
             const response = await instance.get('/laundry/laundry-items', {
@@ -141,6 +141,11 @@ const useProductLaundryHooks = () => {
         } else {
             currentUrl.delete('sort')
         }
+        if (currentPage) {
+            currentUrl.set('page', String(currentPage))
+        } else {
+            currentUrl.delete('page')
+        }
 
         if (totalPages === undefined || currentPage > totalPages) {
             setCurrentPage(1)
@@ -157,7 +162,7 @@ const useProductLaundryHooks = () => {
         entriesPerPage, setEntriesPerPage,
         searchItem, setSearchItem,
         sortProduct, setSortProduct,
-        dataItem, isFetching, refetch,
+        dataItem, isLoading, refetch,
         createProductItem, isPending,
         handleDeleteItem, isPendingDelete,
         handleUpdateItem, isPendingUpdate,

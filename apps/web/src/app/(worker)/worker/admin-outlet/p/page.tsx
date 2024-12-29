@@ -169,6 +169,8 @@ export default function DriverPickUp() {
                                             setDateUntil={setDateUntil}
                                             setActiveTab={setActiveTab}
                                             setSearchInput={setSearchInput}
+                                            searchInput={searchInput}
+                                            setPage={setPage}
                                         />
                                         {dataOrderPackingProcessLoading && <div>Loading...</div>}
                                         {dataOrderPackingProcessError && <div>Silahkan coba beberapa saat lagi.</div>}

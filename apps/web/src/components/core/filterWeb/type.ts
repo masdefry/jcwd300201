@@ -1,4 +1,4 @@
-export interface IFilterProps {
+export interface IFilterPropsWeb {
     debounce: (value: string) => void;
     sortOption: string;
     setSortOption: (value: string) => void;
@@ -8,6 +8,15 @@ export interface IFilterProps {
     setDateUntil: (value: string | null) => void;
     setActiveTab: (tab: string) => void;
     setSearchInput: (input: string) => void;
+    activeTab: string;
+    outletId?: string | null;
+    setOutletId?: (id: string) => void;
+    getDataStore?: Array<{ storeId: string, storeName: string }>;
+    isStoreLoading?: boolean;
+    isStoreError?: boolean;
     setPage: (page: number) => void;
-    searchInput: string
+    showStoreSelect?: boolean;
+    options?: { value: string, label: string }[];  
+    showTabOption?: boolean;
+    searchInput: string;
 }
