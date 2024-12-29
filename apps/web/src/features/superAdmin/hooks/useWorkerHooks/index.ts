@@ -16,7 +16,7 @@ const useWorkerHooks = () => {
     const router = useRouter()
     const pathname = usePathname()
 
-    const { data: getDataWorker, refetch, isFetching } = useQuery({
+    const { data: getDataWorker, refetch, isFetching, isLoading } = useQuery({
         queryKey: ['get-data-worker', searchWorker, sortWorker],
         queryFn: async () => {
             const response = await instance.get('/worker/all-workers', {
@@ -35,7 +35,7 @@ const useWorkerHooks = () => {
     const dataWorker = getDataWorker?.findWorker
     const totalPages = getDataWorker?.totalPages
 
-    
+
     const handlePageChange = (page: any) => setCurrentPage(page)
     const debounce = useDebouncedCallback((value) => {
         setSearchWorker(value)
@@ -71,7 +71,7 @@ const useWorkerHooks = () => {
         sortWorker, setSortWorker,
         getDataWorker, refetch, isFetching,
         dataWorker, totalPages,
-        handlePageChange, debounce,
+        handlePageChange, debounce, isLoading
     }
 }
 

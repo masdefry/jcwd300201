@@ -8,4 +8,6 @@ export interface IFilterProps {
     setDateUntil: (value: string | null) => void;
     setActiveTab: (tab: string) => void;
     setSearchInput: (input: string) => void;
+    setPage: (page: number) => void | number
+    searchInput: string
 }

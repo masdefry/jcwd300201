@@ -33,8 +33,8 @@ export default function DriverPickUp() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const limit = 5;
 
     const { data: dataOrderPackingProcess, refetch, isLoading: dataOrderPackingProcessLoading, isError: dataOrderPackingProcessError } = useQuery({
@@ -103,14 +103,14 @@ export default function DriverPickUp() {
             currentUrl.delete(`tab`)
         }
         if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
+            currentUrl.set('date-from', dateFrom?.toString())
         } else {
-            currentUrl.delete(`dateFrom`)
+            currentUrl.delete('date-from')
         }
         if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
+            currentUrl.set('date-until', dateUntil?.toString())
         } else {
-            currentUrl.delete(`dateUntil`)
+            currentUrl.delete('date-until')
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
@@ -141,6 +141,8 @@ export default function DriverPickUp() {
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
                                         <FilterWorker
+                                            searchInput={searchInput}
+                                            setPage={setPage}
                                             debounce={debounce}
                                             sortOption={sortOption}
                                             setSortOption={setSortOption}
@@ -209,7 +211,7 @@ export default function DriverPickUp() {
                                                         }
                                                         onClick={() => {
                                                             if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false) {
-                                                                router.push(`/worker/packing-worker/c/${order?.id}`);
+                                                                router.push(`/worker/packing-worker/order/c/${order?.id}`);
                                                             } else if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true) {
                                                                 handleProcessPacking(order?.id);
                                                             }
@@ -240,7 +242,7 @@ export default function DriverPickUp() {
                                                     </ConfirmAlert>
                                                 )}
 
-                                               
+
                                             </section>
                                         ))}
 

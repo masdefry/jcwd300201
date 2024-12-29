@@ -36,6 +36,8 @@ import { FaPlus } from "react-icons/fa6";
 import Image from "next/image"
 import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
+import { IoMdRefresh } from "react-icons/io"
+import FilterWeb from "@/components/core/filterWeb"
 
 export default function OrderList() {
     const params = useSearchParams();
@@ -51,9 +53,9 @@ export default function OrderList() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "proses");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
-    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
+    const [isSearchValues, setSearchValues] = useState<string>('')
     const [outletId, setOutletId] = useState(params.get("outletId") || null);
 
 
@@ -102,7 +104,6 @@ export default function OrderList() {
         }
     })
 
-    const getDataItem = dataOrderList?.dataOrder
 
     const handlePageChange = (page: any) => {
         setPage(page)
@@ -132,19 +133,24 @@ export default function OrderList() {
             currentUrl.delete(`tab`)
         }
         if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
+            currentUrl.set(`date-from`, dateFrom?.toString())
         } else {
-            currentUrl.delete(`dateFrom`)
+            currentUrl.delete(`date-from`)
         }
         if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
+            currentUrl.set(`date-until`, dateUntil?.toString())
         } else {
-            currentUrl.delete(`dateUntil`)
+            currentUrl.delete(`date-until`)
         }
         if (outletId) {
             currentUrl.set(`outletId`, outletId?.toString())
         } else {
             currentUrl.delete(`outletId`)
+        }
+        if (page) {
+            currentUrl.set(`page`, page?.toString())
+        } else {
+            currentUrl.delete(`page`)
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
@@ -209,6 +215,8 @@ export default function OrderList() {
                                             setDateUntil={setDateUntil}
                                             setActiveTab={setActiveTab}
                                             setSearchInput={setSearchInput}
+                                            searchInput={searchInput}
+                                            setPage={setPage}
                                         />
                                         {dataOrderListLoading && <Loading />}
                                         {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
@@ -287,12 +295,12 @@ export default function OrderList() {
                                     {orderData ? (
                                         <>
                                             <div className="grid gap-4 py-4">
-                                                <div className="flex justify-between items-center">
-                                                    <div className="flex flex-col">
+                                                <div className="flex justify-between gap-3 items-center">
+                                                    <div className="w-2/3 flex flex-col">
                                                         <h2 className="text-base font-semibold">{orderData?.order?.id}</h2>
                                                         <h2 className="text-base">{orderData?.order?.OrderType?.type}</h2>
                                                     </div>
-                                                    <div className="flex flex-col">
+                                                    <div className="w-1/3 flex flex-col">
 
                                                         <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
                                                         <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
@@ -300,9 +308,6 @@ export default function OrderList() {
                                                     </div>
                                                 </div>
                                             </div>
-
-
-
 
                                             <div className="flex flex-row justify-between">
                                                 <div>
@@ -384,54 +389,33 @@ export default function OrderList() {
 
             {/* web sesi */}
             <ContentWebLayout caption="Order">
-                <div className="w-full h-fit flex items-center">
-                    <div className="w-1/2 h-fit flex items-center">
-                        <Select value={sortOption} onValueChange={setSortOption}>
-                            <SelectTrigger className="w-[150px] border rounded-full py-2 px-3">
-                                <SelectValue placeholder="Sort By" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
-                                <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
-                                <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
-                                <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
-                                <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
-                                <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
-                            </SelectContent>
-                        </Select>
-                        <select
-                            className="ml-2 border rounded-2xl h-10 px-4 "
-                            value={outletId || ""}
-                            onChange={(e) => {
-                                setOutletId(e.target.value);
-                                console.log(e.target.value);
-                            }}
-
-                            disabled={isStoreLoading || isStoreError}
-                        >
-                            <option value="" disabled>
-                                {isStoreLoading
-                                    ? "Memuat..."
-                                    : isStoreError
-                                        ? "Gagal Memuat"
-                                        : "Pilih Toko"}
-                            </option>
-                            <option value="">Semua</option>
-
-                            {getDataStore?.map((store: any) => (
-                                <option key={store?.storeId} value={store?.storeId}>
-                                    {store?.storeName}
-                                </option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <Link href='/admin/worker/c'>
-                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
-                        </Link>
-                    </div>
-                </div>
+                <FilterWeb
+                    isSearchValues={isSearchValues}
+                    setIsSearchValues={setSearchValues}
+                    debounce={debounce}
+                    sortOption={sortOption}
+                    setSortOption={setSortOption}
+                    dateFrom={dateFrom}
+                    dateUntil={dateUntil}
+                    setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil}
+                    setActiveTab={setActiveTab}
+                    setSearchInput={setSearchInput}
+                    activeTab={activeTab}
+                    outletId={outletId}
+                    setOutletId={setOutletId}
+                    getDataStore={getDataStore}
+                    isStoreLoading={isStoreLoading}
+                    isStoreError={isStoreError}
+                    setPage={setPage}
+                    showStoreSelect={false}
+                    searchInput={searchInput}
+                    options={[
+                        { value: 'proses', label: 'Dalam Proses' },
+                        { value: 'done', label: 'Selesai' },
+                    ]}
+                    borderReset="border rounded-full"
+                />
 
                 {/* table */}
                 <div className="w-full flex flex-col justify-center">
@@ -447,41 +431,58 @@ export default function OrderList() {
                             </tr>
                         </thead>
                         <tbody>
-                            {dataOrderList?.orders?.length > 0 ? (
-                                dataOrderList?.orders?.map((order: any, i: number) => {
-                                    return (
+
+                            {isFetching ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
+                                </tr>
+                            ) : (
+                                !dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
+                                    dataOrderList?.orders?.map((order: any, i: number) => (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {(page - 1) * entriesPerPage + i + 1}
+                                            </td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words"> {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
-                                                ? 'Menunggu Driver'
-                                                : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
-                                                    ? 'Driver Menuju Store'
-                                                    : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
-                                                        ? 'Diterima Outlet'
-                                                        : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
-                                                            ? 'Proses Cuci'
-                                                            : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'
-                                                                ? 'Proses Setrika'
-                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                    ? 'Proses Packing'
-                                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
-                                                                        ? 'Proses Delivery'
-                                                                        : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
-                                                                            ? 'Laundry Sampai'
-                                                                            : 'Status tidak dikenal'}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                    ? 'Menunggu Driver'
+                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                        ? 'Driver Menuju Store'
+                                                        : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
+                                                            ? 'Diterima Outlet'
+                                                            : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                ? 'Proses Cuci'
+                                                                : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'
+                                                                    ? 'Proses Setrika'
+                                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                                        ? 'Proses Packing'
+                                                                        : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
+                                                                            ? 'Proses Delivery'
+                                                                            : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
+                                                                                ? 'Laundry Sampai'
+                                                                                : 'Status tidak dikenal'}
+                                            </td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
                                             <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <p>View</p>
+                                                <button onClick={() => {
+                                                    setOrderData(null);
+                                                    handleOrderDetail(order?.id);
+                                                    setOpenDialog(true)
+                                                }}>View</button>
                                             </td>
                                         </tr>
-                                    )
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} className="text-center font-bold">{isFetching ?<span className="py-10"> <Loading /></span> : <NoData />}</td>
-                                </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {dataOrderListLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                )
                             )}
                         </tbody>
                     </table>

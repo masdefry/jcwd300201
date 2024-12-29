@@ -28,7 +28,7 @@ export default function Page() {
     const [selectedProvince, setSelectedProvince] = useState<string>('')
     const [dataUser, setDataUser] = useState<any>({})
 
-    const { data: cities, isLoading: citiesLoading, isFetching: loadingPage } = useQuery({
+    const { data: cities, isLoading: citiesLoading } = useQuery({
         queryKey: ['get-city', selectedProvince],
         queryFn: async () => {
             const res = await instance.get('/order/city', { params: { province_id: selectedProvince } });

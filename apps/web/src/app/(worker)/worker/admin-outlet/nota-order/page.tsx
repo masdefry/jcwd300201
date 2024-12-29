@@ -17,12 +17,15 @@ import TableBodyNotFound from "@/features/adminOutlet/components/tableBodyDataNo
 import TableBodyContent from "@/features/adminOutlet/components/tableBodyContent"
 import { useNotaOrderHooks } from "@/features/adminOutlet/hooks/useNotaOrderHooks"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import Loading from "@/components/core/loading"
+import NoData from "@/components/core/noData"
+import FilterWeb from "@/components/core/filterWeb"
 
 export default function HistoryOrderWashing() {
     const { page, totalPages, sortOption, dateFrom, dateUntil, limit,
-        debounce, setSearchInput, setSortOption, setActiveTab,
+        debounce, setSearchInput, setSortOption, activeTab, setActiveTab,
         setDateFrom, setDateUntil, dataCreateOrder, dataCreateOrderLoading,
-        dataCreateOrderError, setPage } = useNotaOrderHooks()
+        dataCreateOrderError, setPage, searchInput, isSearchValues, setIsSearchValues } = useNotaOrderHooks()
 
     return (
         <>
@@ -48,40 +51,49 @@ export default function HistoryOrderWashing() {
                                     setDateUntil={setDateUntil}
                                     setActiveTab={setActiveTab}
                                     setSearchInput={setSearchInput}
+                                    searchInput={searchInput}
+                                    setPage={setPage}
                                 />
-                                {dataCreateOrderLoading && <p>Loading...</p>}
+                                {dataCreateOrderLoading && <Loading />}
                                 {dataCreateOrderError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                {dataCreateOrder?.orders?.map((order: any) => {
-                                    return (
-                                        <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                            <Link href={`/worker/admin-outlet/nota-order/c/${order?.id}`}>
-                                                <div className="flex items-center">
-                                                    <div className="ml-2">
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.id}
-                                                        </h2>
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.User?.firstName} {order?.User?.lastName}
-                                                        </h2>
-                                                        <p className="text-xs text-gray-500">
-                                                            {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Menunggu Pembuatan Nota Order' : ""}
-                                                        </p>
-                                                        <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
+                                {!dataCreateOrderLoading && dataCreateOrder?.orders?.length > 0 ? (
+                                    dataCreateOrder?.orders?.map((order: any) => {
+                                        return (
+                                            <section key={order.id} className="flex justify-between items-center border-b py-4">
+                                                <Link href={`/worker/admin-outlet/nota-order/c/${order?.id}`}>
+                                                    <div className="flex items-center">
+                                                        <div className="ml-2">
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.id}
+                                                            </h2>
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.User?.firstName} {order?.User?.lastName}
+                                                            </h2>
+                                                            <p className="text-xs text-gray-500">
+                                                                {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Menunggu Pembuatan Nota Order' : ""}
+                                                            </p>
+                                                            <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            </Link>
-
-                                            <div className="flex gap-1">
-                                                <Link href={`https://wa.me/62${order?.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                    <FaWhatsapp />
                                                 </Link>
-                                            </div>
-                                        </section>
+
+                                                <div className="flex gap-1">
+                                                    <Link href={`https://wa.me/62${order?.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                                        <FaWhatsapp />
+                                                    </Link>
+                                                </div>
+                                            </section>
+                                        )
+                                    })
+                                ) : (
+                                    !dataCreateOrderLoading && (
+                                        <NoData />
                                     )
-                                })}
 
-                                <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-
+                                )}
+                                {!dataCreateOrderLoading && dataCreateOrder?.orders?.length > 0 && (
+                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                                )}
                             </CardContent>
                         </div>
                     </main>
@@ -89,23 +101,24 @@ export default function HistoryOrderWashing() {
             </main>
 
             <ContentWebLayout caption='Nota Pesanan'>
-                <div className="w-full h-fit flex">
-                    <div className="w-1/2 h-fit flex items-center">
-                        <select name="sortNotaOrder"
-                            value={sortOption} onChange={(e) => setSortOption(e.target.value)}
-                            id="sortNotaOrder" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
-                            <option value="" disabled>-- Pilih Opsi --</option>
-                            <option value="name-asc">Sort berdasarkan A - Z</option>
-                            <option value="name-desc">Sort berdasarkan Z - A</option>
-                            <option value="date-desc">Sort berdasarkan data terbaru</option>
-                            <option value="date-asc">Sort berdasarkan data terlama</option>
-                            <option value="">Reset</option>
-                        </select>
-                    </div>
-                    <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                    </div>
-                </div>
+                <FilterWeb
+                    isSearchValues={isSearchValues}
+                    setIsSearchValues={setIsSearchValues}
+                    debounce={debounce}
+                    sortOption={sortOption}
+                    setSortOption={setSortOption}
+                    dateFrom={dateFrom}
+                    dateUntil={dateUntil}
+                    setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil}
+                    setActiveTab={setActiveTab}
+                    setSearchInput={setSearchInput}
+                    activeTab={activeTab}
+                    setPage={setPage}
+                    showStoreSelect={false}
+                    searchInput={searchInput}
+                    showTabOption={false}
+                />
 
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
@@ -113,11 +126,24 @@ export default function HistoryOrderWashing() {
                             <TableHeadNotaOrder />
                         </TableHeadLayout>
                         <tbody>
-                            {dataCreateOrder?.orders?.length > 0 ? (
-                                dataCreateOrder?.orders?.map((order: any, i: number) => (
-                                    <TableBodyContent key={order?.id || i} index={i} limit={limit} order={order} page={page} />
-                                ))
-                            ) : (<TableBodyNotFound />)}
+                            {dataCreateOrderLoading ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
+                                </tr>
+                            ) : (
+                                !dataCreateOrderLoading && dataCreateOrder?.orders?.length > 0 ? (
+                                    dataCreateOrder?.orders?.map((order: any, i: number) => (
+                                        <TableBodyContent key={order?.id || i} index={i} limit={limit} order={order} page={page} />
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {dataCreateOrderLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                ))}
                         </tbody>
                     </table>
                     <PaginationWebLayout currentPage={page} totalPages={totalPages}>

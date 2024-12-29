@@ -35,8 +35,8 @@ export default function DriverPickUp() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
 
     const limit = 5;
@@ -111,14 +111,14 @@ export default function DriverPickUp() {
             currentUrl.delete(`tab`)
         }
         if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
+            currentUrl.set('date-from', dateFrom?.toString())
         } else {
-            currentUrl.delete(`dateFrom`)
+            currentUrl.delete('date-from')
         }
         if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
+            currentUrl.set('date-until', dateUntil?.toString())
         } else {
-            currentUrl.delete(`dateUntil`)
+            currentUrl.delete('date-until')
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
@@ -149,6 +149,8 @@ export default function DriverPickUp() {
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
                                         <FilterWorker
+                                            searchInput={searchInput}
+                                            setPage={setPage}
                                             debounce={debounce}
                                             sortOption={sortOption}
                                             setSortOption={setSortOption}
@@ -229,7 +231,7 @@ export default function DriverPickUp() {
                                                                             ? 'Pastikan anda memilih order yang tepat/benar'
                                                                             : ''
                                                         }
-                                                            hideButtons={(order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isSolved === false}
+                                                        hideButtons={(order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isSolved === false}
                                                         onClick={() => {
                                                             if ((order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isProcessed === false) {
                                                                 router.push(`/worker/ironing-worker/c/${order?.id}`);
