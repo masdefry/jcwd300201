@@ -35,6 +35,8 @@ import {
 import { FaPlus } from "react-icons/fa6";
 import HorizontalTimeline from "@/components/core/timelineUser"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
+import NoData from "@/components/core/noData"
+import Loading from "@/components/core/loading"
 
 
 export default function DeliveryRequest() {
@@ -206,19 +208,13 @@ export default function DeliveryRequest() {
                                         {dataOrderListLoading && <div>Loading...</div>}
                                         {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
                                         {dataOrderList?.orders?.map((order: any) => (
-                                            <section
-                                                key={order.id}
-                                                className="flex justify-between items-center border-b py-4"
-                                            >
+                                            <section key={order.id} className="flex justify-between items-center border-b py-4">
 
-                                                <div
-                                                    onClick={() => {
-                                                        setOrderData(null);
-                                                        handleOrderDetail(order?.id);
-                                                        setOpenDialog(true)
-                                                    }}
-
-                                                    className="flex items-center">
+                                                <div onClick={() => {
+                                                    setOrderData(null);
+                                                    handleOrderDetail(order?.id);
+                                                    setOpenDialog(true)
+                                                }} className="flex items-center">
                                                     <div className="ml-2">
                                                         <h2 className="font-medium text-gray-900">
                                                             {order?.id}
@@ -296,8 +292,7 @@ export default function DeliveryRequest() {
 
                                             <div className="flex flex-col justify-between">
                                                 <div>
-                                                    Proses :
-                                                    <HorizontalTimeline orderStatus={orderData?.orderStatus} />
+                                                    Proses: <HorizontalTimeline orderStatus={orderData?.orderStatus} />
                                                 </div>
                                                 <div className="space-y-3 my-3">
                                                     <div className="border rounded-lg border-gray-700 p-2 shadow-md">
@@ -371,14 +366,15 @@ export default function DeliveryRequest() {
                                             caption="Apakah anda yakin ingin mengkonfirmasi order laundry berikut?"
                                             description="Pastikan laundry telah sampai di lokasi anda"
                                             onClick={() => { handleOrderConfirmation(orderData?.order?.id) }}>
-                                            
+
                                             <div className="flex justify-center">
                                                 <ButtonCustom disabled={isPending} btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
                                             </div>
                                         </ConfirmAlert>
                                         : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false ?
                                             <div className="flex justify-center">
-                                                <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Bayar Sekarang</ButtonCustom>
+                                                <ButtonCustom btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`/user/dashboard/payment/${orderData?.order?.id}`)}
+                                                    disabled={orderData?.order?.laundryPrice === null || orderData?.order?.laundryPrice === 0}>Bayar Sekarang</ButtonCustom>
                                             </div>
                                             : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof ?
                                                 <div className="flex justify-center">
@@ -394,7 +390,7 @@ export default function DeliveryRequest() {
             </main>
 
             {/* web sesi */}
-            <ContentWebLayout caption="Order">
+            <ContentWebLayout caption="Pesanan">
                 <div className="w-full h-fit flex items-center">
                     <div className="w-1/2 h-fit flex items-center">
                         <Select value={sortOption} onValueChange={setSortOption}>
@@ -413,9 +409,6 @@ export default function DeliveryRequest() {
                     </div>
                     <div className="w-1/2 h-fit flex gap-2 justify-end">
                         <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <Link href='/admin/worker/c'>
-                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
-                        </Link>
                     </div>
                 </div>
 
@@ -428,29 +421,43 @@ export default function DeliveryRequest() {
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order ID</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Customer</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Store</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe Layanan</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {getDataItem?.length > 0 ? (
-                                getDataItem?.map((order: any, i: number) => {
+                            {dataOrderList?.orders?.length > 0 ? (
+                                dataOrderList?.orders?.map((order: any, i: number) => {
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu kurir' : ''}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
-                                            <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <Link href={`/admin/worker/detail/${order?.id}`}>View</Link>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                    ? 'Menunggu Driver'
+                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' || order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
+                                                        ? 'Proses Pickup'
+                                                        : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' || order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                            ? 'Proses Laundry'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
+                                                                ? 'Proses Delivery'
+                                                                : 'Status tidak dikenal'}
+                                            </td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash Only' ? 'Mencuci dan Strika' : 'Mencuci dan Setrika'}</td>
+                                            <td className="py-4 px-6 text-sm hover:underline break-words">
+                                                <button className="text-blue-700 disabled:text-neutral-600 hover:text-blue-500" disabled={order?.laundryPrice === null || order?.laundryPrice === 0} onClick={() => {
+                                                    setOrderData(null)
+                                                    handleOrderDetail(order?.id)
+                                                    setOpenDialog(true)
+                                                }}>Lihat</button>
                                             </td>
                                         </tr>
                                     )
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? 'Mohon tunggu...' : 'Data tidak tersedia'}</td>
+                                    <td colSpan={6} className="text-center font-bold">{isFetching ? <Loading /> : <NoData />}</td>
                                 </tr>
                             )}
                         </tbody>

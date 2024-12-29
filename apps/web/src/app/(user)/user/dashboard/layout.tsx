@@ -83,12 +83,10 @@ export default function Layout({ children }: { children: ReactNode }) {
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/user/dashboard/pickup' className={`w-full flex ${pathname.startsWith('/user/dashboard/pickup') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <MdSportsMotorsports /> Permintaan Pickup</Link>
-                    <Link href='/user/dashboard/order' className={`w-full flex ${pathname.startsWith('/user/dashboard/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/user/dashboard/order' className={`w-full flex ${pathname.startsWith('/user/dashboard/order') || pathname.startsWith('/user/dashboard/payment') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaCartShopping /> Pesanan</Link>
                     <Link href='/user/dashboard/settings/address' className={`w-full flex ${pathname.startsWith('/user/dashboard/settings/address') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaAddressCard /> Alamat</Link>
-                    <Link href='/' className={`w-full flex hover:text-white text-neutral-700 hover:bg-orange-500 items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaMoneyBillWave /> Tagihan</Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">

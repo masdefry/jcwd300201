@@ -37,7 +37,9 @@
   "dependencies": {
     "@types/axios": "^0.14.0",
     "axios": "^1.7.2",
+    "chart.js": "^4.4.7",
     "flowbite-react": "^0.10.2",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "react-chartjs-2": "^5.2.0"
   }
 }

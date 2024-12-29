@@ -2241,18 +2241,37 @@ export const getAllOrderForAdminService = async ({
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
     return statusFilter.includes(latestStatus)
-
   });
 
+  const monthlyStatistic = [];
+  for (let month = 0; month < 12; month++) {
+      const startOfMonth = new Date(new Date().getFullYear(), month, 1);
+      const endOfMonth = new Date(new Date().getFullYear(), month + 1, 0);
+
+      const monthlyStatistics = await prisma.order.groupBy({
+          by: ['createdAt'],
+          where: {
+              createdAt: {
+                  gte: startOfMonth,
+                  lte: endOfMonth
+              },
+          },
+          _sum: {
+              totalPrice: true
+          }
+      });
+      monthlyStatistic.push({ month, monthlyStatistics })
+  }
+  
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
-
   const totalCount = filteredOrders.length;
-
   const totalPage = Math.ceil(totalCount / Number(limit_data));
 
   return {
     totalPage,
     orders: paginatedOrders,
+    trackingOrder: filteredOrders,
+    monthlyStatistic
   };
 }
 
@@ -2627,7 +2646,7 @@ export const paymentOrderTfService = async ({
     where: { id: userId, email }
   });
   if (!findUser) throw { msg: "User tidak tersedia", status: 404 };
-
+  
   const existingOrder = await prisma.order.findUnique({
     where: { id: String(orderId) },
     include: {
@@ -2641,7 +2660,7 @@ export const paymentOrderTfService = async ({
     }
   });
   if (!existingOrder) throw { msg: "Order tidak ditemukan", status: 404 };
-
+  
   const updatedOrder = await prisma.order.update({
     where: { id: String(orderId) },
     data: {

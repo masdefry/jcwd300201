@@ -21,6 +21,7 @@ import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import NoData from "@/components/core/noData"
 
 export default function Page() {
     const params = useSearchParams();
@@ -351,8 +352,8 @@ export default function Page() {
                                                             handleProcessWashing(order?.id)
                                                         }
                                                     }}>
-                                                    <button disabled={isDisabledSucces} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                        {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' ? 'Proses' : 'Selesaikan'}
+                                                    <button disabled={order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
+                                                        {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' : 'Selesaikan'}
                                                     </button>
                                                 </ConfirmAlert>
                                             </td>
@@ -361,7 +362,7 @@ export default function Page() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold text-3xl text-neutral-300">Data tidak Tersedia</td>
+                                    <td colSpan={6} className="text-center font-bold text-3xl text-neutral-300"><NoData /></td>
                                 </tr>
                             )}
                         </tbody>

@@ -6,7 +6,7 @@ import { MdOutlineStickyNote2 } from "react-icons/md";
 import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
-import ChartComponents from "@/components/core/chart";
+import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
 import { FaArrowRight, FaClipboardCheck, FaMoneyBillWave, FaNoteSticky } from "react-icons/fa6";
 import { FaRegPlusSquare } from "react-icons/fa";
 import { MdOutlineReportProblem } from "react-icons/md";
