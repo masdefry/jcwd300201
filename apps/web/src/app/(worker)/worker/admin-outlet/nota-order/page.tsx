@@ -25,7 +25,7 @@ export default function HistoryOrderWashing() {
     const { page, totalPages, sortOption, dateFrom, dateUntil, limit,
         debounce, setSearchInput, setSortOption, activeTab, setActiveTab,
         setDateFrom, setDateUntil, dataCreateOrder, dataCreateOrderLoading,
-        dataCreateOrderError, setPage, searchInput } = useNotaOrderHooks()
+        dataCreateOrderError, setPage, searchInput, isSearchValues, setIsSearchValues } = useNotaOrderHooks()
 
     return (
         <>
@@ -102,6 +102,8 @@ export default function HistoryOrderWashing() {
 
             <ContentWebLayout caption='Nota Pesanan'>
                 <FilterWeb
+                    isSearchValues={isSearchValues}
+                    setIsSearchValues={setIsSearchValues}
                     debounce={debounce}
                     sortOption={sortOption}
                     setSortOption={setSortOption}

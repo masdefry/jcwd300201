@@ -36,6 +36,7 @@ import { FaPlus } from "react-icons/fa6";
 import HorizontalTimeline from "@/components/core/timelineUser"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import NoData from "@/components/core/noData"
+import Loading from "@/components/core/loading"
 
 
 export default function DeliveryRequest() {
@@ -52,8 +53,8 @@ export default function DeliveryRequest() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "waiting-payment");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [outletId, setOutletId] = useState<any>(null);
 
@@ -156,14 +157,14 @@ export default function DeliveryRequest() {
             currentUrl.delete(`tab`)
         }
         if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
+            currentUrl.set(`date-from`, dateFrom?.toString())
         } else {
-            currentUrl.delete(`dateFrom`)
+            currentUrl.delete(`date-from`)
         }
         if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
+            currentUrl.set(`date-until`, dateUntil?.toString())
         } else {
-            currentUrl.delete(`dateUntil`)
+            currentUrl.delete(`date-until`)
         }
 
         router.push(`${pathname}?${currentUrl.toString()}`)
@@ -308,8 +309,7 @@ export default function DeliveryRequest() {
 
                                             <div className="flex flex-col justify-between">
                                                 <div>
-                                                    Proses :
-                                                    <HorizontalTimeline orderStatus={orderData?.orderStatus} />
+                                                    Proses: <HorizontalTimeline orderStatus={orderData?.orderStatus} />
                                                 </div>
                                                 <div className="space-y-3 my-3">
                                                     <div className="border rounded-lg border-gray-700 p-2 shadow-md">
@@ -390,7 +390,8 @@ export default function DeliveryRequest() {
                                         </ConfirmAlert>
                                         : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.laundryPrice > 1 ?
                                             <div className="flex justify-center">
-                                                <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Bayar Sekarang</ButtonCustom>
+                                                <ButtonCustom btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`/user/dashboard/payment/${orderData?.order?.id}`)}
+                                                    disabled={orderData?.order?.laundryPrice === null || orderData?.order?.laundryPrice === 0}>Bayar Sekarang</ButtonCustom>
                                             </div>
                                             : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof ?
                                                 <div className="flex justify-center">
@@ -406,7 +407,7 @@ export default function DeliveryRequest() {
             </main>
 
             {/* web sesi */}
-            <ContentWebLayout caption="Order">
+            <ContentWebLayout caption="Pesanan">
                 <div className="w-full h-fit flex items-center">
                     <div className="w-1/2 h-fit flex items-center">
                         <Select value={sortOption} onValueChange={setSortOption}>
@@ -425,9 +426,6 @@ export default function DeliveryRequest() {
                     </div>
                     <div className="w-1/2 h-fit flex gap-2 justify-end">
                         <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <Link href='/admin/worker/c'>
-                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
-                        </Link>
                     </div>
                 </div>
 
@@ -440,29 +438,43 @@ export default function DeliveryRequest() {
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order ID</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Customer</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Store</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe Layanan</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {getDataItem?.length > 0 ? (
-                                getDataItem?.map((order: any, i: number) => {
+                            {dataOrderList?.orders?.length > 0 ? (
+                                dataOrderList?.orders?.map((order: any, i: number) => {
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu kurir' : ''}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
-                                            <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <Link href={`/admin/worker/detail/${order?.id}`}>View</Link>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                    ? 'Menunggu Driver'
+                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' || order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
+                                                        ? 'Proses Pickup'
+                                                        : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' || order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                            ? 'Proses Laundry'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
+                                                                ? 'Proses Delivery'
+                                                                : 'Status tidak dikenal'}
+                                            </td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash Only' ? 'Mencuci dan Strika' : 'Mencuci dan Setrika'}</td>
+                                            <td className="py-4 px-6 text-sm hover:underline break-words">
+                                                <button className="text-blue-700 disabled:text-neutral-600 hover:text-blue-500" disabled={order?.laundryPrice === null || order?.laundryPrice === 0} onClick={() => {
+                                                    setOrderData(null)
+                                                    handleOrderDetail(order?.id)
+                                                    setOpenDialog(true)
+                                                }}>Lihat</button>
                                             </td>
                                         </tr>
                                     )
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? 'Mohon tunggu...' : 'Data tidak tersedia'}</td>
+                                    <td colSpan={6} className="text-center font-bold">{isFetching ? <Loading /> : <NoData />}</td>
                                 </tr>
                             )}
                         </tbody>

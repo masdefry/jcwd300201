@@ -40,8 +40,8 @@ export default function Page() {
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const limit = 5;
 
     const { data: dataOrderAwaitingPickup, refetch, isLoading: dataOrderAwaitingPickupLoading, isError: dataOrderAwaitingPickupError } = useQuery({
@@ -140,14 +140,14 @@ export default function Page() {
             currentUrl.delete(`tab`)
         }
         if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
+            currentUrl.set('date-from', dateFrom?.toString())
         } else {
-            currentUrl.delete(`dateFrom`)
+            currentUrl.delete('date-from')
         }
         if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
+            currentUrl.set('date-until', dateUntil?.toString())
         } else {
-            currentUrl.delete(`dateUntil`)
+            currentUrl.delete('date-until')
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
@@ -177,6 +177,8 @@ export default function Page() {
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
                                         <FilterWorker
+                                            searchInput={searchInput}
+                                            setPage={setPage}
                                             debounce={debounce}
                                             sortOption={sortOption}
                                             setSortOption={setSortOption}

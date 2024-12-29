@@ -21,6 +21,7 @@ import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import NoData from "@/components/core/noData"
 
 export default function Page() {
     const params = useSearchParams();
@@ -36,8 +37,8 @@ export default function Page() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
     const limit = 5;
 
@@ -108,14 +109,14 @@ export default function Page() {
             currentUrl.delete(`tab`)
         }
         if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
+            currentUrl.set('date-from', dateFrom?.toString())
         } else {
-            currentUrl.delete(`dateFrom`)
+            currentUrl.delete('date-from')
         }
         if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
+            currentUrl.set('date-until', dateUntil?.toString())
         } else {
-            currentUrl.delete(`dateUntil`)
+            currentUrl.delete('date-until')
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
@@ -146,6 +147,8 @@ export default function Page() {
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
                                         <FilterWorker
+                                            searchInput={searchInput}
+                                            setPage={setPage}
                                             debounce={debounce}
                                             sortOption={sortOption}
                                             setSortOption={setSortOption}
@@ -243,7 +246,7 @@ export default function Page() {
                                                             </div>
                                                         </div>
                                                     )}
-                                                 
+
                                                 </section>
                                             )
                                         })}
@@ -351,8 +354,8 @@ export default function Page() {
                                                             handleProcessWashing(order?.id)
                                                         }
                                                     }}>
-                                                    <button disabled={isDisabledSucces} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                        {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' ? 'Proses' : 'Selesaikan'}
+                                                    <button disabled={order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
+                                                        {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' : 'Selesaikan'}
                                                     </button>
                                                 </ConfirmAlert>
                                             </td>
@@ -361,7 +364,7 @@ export default function Page() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold text-3xl text-neutral-300">Data tidak Tersedia</td>
+                                    <td colSpan={6} className="text-center font-bold text-3xl text-neutral-300"><NoData /></td>
                                 </tr>
                             )}
                         </tbody>

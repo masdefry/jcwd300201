@@ -60,6 +60,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const [showDialog, setShowDialog] = useState(false);
     const [dialogNotes, setDialogNotes] = useState("");
     const [isCheckedItem, setIsCheckedItem] = useState<boolean>(true)
+    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],
@@ -105,6 +106,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
+
+            setIsDisabledSucces(true)
             setTimeout(() => {
                 router.push('/worker/washing-worker/order/');
             }, 1000);
@@ -501,7 +504,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isPendingStatus} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
+                                        <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isPendingStatus || isDisabledSucces} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
                                             Buat Nota Order
                                         </ButtonCustom>
                                     </div>

@@ -61,8 +61,6 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
                 })
             }
 
-
-            console.log(response)
         } catch (error) {
             console.log(error)
         }
@@ -91,8 +89,6 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
             handleKeepAuth()
         }
     }, [token])
-
-    console.log(dataUser, '<< auth provide')
 
     useEffect(() => {
         const getLocation = async (): Promise<void> => {

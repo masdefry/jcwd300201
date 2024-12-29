@@ -19,6 +19,7 @@ const useNotaOrderHooks = () => {
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
+    const [isSearchValues, setIsSearchValues] = useState<string>('')
     const limit = 5;
 
     const { data: dataCreateOrder, refetch, isLoading: dataCreateOrderLoading, isError: dataCreateOrderError } = useQuery({
@@ -84,7 +85,7 @@ const useNotaOrderHooks = () => {
         limit, page, totalPages, searchInput, sortOption, dateFrom, dateUntil,
         debounce, setSearchInput, setSortOption, activeTab, setActiveTab,
         setDateFrom, setDateUntil, dataCreateOrder, refetch, dataCreateOrderLoading,
-        dataCreateOrderError, setPage
+        dataCreateOrderError, setPage, isSearchValues, setIsSearchValues
     }
 }
 

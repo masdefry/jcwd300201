@@ -34,8 +34,8 @@ export default function HistoryOrderDriver() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "pickup");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const limit = 5;
 
     const { data: dataHistoryOrder, refetch, isLoading: dataHistoryOrderLoading, isError: dataHistoryOrderError } = useQuery({
@@ -82,14 +82,14 @@ export default function HistoryOrderDriver() {
             currentUrl.delete(`tab`)
         }
         if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
+            currentUrl.set('date-from', dateFrom?.toString())
         } else {
-            currentUrl.delete(`dateFrom`)
+            currentUrl.delete('date-from')
         }
         if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
+            currentUrl.set('date-until', dateUntil?.toString())
         } else {
-            currentUrl.delete(`dateUntil`)
+            currentUrl.delete('date-until')
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
@@ -118,6 +118,8 @@ export default function HistoryOrderDriver() {
                                 <TabsContent value={activeTab}>
                                     <CardContent className="space-y-2 pt-2">
                                         <FilterWorker
+                                            searchInput={searchInput}
+                                            setPage={setPage}
                                             debounce={debounce}
                                             sortOption={sortOption}
                                             setSortOption={setSortOption}

@@ -53,9 +53,9 @@ export default function OrderList() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "proses");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
-    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
+    const [isSearchValues, setSearchValues] = useState<string>('')
     const [outletId, setOutletId] = useState(params.get("outletId") || null);
 
 
@@ -133,14 +133,14 @@ export default function OrderList() {
             currentUrl.delete(`tab`)
         }
         if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
+            currentUrl.set(`date-from`, dateFrom?.toString())
         } else {
-            currentUrl.delete(`dateFrom`)
+            currentUrl.delete(`date-from`)
         }
         if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
+            currentUrl.set(`date-until`, dateUntil?.toString())
         } else {
-            currentUrl.delete(`dateUntil`)
+            currentUrl.delete(`date-until`)
         }
         if (outletId) {
             currentUrl.set(`outletId`, outletId?.toString())
@@ -390,6 +390,8 @@ export default function OrderList() {
             {/* web sesi */}
             <ContentWebLayout caption="Order">
                 <FilterWeb
+                    isSearchValues={isSearchValues}
+                    setIsSearchValues={setSearchValues}
                     debounce={debounce}
                     sortOption={sortOption}
                     setSortOption={setSortOption}
@@ -412,6 +414,7 @@ export default function OrderList() {
                         { value: 'proses', label: 'Dalam Proses' },
                         { value: 'done', label: 'Selesai' },
                     ]}
+                    borderReset="border rounded-full"
                 />
 
                 {/* table */}
@@ -465,11 +468,11 @@ export default function OrderList() {
                                             </td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
                                             <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <p onClick={() => {
+                                                <button onClick={() => {
                                                     setOrderData(null);
                                                     handleOrderDetail(order?.id);
                                                     setOpenDialog(true)
-                                                }}>View</p>
+                                                }}>View</button>
                                             </td>
                                         </tr>
                                     ))

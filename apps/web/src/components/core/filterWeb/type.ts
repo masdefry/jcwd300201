@@ -7,6 +7,7 @@ export interface IFilterPropsWeb {
     setDateFrom: (value: string | null) => void;
     setDateUntil: (value: string | null) => void;
     setActiveTab: (tab: string) => void;
+    setIsSearchValues: (input: string) => void;
     setSearchInput: (input: string) => void;
     activeTab: string;
     outletId?: string | null;
@@ -16,7 +17,9 @@ export interface IFilterPropsWeb {
     isStoreError?: boolean;
     setPage: (page: number) => void;
     showStoreSelect?: boolean;
-    options?: { value: string, label: string }[];  
+    options?: { value: string, label: string }[];
     showTabOption?: boolean;
     searchInput: string;
+    borderReset?: string
+    isSearchValues: string
 }

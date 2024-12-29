@@ -13,7 +13,9 @@ import { ChangeEvent } from "react"
 
 
 
-export default function FilterWeb({ showTabOption=true, searchInput, options, showStoreSelect=false, activeTab, setActiveTab, getDataStore, outletId, setPage, setOutletId, isStoreLoading, isStoreError, debounce, sortOption, setSortOption, dateFrom, dateUntil, setDateFrom, setDateUntil, setSearchInput }: IFilterPropsWeb) {
+export default function FilterWeb({ showTabOption = true, borderReset = 'border rounded-lg border-gray-500',
+    isSearchValues, setIsSearchValues, options, showStoreSelect = false, activeTab, setActiveTab, getDataStore, outletId, setPage, setOutletId, isStoreLoading, isStoreError, debounce, sortOption, setSortOption, dateFrom, dateUntil, setDateFrom, setDateUntil, setSearchInput }: IFilterPropsWeb) {
+
     return (
         <>
             <div className="w-full h-fit flex flex-col items-center gap-2">
@@ -33,17 +35,17 @@ export default function FilterWeb({ showTabOption=true, searchInput, options, sh
                             </SelectContent>
                         </Select>
                         {showTabOption && (
-                        <select name="searchOrder" value={activeTab} onChange={(e) => {
-                            setActiveTab(e.target.value)
-                            setPage(1)
-                        }} id="searchWorker" className="px-4 py-2 border rounded-2xl  border-gray-300 h-10 text-sm text-neutral-700">
-                            <option value="" disabled>-- Pilih Opsi --</option>
-                            {options?.map((option, index) => (
-                                <option key={index} value={option.value}>
-                                    {option.label}
-                                </option>
-                            ))}
-                        </select>
+                            <select name="searchOrder" value={activeTab} onChange={(e) => {
+                                setActiveTab(e.target.value)
+                                setPage(1)
+                            }} id="searchWorker" className="px-4 py-2 border rounded-2xl  border-gray-300 h-10 text-sm text-neutral-700">
+                                <option value="" disabled>-- Pilih Opsi --</option>
+                                {options?.map((option, index) => (
+                                    <option key={index} value={option.value}>
+                                        {option.label}
+                                    </option>
+                                ))}
+                            </select>
                         )}
                         <label className="flex flex-col ">
                             <span className="text-xs text-neutral-700">
@@ -100,16 +102,20 @@ export default function FilterWeb({ showTabOption=true, searchInput, options, sh
 
                         <div className="w-1/2 h-fit flex gap-2 justify-end">
                             <SearchInputCustom
-                                onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)}
-                                // value={searchInput} 
-                                />
+                                onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                                    setIsSearchValues(e.target.value)
+                                    debounce(e.target.value)
+                                }}
+                                value={isSearchValues}
+                            />
                         </div>
-                        <button className="flex  items-center justify-center h-10 w-10 px-2 border rounded-lg border-gray-500 mr-2"
+                        <button className={`flex items-center justify-center h-10 w-10 px-2 ${borderReset} mr-2`}
                             onClick={() => {
-                                setSortOption("date-asc"),
-                                    setDateFrom(null),
-                                    setDateUntil(null),
-                                    setSearchInput('');
+                                setSortOption("date-asc")
+                                setDateFrom(null)
+                                setDateUntil(null)
+                                setSearchInput('')
+                                setIsSearchValues('')
                             }}>
                             <IoMdRefresh size={20} />
                         </button>

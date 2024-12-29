@@ -1,5 +1,5 @@
 'use client'
-// import RealTimeClock from "@/features/worker/components/realTimeClock";
+
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import HeaderMobile from "@/components/core/headerMobile"
@@ -17,6 +17,12 @@ import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { values } from "cypress/types/lodash";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import NotaHeader from "@/components/core/createNotaHeaders";
+import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
+import { FaWallet } from "react-icons/fa6";
+import { RiBankCardFill } from "react-icons/ri";
+import ButtonCustom from "@/components/core/button";
 
 
 const validationSchema = Yup.object().shape({
@@ -51,14 +57,14 @@ type Iitem = {
 };
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
-    const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+    const [isUploadDialogOpen, setIsUploadDialogOpen] = useState<boolean>(false)
+    const [isPaymentMethod, setIsPaymentMethod] = useState<string>('')
 
     const { slug } = React.use(params);
     const router = useRouter()
 
     const token = authStore((state) => state.token);
     const email = authStore((state) => state.email);
-    console.log(token)
     const { toast } = useToast();
 
     const { mutate: handlePaymmentOrder, isPending } = useMutation({
@@ -70,7 +76,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             })
         },
         onSuccess: (res: any) => {
-            console.log(res)
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -80,7 +85,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             }, 1000);
         },
         onError: (err: any) => {
-            console.log(err)
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
@@ -117,17 +121,18 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             const res = await instance.get(`/order/orders-detail/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res?.data?.data, 'ordernote');
             return res?.data?.data;
         },
     });
 
+    console.log(isPaymentMethod, '<< ini apa')
+    console.log(dataOrderNote?.order?.laundryPrice === 0, '<< ini apa')
 
     if (dataOrderNote == undefined) return <div></div>
     if (isFetching) return <div></div>
     return (
         <>
-            <main className="w-full h-fit">
+            <main className="w-full h-fit md:hidden block">
                 <section className="w-full h-fit">
                     <HeaderMobile />
                     <main className="w-full">
@@ -142,7 +147,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <label className="text-sm">Order Id</label>
                                     <input
                                         type="text"
-                                        value={dataOrderNote?.order?.id}
+                                        value={dataOrderNote?.order?.id || 'ORD2313123'}
                                         disabled
                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                     />
@@ -152,7 +157,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <label className="text-sm">Delivery Fee</label>
                                     <input
                                         type="text"
-                                        value={dataOrderNote?.order?.deliveryFee}
+                                        value={dataOrderNote?.order?.deliveryFee || '0'}
                                         disabled
                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                     />
@@ -162,7 +167,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <label className="text-sm">Laundry Price</label>
                                     <input
                                         type="text"
-                                        value={dataOrderNote?.order?.laundryPrice}
+                                        value={dataOrderNote?.order?.laundryPrice || '0'}
                                         disabled
                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                     />
@@ -171,39 +176,34 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <label className="text-sm">Total Price</label>
                                     <input
                                         type="text"
-                                        value={dataOrderNote?.order?.totalPrice}
+                                        value={dataOrderNote?.order?.totalPrice || '0'}
                                         disabled
                                         className="border border-gray-500 rounded-md p-2 bg-gray-200"
                                     />
                                 </div>
                             </div>
 
-
-                            {dataOrderNote?.order?.isPaid === false && !dataOrderNote?.order?.paymentProof ? (
+                            {dataOrderNote?.order?.isPaid === false && !dataOrderNote?.order?.paymentProof || dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0 ? (
                                 <section className="flex justify-center mt-8 flex-col border- rounded-lg border border-gray-300 shadow-lg p-4">
                                     <div className="text-lg font-bold text-center">Pilih Metode Pembayaran</div>
                                     <ConfirmAlert
                                         caption="Apakah anda yakin ingin melakukan pembayaran melalui VA/e-Wallet/Kartu Kredit?"
                                         onClick={() => handlePaymmentOrder(dataOrderNote?.order?.id)}
                                         description='Anda tidak bisa mengganti metode pembayaran setelah memilih'
-                                        colorConfirmation="blue"
-                                    >
-                                        <button
-                                            className="bg-blue-500 text-white rounded-md p-3 mt-4"
-                                        >
+                                        disabled={dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0}
+                                        colorConfirmation="blue">
+                                        <button className="bg-blue-500 text-white rounded-md p-3 mt-4">
                                             VA / e-Wallet / Kartu Kredit
                                         </button>
                                     </ConfirmAlert>
                                     <div className="mt-4 text-center text-gray-700">atau</div>
                                     <ConfirmAlert
+                                        disabled={dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0}
                                         caption="Apakah anda yakin ingin melakukan pembayaran melalui transfer manual?"
                                         onClick={() => setIsUploadDialogOpen(true)}
                                         description='Anda tidak bisa mengganti metode pembayaran setelah memilih'
-                                        colorConfirmation="blue"
-                                    >
-                                        <button
-                                            className="bg-blue-500 text-white rounded-md p-3 mt-4"
-                                        >
+                                        colorConfirmation="blue">
+                                        <button className="bg-blue-500 text-white rounded-md p-3 mt-4">
                                             Transfer Manual
                                         </button>
                                     </ConfirmAlert>
@@ -232,7 +232,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         onSubmit={(values: any) => {
                                             const fd = new FormData();
                                             fd.append("images", values.images);
-                                            fd.append("orderId", slug);
                                             uploadPaymentProof(fd)
                                         }}
                                     >
@@ -245,24 +244,22 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     <input
                                                         type="file"
                                                         accept="image/*"
-                                                        onChange={(event: any) => {
-                                                            setFieldValue("images", event.currentTarget.files[0]);
-                                                        }}
+                                                        onChange={(event: any) => setFieldValue("images", event.currentTarget.files[0])}
                                                         className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                                                     />
                                                 </div>
                                                 <DialogFooter>
                                                     <Button
+                                                        variant="secondary"
+                                                        type="button"
                                                         onClick={() => setIsUploadDialogOpen(false)}
-                                                        disabled={isUploading}
-                                                    >
+                                                        disabled={isUploading}>
                                                         Cancel
                                                     </Button>
                                                     <Button
                                                         type="submit"
                                                         className="bg-blue-600 hover:bg-blue-700"
-                                                        disabled={isUploading}
-                                                    >
+                                                        disabled={isUploading}>
                                                         {isUploading ? "Uploading..." : "Upload"}
                                                     </Button>
                                                 </DialogFooter>
@@ -275,6 +272,55 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     </main>
                 </section>
             </main>
+
+            <ContentWebLayout caption='Detail Pembayaran'>
+                <NotaHeader />
+                <div className="w-full flex gap-4 p-6">
+                    <div className="w-full md:w-1/2 space-y-4">
+                        <h1 className="font-bold text-2xl text-gray-800 mb-4">Detail Pesanan</h1>
+                        <div className="space-y-3">
+                            <InputDisplay caption="Order ID" value={dataOrderNote?.order?.id || 'ORD123123'} />
+                            <InputDisplay caption="Ongkos Kirim" value={dataOrderNote?.order?.deliveryFee || '0'} />
+                            <InputDisplay caption="Biaya Laundry" value={dataOrderNote?.order?.laundryPrice || '0'} />
+                        </div>
+                    </div>
+                    <div className="w-full md:w-1/2 space-y-4">
+                        <h1 className="font-bold text-2xl text-gray-800">Metode Pembayaran</h1>
+                        {dataOrderNote?.order?.isPaid === false && !dataOrderNote?.order?.paymentProof ? (
+                            <>
+                                <div className="space-y-4">
+                                    <label htmlFor="midtrans" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                        <div className='flex gap-2 items-center'>
+                                            <FaWallet className="text-lg" />
+                                            <span className="text-gray-700 flex">Pembayaran Online</span>
+                                        </div>
+                                        <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='midtrans' type="radio" name="paymentMethod" id="midtrans" className="w-4 h-4 text-blue-600" />
+                                    </label>
+                                    <label htmlFor="manualTransfer" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                        <div className='flex gap-2 items-center'>
+                                            <RiBankCardFill className="text-lg" />
+                                            <span className="text-gray-700 flex">Transfer Bank</span>
+                                        </div>
+                                        <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='manualTransfer' type="radio" name="paymentMethod" id="manualTransfer" className="w-4 h-4 text-blue-600" />
+                                    </label>
+                                </div>
+                                <ButtonCustom type="button" disabled={!isPaymentMethod || dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0} width="w-full" onClick={() => {
+                                    isPaymentMethod === 'midtrans' ? handlePaymmentOrder(dataOrderNote?.order?.id) : setIsUploadDialogOpen(true)
+                                }}>Bayar sekarang</ButtonCustom>
+                            </>
+                        ) : (
+                            <div className="flex text-center text-lg justify-center mt-8 flex-col border-gray-300 p-4">
+                                <div className="font-bold">
+                                    Terima kasih,
+                                </div>
+                                <div>
+                                    Anda Telah Melakukan Pembayaran!
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </ContentWebLayout >
         </>
     );
 }

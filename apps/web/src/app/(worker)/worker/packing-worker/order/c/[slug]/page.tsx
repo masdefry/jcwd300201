@@ -59,6 +59,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const [showDialog, setShowDialog] = useState(false);
     const [dialogNotes, setDialogNotes] = useState("");
     const [isCheckedItem, setIsCheckedItem] = useState<boolean>(true)
+    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
 
     const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],
@@ -91,7 +92,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         },
     });
 
-    const { mutate: handleStatusOrder } = useMutation({
+    const { mutate: handleStatusOrder, isPending } = useMutation({
         mutationFn: async ({ email, notes }: any) => {
             return await instance.post(`/order/packing-process/${slug}`, { email, notes }, {
                 headers: {
@@ -100,6 +101,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             })
         },
         onSuccess: (res: any) => {
+
+            setIsDisabledSucces(true)
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -227,6 +230,10 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     <Field
                                                         as="select"
                                                         name="itemName"
+                                                        onChange={(e: any) => {
+                                                            setFieldValue('itemName', e.target.value)
+                                                            setIsCheckedItem(false)
+                                                        }}
                                                         className="border border-gray-500 rounded-md p-2"
                                                     >
                                                         <option value="">Select Item</option>
@@ -271,7 +278,9 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
                                                             setFieldValue("itemName", "");
                                                             setFieldValue("quantity", 1);
+                                                            setIsCheckedItem(true)
                                                         }}
+                                                        disabled={isCheckedItem}
                                                         className="bg-blue-500 text-white rounded-md p-3 mt-4"
                                                     >
                                                         Add Item
@@ -315,7 +324,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 type="button"
                                                 className="bg-green-500 text-white rounded-md p-3 mt-4"
                                                 onClick={handleCustomSubmit}
-
+                                                disabled={values?.items?.length === 0 || isDisabledSucces || isPending}
                                             >
                                                 Submit Order
                                             </button>
@@ -434,7 +443,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     </div>
                                                     <div className='flex flex-col items-end'>
                                                         <ButtonCustom type="button"
-                                                            disabled={isCheckedItem} 
+                                                            disabled={isCheckedItem}
                                                             onClick={() => {
                                                                 const existingItemIndex = values.items.findIndex(
                                                                     (item: Iitem) => item.itemName === values.itemName
@@ -501,7 +510,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <ButtonCustom width="w-full" disabled={values?.items?.length === 0} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
+                                        <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isDisabledSucces || isPending} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
                                             Buat Nota Order
                                         </ButtonCustom>
                                     </div>

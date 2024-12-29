@@ -1,7 +1,7 @@
 import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory, getAllOrderForUser, paymentOrderVA, paymentOrderTf, getPaymentOrderForAdmin, paymentDone, userConfirmOrder } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
 import { limiter } from "@/middlewares/rateLimit";
-import { roleCheckAdmin, roleCheckCustomer, roleCheckSuperAdmin } from "@/middlewares/roleCheck";
+import { roleCheckAdmin, roleCheckCustomer, roleCheckDriver, roleCheckIroningWorker, roleCheckPackingWorker, roleCheckSuperAdmin, roleCheckWashingWorker } from "@/middlewares/roleCheck";
 import { uploader } from "@/middlewares/uploader";
 import { requestPickUpValidation } from "@/middlewares/validation";
 import { expressValidatorErrorHandling } from "@/middlewares/validation/errorHandlingValidator";
@@ -24,25 +24,25 @@ orderRouter.get('/order-ironing', tokenValidation, getOrdersForIroning)
 orderRouter.get('/order-packing', tokenValidation, getOrdersForPacking)
 
 // Order Process
-orderRouter.post('/washing-process/:orderId', tokenValidation, washingProcess)
-orderRouter.post('/washing-done/:orderId', tokenValidation, washingProcessDone)
-orderRouter.post('/ironing-process/:orderId', tokenValidation, ironingProcess)
-orderRouter.post('/ironing-done/:orderId', tokenValidation, ironingProcessDone)
-orderRouter.post('/packing-process/:orderId', tokenValidation, packingProcess)
-orderRouter.post('/packing-done/:orderId', tokenValidation, packingProcessDone)
+orderRouter.post('/washing-process/:orderId', tokenValidation, roleCheckWashingWorker, washingProcess)
+orderRouter.post('/washing-done/:orderId', tokenValidation, roleCheckWashingWorker, washingProcessDone)
+orderRouter.post('/ironing-process/:orderId', tokenValidation, roleCheckIroningWorker, ironingProcess)
+orderRouter.post('/ironing-done/:orderId', tokenValidation, roleCheckIroningWorker, ironingProcessDone)
+orderRouter.post('/packing-process/:orderId', tokenValidation, roleCheckPackingWorker, packingProcess)
+orderRouter.post('/packing-done/:orderId', tokenValidation, roleCheckPackingWorker, packingProcessDone)
 
 // User Request Pickup
-orderRouter.post('/request-pickup', tokenValidation, limiter, requestPickUp)
+orderRouter.post('/request-pickup', tokenValidation, roleCheckCustomer, limiter, requestPickUp)
 
 // Driver Terima Pengantaran
 orderRouter.get('/order', tokenValidation, getOrdersForDriver)
-orderRouter.post('/accept-order/:orderId', tokenValidation, acceptOrder)
-orderRouter.post('/accept-outlet/:orderId', tokenValidation, acceptOrderOutlet)
+orderRouter.post('/accept-order/:orderId', tokenValidation, roleCheckDriver, acceptOrder)
+orderRouter.post('/accept-outlet/:orderId', tokenValidation, roleCheckDriver, acceptOrderOutlet)
 
 // Create Nota Order
 orderRouter.get('/detail-order-note/:id', tokenValidation, getOrderNoteDetail)
 orderRouter.get('/order-detail/:orderId', tokenValidation, getOrderItemDetail)
-orderRouter.post('/order/:orderId', tokenValidation, createOrder)
+orderRouter.post('/order/:orderId', tokenValidation, roleCheckAdmin, createOrder)
 
 // History Order
 orderRouter.get('/history-washing/', tokenValidation, getWashingHistory)

@@ -554,7 +554,7 @@ export const ironingProcess = async (req: Request, res: Response, next: NextFunc
   try {
     const { orderId } = req.params
     const { email, userId, notes } = req.body
-    
+
     await prisma.$transaction(async (tx) => {
       const findWorker = await prisma.worker.findFirst({
         where: { email }
@@ -1121,7 +1121,7 @@ export const getAllOrderForAdmin = async (req: Request, res: Response, next: Nex
     const dateUntilTypes = typeof dateUntil !== 'string' ? "" : dateUntil
     const outletIdTypes = typeof outletId !== 'string' ? "" : outletId
 
-    const { totalPage, orders: paginatedOrders } = await getAllOrderForAdminService(
+    const { totalPage, orders: paginatedOrders, trackingOrder, monthlyStatistic } = await getAllOrderForAdminService(
       {
         userId,
         authorizationRole,
@@ -1143,6 +1143,8 @@ export const getAllOrderForAdmin = async (req: Request, res: Response, next: Nex
       data: {
         totalPage,
         orders: paginatedOrders,
+        trackingOrder,
+        monthlyStatistic
       },
     });
   } catch (error) {
@@ -1277,6 +1279,7 @@ export const paymentOrderTf = async (req: Request, res: Response, next: NextFunc
       return img?.filename
     })
 
+    if (!dataImage) throw { msg: 'Harap unggah bukti transfer anda', status: 401 }
     await paymentOrderTfService({ paymentProof: dataImage[0], orderId, email, userId });
 
     res.status(200).json({

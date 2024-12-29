@@ -77,10 +77,10 @@ export default function FilterWorker({ searchInput, setPage, debounce, sortOptio
                 <div>
                     <button className="flex items-center justify-center h-10 w-10 px-2 border rounded-lg border-gray-500 mr-2"
                         onClick={() => {
-                            setSortOption("date-asc"),
-                                setDateFrom(null),
-                                setDateUntil(null),
-                                setSearchInput('');
+                            setSortOption("date-asc")
+                            setDateFrom(null)
+                            setDateUntil(null)
+                            setSearchInput('')
                             setPage(1)
                         }}>
                         <IoMdRefresh size={20} />

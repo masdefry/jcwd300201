@@ -32,8 +32,8 @@ export default function HistoryOrderPacking() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
-    const [dateFrom, setDateFrom] = useState(params.get('dateFrom') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('dateUntil') || null);
+    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
+    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const limit = 5;
 
     const { data: dataOrderPackingProcess, refetch, isLoading: dataOrderPackingProcessLoading, isError: dataOrderPackingProcessError } = useQuery({
@@ -74,14 +74,14 @@ export default function HistoryOrderPacking() {
             currentUrl.delete(`sort`)
         }
         if (dateFrom) {
-            currentUrl.set(`dateFrom`, dateFrom?.toString())
+            currentUrl.set('date-from', dateFrom?.toString())
         } else {
-            currentUrl.delete(`dateFrom`)
+            currentUrl.delete('date-from')
         }
         if (dateUntil) {
-            currentUrl.set(`dateUntil`, dateUntil?.toString())
+            currentUrl.set('date-until', dateUntil?.toString())
         } else {
-            currentUrl.delete(`dateUntil`)
+            currentUrl.delete('date-until')
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
@@ -105,6 +105,8 @@ export default function HistoryOrderPacking() {
 
                             <CardContent className="space-y-2 pt-2">
                                 <FilterWorker
+                                    searchInput={searchInput}
+                                    setPage={setPage}
                                     debounce={debounce}
                                     sortOption={sortOption}
                                     setSortOption={setSortOption}
@@ -159,78 +161,78 @@ export default function HistoryOrderPacking() {
             </main>
 
             <ContentWebLayout caption='Riwayat Penjemputan'>
-                            <div className="w-full h-fit flex">
-                                <div className="w-1/2 gap-2 h-fit flex items-center">
-                                    <select name="searchWorker" value={activeTab} onChange={(e) => {
-                                        setActiveTab(e.target.value)
-                                        setPage(1)
-                                    }} id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
-                                        <option value="" disabled>-- Pilih Opsi --</option>
-                                        <option value="all">Semua Pesanan</option>
-                                        <option value="waiting-pickup">Belum pickup</option>
-                                        <option value="process-pickup">Dalam perjalanan</option>
-                                        <option value="arrived">Selesai</option>
-                                        <option value="all">Reset</option>
-                                    </select>
-                                    <select name="sort" value={sortOption} onChange={(e) => {
-                                        setSortOption(e.target.value)
-                                        setPage(1)
-                                    }} id="sort" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
-                                        <option value="" disabled>-- Pilih Opsi --</option>
-                                        <option value="date-asc">Tanggal Terlama</option>
-                                        <option value="date-desc">Tanggal Terbaru</option>
-                                        <option value="name-asc">Urutkan nama A - Z</option>
-                                        <option value="name-desc">Urutkan nama Z - A</option>
-                                    </select>
-                                </div>
-                                <div className="w-1/2 h-fit flex gap-2 justify-end">
-                                    <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                                </div>
-                            </div>
-            
-                            <div className="w-full flex flex-col justify-center">
-                                <table className="min-w-full bg-white border border-gray-200">
-                                    <thead className="bg-gray-200">
-                                        <tr>
-                                            <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
-                                            <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
-                                            <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe Order</th>
-                                            <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
-                                            <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tanggal dibuat</th>
+                <div className="w-full h-fit flex">
+                    <div className="w-1/2 gap-2 h-fit flex items-center">
+                        <select name="searchWorker" value={activeTab} onChange={(e) => {
+                            setActiveTab(e.target.value)
+                            setPage(1)
+                        }} id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                            <option value="" disabled>-- Pilih Opsi --</option>
+                            <option value="all">Semua Pesanan</option>
+                            <option value="waiting-pickup">Belum pickup</option>
+                            <option value="process-pickup">Dalam perjalanan</option>
+                            <option value="arrived">Selesai</option>
+                            <option value="all">Reset</option>
+                        </select>
+                        <select name="sort" value={sortOption} onChange={(e) => {
+                            setSortOption(e.target.value)
+                            setPage(1)
+                        }} id="sort" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                            <option value="" disabled>-- Pilih Opsi --</option>
+                            <option value="date-asc">Tanggal Terlama</option>
+                            <option value="date-desc">Tanggal Terbaru</option>
+                            <option value="name-asc">Urutkan nama A - Z</option>
+                            <option value="name-desc">Urutkan nama Z - A</option>
+                        </select>
+                    </div>
+                    <div className="w-1/2 h-fit flex gap-2 justify-end">
+                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
+                    </div>
+                </div>
+
+                <div className="w-full flex flex-col justify-center">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe Order</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tanggal dibuat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dataOrderPackingProcess?.orders?.length > 0 ? (
+                                dataOrderPackingProcess?.orders?.map((order: any, i: number) => {
+                                    return (
+                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' : 'Layanan Laundry'}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
+                                                    ? 'Selesai melakukan pickup'
+                                                    : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
+                                                        ? 'Selesai melakukan delivery'
+                                                        : order?.orderStatus[0]?.status}
+                                            </td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
                                         </tr>
-                                    </thead>
-                                    <tbody>
-                                        {dataOrderPackingProcess?.orders?.length > 0 ? (
-                                            dataOrderPackingProcess?.orders?.map((order: any, i: number) => {
-                                                return (
-                                                    <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
-                                                        <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
-                                                        <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                                        <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' : 'Layanan Laundry'}</td>
-                                                        <td className="py-4 px-6 text-sm text-gray-600 break-words">
-                                                            {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
-                                                                ? 'Selesai melakukan pickup'
-                                                                : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
-                                                                    ? 'Selesai melakukan delivery'
-                                                                    : order?.orderStatus[0]?.status}
-                                                        </td>
-                                                        <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
-                                                    </tr>
-                                                )
-                                            })
-                                        ) : (
-                                            <tr>
-                                                <td colSpan={6} className="text-center py-20 font-bold text-3xl text-neutral-300">Data Tersedia</td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                                <PaginationWebLayout currentPage={page} totalPages={totalPages || '1'}>
-                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>Sebelumnya</ButtonCustom>
-                                    <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => { setPage((prev) => Math.min(prev + 1, totalPages)) }}>Selanjutnya</ButtonCustom>
-                                </PaginationWebLayout>
-                            </div>
-                        </ContentWebLayout>
+                                    )
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-20 font-bold text-3xl text-neutral-300">Data Tersedia</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    <PaginationWebLayout currentPage={page} totalPages={totalPages || '1'}>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>Sebelumnya</ButtonCustom>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => { setPage((prev) => Math.min(prev + 1, totalPages)) }}>Selanjutnya</ButtonCustom>
+                    </PaginationWebLayout>
+                </div>
+            </ContentWebLayout>
         </>
     )
 }
