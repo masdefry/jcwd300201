@@ -89,9 +89,9 @@ model Worker {
   workerRole          Role
   firstName           String
   lastName            String
-  phoneNumber         String  @db.VarChar(20)
-  profilePicture      String  @db.VarChar(255)
-  identityNumber      String? @db.Text
+  phoneNumber         String        @db.VarChar(20)
+  profilePicture      String        @db.VarChar(255)
+  identityNumber      String?       @db.Text
   motorcycleType      String?
   plateNumber         String?
   changePasswordToken String?       @db.VarChar(500)

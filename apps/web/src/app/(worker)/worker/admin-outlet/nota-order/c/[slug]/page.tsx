@@ -19,25 +19,9 @@ import TotalWeightComponent from "@/features/adminOutlet/components/totalWeightC
 import TableWeightComponent from "@/features/adminOutlet/components/tableWeightNotaOrder";
 import { useCreateNotaOrderHooks } from "@/features/adminOutlet/hooks/useCreateNotaOrderHooks";
 import NotaHeader from "@/components/core/createNotaHeaders";
+import { notaOrderValidation } from "@/features/adminOutlet/schemas/notaOrderValidation";
 
-const validationSchema = Yup.object().shape({
-    customerName: Yup.string().required("Customer name is required"),
-    customerAddress: Yup.string().required("Customer address is required"),
-    orderTypeId: Yup.string().required("Order type is required"),
-    items: Yup.array()
-        .of(
-            Yup.object().shape({
-                itemName: Yup.string().required("Item name is required"),
-                quantity: Yup.number()
-                    .required("Quantity is required")
-                    .min(1, "Quantity must be at least 1"),
-                weight: Yup.number()
-                    .required("Weight is required")
-                    .min(0.1, "Weight must be at least 0.1 kg"),
-            })
-        )
-        .min(1, "At least one item is required"),
-});
+
 
 interface ICreateOrder {
     id: string,
@@ -77,18 +61,15 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     items: [],
                                     itemName: '',
                                     quantity: 1,
-                                    weight: 0.1,
                                     laundryPrice: 0,
                                     totalWeight: 0
                                 }}
+                                validationSchema={notaOrderValidation}
                                 onSubmit={(values: any) => {
-                                    console.log(values)
                                     const itemOrder = values.items.map((item: any) => ({
                                         laundryItemId: item.itemName,
                                         quantity: item.quantity,
                                     }));
-
-
                                     handleCreateNotaOrder({
                                         email: email,
                                         totalWeight: values.totalWeight,
@@ -143,34 +124,42 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 </div>
 
                                                 <div className="flex flex-col col-span-2">
-                                                    <label className="text-sm">Item</label>
-                                                    <Field
-                                                        as="select"
-                                                        name="itemName"
-                                                        className="border border-gray-500 rounded-md p-2"
-                                                    >
-                                                        <option value="">Select Item</option>
-                                                        {dataItemName?.map((item: Iitem, index: number) => (
-                                                            <option key={index} value={item?.id}>
-                                                                {item?.itemName}
-                                                            </option>
-                                                        ))}
-                                                    </Field>
-                                                    <ErrorMessage name="itemName" component="div" className="text-xs text-red-600" />
+                                                    <div className="flex flex-row gap-2">
+                                                        <div className="w-2/3 flex flex-col">
+                                                            <label className="text-sm">Item</label>
+                                                            <Field
+                                                                as="select"
+                                                                name="itemName"
+                                                                className="border border-gray-500 h-10 rounded-md p-2"
+                                                            >
+                                                                <option value="">Select Item</option>
+                                                                {dataItemName?.map((item: Iitem, index: number) => (
+                                                                    <option key={index} value={item?.id}>
+                                                                        {item?.itemName}
+                                                                    </option>
+                                                                ))}
+                                                            </Field>
+                                                            <ErrorMessage name="itemName" component="div" className="text-xs text-red-600" />
+                                                        </div>
+                                                        <div className=" w-1/3 flex flex-col">
+                                                            <label className="text-sm">Quantity</label>
+                                                            <Field
+                                                                name="quantity"
+                                                                type="number"
+                                                                placeholder="Quantity"
+                                                                className="border border-gray-500 h-10 rounded-md p-2"
+                                                                min="1"
+                                                            />
+                                                            <ErrorMessage name="quantity" component="div" className="text-xs text-red-600" />
 
-                                                    <div className="grid grid-cols-2 gap-4 mt-2">
-                                                        <Field
-                                                            name="quantity"
-                                                            type="number"
-                                                            placeholder="Quantity"
-                                                            className="border border-gray-500 rounded-md p-2"
-                                                            min="1"
-                                                        />
-
+                                                        </div>
                                                     </div>
                                                     <button
                                                         type="button"
                                                         onClick={() => {
+                                                            if (!values.itemName) {
+                                                                return;
+                                                            }
                                                             const existingItemIndex = values.items.findIndex(
                                                                 (item: Iitem) => item.itemName === values.itemName
                                                             );
@@ -193,11 +182,14 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                             setFieldValue("quantity", 1);
                                                         }}
                                                         className="bg-blue-500 text-white rounded-md p-3 mt-4"
+                                                        disabled={!values.itemName}
                                                     >
                                                         Add Item
                                                     </button>
                                                 </div>
                                             </div>
+
+                                            <ErrorMessage name="items" component="div" className="text-xs text-red-600" />
 
                                             <div className="mt-4">
                                                 {values.items.map((item: Iitem, index: number) => {

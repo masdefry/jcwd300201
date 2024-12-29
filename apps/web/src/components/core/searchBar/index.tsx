@@ -1,6 +1,6 @@
 import { FaSearch } from "react-icons/fa";
 
-export default function SearchInputCustom({ onChange, placeholder = "Cari pekerja..", value }: { onChange?: any, placeholder?: string, value?: string | number | readonly string[] | undefined }) {
+export default function SearchInputCustom({ onChange, placeholder = "Cari...", value }: { onChange?: any, placeholder?: string, value?: string | number | readonly string[] | undefined }) {
     return (
         <div className="relative flex">
             <input

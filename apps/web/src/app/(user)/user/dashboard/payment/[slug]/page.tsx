@@ -210,12 +210,12 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                 </section>
                             ) : (
                                 <div className="flex text-center text-lg justify-center mt-8 flex-col border- rounded-lg border border-gray-300 shadow-lg p-4">
-                                        <div className="font-bold">
-                                            Terima kasih,
-                                        </div>
-                                        <div>
-                                            Anda Telah Melakukan Pembayaran!
-                                        </div>
+                                    <div className="font-bold">
+                                        Terima kasih,
+                                    </div>
+                                    <div>
+                                        Anda Telah Melakukan Pembayaran!
+                                    </div>
                                 </div>
                             )}
 
@@ -253,7 +253,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 </div>
                                                 <DialogFooter>
                                                     <Button
-                                                        variant="secondary"
                                                         onClick={() => setIsUploadDialogOpen(false)}
                                                         disabled={isUploading}
                                                     >

@@ -12,11 +12,13 @@ import { BsPencil, BsTrash } from "react-icons/bs";
 import { FaPlus } from "react-icons/fa6";
 import { useDebouncedCallback } from "use-debounce";
 import HeaderMobile from "@/components/core/headerMobile";
-import { FaEdit, FaTrashAlt, FaArrowLeft } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaArrowLeft, FaSearch } from 'react-icons/fa';
 import Image from "next/image";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import Link from "next/link";
 import Loading from "@/components/core/loading";
+import { ConfirmAlert } from "@/components/core/confirmAlert";
+import Pagination from "@/components/core/pagination";
 export default function Page() {
     const token = authStore((state) => state?.token)
     const params = useSearchParams()
@@ -28,7 +30,7 @@ export default function Page() {
     const router = useRouter()
     const pathname = usePathname()
 
-    const { data: dataItem, isFetching, refetch } = useQuery({
+    const { data: dataItem, isFetching, isLoading, refetch } = useQuery({
         queryKey: ['get-data-outlet', searchItem, sortStore],
         queryFn: async () => {
             const response = await instance.get('/store/stores', {
@@ -70,7 +72,11 @@ export default function Page() {
         } else {
             currentUrl.delete('sort')
         }
-
+        if (currentPage) {
+            currentUrl.set('page', String(currentPage))
+        } else {
+            currentUrl.delete('page')
+        }
         if (totalPages === undefined || currentPage > totalPages) {
             setCurrentPage(1)
         }
@@ -90,6 +96,31 @@ export default function Page() {
                     <div> <ButtonCustom btnColor="bg-blue-500">+ Tambah Outlet</ButtonCustom> </div>
                 </section>
                 <div className="py-32 space-y-4">
+                    <div className="w-full flex justify-between gap-1 items-center">
+                        <div className="w-1/2 flex justify-between gap-1 items-center">
+                            <div className="flex items-center justify-center">
+                                <div className="relative w-full max-w-md">
+                                    <input
+                                        type="text"
+                                        onChange={(e) => debounce(e.target.value)}
+                                        placeholder="Search..."
+                                        className="w-full pl-10 pr-4 py-2 border z-0 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                    />
+                                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
+                                </div>
+                            </div>
+                        </div>
+                        <select name="searchWorker"
+                            value={sortStore} onChange={(e) => setSortStore(e.target.value)}
+                            id="searchWorker" className="w-1/2 px-4 py-2 border rounded-lg border-gray-300 text-sm text-neutral-600">
+                            <option value="" disabled>-- Pilih Opsi --</option>
+                            <option value="name-asc">Produk A - Z</option>
+                            <option value="name-desc">Produk Z - A</option>
+                            <option value="latest-item">Data terbaru</option>
+                            <option value="oldest-item">Data terlama</option>
+                            <option value="">Reset</option>
+                        </select>
+                    </div>
                     {getDataStore?.length > 0 ? (
                         getDataStore?.map((store: any, i: number) => {
                             const address = `${store?.address}, ${store?.city}, ${store?.province}`
@@ -119,25 +150,16 @@ export default function Page() {
                                         <FaEdit />
                                     </button>
                                     <button className="flex items-center space-x-2 px-2 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <div className="flex items-center justify-center space-x-2 px-2 py-2 w-9  bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                                    <FaTrashAlt />
-                                                </div>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Hapus &quot;Nama Outlet&quot;?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Batal</AlertDialogCancel>
-                                                    <AlertDialogAction>Hapus</AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
+                                        <ConfirmAlert
+                                            caption={`Hapus "${store?.storeName?.toUpperCase()}"?`}
+                                            description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
+                                            onClick={() => { console.log('delete') }}
+                                        >
+
+                                            <div className="flex items-center justify-center space-x-2 px-2 py-2 w-9  bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
+                                                <BsTrash />
+                                            </div>
+                                        </ConfirmAlert>
                                     </button>
 
                                 </div>
@@ -146,8 +168,11 @@ export default function Page() {
                         })
                     ) : (
                         <div>
-                            <div className="text-center py-20 font-bold">{isFetching ? <Loading /> : 'Data tidak tersedia'}</div>
+                            <div className="text-center py-20 font-bold">{isLoading ? <Loading /> : 'Data tidak tersedia'}</div>
                         </div>
+                    )}
+                    {!isLoading && getDataStore?.length > 0 && (
+                        <Pagination page={currentPage} totalPages={totalPages} setPage={setCurrentPage} />
                     )}
                 </div>
             </main>
@@ -170,7 +195,6 @@ export default function Page() {
                     </div>
                 </div>
 
-                {/* table */}
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
                         <thead className="bg-gray-200">
@@ -194,7 +218,13 @@ export default function Page() {
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{new Date(store?.createdAt).toLocaleDateString()}</td>
                                             <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
                                                 <div className='flex gap-2'>
-                                                    <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
+                                                    <ConfirmAlert
+                                                        caption={`Hapus "${store?.storeName?.toUpperCase()}"?`}
+                                                        description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
+                                                        onClick={() => { console.log('delete') }}
+                                                    >
+                                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
+                                                    </ConfirmAlert>
                                                     <Link href={`/admin/outlet/e/${store?.id}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </Link>
                                                 </div>
                                             </td>
@@ -203,7 +233,7 @@ export default function Page() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? <Loading /> : 'Data tidak tersedia'}</td>
+                                    <td colSpan={6} className="text-center py-20 font-bold">{isLoading ? <Loading /> : 'Data tidak tersedia'}</td>
                                 </tr>
                             )}
                         </tbody>
