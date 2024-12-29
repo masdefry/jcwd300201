@@ -50,22 +50,22 @@ export default function HeroSection() {
                                     <div className="w-full flex flex-col gap-2">
                                         {index === 0 ? (
                                             <>
-                                                <h1 className="text-3xl md:text-5xl font-extrabold text-gray-800 leading-tight">Permudah Semua dengan</h1>
+                                                <h1 className="text-xl md:text-5xl font-extrabold text-gray-800 leading-tight">Permudah Semua dengan</h1>
                                                 <div className="flex gap-2">
-                                                    <span className="text-blue-500 text-3xl md:text-5xl font-extrabold leading-tight">Clean&Click</span>
-                                                    <span className="text-orange-500 text-3xl md:text-5xl font-extrabold leading-tight">Laundry</span>
+                                                    <span className="text-blue-500 text-xl md:text-5xl font-extrabold leading-tight">Clean&Click</span>
+                                                    <span className="text-orange-500 text-xl md:text-5xl font-extrabold leading-tight">Laundry</span>
                                                 </div>
                                                 <p className="text-gray-600 mt-4 text-lg">Kami telah berkomitmen untuk memberikan layanan pelanggan yang luar biasa dan layanan cuci kering serta laundry berkualitas tinggi.</p>
                                             </>
                                         ) : (
                                             <>
-                                                <h1 className="text-3xl md:text-5xl font-extrabold text-gray-800 leading-tight">Cepat dan Tepat dengan</h1>
-                                                <h1 className="text-3xl md:text-5xl font-extrabold text-blue-500 leading-tight">Clean&Click <span className="text-orange-500">Delivery</span></h1>
-                                                <p className="text-gray-600 mt-4 text-lg">Kami memastikan pakaian Anda sampai di depan pintu dengan cepat dan dalam kondisi sempurna. Hemat waktu Anda bersama kami!</p>
+                                                <h1 className="text-xl md:text-5xl font-extrabold text-gray-800 leading-tight">Cepat dan Tepat dengan</h1>
+                                                <h1 className="text-xl md:text-5xl font-extrabold text-blue-500 leading-tight">Clean&Click <span className="text-orange-500">Delivery</span></h1>
+                                                <p className="text-gray-600 mt-4 text-sm md:text-lg">Kami memastikan pakaian Anda sampai di depan pintu dengan cepat dan dalam kondisi sempurna. Hemat waktu Anda bersama kami!</p>
                                             </>
                                         )}
                                     </div>
-                                    <div className="flex gap-4 mt-6 items-center">
+                                    <div className="md:flex hidden gap-4 mt-6 items-center">
                                         <ButtonCustom onClick={() => router.push('/user/dashboard/pickup')} rounded="rounded-full" btnColor="bg-orange-500 hover:bg-orange-500">Pelajari Selengkapnya</ButtonCustom>
                                         <div className="flex items-center gap-2">
                                             <span className="text-yellow-400 text-xl">{'⭐'.repeat(5)}</span>

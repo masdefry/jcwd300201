@@ -19,7 +19,7 @@ export default function Page() {
 
     return (
         <main className='w-full h-screen md:flex'>
-            <section className='w-full md:w-3/5 h-full py-2 pl-2'>
+            <section className='w-full md:w-3/5 hidden md:block h-full py-2 pl-2'>
                 <div className='bg-blue-700 rounded-2xl p-10 h-full w-full relative'>
                     <div className="flex flex-col h-full w-full">
                         <div className="w-full flex items-center">
@@ -42,7 +42,7 @@ export default function Page() {
                 </div>
             </section>
             <section className='w-full h-full bg-white p-10 relative'>
-                <div className="w-full h-full flex flex-col">
+                <div className="w-full h-full hidden md:flex flex-col">
                     <div className="w-full z-20 flex items-end opacity-40 justify-end h-full gap-3">
                         <Link href='/' className="font-bold text-3xl md:text-4xl"><FaInstagram /> </Link>
                         <Link href='/' className="font-bold text-3xl md:text-4xl"><FaLinkedin /> </Link>
@@ -51,8 +51,8 @@ export default function Page() {
                 </div>
                 <div className="flex flex-col absolute inset-0 h-full px-10 items-center justify-center w-full">
                     <div className="pb-5 z-20 w-full flex flex-col justify-start">
-                        <h1 className="font-bold text-neutral-800 text-3xl md:text-4xl">Selamat Datang Kembali</h1>
-                        <p className="text-neutral-500 mt-2 md:text-lg">Masuk untuk mengakses akun Anda dan menikmati semua fitur.</p>
+                        <h1 className="font-bold text-neutral-800 text-xl md:text-4xl">Selamat Datang Kembali</h1>
+                        <p className="text-neutral-500 mt-2 text-sm md:text-lg">Masuk untuk mengakses akun Anda dan menikmati semua fitur.</p>
                     </div>
                     <Formik
                         initialValues={{ email: '', password: '' }}
