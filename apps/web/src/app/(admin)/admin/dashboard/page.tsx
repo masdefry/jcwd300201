@@ -7,7 +7,7 @@ import { MdOutlineStickyNote2 } from "react-icons/md";
 import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
-import { FaArrowRight, FaStore } from "react-icons/fa6";
+import { FaArrowRight, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying, FaStore } from "react-icons/fa6";
 import { FaCloud, FaTemperatureHigh } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
@@ -19,6 +19,7 @@ import { useQuery } from "@tanstack/react-query";
 import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
 import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
+import MobileSessionLayout from "@/components/core/mobileSessionLayout";
 
 export default function Page() {
     const [date, setDate] = useState<Date | undefined>(new Date())
@@ -87,12 +88,19 @@ export default function Page() {
     if (isPending) return (
         <>
 
-           <LoadingDashboardWeb />
+            <LoadingDashboardWeb />
         </>
     )
+
+    const arrIcon = [
+        { icon: <FaDashcube />, url: '/admin/dashboard' },
+        { icon: <FaStore />, url: '/admin/outlet' },
+        { icon: <FaMoneyBillWave />, url: '/admin/order' },
+        { icon: <FaSpaghettiMonsterFlying />, url: '/admin/dashboard' },
+    ]
     return (
         <>
-            <main className="w-full h-fit md:hidden block">
+            {/* <main className="w-full h-fit md:hidden block">
                 <section className="w-full h-fit md:max-w-full max-w-[425px]">
                     <section>
                         <Image src={'/images/New Project.webp'} alt="header"
@@ -128,7 +136,6 @@ export default function Page() {
                         </div>
                     </section>
 
-                    {/* Icon Buttons Section */}
                     <section className="bg-white mx-8 grid grid-cols-2 gap-y-6 justify-around my-6">
                         {iconButtons.map((item, index) => (
                             <button key={index} className="flex flex-col items-center space-y-1">
@@ -138,7 +145,6 @@ export default function Page() {
                         ))}
                     </section>
 
-                    {/* Help Section */}
                     <section className="bg-green-100 p-4 mx-8 mb-4 rounded-lg">
                         <div className="flex items-center space-x-2">
                             <FaWhatsapp className="text-gray-600" size={24} />
@@ -150,7 +156,29 @@ export default function Page() {
                     </section>
 
                 </section>
-            </main>
+            </main> */}
+
+            <MobileSessionLayout title="Dashboard">
+                <div className="w-full h-fit py-5 flex flex-col p-5 bg-orange-500 rounded-3xl">
+                    <h1 className='text-white font-bold'>Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}!</h1>
+                    <p className="text-neutral-200 text-sm">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
+                </div>
+                <div className="flex justify-center h-fit w-full p-2 bg-gradient-to-tr rounded-2xl">
+                    <div className='grid grid-cols-2 gap-2 w-full h-fit'>
+                        {arrIcon?.map((item: any, i: number) => (
+                            <Link href={item?.url} className="w-full h-fit py-5 bg-white shadow-sm border rounded-2xl flex justify-center items-center" key={i}>
+                                <span className='text-3xl text-orange-500'>{item?.icon}</span>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+                <div className='w-full h-fit py-5 rounded-xl border'>
+                    <ChartComponents completedOrders={completedOrders} pendingOrders={pendingOrders} />
+                </div>
+                <div className="w-full border rounded-2xl h-fit py-14 flex justify-center items-center">
+                    <h1>Contact</h1>
+                </div>
+            </MobileSessionLayout>
 
             {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">

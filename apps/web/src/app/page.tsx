@@ -144,8 +144,8 @@ export default function Home() {
 
         <div className='w-full h-fit flex bg-gradient-to-b from-sky-100 via-sky-50 to-white px-10 pb-5'>
           <div className='w-full h-fit text-black flex flex-col items-center text-center'>
-            <h1 className="text-5xl font-extrabold text-orange-500 mb-4">Pelanggan Kami</h1>
-            <p className="text-lg text-gray-600 mb-14 max-w-3xl">Kami bangga memiliki berbagai pelanggan yang puas dengan layanan kami. Berikut adalah beberapa testimoni dari mereka yang telah merasakan kualitas terbaik dari produk dan layanan kami.</p>
+            <h1 className="text-3xl lg:text-5xl font-extrabold text-orange-500 mb-4">Pelanggan Kami</h1>
+            <p className="lg:text-lg text-gray-600 mb-14 max-w-3xl">Kami bangga memiliki berbagai pelanggan yang puas dengan layanan kami. Berikut adalah beberapa testimoni dari mereka yang telah merasakan kualitas terbaik dari produk dan layanan kami.</p>
             <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
               {testimonialData.map((item) => (
                 <div key={item.id} className="w-full border-b-2 border-orange-500 bg-white rounded-3xl p-8 transform hover:scale-105 transition-all duration-300 ease-in-out">
@@ -166,52 +166,25 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* 
-        <div className="w-full h-fit py-32 bg-gradient-to-b from-blue-50 to-blue-200 flex flex-col gap-16">
-          <div className="w-full flex justify-center items-center text-center pb-16">
-            <h1 className="font-extrabold text-4xl sm:text-5xl lg:text-6xl text-neutral-700">
-              Proses Kerja <span className="text-orange-600">Clean&Click</span>
-            </h1>
-          </div>
-          <div className="flex w-full h-fit justify-center">
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-14 lg:gap-20 px-6">
-              {processSteps.map((step, i) => (
-                <div key={i} className="w-full flex flex-col justify-center items-center space-y-6 transition-transform transform hover:scale-105 duration-300">
-                  <div className="w-full flex justify-center items-center">
-                    <div className="border-4 border-dashed border-orange-500 p-3 rounded-full">
-                      <div className="h-36 w-36 flex items-center justify-center rounded-full bg-gradient-to-r from-blue-400 to-blue-600 shadow-2xl hover:shadow-3xl transition-shadow duration-300">
-                        <span className="text-5xl text-white">{step.icon}</span>
-                      </div>
-                    </div>
-                  </div>
-                  <div className="text-center max-w-xs sm:max-w-sm lg:max-w-md">
-                    <h2 className="text-xl font-semibold text-neutral-800">{step.title}</h2>
-                    <p className="text-sm text-neutral-600">{step.description}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div> */}
 
         <div className="flex md:flex-row flex-col w-full px-10 gap-2 h-fit bg-gradient-to-b from-white via-white rounded-br-full pb-10 to-orange-100">
           <section className="w-full h-fit py-10 flex flex-col text-right">
             <div className="w-full p-5">
-              <h1 className="font-bold text-orange-500 text-5xl">Mengapa Kami?</h1>
+              <h1 className="font-bold text-orange-500 text-3xl lg:text-5xl">Mengapa Kami?</h1>
             </div>
             <div className="w-full px-5">
               <h2 className="text-lg text-neutral-600">Alasan Kami Menjadi Pilihan Tepat untuk Layanan Anda</h2>
             </div>
 
             <div className="flex md:flex-row flex-col w-full gap-2 h-fit mt-6">
-              <section className="h-fit md:w-1/2 w-full py-5">
+              <section className="h-fit md:w-1/2 md:block hidden w-full py-5">
                 <div className="h-fit w-full bg-white space-y-2 rounded-2xl">
                   <div className="h-[350px] w-full">
                     <div className="w-full p-5">
-                      <h1 className="text-xl pt-5 text-orange-500 font-sans font-semibold">Kami Bangga Menjadi Bagian dari Perjalanan Anda</h1>
+                      <h1 className="text-xl pt-5 text-orange-500 font-sans font-semibold hidden md:block">Kami Bangga Menjadi Bagian dari Perjalanan Anda</h1>
                     </div>
                     <div className="w-full p-5">
-                      <h1 className="text-5xl font-bold text-neutral-700">Bersama, Kami Mewujudkan Impian dengan <span className="text-orange-500">Pelayanan Terbaik dan Dedikasi</span></h1>
+                      <h1 className="text-xl md:text-5xl font-bold text-neutral-700">Bersama, Kami Mewujudkan Impian dengan <span className="text-orange-500">Pelayanan Terbaik dan Dedikasi</span></h1>
                     </div>
                   </div>
                   <div className="h-[250px] w-full flex items-center p-5">
@@ -222,18 +195,17 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
-
               </section>
               <section className="h-fit md:w-1/2 w-full py-5 space-y-2">
                 <div className="h-[350px] w-full bg-white rounded-2xl">
                   <Image width={500} height={500} alt="our-team" src='/images/our-team.jpg' className="w-full h-[350px] rounded-2xl object-cover" />
                 </div>
-                <div className="h-[250px] w-full bg-white rounded-2xl p-5">
+                <div className="h-[250px] md:block hidden w-full bg-white rounded-2xl p-5">
                   <div className="w-full flex justify-center items-center h-full">
                     <div className="w-full h-full grid grid-cols-2 gap-2">
                       {boxContent?.map((content, i) => (
                         <div key={i} className="h-full text-neutral-700 w-full gap-3 flex items-center p-5 bg-gradient-to-r from-neutral-200 to-white rounded-full">
-                          <span className="text-5xl">{content?.icon} </span><p className="flex items-center">{content?.boxCaption}</p>
+                          <span className="text-base md:text-5xl">{content?.icon} </span><p className="flex items-center">{content?.boxCaption}</p>
                         </div>
                       ))}
                     </div>
@@ -247,14 +219,14 @@ export default function Home() {
         <div className="flex md:flex-row flex-col w-full px-10 gap-2 h-fit bg-white">
           <section className="w-full h-fit py-10 flex flex-col">
             <div className="w-full p-5">
-              <h1 className="text-5xl font-bold text-orange-500">Tim Profesional</h1>
+              <h1 className="text-3xl md:text-5xl font-bold text-orange-500">Tim Profesional</h1>
             </div>
             <div className="px-5">
               <h1 className="text-lg text-neutral-700">Kenali Tim Profesional Kami yang Berdedikasi untuk Layanan Laundry Terbaik</h1>
             </div>
 
             <div className="w-full h-fit flex justify-center items-center">
-              <div className="grid grid-cols-4 w-full gap-2 px-5 py-10">
+              <div className="grid grid-cols-1 lg:grid-cols-4 w-full gap-2 px-5 py-10">
                 {teamContent.map((team, i) => (
                   <div key={i} className="h-[330px] relative bg-blue-300 w-full rounded-2xl">
                     <Image width={500} height={500} alt="our-team" src={team?.img} className="w-full shadow-md h-[330px] rounded-2xl object-cover object-top" />

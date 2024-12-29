@@ -13,8 +13,8 @@ export default function Page() {
         togglePasswordVisibility, isPending } = useWorkerLoginHooks()
 
     return (
-        <main className='w-full h-screen flex'>
-            <section className='w-3/5 h-full py-2 pl-2'>
+        <main className='w-full h-screen md:flex'>
+            <section className='w-3/5 hidden md:block h-full py-2 pl-2'>
                 <div className='bg-blue-700 rounded-2xl p-10 h-full w-full relative'>
                     <div className="flex flex-col h-full w-full">
                         <div className="w-full flex items-center">
@@ -42,8 +42,8 @@ export default function Page() {
                 </div>
                 <div className="flex flex-col absolute inset-0 h-full px-10 items-center justify-center w-full">
                     <div className="pb-5 z-20 w-full flex flex-col justify-start">
-                        <h1 className="font-bold text-neutral-800 text-3xl md:text-4xl">Selamat Datang Kembali</h1>
-                        <p className="text-neutral-500 mt-2 md:text-lg">Masuk untuk mengakses akun Anda dan mengelola pesanan.</p>
+                        <h1 className="font-bold text-neutral-800 text-xl md:text-4xl">Selamat Datang Kembali</h1>
+                        <p className="text-neutral-500 mt-2 text-sm md:text-lg">Masuk untuk mengakses akun Anda dan mengelola pesanan.</p>
                     </div>
                     <Formik
                         initialValues={{
