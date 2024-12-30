@@ -20,6 +20,7 @@ import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import FilterWeb from "@/components/core/filterWeb"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout"
 
 export default function HistoryOrderWashing() {
     const { page, totalPages, sortOption, dateFrom, dateUntil, limit,
@@ -29,76 +30,69 @@ export default function HistoryOrderWashing() {
 
     return (
         <>
-            <main className="w-full h-fit md:hidden block">
-                <section className="w-full h-fit">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> BUAT NOTA ORDER
-                            </div>
-                        </section>
-                        <div className="py-28 mx-4 space-y-4">
+            <MobileSessionLayout title="BUAT NOTA ORDER">
+                <div className=" mx-4 space-y-4">
 
-                            <CardContent className="space-y-2 pt-2">
-                                <FilterWorker
-                                    debounce={debounce}
-                                    sortOption={sortOption}
-                                    setSortOption={setSortOption}
-                                    dateFrom={dateFrom}
-                                    dateUntil={dateUntil}
-                                    setDateFrom={setDateFrom}
-                                    setDateUntil={setDateUntil}
-                                    setActiveTab={setActiveTab}
-                                    setSearchInput={setSearchInput}
-                                    searchInput={searchInput}
-                                    setPage={setPage}
-                                />
-                                {dataCreateOrderLoading && <Loading />}
-                                {dataCreateOrderError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                {!dataCreateOrderLoading && dataCreateOrder?.orders?.length > 0 ? (
-                                    dataCreateOrder?.orders?.map((order: any) => {
-                                        return (
-                                            <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                                <Link href={`/worker/admin-outlet/nota-order/c/${order?.id}`}>
-                                                    <div className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Menunggu Pembuatan Nota Order' : ""}
-                                                            </p>
-                                                            <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
-                                                        </div>
-                                                    </div>
-                                                </Link>
+                    <CardContent className="space-y-2 pt-2">
+                        <FilterWorker
+                            debounce={debounce}
+                            sortOption={sortOption}
+                            setSortOption={setSortOption}
+                            dateFrom={dateFrom}
+                            dateUntil={dateUntil}
+                            setDateFrom={setDateFrom}
+                            setDateUntil={setDateUntil}
+                            setActiveTab={setActiveTab}
+                            setSearchInput={setSearchInput}
+                            searchInput={searchInput}
+                            setPage={setPage}
+                            setIsSearchValues={setIsSearchValues}
+                            isSearchValues={isSearchValues}
 
-                                                <div className="flex gap-1">
-                                                    <Link href={`https://wa.me/62${order?.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                        <FaWhatsapp />
-                                                    </Link>
+                        />
+                        {dataCreateOrderLoading && <Loading />}
+                        {dataCreateOrderError && <p>Silahkan coba beberapa saat lagi.</p>}
+                        {!dataCreateOrderLoading && dataCreateOrder?.orders?.length > 0 ? (
+                            dataCreateOrder?.orders?.map((order: any) => {
+                                return (
+                                    <section key={order.id} className="flex justify-between items-center border-b py-4">
+                                        <Link href={`/worker/admin-outlet/nota-order/c/${order?.id}`}>
+                                            <div className="flex items-center">
+                                                <div className="ml-2">
+                                                    <h2 className="font-medium text-gray-900">
+                                                        {order?.id}
+                                                    </h2>
+                                                    <h2 className="font-medium text-gray-900">
+                                                        {order?.User?.firstName} {order?.User?.lastName}
+                                                    </h2>
+                                                    <p className="text-xs text-gray-500">
+                                                        {order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Menunggu Pembuatan Nota Order' : ""}
+                                                    </p>
+                                                    <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                 </div>
-                                            </section>
-                                        )
-                                    })
-                                ) : (
-                                    !dataCreateOrderLoading && (
-                                        <NoData />
-                                    )
+                                            </div>
+                                        </Link>
 
-                                )}
-                                {!dataCreateOrderLoading && dataCreateOrder?.orders?.length > 0 && (
-                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                )}
-                            </CardContent>
-                        </div>
-                    </main>
-                </section>
-            </main>
+                                        <div className="flex gap-1">
+                                            <Link href={`https://wa.me/62${order?.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                                <FaWhatsapp />
+                                            </Link>
+                                        </div>
+                                    </section>
+                                )
+                            })
+                        ) : (
+                            !dataCreateOrderLoading && (
+                                <NoData />
+                            )
+
+                        )}
+                        {!dataCreateOrderLoading && dataCreateOrder?.orders?.length > 0 && (
+                            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                        )}
+                    </CardContent>
+                </div>
+            </MobileSessionLayout >
 
             <ContentWebLayout caption='Nota Pesanan'>
                 <FilterWeb

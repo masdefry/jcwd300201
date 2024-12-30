@@ -29,6 +29,9 @@ import {
     AlertDialogTitle,
     AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
+import Loading from "@/components/core/loading"
+import NoData from "@/components/core/noData"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout"
 
 export default function DriverPickUp() {
     const params = useSearchParams();
@@ -37,8 +40,8 @@ export default function DriverPickUp() {
 
     const { toast } = useToast()
 
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
 
     const notesSchema = Yup.object({
         notes: Yup.string().required("Notes are required"),
@@ -52,6 +55,7 @@ export default function DriverPickUp() {
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
+    const [isSearchValues, setIsSearchValues] = useState<string>('')
 
     const limit = 5;
 
@@ -133,6 +137,11 @@ export default function DriverPickUp() {
         } else {
             currentUrl.delete('date-until')
         }
+        if (page) {
+            currentUrl.set('page', page?.toString())
+        } else {
+            currentUrl.delete('page')
+        }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
     }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
@@ -142,116 +151,117 @@ export default function DriverPickUp() {
 
     return (
         <>
-            <main className="w-full h-fit">
-                <section className="w-full h-fit">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> ORDER BERMASALAH
-                            </div>
-                        </section>
-                        <div className="py-28 mx-4 space-y-4">
-                            <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-2">
-                                    <TabsTrigger value="bermasalah" onClick={() => { setActiveTab("bermasalah"); setPage(1) }} >Bermasalah</TabsTrigger>
-                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value={activeTab}>
-                                    <CardContent className="space-y-2 pt-2">
-                                        <FilterWorker
-                                            debounce={debounce}
-                                            sortOption={sortOption}
-                                            setSortOption={setSortOption}
-                                            dateFrom={dateFrom}
-                                            dateUntil={dateUntil}
-                                            setDateFrom={setDateFrom}
-                                            setDateUntil={setDateUntil}
-                                            setActiveTab={setActiveTab}
-                                            setSearchInput={setSearchInput}
-                                            searchInput={searchInput}
-                                            setPage={setPage}
-                                        />
-                                        {dataOrderPackingProcessLoading && <div>Loading...</div>}
-                                        {dataOrderPackingProcessError && <div>Silahkan coba beberapa saat lagi.</div>}
-                                        {dataOrderPackingProcess?.orders?.map((order: any) => (
-                                            <section
-                                                key={order.id}
-                                                className="flex justify-between items-center border-b py-4"
-                                            >
-                                                <AlertDialog>
-                                                    <AlertDialogTrigger asChild>
-                                                        <div className="flex items-center">
-                                                            <div className="ml-2">
-                                                                <h2 className="font-medium text-gray-900">
-                                                                    {order?.id}
-                                                                </h2>
-                                                                <h2 className="font-medium text-gray-900">
-                                                                    {order?.User?.firstName} {order?.User?.lastName}
-                                                                </h2>
-                                                                <div className="text-xs text-gray-500">
-                                                                    {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
-                                                                        ? 'Terjadi Masalah'
-                                                                        : ''}
-                                                                </div>
-                                                                <div className="text-xs text-gray-500">
-                                                                    {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                                </div>
+            <MobileSessionLayout title="ORDER BERMASALAH">
+                <div className="mx-4 space-y-4">
+                    <Tabs defaultValue={activeTab} className="fit">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="bermasalah" onClick={() => { setActiveTab("bermasalah"); setPage(1) }} >Bermasalah</TabsTrigger>
+                            <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value={activeTab}>
+                            <CardContent className="space-y-2 pt-2">
+                                <FilterWorker
+                                    debounce={debounce}
+                                    sortOption={sortOption}
+                                    setSortOption={setSortOption}
+                                    dateFrom={dateFrom}
+                                    dateUntil={dateUntil}
+                                    setDateFrom={setDateFrom}
+                                    setDateUntil={setDateUntil}
+                                    setActiveTab={setActiveTab}
+                                    setSearchInput={setSearchInput}
+                                    searchInput={searchInput}
+                                    setPage={setPage}
+                                    setIsSearchValues={setIsSearchValues}
+                                    isSearchValues={isSearchValues}
+
+                                />
+                                {dataOrderPackingProcessLoading && <Loading />}
+                                {dataOrderPackingProcessError && <div>Silahkan coba beberapa saat lagi.</div>}
+                                {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
+                                    dataOrderPackingProcess?.orders?.map((order: any) => (
+                                        <section
+                                            key={order.id}
+                                            className="flex justify-between items-center border-b py-4"
+                                        >
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <div className="flex items-center">
+                                                        <div className="ml-2">
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.id}
+                                                            </h2>
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.User?.firstName} {order?.User?.lastName}
+                                                            </h2>
+                                                            <div className="text-xs text-gray-500">
+                                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
+                                                                    ? 'Terjadi Masalah'
+                                                                    : ''}
+                                                            </div>
+                                                            <div className="text-xs text-gray-500">
+                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
                                                             </div>
                                                         </div>
-                                                    </AlertDialogTrigger>
+                                                    </div>
+                                                </AlertDialogTrigger>
 
-                                                    <AlertDialogContent>
-                                                        <AlertDialogHeader>
-                                                            <AlertDialogTitle>Terdapat perbedaan barang pada laundry berikut</AlertDialogTitle>
-                                                            <AlertDialogDescription>
-                                                                <Formik
-                                                                    initialValues={{ notes: '' }}
-                                                                    validationSchema={notesSchema}
-                                                                    onSubmit={async (values) => {
-                                                                        handleLaundryProblem({
-                                                                            notes: values.notes,
-                                                                            orderId: order?.id
-                                                                        });
-                                                                    }}
-                                                                >
-                                                                    <Form>
-                                                                        <div>
-                                                                            <Field
-                                                                                as="textarea"
-                                                                                name="notes"
-                                                                                rows={4}
-                                                                                placeholder="Enter your notes"
-                                                                                className="w-full p-2 border rounded"
-                                                                            />
-                                                                            <ErrorMessage name="notes" component="div" className="text-red-500 text-xs" />
-                                                                        </div>
-                                                                        <AlertDialogFooter>
-                                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                            <AlertDialogAction type="submit">Continue</AlertDialogAction>
-                                                                        </AlertDialogFooter>
-                                                                    </Form>
-                                                                </Formik>
-                                                            </AlertDialogDescription>
-                                                        </AlertDialogHeader>
-                                                    </AlertDialogContent>
-                                                </AlertDialog>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Terdapat perbedaan barang pada laundry berikut</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            <Formik
+                                                                initialValues={{ notes: '' }}
+                                                                validationSchema={notesSchema}
+                                                                onSubmit={async (values) => {
+                                                                    handleLaundryProblem({
+                                                                        notes: values.notes,
+                                                                        orderId: order?.id
+                                                                    });
+                                                                }}
+                                                            >
+                                                                <Form>
+                                                                    <div>
+                                                                        <Field
+                                                                            as="textarea"
+                                                                            name="notes"
+                                                                            rows={4}
+                                                                            placeholder="Enter your notes"
+                                                                            className="w-full p-2 border rounded"
+                                                                        />
+                                                                        <ErrorMessage name="notes" component="div" className="text-red-500 text-xs" />
+                                                                    </div>
+                                                                    <AlertDialogFooter>
+                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                        <AlertDialogAction type="submit">Continue</AlertDialogAction>
+                                                                    </AlertDialogFooter>
+                                                                </Form>
+                                                            </Formik>
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
 
-                                                <div className="flex gap-1">
-                                                    <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                        <FaWhatsapp />
-                                                    </Link>
-                                                </div>
-                                            </section>
-                                        ))}
-                                        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                    </CardContent>
-                                </TabsContent>
-                            </Tabs>
-                        </div>
-                    </main>
-                </section>
-            </main>
+                                            <div className="flex gap-1">
+                                                <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                                    <FaWhatsapp />
+                                                </Link>
+                                            </div>
+                                        </section>
+                                    ))
+                                ) : (
+                                    !dataOrderPackingProcessLoading && (
+                                        <NoData />
+                                    )
+
+                                )}
+                                {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 && (
+                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                                )}                                    </CardContent>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            </MobileSessionLayout>
         </>
     )
 }

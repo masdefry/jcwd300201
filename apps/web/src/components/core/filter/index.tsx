@@ -10,7 +10,7 @@ import { IoMdRefresh } from "react-icons/io";
 import { IFilterProps } from "./type";
 
 
-export default function FilterWorker({ searchInput, setPage, debounce, sortOption, setSortOption, dateFrom, dateUntil, setDateFrom, setDateUntil, setActiveTab, setSearchInput }: IFilterProps) {
+export default function FilterWorker({ setIsSearchValues, isSearchValues, searchInput, setPage, debounce, sortOption, setSortOption, dateFrom, dateUntil, setDateFrom, setDateUntil, setActiveTab, setSearchInput }: IFilterProps) {
     return (
         <>
             <div className="flex justify-between gap-1 items-center">
@@ -19,13 +19,13 @@ export default function FilterWorker({ searchInput, setPage, debounce, sortOptio
                         <div className="relative w-full max-w-md">
                             <input
                                 type="text"
-                                // value={searchInput}
                                 onChange={(e) => {
+                                    setIsSearchValues(e.target.value)
                                     debounce(e.target.value)
                                     setPage(1)
-                                }
-                                }
-                                placeholder="Search..."
+                                }}
+                                value={isSearchValues}
+                                placeholder="Cari..."
                                 className="w-full pl-10 pr-4 py-2 border z-0 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
@@ -74,14 +74,15 @@ export default function FilterWorker({ searchInput, setPage, debounce, sortOptio
                         }} className="border border-gray-300 rounded px-3 py-2 focus:outline-none focus:border-blue-500"
                     />
                 </label>
-                <div>
-                    <button className="flex items-center justify-center h-10 w-10 px-2 border rounded-lg border-gray-500 mr-2"
+                <div className="flex justify-start items-end">
+                    <button className="flex items-center justify-end h-10 w-10 px-2 border rounded-lg border-gray-500 mr-2"
                         onClick={() => {
                             setSortOption("date-asc")
                             setDateFrom(null)
                             setDateUntil(null)
                             setSearchInput('')
                             setPage(1)
+                            setIsSearchValues('')
                         }}>
                         <IoMdRefresh size={20} />
                     </button>

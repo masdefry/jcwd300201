@@ -636,9 +636,9 @@ export const getOrdersForIroningService = async ({
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
   let statusFilter: any;
-  if (tab === "prosesSetrika") {
+  if (tab === "proses-setrika") {
     statusFilter = ['IN_IRONING_PROCESS'];
-  } else if (tab === "belumDisetrika") {
+  } else if (tab === "belum-disetrika") {
     statusFilter = ['AWAITING_PAYMENT', 'IN_IRONING_PROCESS'];
   } else if (tab === "done") {
     statusFilter = ['IN_PACKING_PROCESS'];
@@ -674,8 +674,8 @@ export const getOrdersForIroningService = async ({
           ],
         }
         : {},
-      ...(tab === 'belumDisetrika' ? [{ isProcessed: false }] : []),
-      ...(tab === 'prosesSetrika' ? [{ isProcessed: true }] : []),
+      ...(tab === 'belum-disetrika' ? [{ isProcessed: false }] : []),
+      ...(tab === 'proses-setrika' ? [{ isProcessed: true }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
     ].filter((condition) => Object.keys(condition).length > 0),
@@ -1698,7 +1698,7 @@ export const getOrdersForDeliveryService = async ({
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
   let statusFilter: any;
-  if (tab === "waiting-payment") {
+  if (tab === " ") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "ready-to-deliver") {
     statusFilter = ['IN_PACKING_PROCESS'];
@@ -2245,24 +2245,24 @@ export const getAllOrderForAdminService = async ({
 
   const monthlyStatistic = [];
   for (let month = 0; month < 12; month++) {
-      const startOfMonth = new Date(new Date().getFullYear(), month, 1);
-      const endOfMonth = new Date(new Date().getFullYear(), month + 1, 0);
+    const startOfMonth = new Date(new Date().getFullYear(), month, 1);
+    const endOfMonth = new Date(new Date().getFullYear(), month + 1, 0);
 
-      const monthlyStatistics = await prisma.order.groupBy({
-          by: ['createdAt'],
-          where: {
-              createdAt: {
-                  gte: startOfMonth,
-                  lte: endOfMonth
-              },
-          },
-          _sum: {
-              totalPrice: true
-          }
-      });
-      monthlyStatistic.push({ month, monthlyStatistics })
+    const monthlyStatistics = await prisma.order.groupBy({
+      by: ['createdAt'],
+      where: {
+        createdAt: {
+          gte: startOfMonth,
+          lte: endOfMonth
+        },
+      },
+      _sum: {
+        totalPrice: true
+      }
+    });
+    monthlyStatistic.push({ month, monthlyStatistics })
   }
-  
+
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
   const totalCount = filteredOrders.length;
   const totalPage = Math.ceil(totalCount / Number(limit_data));
@@ -2646,7 +2646,7 @@ export const paymentOrderTfService = async ({
     where: { id: userId, email }
   });
   if (!findUser) throw { msg: "User tidak tersedia", status: 404 };
-  
+
   const existingOrder = await prisma.order.findUnique({
     where: { id: String(orderId) },
     include: {
@@ -2660,7 +2660,7 @@ export const paymentOrderTfService = async ({
     }
   });
   if (!existingOrder) throw { msg: "Order tidak ditemukan", status: 404 };
-  
+
   const updatedOrder = await prisma.order.update({
     where: { id: String(orderId) },
     data: {

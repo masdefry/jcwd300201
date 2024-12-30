@@ -49,7 +49,7 @@ const authStore = create(
 
     {
       name: 'authToken',
-      partialize: (state: any) => ({ token: state.token }),
+      partialize: (state: any) => ({ token: state?.token }),
     }),
 );
 

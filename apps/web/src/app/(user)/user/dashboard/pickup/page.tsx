@@ -25,7 +25,7 @@ const validationSchema = Yup.object({
 });
 
 export default function PickupLaundry() {
-    const token = authStore((state) => state.token);
+    const token = authStore((state) => state?.token);
     const [selectedAddress, setSelectedAddress] = useState<IAddress | null>(null);
     const [openDialog, setOpenDialog] = useState<boolean>(false);
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false);
