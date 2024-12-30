@@ -11,8 +11,8 @@ const useCreateNotaOrderHooks = ({ params }: { params: Promise<{ slug: string }>
     const { slug } = React.use(params);
     const router = useRouter()
 
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
     const [isCheckedItem, setIsCheckedItem] = useState<boolean>(true)
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
     const { toast } = useToast();

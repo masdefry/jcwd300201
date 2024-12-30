@@ -44,8 +44,8 @@ export default function DeliveryRequest() {
     const router = useRouter();
     const pathname = usePathname();
     const { toast } = useToast()
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
@@ -57,6 +57,8 @@ export default function DeliveryRequest() {
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [outletId, setOutletId] = useState<any>(null);
+    const [isSearchValues, setIsSearchValues] = useState<string>('')
+
 
     const limit = 5;
 
@@ -206,6 +208,8 @@ export default function DeliveryRequest() {
                                             setSearchInput={setSearchInput}
                                             searchInput={searchInput}
                                             setPage={setPage}
+                                            setIsSearchValues={setIsSearchValues}
+                                            isSearchValues={isSearchValues}
                                         />
                                         {dataOrderListLoading && <div>Loading...</div>}
                                         {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}

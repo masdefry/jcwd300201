@@ -24,16 +24,6 @@ import {
 import Timeline from "@/components/core/timeline"
 import ContentWebLayout from "@/components/core/webSessionContent";
 import ButtonCustom from "@/components/core/button";
-import SearchInputCustom from "@/components/core/searchBar";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
-import { FaPlus } from "react-icons/fa6";
-import Image from "next/image"
 import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
 import { IoMdRefresh } from "react-icons/io"
@@ -44,8 +34,8 @@ export default function OrderList() {
     const router = useRouter();
     const pathname = usePathname();
     const { toast } = useToast()
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
@@ -55,7 +45,7 @@ export default function OrderList() {
     const [activeTab, setActiveTab] = useState(params.get("tab") || "proses");
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
-    const [isSearchValues, setSearchValues] = useState<string>('')
+    const [isSearchValues, setIsSearchValues] = useState<string>('')
     const [outletId, setOutletId] = useState(params.get("outletId") || null);
 
 
@@ -214,6 +204,8 @@ export default function OrderList() {
                                             setSearchInput={setSearchInput}
                                             searchInput={searchInput}
                                             setPage={setPage}
+                                            setIsSearchValues={setIsSearchValues}
+                                            isSearchValues={isSearchValues}
                                         />
                                         {dataOrderListLoading && <Loading />}
                                         {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
@@ -380,11 +372,10 @@ export default function OrderList() {
                 </section>
             </main>
 
-            {/* web sesi */}
             <ContentWebLayout caption="Order">
                 <FilterWeb
                     isSearchValues={isSearchValues}
-                    setIsSearchValues={setSearchValues}
+                    setIsSearchValues={setIsSearchValues}
                     debounce={debounce}
                     sortOption={sortOption}
                     setSortOption={setSortOption}

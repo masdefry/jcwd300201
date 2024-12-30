@@ -15,14 +15,17 @@ import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import NoData from "@/components/core/noData"
+import Loading from "@/components/core/loading"
 
 export default function HistoryOrderWashing() {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
     const { toast } = useToast()
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
@@ -30,6 +33,7 @@ export default function HistoryOrderWashing() {
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
+    const [isSearchValues, setIsSearchValues] = useState<string>('')
     const limit = 5;
 
     const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
@@ -79,6 +83,11 @@ export default function HistoryOrderWashing() {
         } else {
             currentUrl.delete('date-until')
         }
+        if (page) {
+            currentUrl.set('page', page?.toString())
+        } else {
+            currentUrl.delete('page')
+        }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
     }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
@@ -88,76 +97,74 @@ export default function HistoryOrderWashing() {
 
     return (
         <>
-            <main className="w-full h-fit">
-                <section className="w-full h-fit">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> HISTORY ORDER
-                            </div>
-                        </section>
-                        <div className="py-28 mx-4 space-y-4">
+            <MobileSessionLayout title="HISTORY ORDER">
+                <div className="mx-4 space-y-4">
 
-                            <CardContent className="space-y-2 pt-2">
-                                <FilterWorker
-                                    searchInput={searchInput}
-                                    setPage={setPage}
-                                    debounce={debounce}
-                                    sortOption={sortOption}
-                                    setSortOption={setSortOption}
-                                    dateFrom={dateFrom}
-                                    dateUntil={dateUntil}
-                                    setDateFrom={setDateFrom}
-                                    setDateUntil={setDateUntil}
-                                    setActiveTab={setActiveTab}
-                                    setSearchInput={setSearchInput}
-                                />
-                                {dataOrderWashingProcessLoading && <p>Loading...</p>}
-                                {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                {dataOrderWashingProcess?.orders?.map((order: any) => {
-                                    return (
-                                        <section
-                                            key={order.id}
-                                            className="flex justify-between items-center border-b py-4"
-                                        >
+                    <CardContent className="space-y-2 pt-2">
+                        <FilterWorker
+                            searchInput={searchInput}
+                            setPage={setPage}
+                            debounce={debounce}
+                            sortOption={sortOption}
+                            setSortOption={setSortOption}
+                            dateFrom={dateFrom}
+                            dateUntil={dateUntil}
+                            setDateFrom={setDateFrom}
+                            setDateUntil={setDateUntil}
+                            setActiveTab={setActiveTab}
+                            setSearchInput={setSearchInput}
+                            setIsSearchValues={setIsSearchValues}
+                            isSearchValues={isSearchValues}
 
-                                            <div className="flex items-center">
-                                                <div className="ml-2">
-                                                    <h2 className="font-medium text-gray-900">
-                                                        {order?.id}
-                                                    </h2>
-                                                    <h2 className="font-medium text-gray-900">
-                                                        {order?.User?.firstName} {order?.User?.lastName}
-                                                    </h2>
-                                                    <p className="text-xs text-gray-500">
-                                                        {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
-                                                            order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
-                                                                order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
-                                                                    order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
-                                                                        order?.orderStatus[0]?.status}
-                                                    </p>
-                                                    <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
-                                                </div>
-                                            </div>
+                        />
+                        {dataOrderWashingProcessLoading && <Loading />}
+                        {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
+                        {!dataOrderWashingProcessLoading && dataOrderWashingProcess?.orders?.length > 0 ? (
+                            dataOrderWashingProcess?.orders?.map((order: any) => (
+                                <section
+                                    key={order.id}
+                                    className="flex justify-between items-center border-b py-4"
+                                >
+
+                                    <div className="flex items-center">
+                                        <div className="ml-2">
+                                            <h2 className="font-medium text-gray-900">
+                                                {order?.id}
+                                            </h2>
+                                            <h2 className="font-medium text-gray-900">
+                                                {order?.User?.firstName} {order?.User?.lastName}
+                                            </h2>
+                                            <p className="text-xs text-gray-500">
+                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
+                                                    order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
+                                                        order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
+                                                            order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
+                                                                order?.orderStatus[0]?.status}
+                                            </p>
+                                            <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
+                                        </div>
+                                    </div>
 
 
-                                            <div className="flex gap-1">
-                                                <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                    <FaWhatsapp />
-                                                </Link>
-                                            </div>
-                                        </section>
-                                    )
-                                })}
+                                    <div className="flex gap-1">
+                                        <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                            <FaWhatsapp />
+                                        </Link>
+                                    </div>
+                                </section>
+                            ))
+                        ) : (
+                            !dataOrderWashingProcessLoading && (
+                                <NoData />
+                            )
 
-                                <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-
-                            </CardContent>
-                        </div>
-                    </main>
-                </section>
-            </main>
+                        )}
+                        {!dataOrderWashingProcessLoading && dataOrderWashingProcess?.orders?.length > 0 && (
+                            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                        )}
+                    </CardContent>
+                </div>
+            </MobileSessionLayout>
         </>
     )
 }

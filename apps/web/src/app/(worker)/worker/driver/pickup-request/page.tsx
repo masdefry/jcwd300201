@@ -22,6 +22,10 @@ import ContentWebLayout from "@/components/core/webSessionContent"
 import Pagination from "@/components/core/pagination"
 import FilterWorker from "@/components/core/filter"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import Loading from "@/components/core/loading"
+import NoData from "@/components/core/noData"
+import FilterWeb from "@/components/core/filterWeb"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout"
 
 export default function Page() {
     const params = useSearchParams();
@@ -30,8 +34,8 @@ export default function Page() {
 
     const { toast } = useToast()
 
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
 
     const [page, setPage] = useState<number>(1)
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
@@ -40,9 +44,11 @@ export default function Page() {
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
+    const [isSearchValues, setIsSearchValues] = useState<string>('')
+
     const limit = 5;
 
-    const { data: dataOrderAwaitingPickup, refetch, isLoading: dataOrderAwaitingPickupLoading, isError: dataOrderAwaitingPickupError } = useQuery({
+    const { data: dataOrderAwaitingPickup, isFetching, refetch, isLoading: dataOrderAwaitingPickupLoading, isError: dataOrderAwaitingPickupError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
             const tabValue =
@@ -67,7 +73,7 @@ export default function Page() {
         },
     });
 
-    const { mutate: handleProcessOrder, isPending: handleProcessOrderLoading } = useMutation({
+    const { mutate: handleProcessOrder, isPending: handleProcessOrderPending } = useMutation({
         mutationFn: async (slug: any) => {
             return await instance.post(`/order/accept-order/${slug}`, { email }, {
                 headers: {
@@ -89,7 +95,7 @@ export default function Page() {
             })
         }
     })
-    const { mutate: handleProcessOrderOutlet, isPending: handleProcessOrderOutletLoading } = useMutation({
+    const { mutate: handleProcessOrderOutlet, isPending: handleProcessOrderOutletPending } = useMutation({
         mutationFn: async (slug: any) => {
             return await instance.post(`/order/accept-outlet/${slug}`, { email }, {
                 headers: {
@@ -147,6 +153,11 @@ export default function Page() {
         } else {
             currentUrl.delete('date-until')
         }
+        if (page) {
+            currentUrl.set('page', page?.toString())
+        } else {
+            currentUrl.delete('page')
+        }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
     }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
@@ -155,144 +166,143 @@ export default function Page() {
 
     return (
         <>
-            <main className="w-full h-fit md:hidden block">
-                <section className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> DRIVER PICKUP
-                            </div>
-                        </section>
-                        <div className="py-28 mx-4 space-y-4">
-                            <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-4">
-                                    <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
-                                    <TabsTrigger value="waiting-pickup" onClick={() => { setActiveTab("waiting-pickup"); setPage(1) }} >Belum PickUp</TabsTrigger>
-                                    <TabsTrigger value="process-pickup" onClick={() => { setActiveTab("process-pickup"); setPage(1) }}>Proses</TabsTrigger>
-                                    <TabsTrigger value="arrived" onClick={() => { setActiveTab("arrived"); setPage(1) }}>Selesai</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value={activeTab}>
-                                    <CardContent className="space-y-2 pt-2">
-                                        <FilterWorker
-                                            searchInput={searchInput}
-                                            setPage={setPage}
-                                            debounce={debounce}
-                                            sortOption={sortOption}
-                                            setSortOption={setSortOption}
-                                            dateFrom={dateFrom}
-                                            dateUntil={dateUntil}
-                                            setDateFrom={setDateFrom}
-                                            setDateUntil={setDateUntil}
-                                            setActiveTab={setActiveTab}
-                                            setSearchInput={setSearchInput}
-                                        />
-                                        {dataOrderAwaitingPickupLoading && <p>Loading...</p>}
-                                        {dataOrderAwaitingPickupError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                        {dataOrderAwaitingPickup?.orders?.map((order: any) => (
-                                            <section
-                                                key={order.id}
-                                                className="flex justify-between items-center border-b py-4"
+            <MobileSessionLayout title="DRIVER PICKUP">
+                <div className="mx-4 space-y-4">
+                    <Tabs defaultValue={activeTab} className="fit">
+                        <TabsList className="grid w-full grid-cols-4">
+                            <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
+                            <TabsTrigger value="waiting-pickup" onClick={() => { setActiveTab("waiting-pickup"); setPage(1) }}>Belum PickUp</TabsTrigger>
+                            <TabsTrigger value="process-pickup" onClick={() => { setActiveTab("process-pickup"); setPage(1) }}>Proses</TabsTrigger>
+                            <TabsTrigger value="arrived" onClick={() => { setActiveTab("arrived"); setPage(1) }}>Selesai</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value={activeTab}>
+                            <CardContent className="space-y-2 pt-2">
+                                <FilterWorker
+                                    searchInput={searchInput}
+                                    setPage={setPage}
+                                    debounce={debounce}
+                                    sortOption={sortOption}
+                                    setSortOption={setSortOption}
+                                    dateFrom={dateFrom}
+                                    dateUntil={dateUntil}
+                                    setDateFrom={setDateFrom}
+                                    setDateUntil={setDateUntil}
+                                    setActiveTab={setActiveTab}
+                                    setSearchInput={setSearchInput}
+                                    setIsSearchValues={setIsSearchValues}
+                                    isSearchValues={isSearchValues}
+                                />
+                                {dataOrderAwaitingPickupLoading && <Loading />}
+                                {dataOrderAwaitingPickupError && <p>Silahkan coba beberapa saat lagi.</p>}
+                                {!dataOrderAwaitingPickupLoading && dataOrderAwaitingPickup?.orders?.length > 0 ? (
+                                    dataOrderAwaitingPickup?.orders?.map((order: any) => (
+                                        <section
+                                            key={order.id}
+                                            className="flex justify-between items-center border-b py-4"
+                                        >
+
+                                            <ConfirmAlert
+                                                colorConfirmation="blue"
+                                                caption={
+                                                    order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                        ? 'Apakah anda yakin ingin melakukan pengambilan laundry pada order ini?'
+                                                        : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                            ? 'Apakah anda yakin ingin menyelesaikan pengiriman laundry pada order ini?'
+                                                            : ''
+                                                }
+                                                onClick={
+                                                    order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                        ? () => handleProcessOrder(order?.id)
+                                                        : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                            ? () => handleProcessOrderOutlet(order?.id)
+                                                            : () => { }
+                                                }
+                                                description={
+                                                    order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                        ? 'Konfirmasi bahwa Anda akan mengambil laundry untuk order ini'
+                                                        : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                            ? 'Konfirmasi bahwa barang untuk order ini telah berhasil diantar ke laundry'
+                                                            : ''
+                                                }
+                                                disabled={
+                                                    (order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' && handleProcessOrderPending) ||
+                                                    (order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' && handleProcessOrderOutletPending)
+                                                }
+
+
                                             >
+                                                <div className="flex items-center">
+                                                    <div className="ml-2">
+                                                        <h2 className="font-medium text-gray-900">
+                                                            {order?.id}
+                                                        </h2>
+                                                        <h2 className="font-medium text-gray-900">
+                                                            {order?.User?.firstName} {order?.User?.lastName}
+                                                        </h2>
+                                                        <p className="text-xs text-gray-500">
+                                                            {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Pickup' :
+                                                                order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Perjalanan Menuju Outlet' :
+                                                                    order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Sampai Pada Outlet' :
+                                                                        order?.orderStatus[0]?.status}
 
-                                                <ConfirmAlert
-                                                    colorConfirmation="blue"
-                                                    caption={
-                                                        order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
-                                                            ? 'Apakah anda yakin ingin melakukan pengambilan laundry pada order ini?'
-                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
-                                                                ? 'Apakah anda yakin ingin menyelesaikan pengiriman laundry pada order ini?'
-                                                                : ''
-                                                    }
-                                                    onClick={
-                                                        order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
-                                                            ? () => handleProcessOrder(order?.id)
-                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
-                                                                ? () => handleProcessOrderOutlet(order?.id)
-                                                                : () => { }
-                                                    }
-                                                    description={
-                                                        order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
-                                                            ? 'Konfirmasi bahwa Anda akan mengambil laundry untuk order ini'
-                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
-                                                                ? 'Konfirmasi bahwa barang untuk order ini telah berhasil diantar ke laundry'
-                                                                : ''
-                                                    }>
-                                                    <div className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Pickup' :
-                                                                    order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Perjalanan Menuju Outlet' :
-                                                                        order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Sampai Pada Outlet' :
-                                                                            order?.orderStatus[0]?.status}
-
-                                                            </p>
-                                                            <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
-                                                        </div>
+                                                        </p>
+                                                        <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                     </div>
-                                                </ConfirmAlert>
-
-                                                <div className="flex gap-1">
-                                                    <Link href={`https://www.google.com/maps/search/?api=1&query=${order?.UserAddress?.latitude},${order?.UserAddress?.longitude}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
-                                                        <IoLocationSharp />
-                                                    </Link>
-
-                                                    <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                        <FaWhatsapp />
-                                                    </Link>
                                                 </div>
-                                            </section>
-                                        ))}
+                                            </ConfirmAlert>
 
-                                        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                                            <div className="flex gap-1">
+                                                <Link href={`https://www.google.com/maps/search/?api=1&query=${order?.UserAddress?.latitude},${order?.UserAddress?.longitude}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
+                                                    <IoLocationSharp />
+                                                </Link>
 
-                                    </CardContent>
-                                </TabsContent>
-                            </Tabs>
-                        </div>
-                    </main>
-                </section>
-            </main>
+                                                <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                                    <FaWhatsapp />
+                                                </Link>
+                                            </div>
+                                        </section>
+                                    ))
+                                ) : (
+                                    !dataOrderAwaitingPickupLoading && (
+                                        <NoData />
+                                    )
+
+                                )}
+                                {!dataOrderAwaitingPickupLoading && dataOrderAwaitingPickup?.orders?.length > 0 && (
+                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                                )}
+                            </CardContent>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            </MobileSessionLayout>
 
             {/* web ssi */}
             <ContentWebLayout caption='Permintaan Pesanan'>
-                <div className="w-full h-fit flex">
-                    <div className="w-1/2 gap-2 h-fit flex items-center">
-                        <select name="searchWorker" value={activeTab} onChange={(e) => {
-                            setActiveTab(e.target.value)
-                            setPage(1)
-                        }} id="searchWorker" className="px-4 py-2 focus:outline-none focus:border-orange-500 border rounded-2xl border-gray-300 text-sm text-neutral-600">
-                            <option value="" disabled>-- Pilih Opsi --</option>
-                            <option value="all">Semua Pesanan</option>
-                            <option value="waiting-pickup">Belum pickup</option>
-                            <option value="process-pickup">Dalam perjalanan</option>
-                            <option value="arrived">Selesai</option>
-                            <option value="all">Reset</option>
-                        </select>
-                        <select name="sort" value={sortOption} onChange={(e) => {
-                            setSortOption(e.target.value)
-                            setPage(1)
-                        }} id="sort" className="px-4 py-2 focus:outline-none focus:border-orange-500 border rounded-2xl border-gray-300 text-sm text-neutral-600">
-                            <option value="" disabled>-- Pilih Opsi --</option>
-                            <option value="date-asc">Tanggal Terlama</option>
-                            <option value="date-desc">Tanggal Terbaru</option>
-                            <option value="name-asc">Urutkan nama A - Z</option>
-                            <option value="name-desc">Urutkan nama Z - A</option>
-                        </select>
-                    </div>
-                    <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <Link href='/admin/worker/c'>
-                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
-                        </Link>
-                    </div>
-                </div>
+                <FilterWeb
+                    isSearchValues={isSearchValues}
+                    setIsSearchValues={setIsSearchValues}
+                    debounce={debounce}
+                    sortOption={sortOption}
+                    setSortOption={setSortOption}
+                    dateFrom={dateFrom}
+                    dateUntil={dateUntil}
+                    setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil}
+                    setActiveTab={setActiveTab}
+                    setSearchInput={setSearchInput}
+                    activeTab={activeTab}
+                    setPage={setPage}
+                    showStoreSelect={false}
+                    searchInput={searchInput}
+                    options={[
+                        { value: 'all', label: 'Semua' },
+                        { value: 'waiting-pickup', label: 'Belum Pickup' },
+                        { value: 'process-pickup', label: 'Proses' },
+                        { value: 'arrived', label: 'Selesai' },
+                    ]}
+                    borderReset="border rounded-full"
+                />
 
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
@@ -307,9 +317,15 @@ export default function Page() {
                             </tr>
                         </thead>
                         <tbody>
-                            {dataOrderAwaitingPickup?.orders?.length > 0 ? (
-                                dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => {
-                                    return (
+                            {isFetching ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
+                                </tr>
+                            ) : (
+                                !dataOrderAwaitingPickupLoading && dataOrderAwaitingPickup?.orders?.length > 0 ? (
+                                    dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
@@ -322,11 +338,16 @@ export default function Page() {
                                             </td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
                                             <td className="py-4 px-6 hover:underline break-words">
-                                                <ConfirmAlert disabled={order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? true : false} colorConfirmation="blue" caption={order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
-                                                    ? 'Apakah anda yakin ingin melakukan pengambilan laundry pada order ini?'
-                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
-                                                        ? 'Apakah anda yakin ingin menyelesaikan pengiriman laundry pada order ini?'
-                                                        : ''}
+                                                <ConfirmAlert
+                                                    disabled={
+                                                        (order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' && handleProcessOrderPending) ||
+                                                        (order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' && handleProcessOrderOutletPending)
+                                                    }
+                                                    colorConfirmation="blue" caption={order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                        ? 'Apakah anda yakin ingin melakukan pengambilan laundry pada order ini?'
+                                                        : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                            ? 'Apakah anda yakin ingin menyelesaikan pengiriman laundry pada order ini?'
+                                                            : ''}
                                                     onClick={order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? () => {
                                                         handleProcessOrder(order?.id)
                                                         refetch()
@@ -339,18 +360,21 @@ export default function Page() {
                                                     description={order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Konfirmasi bahwa Anda akan mengambil laundry untuk order ini'
                                                         : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Konfirmasi bahwa barang untuk order ini telah berhasil diantar ke laundry'
                                                             : ''
-                                                    }>
+                                                    }
+                                                >
                                                     <button className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500' disabled={order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? true : false}>{order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Pickup' : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Selesaikan' :
                                                         order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Selesai' : 'Selesai'}</button>
                                                 </ConfirmAlert>
                                             </td>
                                         </tr>
-                                    )
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold text-3xl text-neutral-300">Data Tersedia</td>
-                                </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {dataOrderAwaitingPickupLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                )
                             )}
                         </tbody>
                     </table>

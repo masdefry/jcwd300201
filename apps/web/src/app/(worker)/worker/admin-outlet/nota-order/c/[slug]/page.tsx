@@ -273,7 +273,9 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         weight: 0.1,
                         laundryPrice: 0,
                         totalWeight: 0
-                    }} onSubmit={(values: any) => {
+                    }}
+                        validationSchema={notaOrderValidation}
+                        onSubmit={(values: any) => {
                         console.log(values)
                         const itemOrder = values.items.map((item: any) => ({
                             laundryItemId: item.itemName,

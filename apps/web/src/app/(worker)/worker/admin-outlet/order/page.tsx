@@ -1,38 +1,27 @@
 'use client'
 
-import HeaderMobile from "@/components/core/headerMobile"
-import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
 import authStore from "@/zustand/authstore"
-import { useState, useEffect, ChangeEvent } from "react"
+import { useState, useEffect } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import Timeline from "@/components/core/timeline"
 import ContentWebLayout from "@/components/core/webSessionContent";
 import ButtonCustom from "@/components/core/button";
 import SearchInputCustom from "@/components/core/searchBar";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FaPlus } from "react-icons/fa6";
+import Loading from "@/components/core/loading"
+import NoData from "@/components/core/noData"
+import FilterWeb from "@/components/core/filterWeb"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout"
 
 
 export default function DeliveryRequest() {
@@ -40,12 +29,12 @@ export default function DeliveryRequest() {
     const router = useRouter();
     const pathname = usePathname();
     const { toast } = useToast()
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
-
+    const [isSearchValues, setIsSearchValues] = useState<string>('')
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "proses");
@@ -138,6 +127,11 @@ export default function DeliveryRequest() {
         } else {
             currentUrl.delete(`date-until`)
         }
+        if (page) {
+            currentUrl.set(`page`, page?.toString())
+        } else {
+            currentUrl.delete(`page`)
+        }
 
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
@@ -148,221 +142,175 @@ export default function DeliveryRequest() {
 
     return (
         <>
-            <main className="w-full h-fit md:hidden block">
-                <section className="w-full h-fit">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex justify-between gap-2 items-center font-bold w-screen pr-16">
-                                <div className="flex justify-center items-center gap-2"><Link href='/admin/settings'><FaArrowLeft /></Link> ORDER</div>
-                            </div>
-                        </section>
-                        <div className="py-28 mx-4 space-y-4">
-                            <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-2">
-                                    <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
-                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value={activeTab}>
-                                    <CardContent className="space-y-2 pt-2">
-                                        <FilterWorker
-                                            debounce={debounce}
-                                            sortOption={sortOption}
-                                            setSortOption={setSortOption}
-                                            dateFrom={dateFrom}
-                                            dateUntil={dateUntil}
-                                            setDateFrom={setDateFrom}
-                                            setDateUntil={setDateUntil}
-                                            setActiveTab={setActiveTab}
-                                            setSearchInput={setSearchInput}
-                                            searchInput={searchInput}
-                                            setPage={setPage}
-                                        />
-                                        {dataOrderListLoading && <div>Loading...</div>}
-                                        {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
-                                        {dataOrderList?.orders?.map((order: any) => (
-                                            <section
-                                                key={order.id}
-                                                className="flex justify-between items-center border-b py-4"
-                                            >
+            <MobileSessionLayout title="ORDER">
+                <div className="mx-4 space-y-4">
+                    <Tabs defaultValue={activeTab} className="fit">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
+                            <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value={activeTab}>
+                            <CardContent className="space-y-2 pt-2">
+                                <FilterWorker debounce={debounce} sortOption={sortOption} setSortOption={setSortOption}
+                                    dateFrom={dateFrom} dateUntil={dateUntil} setDateFrom={setDateFrom} setDateUntil={setDateUntil}
+                                    setActiveTab={setActiveTab} setSearchInput={setSearchInput} searchInput={searchInput}
+                                    setPage={setPage} setIsSearchValues={setIsSearchValues} isSearchValues={isSearchValues} />
 
-                                                <div
-                                                    onClick={() => {
-                                                        setOrderData(null);
-                                                        handleOrderDetail(order?.id);
-                                                        setOpenDialog(true)
-                                                    }}
-
-                                                    className="flex items-center">
-                                                    <div className="ml-2">
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.id}
-                                                        </h2>
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.User?.firstName} {order?.User?.lastName}
-                                                        </h2>
-                                                        <div className="text-xs text-gray-500">
-                                                            {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
-                                                                ? 'Menunggu Driver'
-                                                                : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
-                                                                    ? 'Driver Menuju Store'
-                                                                    : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
-                                                                        ? 'Diterima Outlet'
-                                                                        : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
-                                                                            ? 'Proses Cuci'
-                                                                            : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'
-                                                                                ? 'Proses Setrika'
-                                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                                    ? 'Proses Packing'
-                                                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
-                                                                                        ? 'Proses Delivery'
-                                                                                        : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
-                                                                                            ? 'Laundry Sampai'
-                                                                                            : 'Status tidak dikenal'}
-                                                        </div>
-                                                        <p className="text-xs text-gray-500">
-                                                            {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                        </p>
+                                {dataOrderListLoading && <Loading />}
+                                {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
+                                {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
+                                    dataOrderList?.orders?.map((order: any) => (
+                                        <section key={order.id} className="flex justify-between items-center border-b py-4">
+                                            <span onClick={() => {
+                                                setOrderData(null);
+                                                handleOrderDetail(order?.id);
+                                                setOpenDialog(true)
+                                            }} className="flex items-center">
+                                                <div className="ml-2">
+                                                    <h2 className="font-medium text-gray-900">{order?.id.length > 15 ? <span>{order?.id.slice(0, 15)}..</span> : order?.id}</h2>
+                                                    <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
+                                                    <div className="text-xs text-gray-500">
+                                                        {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                            ? 'Menunggu Driver'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                                ? 'Driver Menuju Store'
+                                                                : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
+                                                                    ? 'Diterima Outlet'
+                                                                    : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                        ? 'Proses Cuci'
+                                                                        : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'
+                                                                            ? 'Proses Setrika'
+                                                                            : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                                                ? 'Proses Packing'
+                                                                                : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
+                                                                                    ? 'Proses Delivery'
+                                                                                    : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
+                                                                                        ? 'Laundry Sampai'
+                                                                                        : 'Status tidak dikenal'}
                                                     </div>
+                                                    <p className="text-xs text-gray-500">
+                                                        {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                    </p>
                                                 </div>
-                                            </section>
-                                        ))}
-                                        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                    </CardContent>
-                                </TabsContent>
-                            </Tabs>
-                            <Dialog open={openDialog} onOpenChange={(isOpen) => setOpenDialog(isOpen)}>
-                                <DialogContent className="sm:max-w-[425px]">
-                                    <DialogHeader>
-                                        <DialogTitle>Detail Order</DialogTitle>
-                                    </DialogHeader>
+                                            </span>
+                                        </section>
+                                    ))
+                                ) : (
+                                    !dataOrderListLoading && (<NoData />)
+                                )}
+                                {!dataOrderListLoading && dataOrderList?.orders?.length > 0 && (
+                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                                )}
+                            </CardContent>
+                        </TabsContent>
+                    </Tabs>
+                    <Dialog open={openDialog} onOpenChange={(isOpen) => setOpenDialog(isOpen)}>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Detail Order</DialogTitle>
+                            </DialogHeader>
 
-                                    {/* Order Detail Content */}
-                                    {orderData ? (
-                                        <>
-                                            <div className="grid gap-4 py-4">
-                                                <div className="flex justify-between items-center">
-                                                    <div className="flex flex-col">
-                                                        <h2 className="text-base font-semibold">{orderData?.order?.id}</h2>
-                                                        <h2 className="text-base">{orderData?.order?.OrderType?.type}</h2>
-                                                    </div>
-                                                    <div className="flex flex-col">
-
-                                                        <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
-                                                        <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
-
-                                                    </div>
-                                                </div>
+                            {orderData ? (
+                                <>
+                                    <div className="grid gap-4 py-2 border-b border-neutral-400">
+                                        <div className="flex justify-between gap-3 items-center">
+                                            <div className="w-2/3 flex flex-col">
+                                                <h2 className="text-sm font-semibold">{orderData?.order?.id?.length > 15 ? <span>{orderData?.order?.id.slice(0, 15)}..</span> : orderData?.order?.id}</h2>
+                                                <h2 className="text-sm">{orderData?.order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
+                                                    orderData?.order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Setrika'}</h2>
                                             </div>
+                                            <div className="w-1/3 flex flex-col items-end">
+                                                <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
+                                                <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
+                                            </div>
+                                        </div>
+                                    </div>
 
-
-
-
-                                            <div className="flex flex-row justify-between">
+                                    <span className='font-semibold'>Proses Laundry:</span>
+                                    <div className="flex flex-row justify-between pb-2">
+                                        <div className='space-y-2'>
+                                            <Timeline orderStatus={orderData?.orderStatus} />
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div className="border rounded-lg border-gray-700 p-2 text-sm">
+                                                <div className="font-semibold">Driver Pickup:</div>
                                                 <div>
-                                                    Proses :
-                                                    <Timeline orderStatus={orderData?.orderStatus} />
+                                                    {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
+                                                        <>
+                                                            <p>
+                                                                {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
+                                                            </p>
+                                                            <p>
+                                                                {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'Tidak ada nomor telepon'}
+                                                            </p>
+                                                        </>
+                                                    ) : (
+                                                        "Menunggu Driver"
+                                                    )}
                                                 </div>
-                                                <div className="space-y-3">
-                                                    <div className="border rounded-lg border-gray-700 p-2 shadow-md">
-                                                        <div className="font-semibold">Driver Pickup:</div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
-                                                                <>
-                                                                    <div>
-                                                                        {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
-                                                                    </div>
-                                                                    <div>
-                                                                        {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
-                                                                    </div>
-                                                                </>
-                                                            ) : (
-                                                                "Menunggu Driver"
-                                                            )}
-                                                        </div>
+                                            </div>
+                                            <div className="border rounded-lg border-gray-700 p-2 text-sm">
+                                                <div className="font-semibold">Delivery Driver:</div>
+                                                <div>
+                                                    {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMER" ? (
+                                                        <>
+                                                            <div>
+                                                                {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
+                                                            </div>
+                                                            <div>
+                                                                {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        "Belum Ada Driver"
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="w-full h-fit py-2 border-t space-y-1 border-neutral-400">
+                                        <div className="flex justify-between text-sm items-end">
+                                            <h1 className="font-medium">Produk:</h1>
+                                            <div className="h-4 overflow-y-auto">
+                                                {orderData.orderDetail?.map((item: any, index: number) => (
+                                                    <div key={index} className="flex items-center justify-center">
+                                                        <p>{item?.quantity}x {item?.LaundryItem?.itemName}</p>
                                                     </div>
-                                                    <div className="border rounded-lg border-gray-700 p-2 shadow-md">
-                                                        <div className="font-semibold">Delivery Driver:</div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERTLET" ? (
-                                                                <>
-                                                                    <div>
-                                                                        {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
-                                                                    </div>
-                                                                    <div>
-                                                                        {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
-                                                                    </div>
-                                                                </>
-                                                            ) : (
-                                                                "Belum Ada Driver"
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
+                                                ))}
                                             </div>
-
-                                            {/* Map Order Items */}
-                                            <div className="text-center">
-                                                <h3 className="font-medium">Order Items</h3>
-                                                <div className="grid grid-cols-2  justify-items-center">
-                                                    {orderData.orderDetail?.map((item: any, index: number) => (
-                                                        <div key={index} className="border-b border-black py-1 flex items-center justify-center">
-                                                            <span>{item?.quantity}x {item?.LaundryItem?.itemName}</span>
-                                                        </div>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                            {/* Delivery Fee and Total Price */}
-                                            <div className="flex justify-between">
-                                                <span className="font-medium">Biaya Kirim:</span>
-                                                <span>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</span>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <span>Harga Laundry:</span>
-                                                <span>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</span>
-                                            </div>
-                                            <div className="flex justify-between font-semibold">
-                                                <span>Total Harga:</span>
-                                                <span>Rp{(orderData?.order?.deliveryFee + orderData?.order?.laundryPrice)?.toLocaleString("id-ID")}</span>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <div>Loading order details...</div>
-                                    )}
-                                </DialogContent>
-                            </Dialog>
-                        </div>
-                    </main>
-                </section>
-            </main>
-
-            {/* web sesi */}
-            <ContentWebLayout caption="Order">
-                <div className="w-full h-fit flex items-center">
-                    <div className="w-1/2 h-fit flex items-center">
-                        <Select value={sortOption} onValueChange={setSortOption}>
-                            <SelectTrigger className="w-[150px] border rounded-full py-2 px-3">
-                                <SelectValue placeholder="Sort By" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
-                                <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
-                                <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
-                                <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
-                                <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
-                                <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <Link href='/admin/worker/c'>
-                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
-                        </Link>
-                    </div>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <h1 className="font-medium">Biaya Kirim:</h1>
+                                            <p>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</p>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <h1 className="font-medium">Harga Laundry:</h1>
+                                            <p>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</p>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <h1 className="font-medium">Total Harga:</h1>
+                                            <p>Rp{(orderData?.order?.deliveryFee + orderData?.order?.laundryPrice)?.toLocaleString("id-ID")}</p>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <Loading />
+                            )}
+                        </DialogContent>
+                    </Dialog>
                 </div>
+            </MobileSessionLayout>
 
-                {/* table */}
+            <ContentWebLayout caption="Order">
+                <FilterWeb isSearchValues={isSearchValues} setIsSearchValues={setIsSearchValues} debounce={debounce} sortOption={sortOption}
+                    setSortOption={setSortOption} dateFrom={dateFrom} dateUntil={dateUntil} setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil} setActiveTab={setActiveTab} setSearchInput={setSearchInput} activeTab={activeTab}
+                    outletId={outletId} setOutletId={setOutletId} getDataStore={getDataStore} isStoreLoading={isStoreLoading}
+                    isStoreError={isStoreError} setPage={setPage} showStoreSelect={false} searchInput={searchInput}
+                    options={[
+                        { value: 'proses', label: 'Dalam Proses' },
+                        { value: 'done', label: 'Selesai' },
+                    ]} borderReset="border rounded-full" />
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
                         <thead className="bg-gray-200">
@@ -376,25 +324,54 @@ export default function DeliveryRequest() {
                             </tr>
                         </thead>
                         <tbody>
-                            {getDataItem?.length > 0 ? (
-                                getDataItem?.map((order: any, i: number) => {
-                                    return (
+                            {isFetching ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
+                                </tr>
+                            ) : (
+                                !dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
+                                    dataOrderList?.orders?.map((order: any, i: number) => (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu kurir' : ''}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                    ? 'Menunggu Driver'
+                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                        ? 'Driver Menuju Store'
+                                                        : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
+                                                            ? 'Diterima Outlet'
+                                                            : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                ? 'Proses Cuci'
+                                                                : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'
+                                                                    ? 'Proses Setrika'
+                                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                                        ? 'Proses Packing'
+                                                                        : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
+                                                                            ? 'Proses Delivery'
+                                                                            : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
+                                                                                ? 'Laundry Sampai'
+                                                                                : 'Status tidak dikenal'}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
                                             <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <Link href={`/admin/worker/detail/${order?.id}`}>View</Link>
+                                                <div onClick={() => {
+                                                    setOrderData(null);
+                                                    handleOrderDetail(order?.id);
+                                                    setOpenDialog(true)
+                                                }}>View</div>
                                             </td>
                                         </tr>
-                                    )
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? 'Mohon tunggu...' : 'Data tidak tersedia'}</td>
-                                </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {dataOrderListLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                )
                             )}
                         </tbody>
                     </table>
@@ -404,8 +381,7 @@ export default function DeliveryRequest() {
                         </div>
                         <div className="flex gap-2">
                             <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
-                                disabled={page == 1} onClick={() => handlePageChange(page - 1)}
-                            >Sebelumnya</ButtonCustom>
+                                disabled={page == 1} onClick={() => handlePageChange(page - 1)}>Sebelumnya</ButtonCustom>
                             <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
                                 disabled={page == totalPages || page > totalPages} onClick={() => handlePageChange(page + 1)}
                             >Selanjutnya</ButtonCustom>

@@ -7,7 +7,6 @@ export interface IFilterPropsWeb {
     setDateFrom: (value: string | null) => void;
     setDateUntil: (value: string | null) => void;
     setActiveTab: (tab: string) => void;
-    setIsSearchValues: (input: string) => void;
     setSearchInput: (input: string) => void;
     activeTab: string;
     outletId?: string | null;
@@ -22,4 +21,5 @@ export interface IFilterPropsWeb {
     searchInput: string;
     borderReset?: string
     isSearchValues: string
+    setIsSearchValues: (input: string) => void;
 }

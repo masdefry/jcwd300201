@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select"
 import { FaArrowUpRightFromSquare, FaCheck, FaPlus } from "react-icons/fa6";
 import { ConfirmAlert } from "@/components/core/confirmAlert"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout"
 
 export default function DeliveryRequest() {
     const params = useSearchParams();
@@ -38,8 +39,8 @@ export default function DeliveryRequest() {
 
     const { toast } = useToast()
 
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
 
     const notesSchema = Yup.object({
         notes: Yup.string().required("Notes are required"),
@@ -53,6 +54,7 @@ export default function DeliveryRequest() {
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
+    const [isSearchValues, setIsSearchValues] = useState<string>('')
 
     const limit = 5;
 
@@ -143,121 +145,121 @@ export default function DeliveryRequest() {
 
     return (
         <>
-            <main className="w-full h-fit md:hidden block">
-                <section className="w-full h-fit">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> REQUEST DELIVERY
-                            </div>
-                        </section>
-                        <div className="py-28 mx-4 space-y-4">
-                            <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="hidden w-full">
-                                    <TabsTrigger value="ready-to-deliver" onClick={() => { setActiveTab("ready-to-deliver"); setPage(1) }} >Siap Kirim</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value={activeTab}>
-                                    <CardContent className="space-y-2 pt-2">
-                                        <FilterWorker
-                                            debounce={debounce}
-                                            sortOption={sortOption}
-                                            setSortOption={setSortOption}
-                                            dateFrom={dateFrom}
-                                            dateUntil={dateUntil}
-                                            setDateFrom={setDateFrom}
-                                            setDateUntil={setDateUntil}
-                                            setActiveTab={setActiveTab}
-                                            setSearchInput={setSearchInput}
-                                            setPage={setPage}
-                                            searchInput={searchInput}
-                                        />
-                                        {dataOrderDeliveryLoading && <Loading />}
-                                        {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}
-                                        {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 ? (
-                                            dataOrderDelivery?.orders?.map((order: any) => (
-                                                <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                                    {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true ? (
-                                                        <ConfirmAlert
-                                                            colorConfirmation="blue"
-                                                            caption={
-                                                                order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                                    ? 'Apakah Anda ingin request pengiriman untuk pesanan ini?'
-                                                                    : ''
-                                                            }
-                                                            description={
-                                                                order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                                    ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                    : ''
-                                                            } onClick={() => handleRequestDelivery(order?.id)}>
-                                                            <div className="flex items-center">
-                                                                <div className="ml-2">
-                                                                    <h2 className="font-medium text-gray-900">
-                                                                        {order?.id}
-                                                                    </h2>
-                                                                    <h2 className="font-medium text-gray-900">
-                                                                        {order?.User?.firstName} {order?.User?.lastName}
-                                                                    </h2>
-                                                                    <div className="text-xs text-gray-500">
-                                                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
-                                                                            ? 'Menunggu Pembayaran' :
-                                                                            order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                                                ? 'Siap untuk dikirim'
-                                                                                : 'tes'}
-                                                                    </div>
-                                                                    <p className="text-xs text-gray-500">
-                                                                        {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                                    </p>
-                                                                </div>
-                                                            </div>
-                                                        </ConfirmAlert>
-                                                    ) : (
+            <MobileSessionLayout title="REQUEST DELIVERY">
+                <div className="mx-4 space-y-4">
+                    <Tabs defaultValue={activeTab} className="fit">
+                        <TabsList className="hidden w-full">
+                            <TabsTrigger value="ready-to-deliver" onClick={() => { setActiveTab("ready-to-deliver"); setPage(1) }} >Siap Kirim</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value={activeTab}>
+                            <CardContent className="space-y-2 pt-2">
+                                <FilterWorker
+                                    debounce={debounce}
+                                    sortOption={sortOption}
+                                    setSortOption={setSortOption}
+                                    dateFrom={dateFrom}
+                                    dateUntil={dateUntil}
+                                    setDateFrom={setDateFrom}
+                                    setDateUntil={setDateUntil}
+                                    setActiveTab={setActiveTab}
+                                    setSearchInput={setSearchInput}
+                                    setPage={setPage}
+                                    searchInput={searchInput}
+                                    setIsSearchValues={setIsSearchValues}
+                                    isSearchValues={isSearchValues}
 
-                                                        <div className="flex items-center">
-                                                            <div className="ml-2">
-                                                                <h2 className="font-medium text-gray-900">
-                                                                    {order?.id}
-                                                                </h2>
-                                                                <h2 className="font-medium text-gray-900">
-                                                                    {order?.User?.firstName} {order?.User?.lastName}
-                                                                </h2>
-                                                                <div className="text-xs text-gray-500">
-                                                                    {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
-                                                                        ? 'Menunggu Pembayaran' :
-                                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                                            ? 'Siap untuk dikirim'
-                                                                            : 'tes'}
-                                                                </div>
-                                                                <div className="text-xs text-gray-500">
-                                                                    {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                                </div>
+                                />
+                                {dataOrderDeliveryLoading && <Loading />}
+                                {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}
+                                {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 ? (
+                                    dataOrderDelivery?.orders?.map((order: any) => (
+                                        <section
+                                            key={order.id}
+                                            className="flex justify-between items-center border-b py-4"
+                                        >
+                                            {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true ? (
+                                                < ConfirmAlert
+                                                    colorConfirmation="blue"
+                                                    caption={
+                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                            ? 'Apakah Anda ingin request pengiriman untuk pesanan ini?'
+                                                            : ''
+                                                    }
+                                                    description={
+                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                            ? 'Pastikan anda memilih order yang tepat/benar'
+                                                            : ''
+                                                    }
+                                                    onClick={() => {
+                                                        handleRequestDelivery(order?.id);
+                                                    }}
+                                                >
+                                                    <div className="flex items-center">
+                                                        <div className="ml-2">
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.id}
+                                                            </h2>
+                                                            <h2 className="font-medium text-gray-900">
+                                                                {order?.User?.firstName} {order?.User?.lastName}
+                                                            </h2>
+                                                            <div className="text-xs text-gray-500">
+                                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
+                                                                    ? 'Menunggu Pembayaran' :
+                                                                    order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                                        ? 'Siap untuk dikirim'
+                                                                        : 'tes'}
                                                             </div>
+                                                            <p className="text-xs text-gray-500">
+                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                            </p>
                                                         </div>
-                                                    )}
-
-                                                    <div className="flex gap-1">
-                                                        <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                            <FaWhatsapp />
-                                                        </Link>
                                                     </div>
-                                                </section>
-                                            ))
-                                        ) : (
-                                            !dataOrderDeliveryLoading && (
-                                                <NoData />
-                                            )
+                                                </ConfirmAlert>
+                                            ) : (
 
-                                        )}
-                                        {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 && (
-                                            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                        )}
-                                    </CardContent>
-                                </TabsContent>
-                            </Tabs>
-                        </div>
-                    </main>
-                </section >
-            </main >
+                                                <div className="flex items-center">
+                                                    <div className="ml-2">
+                                                        <h2 className="font-medium text-gray-900">
+                                                            {order?.id}
+                                                        </h2>
+                                                        <h2 className="font-medium text-gray-900">
+                                                            {order?.User?.firstName} {order?.User?.lastName}
+                                                        </h2>
+                                                        <div className="text-xs text-gray-500">
+                                                            {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
+                                                                ? 'Menunggu Pembayaran' :
+                                                                order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                                    ? 'Siap untuk dikirim'
+                                                                    : 'tes'}
+                                                        </div>
+                                                        <div className="text-xs text-gray-500">
+                                                            {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            <div className="flex gap-1">
+                                                <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                                    <FaWhatsapp />
+                                                </Link>
+                                            </div>
+                                        </section>
+                                    ))
+                                ) : (
+                                    !dataOrderDeliveryLoading && (
+                                        <NoData />
+                                    )
+
+                                )}
+                                {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 && (
+                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                                )}
+                            </CardContent>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            </MobileSessionLayout>
 
             <ContentWebLayout caption='Pengiriman'>
                 <div className="w-full h-fit flex items-center">
@@ -284,7 +286,6 @@ export default function DeliveryRequest() {
                     </div>
                 </div>
 
-                {/* table */}
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
                         <thead className="bg-gray-200">
