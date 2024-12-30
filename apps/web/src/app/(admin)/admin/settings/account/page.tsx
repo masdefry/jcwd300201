@@ -48,8 +48,6 @@ export default function Page() {
                         <div className="w-full py-4 bg-orange-500 px-14 rounded-xl">
                             <h1 className="font-bold text-white">Pengaturan</h1>
                         </div>
-
-                        {/* Tabs */}
                         <TabContext value={value}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <TabList onChange={handleChange} aria-label="Pengaturan tabs">
@@ -76,8 +74,6 @@ export default function Page() {
                                         handleUpdateProfile(fd)
                                     }}>
                                     {({ setFieldValue, values }) => (
-
-                                        // profile settings
                                         <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                             disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                             handleDeleteProfilePicture={handleDeleteProfilePicture}
@@ -97,12 +93,7 @@ export default function Page() {
                                         password: Yup.string().required('Password baru harus diisi'),
                                         confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
                                     })}
-                                    onSubmit={(values) => {
-                                        handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                        console.log(values)
-                                    }}>
-
-                                    {/* change password setting */}
+                                    onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
                                     <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                         confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                         isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}

@@ -26,7 +26,7 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { FaPlus } from "react-icons/fa6";
+import { FaArrowUpRightFromSquare, FaCheck, FaPlus } from "react-icons/fa6";
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
@@ -272,9 +272,9 @@ export default function DeliveryRequest() {
                             <tr>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order ID</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Customer</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Store</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Total</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                             </tr>
                         </thead>
@@ -292,27 +292,30 @@ export default function DeliveryRequest() {
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' ? 'Menunggu Verifikasi' : 'Terbayarkan'}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
-                                            <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <ConfirmAlert
-                                                    caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?"
-                                                    description={
-                                                        <Image
-                                                            src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
-                                                            alt="payment proof"
-                                                            width={500}
-                                                            height={200}
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">Rp. {order?.totalPrice?.toLocaleString('id-ID')}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Strika'}</td>
+                                            <td className="py-4 px-6 text-sm text-center">
+                                                <div className="flex gap-4 items-center">
+                                                    <Link href={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
+                                                        target="_blank" className="text-blue-700 hover:text-blue-500 relative group">
+                                                        <FaArrowUpRightFromSquare />
+                                                        <span className="absolute z-20 bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs rounded-md px-2 py-1 mt-1 transition-opacity duration-200">
+                                                            Lihat Bukti Pembayaran
+                                                        </span>
+                                                    </Link>
 
-                                                        />
-                                                    }
-                                                    disabled={handlConfirmPaymentPending}
-                                                    onClick={() => handleConfirmPayment(order?.id)}
-
-                                                >
-                                                    <div>View</div>
-                                                </ConfirmAlert>
+                                                    <ConfirmAlert caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?"
+                                                        description="Mohon periksa kembali bukti pembayaran, hati-hati terhadap penipuan"
+                                                        onClick={() => handleConfirmPayment(order?.id)}>
+                                                        <button className="text-green-600 hover:text-green-400 relative group">
+                                                            <FaCheck />
+                                                            <span className="absolute bottom-0 z-20 left-1/2 transform -translate-x-1/2 translate-y-full opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs rounded-md px-2 py-1 mt-1 transition-opacity duration-200">
+                                                                Verifikasi Pembayaran
+                                                            </span>
+                                                        </button>
+                                                    </ConfirmAlert>
+                                                </div>
                                             </td>
                                         </tr>
                                     ))

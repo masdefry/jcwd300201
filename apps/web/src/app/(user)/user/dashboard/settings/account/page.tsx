@@ -43,8 +43,6 @@ export default function Page() {
         </main>
     )
 
-    console.log(getDataUser, '<<<<')
-
     return (
         <>
 
@@ -103,10 +101,7 @@ export default function Page() {
                                             password: Yup.string().required('Password baru harus diisi'),
                                             confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
                                         })}
-                                        onSubmit={(values) => {
-                                            handleChangePasswordGoogleRegister({ password: values?.password })
-                                            console.log(values)
-                                        }}>
+                                        onSubmit={(values) => handleChangePasswordGoogleRegister({ password: values?.password })}>
 
                                         {/* change password setting */}
                                         <Form className='w-full'>
@@ -148,12 +143,7 @@ export default function Page() {
                                             password: Yup.string().required('Password baru harus diisi'),
                                             confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
                                         })}
-                                        onSubmit={(values) => {
-                                            handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                            console.log(values)
-                                        }}>
-
-                                        {/* change password setting */}
+                                        onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
                                         <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                             confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                             isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}

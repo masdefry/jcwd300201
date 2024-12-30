@@ -148,6 +148,39 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             <MobileSessionLayout title="ITEM CHECKING">
                 <section className=" px-10">
 
+<<<<<<< HEAD
+                            <Formik
+                                initialValues={{
+                                    items: [],
+                                    itemName: '',
+                                    quantity: 1,
+                                    notes: '',
+                                }}
+                                onSubmit={(values: any) => {
+                                    handleStatusOrder({
+                                        email: emails,
+                                        notes: values.notes,
+                                    });
+                                }}
+                            >
+                                {({ values, setFieldValue, submitForm }) => {
+                                    const handleCustomSubmit = () => {
+                                        const itemOrder = values.items.map((item: any) => ({
+                                            laundryItemId: item.itemName,
+                                            quantity: item.quantity,
+                                        }));
+                                        const isDataMatching = compareData(itemOrder, dataOrderDetail);
+                                        if (isDataMatching) {
+                                            ("Data is matching, submitting form...");
+                                            submitForm()
+                                        } else {
+                                            const initialNotes = values.items
+                                                .map((item: any) => {
+                                                    const itemDetails = dataItemName.find((data: any) => Number(data.id) === Number(item.itemName));
+                                                    return `Item: ${itemDetails?.itemName}, Quantity: ${item.quantity}`;
+                                                })
+                                                .join("\n");
+=======
                     <Formik
                         initialValues={{
                             items: [],
@@ -180,6 +213,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                             return `Item: ${itemDetails?.itemName}, Quantity: ${item.quantity}`;
                                         })
                                         .join("\n");
+>>>>>>> 36470ef6a52f072d19ef19e2c5216b612088578f
 
 
                                     setDialogNotes(initialNotes);
@@ -392,7 +426,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                 }));
                                 const isDataMatching = compareData(itemOrder, dataOrderDetail);
                                 if (isDataMatching) {
-                                    console.log("Data is matching, submitting form...");
                                     submitForm()
                                 } else {
                                     const initialNotes = values.items
@@ -438,7 +471,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     </div>
                                                     <div className="w-full">
                                                         <label className="font-semibold">Jumlah <span className="text-red-600">*</span></label>
-                                                        <Field name="quantity" type="number" placeholder="Quantity" className="w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500 rounded-md" min="1" />
+                                                        <Field name="quantity" max="1000" type="number" placeholder="Quantity" className="w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500 rounded-md" min="1" />
                                                     </div>
                                                     <div className='flex flex-col items-end'>
                                                         <ButtonCustom type="button"

@@ -23,6 +23,7 @@ import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
 import { FaWallet } from "react-icons/fa6";
 import { RiBankCardFill } from "react-icons/ri";
 import ButtonCustom from "@/components/core/button";
+import Image from "next/image";
 
 
 const validationSchema = Yup.object().shape({
@@ -125,11 +126,15 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         },
     });
 
-    console.log(isPaymentMethod, '<< ini apa')
-    console.log(dataOrderNote?.order?.laundryPrice === 0, '<< ini apa')
+    const isArrCardPayment = [
+        { img: '/images/bca-card.png' },
+        { img: '/images/bank-tf.png' },
+        { img: '/images/dana-card.png' },
+        { img: '/images/e-wallet.png' },
+    ]
 
-    if (dataOrderNote == undefined) return <div></div>
-    if (isFetching) return <div></div>
+    // if (dataOrderNote == undefined) return <div></div>
+    // if (isFetching) return <div></div>
     return (
         <>
             <main className="w-full h-fit md:hidden block">
@@ -286,6 +291,23 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     </div>
                     <div className="w-full md:w-1/2 space-y-4">
                         <h1 className="font-bold text-2xl text-gray-800">Metode Pembayaran</h1>
+                        <div className="w-full h-fit">
+                            <div className="flex justify-start w-full h-fit">
+                                <div className="grid grid-cols-4 h-fit gap-2">
+                                    {isArrCardPayment.map((img: { img: string }, i: number) => (
+                                        <div key={i} className='w-fit h-fit flex justify-center'>
+                                            <Image
+                                                className='w-fit h-10'
+                                                width={500}
+                                                height={500}
+                                                alt='card'
+                                                src={img?.img}
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                         {dataOrderNote?.order?.isPaid === false && !dataOrderNote?.order?.paymentProof ? (
                             <>
                                 <div className="space-y-4">
@@ -304,18 +326,14 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='manualTransfer' type="radio" name="paymentMethod" id="manualTransfer" className="w-4 h-4 text-blue-600" />
                                     </label>
                                 </div>
-                                <ButtonCustom type="button" disabled={!isPaymentMethod || dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0} width="w-full" onClick={() => {
+                                <ButtonCustom type="button" btnColor="bg-blue-500 hover:bg-blue-500" disabled={!isPaymentMethod || dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0} width="w-full" onClick={() => {
                                     isPaymentMethod === 'midtrans' ? handlePaymmentOrder(dataOrderNote?.order?.id) : setIsUploadDialogOpen(true)
                                 }}>Bayar sekarang</ButtonCustom>
                             </>
                         ) : (
-                            <div className="flex text-center text-lg justify-center mt-8 flex-col border-gray-300 p-4">
-                                <div className="font-bold">
-                                    Terima kasih,
-                                </div>
-                                <div>
-                                    Anda Telah Melakukan Pembayaran!
-                                </div>
+                            <div className="text-lg mt-8 border-gray-300 p-4">
+                                <h1 className="font-bold">Terima kasih,</h1>
+                                <p>Anda Telah Melakukan Pembayaran!</p>
                             </div>
                         )}
                     </div>

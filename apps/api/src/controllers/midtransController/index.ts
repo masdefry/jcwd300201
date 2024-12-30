@@ -1,7 +1,4 @@
-import { Prisma } from "@prisma/client";
-import { Status } from "@prisma/client";
 import { Request, Response, NextFunction } from "express";
-import prisma from "@/connection";
 import { handleMidtransNotificationService } from "@/services/midtransService";
 
 
@@ -16,7 +13,7 @@ export const handleMidtransNotification = async (req: Request, res: Response, ne
 
         res.status(200).json({
             error: false,
-            message: 'Transaksi Berhasil Di-Update',
+            message: 'Transaksi Berhasil di update',
         });
 
     } catch (error) {

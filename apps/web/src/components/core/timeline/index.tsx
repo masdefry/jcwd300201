@@ -1,7 +1,6 @@
 import React from 'react';
 
 const Timeline = ({ orderStatus }: any) => {
-    // Full set of possible statuses
     const allStatuses = [
         'AWAITING_DRIVER_PICKUP',
         'DRIVER_TO_OUTLET',
@@ -23,30 +22,20 @@ const Timeline = ({ orderStatus }: any) => {
                 return (
                     <div key={status} className="flex items-center">
                         {index < allStatuses.length - 1 && (
-                            <div
-                                className='absolute w-1 bg-gray-300 h-8 top-2 left-2 z-0'
-                            ></div>
+                            <div className='absolute w-1 bg-gray-300 h-8 top-2 left-2 z-0'></div>
                         )}
-
-                        <div
-                            className={`w-6 h-6 z-10 rounded-full flex items-center justify-center 
-                ${isBlue ? 'bg-blue-500' : 'bg-gray-400'}
-                border-2 ${isBlue ? 'border-blue-500' : 'border-gray-400'}
-              `}
-                        >
+                        <div className={`w-6 h-6 mt-[3px] z-10 rounded-full flex items-center justify-center 
+                ${isBlue ? 'bg-blue-500' : 'bg-gray-400'} border-2 ${isBlue ? 'border-blue-500' : 'border-gray-400'}`}>
                             <span className="text-white text-sm">{index + 1}</span>
                         </div>
-
-                        <div className="ml-4 text-sm font-medium text-gray-800">
-                            {statusTranslations[status] || status}
-                        </div>
+                        <p className="ml-4 text-sm font-medium text-gray-800">{statusTranslations[status] || status}</p>
                     </div>
                 );
             })}
         </div>
     );
 };
-    
+
 
 const statusTranslations: Record<string, string> = {
     "AWAITING_DRIVER_PICKUP": "Menunggu Pickup",

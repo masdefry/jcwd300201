@@ -1,4 +1,3 @@
-import prisma from "@/connection";
 import { createContactMessageService, getContactMessageService } from "@/services/contactService";
 import { NextFunction, Request, Response } from "express";
 

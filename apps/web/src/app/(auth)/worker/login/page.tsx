@@ -51,11 +51,7 @@ export default function Page() {
                             password: '',
                         }}
                         validationSchema={loginAdminValidation}
-                        onSubmit={(values) => {
-                            console.log(values);
-                            handleLoginAdmin({ email: values.email, password: values.password })
-                        }}
-                    >
+                        onSubmit={(values) => handleLoginAdmin({ email: values.email, password: values.password })}>
                         <Form className="flex z-20 flex-col justify-center items-center w-full space-y-4">
                             <div id="emailOrganizer-input" className="w-full">
                                 <div className="flex gap-5 items-center">

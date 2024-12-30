@@ -14,7 +14,9 @@ import { ChangeEvent } from "react"
 
 
 export default function FilterWeb({ showTabOption = true, borderReset = 'border rounded-lg border-gray-500',
-    isSearchValues, setIsSearchValues, options, showStoreSelect = false, activeTab, setActiveTab, getDataStore, outletId, setPage, setOutletId, isStoreLoading, isStoreError, debounce, sortOption, setSortOption, dateFrom, dateUntil, setDateFrom, setDateUntil, setSearchInput }: IFilterPropsWeb) {
+    isSearchValues, setIsSearchValues, options, showStoreSelect = false, activeTab, setActiveTab,
+    getDataStore, outletId, setPage, setOutletId, isStoreLoading, isStoreError, debounce, sortOption,
+    setSortOption, dateFrom, dateUntil, setDateFrom, setDateUntil, setSearchInput }: IFilterPropsWeb) {
 
     return (
         <>
@@ -22,7 +24,7 @@ export default function FilterWeb({ showTabOption = true, borderReset = 'border 
                 <div className="w-full h-fit flex  justify-between items-center ">
                     <div className="h-full flex items-end gap-2 text-sm  text-neutral-700">
                         <Select value={sortOption} onValueChange={setSortOption}>
-                            <SelectTrigger className="w-[150px] border text-sm text-neutral-700 rounded-2xl h-10 py-2 px-3">
+                            <SelectTrigger className="w-[150px] focus:border-orange-500 border-gray-300 focus:ring-0 border text-sm text-neutral-700 rounded-2xl h-10 py-2 px-3">
                                 <SelectValue placeholder="Sort By" />
                             </SelectTrigger>
                             <SelectContent>
@@ -38,7 +40,7 @@ export default function FilterWeb({ showTabOption = true, borderReset = 'border 
                             <select name="searchOrder" value={activeTab} onChange={(e) => {
                                 setActiveTab(e.target.value)
                                 setPage(1)
-                            }} id="searchWorker" className="px-4 py-2 border rounded-2xl  border-gray-300 h-10 text-sm text-neutral-700">
+                            }} id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 focus:outline-none focus:border focus:border-orange-500 h-10 text-sm text-neutral-700">
                                 <option value="" disabled>-- Pilih Opsi --</option>
                                 {options?.map((option, index) => (
                                     <option key={index} value={option.value}>
@@ -56,7 +58,7 @@ export default function FilterWeb({ showTabOption = true, borderReset = 'border 
                                 name="startDate"
                                 value={dateFrom ?? ''}
                                 onChange={(e) => setDateFrom(e.target.value)}
-                                className="border border-gray-300 text-sm text-neutral-700 rounded-2xl h-10 px-4 focus:outline-none focus:border-blue-500"
+                                className="border text-sm text-neutral-700 rounded-2xl h-10 px-4 border-gray-300 focus:outline-none focus:border-orange-500"
                             />
                         </label>
                         <label className="flex flex-col">
@@ -66,7 +68,7 @@ export default function FilterWeb({ showTabOption = true, borderReset = 'border 
                                 name="endDate"
                                 value={dateUntil ?? ''}
                                 onChange={(e) => setDateUntil(e.target.value)}
-                                className="border border-gray-300 text-sm text-neutral-700 rounded-2xl h-10 px-4 focus:outline-none focus:border-blue-500"
+                                className="border text-sm text-neutral-700 rounded-2xl border-gray-300 h-10 px-4 focus:outline-none focus:border-orange-500"
                             />
                         </label>
                     </div>
@@ -77,10 +79,7 @@ export default function FilterWeb({ showTabOption = true, borderReset = 'border 
                                 <select
                                     className="ml-2 border rounded-2xl h-10 px-4 text-sm text-neutral-700"
                                     value={outletId || ""}
-                                    onChange={(e) => {
-                                        setOutletId?.(e.target.value);
-                                        console.log(e.target.value);
-                                    }}
+                                    onChange={(e) => setOutletId?.(e.target.value)}
                                     disabled={isStoreLoading || isStoreError}
                                 >
                                     <option value="" disabled>

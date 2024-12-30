@@ -1,5 +1,8 @@
 'use client'
 
+import * as Yup from "yup";
+import Loading from "@/components/core/loading"
+import NoData from "@/components/core/noData"
 import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
 import { FaArrowLeft } from "react-icons/fa"
@@ -8,18 +11,25 @@ import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
 import authStore from "@/zustand/authstore"
-import { useState, useEffect } from "react"
+import { useState, useEffect, ChangeEvent } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
-import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
-import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
+import ContentWebLayout from "@/components/core/webSessionContent";
+import ButtonCustom from "@/components/core/button";
+import SearchInputCustom from "@/components/core/searchBar";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+import { FaArrowUpRightFromSquare, FaCheck, FaPlus } from "react-icons/fa6";
+import { ConfirmAlert } from "@/components/core/confirmAlert"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout"
 
 export default function DeliveryRequest() {
@@ -250,6 +260,101 @@ export default function DeliveryRequest() {
                     </Tabs>
                 </div>
             </MobileSessionLayout>
+
+            <ContentWebLayout caption='Pengiriman'>
+                <div className="w-full h-fit flex items-center">
+                    <div className="w-1/2 h-fit flex items-center">
+                        <Select value={sortOption} onValueChange={setSortOption}>
+                            <SelectTrigger className="w-[150px] border rounded-full py-2 px-3">
+                                <SelectValue placeholder="Sort By" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
+                                <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
+                                <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
+                                <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
+                                <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
+                                <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="w-1/2 h-fit flex gap-2 justify-end">
+                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
+                        <Link href='/admin/worker/c'>
+                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="w-full flex flex-col justify-center">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order ID</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dataOrderDelivery?.orders?.length > 0 ? (
+                                dataOrderDelivery?.orders?.map((order: any, i: number) => {
+                                    return (
+                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
+                                                    ? 'Menunggu Pembayaran' :
+                                                    order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                        ? 'Siap untuk dikirim'
+                                                        : 'tes'}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Strika'}</td>
+                                            <td className="py-4 px-6 text-sm text-blue-600 break-words">
+                                                <ConfirmAlert colorConfirmation="blue"
+                                                    caption={
+                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                            ? 'Apakah Anda ingin request pengiriman untuk pesanan ini?'
+                                                            : ''
+                                                    }
+                                                    description={
+                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                            ? 'Pastikan anda memilih order yang tepat/benar'
+                                                            : ''
+                                                    } onClick={() => handleRequestDelivery(order?.id)}>
+                                                    <button className="text-blue-600 hover:text-blue-400 relative group">
+                                                        Selesaikan
+                                                    </button>
+                                                </ConfirmAlert>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-20 font-bold">Data tidak tersedia</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    <div className='flex gap-2 justify-between py-2 px-2 items-center'>
+                        <div className="w-1/2 flex">
+                            <h1 className="text-neutral-400">Page {page} of {totalPages || '0'}</h1>
+                        </div>
+                        <div className="flex gap-2">
+                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
+                            // disabled={page == 1} onClick={() => handlePageChange(page - 1)}
+                            >Sebelumnya</ButtonCustom>
+                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
+                            // disabled={page == totalPages || page > totalPages} onClick={() => handlePageChange(page + 1)}
+                            >Selanjutnya</ButtonCustom>
+                        </div>
+                    </div>
+                </div>
+            </ContentWebLayout>
         </>
     )
 }

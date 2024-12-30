@@ -1,24 +1,10 @@
 import prisma from "@/connection"
 import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
-import { Prisma } from "@prisma/client";
-import { Status } from "@prisma/client";
 import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService } from "@/services/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/services/orderService/types";
 import dotenv from 'dotenv'
 import { addHours } from "date-fns";
-
-interface IStore {
-  id: string;
-  storeName: string;
-  address: string;
-  city: string;
-  province: string;
-  country: string;
-  latitude: number;
-  longitude: number;
-  distance: number;
-}
 
 dotenv.config()
 const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
@@ -46,7 +32,7 @@ export const getProvince = async (req: Request, res: Response, next: NextFunctio
     });
     res.status(200).json({
       error: false,
-      message: "Data provinsi berhasil  didapat!",
+      message: "Data provinsi berhasil didapat!",
       data: response.data
     });
   } catch (error) {
@@ -63,7 +49,7 @@ export const getCity = async (req: Request, res: Response, next: NextFunction) =
     });
     res.status(200).json({
       error: false,
-      message: "Data kota berhasil  didapat!",
+      message: "Data kota berhasil didapat!",
       data: response.data
     });
   } catch (error) {
@@ -80,7 +66,7 @@ export const findNearestStore = async (req: Request, res: Response, next: NextFu
     const { nearestStores } = await findNearestStoreService({ userId, address: addressString })
     res.status(200).json({
       error: false,
-      message: "Data store terdekat berhasil  didapat!",
+      message: "Data store terdekat berhasil didapat!",
       data: nearestStores
     });
   } catch (error) {
@@ -95,7 +81,7 @@ export const requestPickUp = async (req: Request, res: Response, next: NextFunct
 
     res.status(201).json({
       error: false,
-      message: "Order dan status order berhasil ditambahkan!",
+      message: "Pesanan berhasil dibuat",
       order: newOrder,
     });
   } catch (error) {
@@ -132,7 +118,7 @@ export const getUserOrder = async (req: Request, res: Response, next: NextFuncti
 
     res.status(200).json({
       error: false,
-      message: "Orders retrieved successfully!",
+      message: "Pesanan berhasil didapat!",
       data: {
         totalPage,
         orders
@@ -143,7 +129,6 @@ export const getUserOrder = async (req: Request, res: Response, next: NextFuncti
   }
 };
 
-// get order driver
 export const getOrdersForDriver = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId, authorizationRole, storeId } = req.body;
@@ -188,7 +173,6 @@ export const getOrdersForDriver = async (req: Request, res: Response, next: Next
   }
 };
 
-// acc order for driver
 export const acceptOrder = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
@@ -208,7 +192,6 @@ export const acceptOrder = async (req: Request, res: Response, next: NextFunctio
   }
 };
 
-// acc order outlet
 export const acceptOrderOutlet = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
@@ -229,7 +212,6 @@ export const acceptOrderOutlet = async (req: Request, res: Response, next: NextF
   }
 };
 
-// getordernotedetail
 export const getOrderNoteDetail = async (req: Request, res: Response, next: NextFunction) => {
 
   try {
@@ -450,7 +432,7 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
       where: { email }
     })
 
-    if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 }
+    if (!findWorker) throw { msg: "Pengguna tidak tersedia", status: 404 }
 
     const order = await prisma.order.findUnique({
       where: { id: String(orderId) },
@@ -458,7 +440,7 @@ export const washingProcess = async (req: Request, res: Response, next: NextFunc
     });
 
     if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
-    if (order.orderTypeId === 2) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 }
+    if (order.orderTypeId === 2) throw { msg: "Pesanan bertipe layanan strika tidak dapat diproses", status: 400 }
 
     let updatedOrder = null;
     if (notes) {
@@ -560,14 +542,14 @@ export const ironingProcess = async (req: Request, res: Response, next: NextFunc
         where: { email }
       })
 
-      if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+      if (!findWorker) throw { msg: "Pengguna tidak tersedia", status: 404 }
       const order = await tx.order.findUnique({
         where: { id: String(orderId) },
         select: { orderTypeId: true },
       });
 
       if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
-      if (order.orderTypeId === 1) throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
+      if (order.orderTypeId === 1) throw { msg: "Pesanan dengan tipe tersebut tidak dapat diproses", status: 400 };
       if (order.orderTypeId === 2) {
         const createOrderStatus = await tx.orderStatus.create({
           data: {
@@ -702,7 +684,7 @@ export const packingProcess = async (req: Request, res: Response, next: NextFunc
 
       return res.status(201).json({
         error: false,
-        message: "Approval request terhadap admin telah diajukan!",
+        message: "Permintaan persetujuan kepada admin telah diajukan.!",
         data: {
           order: updatedOrder,
         },
@@ -783,7 +765,7 @@ export const getNotes = async (req: Request, res: Response, next: NextFunction) 
 
     res.status(200).json({
       error: false,
-      message: "Notes retrieved successfully!",
+      message: "Catatan berhasil didapat!",
       data: {
         totalPage,
         orders,
@@ -812,7 +794,7 @@ export const solveNotes = async (req: Request, res: Response, next: NextFunction
 
     res.status(200).json({
       error: false,
-      message: "Notes retrieved successfully!",
+      message: "Berhasil!",
       data: solvedProblem
     });
   } catch (error) {
@@ -998,7 +980,7 @@ export const requestDeliveryDone = async (req: Request, res: Response, next: Nex
 
     res.status(200).json({
       error: false,
-      message: "Berhasil melakukan request delivery!",
+      message: "Berhasil melakukan pengantaran!",
       data: {
         order,
       },
@@ -1063,8 +1045,6 @@ export const processOrderDelivery = async (req: Request, res: Response, next: Ne
   try {
     const { orderId } = req.params;
     const { userId, email } = req.body;
-    console.log(req.body)
-
     const { newStatus } = await processOrderDeliveryService({ email, orderId, userId })
 
     res.status(200).json({
@@ -1258,7 +1238,7 @@ export const paymentOrderVA = async (req: Request, res: Response, next: NextFunc
 
     res.status(200).json({
       error: false,
-      message: 'Payment terbentuk, anda akan diarahkan ke pembayaran',
+      message: 'Transaksi berhasil!',
       OrderUrl: updatedOrderWithPaymentUrl
     });
 
@@ -1284,7 +1264,7 @@ export const paymentOrderTf = async (req: Request, res: Response, next: NextFunc
 
     res.status(200).json({
       error: false,
-      message: 'Payment terbentuk, anda akan diarahkan ke pembayaran',
+      message: 'Transaksi berhasil',
     });
 
   } catch (error) {

@@ -8,14 +8,20 @@ import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
 import authStore from "@/zustand/authstore"
-import { useState, useEffect } from "react"
+import { useState, useEffect, ChangeEvent } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
-import FilterWorker from "@/components/core/filter"
+import { IoLocationSharp } from "react-icons/io5";
+import ButtonCustom from "@/components/core/button"
+import SearchInputCustom from "@/components/core/searchBar"
+import { FaPlus } from "react-icons/fa6"
+import ContentWebLayout from "@/components/core/webSessionContent"
 import Pagination from "@/components/core/pagination"
+import FilterWorker from "@/components/core/filter"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout"
@@ -46,7 +52,7 @@ export default function DriverDelivery() {
     const { data: dataOrderDelivery, refetch, isLoading: dataOrderDeliveryLoading, isError: dataOrderDeliveryError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
-            const res = await instance.get(`/order/delivery/`, {
+            const res = await instance.get(`/order/delivery`, {
                 params: {
                     page,
                     limit_data: limit,
@@ -292,6 +298,116 @@ export default function DriverDelivery() {
                     </Tabs>
                 </div>
             </MobileSessionLayout>
+
+            <ContentWebLayout caption='Pengiriman'>
+                <div className="w-full h-fit flex">
+                    <div className="w-1/2 gap-2 h-fit flex items-center">
+                        <select name="searchWorker" value={activeTab} onChange={(e) => {
+                            setActiveTab(e.target.value)
+                            setPage(1)
+                        }} id="searchWorker" className="px-4 py-2 border rounded-2xl focus:outline-none focus:border-orange-500
+                        border-gray-300 text-sm text-neutral-600">
+                            <option value="" disabled>-- Pilih Opsi --</option>
+                            <option value="all">Semua Pesanan</option>
+                            <option value="waiting-pickup">Belum pickup</option>
+                            <option value="process-pickup">Dalam perjalanan</option>
+                            <option value="arrived">Selesai</option>
+                            <option value="all">Reset</option>
+                        </select>
+                        <select name="sort" value={sortOption} onChange={(e) => {
+                            setSortOption(e.target.value)
+                            setPage(1)
+                        }} id="sort" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm 
+                        focus:outline-none focus:border-orange-500 text-neutral-600">
+                            <option value="" disabled>-- Pilih Opsi --</option>
+                            <option value="date-asc">Tanggal Terlama</option>
+                            <option value="date-desc">Tanggal Terbaru</option>
+                            <option value="name-asc">Urutkan nama A - Z</option>
+                            <option value="name-desc">Urutkan nama Z - A</option>
+                        </select>
+                    </div>
+                    <div className="w-1/2 h-fit flex gap-2 justify-end">
+                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
+                        <Link href='/admin/worker/c'>
+                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
+                        </Link>
+                    </div>
+                </div>
+
+                <div className="w-full flex flex-col justify-center">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe Order</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tanggal dibuat</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dataOrderDelivery?.orders?.length > 0 ? (
+                                dataOrderDelivery?.orders?.map((order: any, i: number) => {
+                                    return (
+                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' : 'Layanan Laundry'}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
+                                                    ? 'Menunggu Pembayaran' :
+                                                    order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' && order?.isPaid === true
+                                                        ? 'Siap untuk dikirim' :
+                                                        order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true
+                                                            ? 'Laundry berhasil diantar'
+                                                            : 'Menunggu Pembayaran'
+                                                }
+                                            </td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]}</td>
+                                            <td className="py-4 px-6 hover:underline break-words">
+                                                <ConfirmAlert colorConfirmation="blue"
+                                                    caption={
+                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true && order.isReqDelivery === true
+                                                            ? 'Apakah Anda ingin melakukan pengiriman untuk pesanan ini?'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' ?
+                                                                'Apakah Anda ingin menyelesaikan pengiriman untuk pesanan ini?'
+                                                                : ''
+                                                    }
+                                                    description={
+                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true && order.isReqDelivery === true
+                                                            ? 'Pastikan anda memilih order yang tepat/benar'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' ?
+                                                                'Pastikan anda memilih order yang tepat/benar'
+                                                                : ''
+                                                    }
+                                                    onClick={
+                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true && order.isReqDelivery === true
+                                                            ? () => handleProcessDelivery(order?.id)
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' ?
+                                                                () => handleAcceptOrderDelivery(order?.id)
+                                                                : () => console.log('')
+                                                    }>
+                                                    <button disabled={order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
+                                                        {order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true ? 'Selesai' : 'Selesaikan'}</button>
+                                                </ConfirmAlert>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            ) : (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-20 font-bold text-3xl text-neutral-300">Data Tersedia</td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
+                    <PaginationWebLayout currentPage={page} totalPages={totalPages || '1'}>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>Sebelumnya</ButtonCustom>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => { setPage((prev) => Math.min(prev + 1, totalPages)) }}>Selanjutnya</ButtonCustom>
+                    </PaginationWebLayout>
+                </div>
+            </ContentWebLayout>
         </>
     )
 }

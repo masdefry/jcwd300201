@@ -70,7 +70,6 @@ export default function PickupLaundry() {
         queryKey: ['get-order-type'],
         queryFn: async () => {
             const res = await instance.get('/order/type');
-            console.log(res, 'ordertype');
             return res?.data?.data;
         },
     });
@@ -81,7 +80,6 @@ export default function PickupLaundry() {
             const res = await instance.get('/user/main-address', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res, 'mainaddress');
             return res?.data?.data;
         },
         retry: 4,
@@ -148,7 +146,6 @@ export default function PickupLaundry() {
                                 }}
                                 validationSchema={validationSchema}
                                 onSubmit={async (values) => {
-                                    console.log(values);
                                     handlePickupRequest({
                                         deliveryFee: values.deliveryFee,
                                         outletId: values.outletId,
@@ -304,84 +301,6 @@ export default function PickupLaundry() {
                     >
                         {({ isSubmitting, setFieldValue, values }) => (
                             <Form className='w-full h-full flex gap-4'>
-                                {/* <div className='w-full h-full flex items-center flex-col justify-center'>
-                                    <div className='w-full flex gap-2'>
-                                        <section className="w-full">
-                                            <h2 className="font-bold text-gray-700">Alamat saat ini</h2>
-                                            <div className="border border-gray-300 rounded-lg p-4 mt-2 bg-gray-50 cursor-pointer">
-                                                {dataMainAddressLoading ? (<span className="text-gray-500">Memuat alamat...</span>) : dataMainAddress && !selectedAddress ? (
-                                                    <div onClick={() => setOpenDialog(true)}>
-                                                        <p className="font-semibold text-gray-800">{dataMainAddress.addressName}</p>
-                                                        <p className="text-gray-600">{dataMainAddress.addressDetail}</p>
-                                                        <p className="text-gray-600">{dataMainAddress.city}, {dataMainAddress.province}</p>
-                                                    </div>
-                                                ) : !dataMainAddress ? (
-                                                    <Link href='/user/dashboard/settings/address/c' className='flex items-center justify-center'>
-                                                        <div><CiSquarePlus /></div>
-                                                        <div>Buat Alamat Baru</div>
-                                                    </Link>
-                                                ) : (
-                                                    <div onClick={() => setOpenDialog(true)}>
-                                                        <p className="font-semibold text-gray-800">{selectedAddress?.addressName}</p>
-                                                        <p className="text-gray-600">{selectedAddress?.addressDetail}</p>
-                                                        <p className="text-gray-600">{selectedAddress?.city} {selectedAddress?.province}</p>
-                                                    </div>
-                                                )}
-                                            </div>
-                                        </section>
-                                    </div>
-                                    
-                                    <section className="w-full">
-                                        <h2 className="font-bold text-gray-700">Store Terdekat</h2>
-                                        <div className="border border-gray-300 p-4 mt-2 rounded-lg bg-gray-50">
-                                            {dataNearestStoreLoading ? (
-                                                <span className="text-gray-500">Memuat store terdekat...</span>
-                                            ) : dataNearestStore && dataNearestStore.length > 0 ? (
-                                                <div>
-                                                    <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
-                                                    <p className="text-gray-600">{dataNearestStore[0]?.address}</p>
-                                                    <p className="text-gray-600">Jarak: {dataNearestStore[0]?.distance.toFixed(2)} km</p>
-                                                </div>
-                                            ) : (
-                                                <span className="text-red-500">Tidak ada store di dekatmu. Nantikan kedatangan kami!</span>
-                                            )}
-                                        </div>
-                                    </section>
-
-                                    <section className="w-full">
-                                        <h2 className="font-bold text-center text-gray-700 py-2">Tipe Laundry</h2>
-                                        <Field as="select" name="orderTypeId" className="w-full border border-gray-300 rounded-md p-2 bg-gray-50 hover:bg-gray-100"
-                                            onChange={(e: any) => setFieldValue('orderTypeId', e.target.value)}>
-                                            <option value="" disabled>Pilih Tipe Laundry</option>
-                                            {dataOrderTypeLoading ? (
-                                                <option disabled>Memuat...</option>
-                                            ) : (
-                                                dataOrderType?.filter((item) => item?.id && item?.type).map((item) => (
-                                                    <option key={item.id} value={item.id}>
-                                                        {item?.type}
-                                                    </option>
-                                                ))
-                                            )}
-                                        </Field>
-                                        <ErrorMessage name="orderTypeId" component="div" className="text-red-500 text-sm" />
-                                    </section>
-
-                                    {values?.orderTypeId && (
-                                        <section className="w-full py-4">
-                                            <h2 className="font-bold text-center text-gray-700">Estimasi Ongkos Kirim</h2>
-                                            <div className="border border-gray-300 rounded-lg p-4 text-center mt-2 bg-gray-50">
-                                                {dataNearestStore && dataNearestStore.length > 0 ? (
-                                                    <span className="text-lg font-semibold text-gray-800">
-                                                        Rp{(Math.ceil(dataNearestStore[0]?.distance) * 8000).toLocaleString('id-ID')}
-                                                    </span>
-                                                ) : (
-                                                    <span className="text-gray-500">Estimasi tidak tersedia.</span>
-                                                )}
-                                            </div>
-                                        </section>
-                                    )}
-                                </div> */}
-
                                 <div className='w-full h-full flex flex-col justify-center space-y-2'>
                                     <section className='w-full cursor-pointer'>
                                         {dataMainAddressLoading ? (<span className="text-gray-500">Memuat alamat...</span>) : dataMainAddress && !selectedAddress ? (
@@ -391,8 +310,8 @@ export default function PickupLaundry() {
                                                 <p className="text-gray-600">{dataMainAddress?.city}, {dataMainAddress?.province}, {dataMainAddress?.zipCode}</p>
                                             </div>
                                         ) : !dataMainAddress ? (
-                                            <Link href='/user/dashboard/settings/address/c' className='flex items-center justify-center'>
-                                                <span><CiSquarePlus /></span> <h1>Buat Alamat Baru</h1>
+                                            <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 justify-center'>
+                                                <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
                                             </Link>
                                         ) : (
                                             <div onClick={() => setOpenDialog(true)} className='border border-gray-300 p-4 rounded-lg bg-gray-50'>
@@ -466,7 +385,7 @@ export default function PickupLaundry() {
                                             Hemat waktu Anda dengan menggunakan layanan pickup kami. Cukup pilih alamat dan
                                             kami akan menjemput barang Anda tanpa repot. Nikmati kenyamanan dengan layanan terpercaya.
                                         </p>
-                                        <ButtonCustom type="submit" disabled={PendingPickupSubmit || isDisabledSucces} width='w-full' btnColor='bg-orange-500 hover:bg-orange-500'>
+                                        <ButtonCustom type="submit" disabled={PendingPickupSubmit || isDisabledSucces || !values?.orderTypeId} width='w-full' btnColor='bg-orange-500 hover:bg-orange-500'>
                                             {PendingPickupSubmit ? 'Memproses...' : 'Kirim Permintaan Pickup'}
                                         </ButtonCustom>
                                     </div>

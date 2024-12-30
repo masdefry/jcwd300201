@@ -23,7 +23,7 @@ export default function Page() {
                             phoneNumber: '',
                             workerRole: '',
                             identityNumber: '',
-                            storeId: '',
+                            outletId: '',
                             motorcycleType: '',
                             plateNumber: '',
                             shiftId: ''
@@ -37,12 +37,11 @@ export default function Page() {
                                 phoneNumber: values?.phoneNumber,
                                 workerRole: values?.workerRole,
                                 identityNumber: values?.identityNumber,
-                                storeId: values?.storeId,
+                                outletId: values?.outletId,
                                 motorcycleType: values?.motorcycleType,
                                 plateNumber: values?.plateNumber,
                                 shiftId: values?.shiftId
                             }, { onSuccess: () => resetForm() })
-                            console.log(values)
                         }}>
                         {({ setFieldValue, values }) => (
                             <Form>
@@ -73,14 +72,14 @@ export default function Page() {
                                     </div>
                                     <div className="flex w-full gap-2">
                                         <div className="w-full flex flex-col gap-2 relative">
-                                            <label htmlFor="storeId" className="font-semibold">Penempatan <span className="text-red-600">*</span></label>
-                                            <Field as='select' name='storeId' id='storeId' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500'>
+                                            <label htmlFor="outletId" className="font-semibold">Penempatan <span className="text-red-600">*</span></label>
+                                            <Field as='select' name='outletId' id='outletId' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500'>
                                                 <option value="" disabled>Pilih opsi</option>
                                                 {getDataStore?.map((store: { storeId: string, storeName: string }, i: number) => (
                                                     <option value={store?.storeId} key={i}>{store?.storeName}</option>
                                                 ))}
                                             </Field>
-                                            <ErrorMessage component='div' name="storeId" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
+                                            <ErrorMessage component='div' name="outletId" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                         </div>
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="shiftId" className="font-semibold">Jam Kerja <span className="text-red-600">*</span></label>

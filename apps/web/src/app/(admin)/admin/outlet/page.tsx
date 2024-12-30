@@ -153,8 +153,7 @@ export default function Page() {
                                         <ConfirmAlert
                                             caption={`Hapus "${store?.storeName?.toUpperCase()}"?`}
                                             description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
-                                            onClick={() => { console.log('delete') }}
-                                        >
+                                            onClick={() => { console.log('delete') }}>
 
                                             <div className="flex items-center justify-center space-x-2 px-2 py-2 w-9  bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
                                                 <BsTrash />
@@ -182,7 +181,7 @@ export default function Page() {
                     <div className="w-1/2 h-fit flex items-center">
                         <select name="searchWorker"
                             value={sortStore} onChange={(e) => setSortStore(e.target.value)}
-                            id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                            id="searchWorker" className="px-4 py-2 border focus:outline-none focus:border-orange-500 rounded-2xl border-gray-300 text-sm text-neutral-600">
                             <option value="" disabled>-- Pilih Opsi --</option>
                             <option value="name-asc">Sort berdasarkan A - Z</option>
                             <option value="name-desc">Sort berdasarkan Z - A</option>
@@ -221,8 +220,7 @@ export default function Page() {
                                                     <ConfirmAlert
                                                         caption={`Hapus "${store?.storeName?.toUpperCase()}"?`}
                                                         description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
-                                                        onClick={() => { console.log('delete') }}
-                                                    >
+                                                        onClick={() => { console.log('delete') }}>
                                                         <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
                                                     </ConfirmAlert>
                                                     <Link href={`/admin/outlet/e/${store?.id}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </Link>

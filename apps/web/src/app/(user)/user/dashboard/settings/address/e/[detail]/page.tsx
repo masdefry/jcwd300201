@@ -127,9 +127,6 @@ export default function Page({ params }: { params: Promise<any> }) {
     })
 
     const time = useMemo(() => new Date().getTime(), [])
-
-    console.log(latitudeGlobal)
-    console.log(lngGlobal)
     if (isFetching) return <div>....</div>
 
     return (

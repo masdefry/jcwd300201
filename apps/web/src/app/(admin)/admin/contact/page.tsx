@@ -11,8 +11,6 @@ import { useState } from "react";
 import { CardContent } from "@/components/ui/card";
 const getMessageCustomer = async () => {
     const token = (await cookies()).get('__toksed')?.value
-    console.log(token)
-
     try {
         const response = await fetch('http://localhost:5000/api/contact', {
             cache: 'no-store',
