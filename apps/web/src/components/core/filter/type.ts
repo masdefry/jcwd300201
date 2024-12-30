@@ -10,4 +10,6 @@ export interface IFilterProps {
     setSearchInput: (input: string) => void;
     setPage: (page: number) => void | number
     searchInput: string
+    isSearchValues: string
+    setIsSearchValues: (input: string) => void;
 }

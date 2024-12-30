@@ -28,6 +28,10 @@ import {
 } from "@/components/ui/select"
 import { FaPlus } from "react-icons/fa6";
 import { ConfirmAlert } from "@/components/core/confirmAlert"
+import NoData from "@/components/core/noData"
+import Loading from "@/components/core/loading"
+import FilterWeb from "@/components/core/filterWeb"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout"
 
 
 export default function DeliveryRequest() {
@@ -35,8 +39,8 @@ export default function DeliveryRequest() {
     const router = useRouter();
     const pathname = usePathname();
     const { toast } = useToast()
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
@@ -46,6 +50,7 @@ export default function DeliveryRequest() {
     const [activeTab, setActiveTab] = useState(params.get("tab") || "verification");
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
+    const [isSearchValues, setIsSearchValues] = useState<string>('')
 
     const limit = 5;
 
@@ -131,7 +136,11 @@ export default function DeliveryRequest() {
         } else {
             currentUrl.delete('date-until')
         }
-
+        if (page) {
+            currentUrl.set('page', page?.toString())
+        } else {
+            currentUrl.delete('page')
+        }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
     }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
@@ -141,121 +150,121 @@ export default function DeliveryRequest() {
 
     return (
         <>
-            <main className="w-full h-fit md:hidden block">
-                <section className="w-full h-fit">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex justify-between gap-2 items-center font-bold w-screen pr-16">
-                                <div className="flex justify-center items-center gap-2"><Link href='/admin/settings'><FaArrowLeft /></Link> PEMBAYARAN</div>
-                            </div>
-                        </section>
-                        <div className="py-28 mx-4 space-y-4">
-                            <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-3">
-                                    <TabsTrigger value="verification" onClick={() => { setActiveTab("verification"); setPage(1) }} >Verifikasi</TabsTrigger>
-                                    <TabsTrigger value="waiting-payment" onClick={() => { setActiveTab("waiting-payment"); setPage(1) }} >Belum Bayar</TabsTrigger>
-                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value={activeTab}>
-                                    <CardContent className="space-y-2 pt-2">
-                                        <FilterWorker
-                                            searchInput={searchInput}
-                                            setPage={setPage}
-                                            debounce={debounce}
-                                            sortOption={sortOption}
-                                            setSortOption={setSortOption}
-                                            dateFrom={dateFrom}
-                                            dateUntil={dateUntil}
-                                            setDateFrom={setDateFrom}
-                                            setDateUntil={setDateUntil}
-                                            setActiveTab={setActiveTab}
-                                            setSearchInput={setSearchInput}
-                                        />
-                                        {dataOrderListLoading && <div>Loading...</div>}
-                                        {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
-                                        {dataOrderList?.orders?.map((order: any) => (
-                                            <section
-                                                key={order.id}
-                                                className="flex justify-between items-center border-b py-4"
+            <MobileSessionLayout title="PEMBAYARAN">
+                <div className="mx-4 space-y-4">
+                    <Tabs defaultValue={activeTab} className="fit">
+                        <TabsList className="grid w-full grid-cols-3">
+                            <TabsTrigger value="verification" onClick={() => { setActiveTab("verification"); setPage(1) }} >Verifikasi</TabsTrigger>
+                            <TabsTrigger value="waiting-payment" onClick={() => { setActiveTab("waiting-payment"); setPage(1) }} >Belum Bayar</TabsTrigger>
+                            <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value={activeTab}>
+                            <CardContent className="space-y-2 pt-2">
+                                <FilterWorker
+                                    searchInput={searchInput}
+                                    setPage={setPage}
+                                    debounce={debounce}
+                                    sortOption={sortOption}
+                                    setSortOption={setSortOption}
+                                    dateFrom={dateFrom}
+                                    dateUntil={dateUntil}
+                                    setDateFrom={setDateFrom}
+                                    setDateUntil={setDateUntil}
+                                    setActiveTab={setActiveTab}
+                                    setSearchInput={setSearchInput}
+                                    setIsSearchValues={setIsSearchValues}
+                                    isSearchValues={isSearchValues}
+                                />
+                                {dataOrderListLoading && <Loading />}
+                                {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
+                                {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
+                                    dataOrderList?.orders?.map((order: any) => (
+                                        <section
+                                            key={order.id}
+                                            className="flex justify-between items-center border-b py-4"
+                                        >
+
+                                            <ConfirmAlert
+                                                caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?"
+                                                description={
+                                                    <Image
+                                                        src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
+                                                        alt="payment proof"
+                                                        width={500}
+                                                        height={200}
+
+                                                    />
+                                                }
+                                                disabled={handlConfirmPaymentPending}
+                                                onClick={() => handleConfirmPayment(order?.id)}
+
                                             >
-
-                                                <ConfirmAlert
-                                                    caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?"
-                                                    description={
-                                                        <Image
-                                                            src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
-                                                            alt="payment proof"
-                                                            width={500}
-                                                            height={200}
-                                                        />
-                                                    }
-
-                                                    onClick={() => handleConfirmPayment(order?.id)}
-
-                                                >
-                                                    <div className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
-                                                            <div className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'AWATING_PAYMENT'
-                                                                    ? 'Menunggu Pembayaran'
-                                                                    : ''}
-                                                            </div>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                            </p>
+                                                <div className="flex items-center">
+                                                    <div className="ml-2">
+                                                        <h2 className="font-medium text-gray-900">
+                                                            {order?.id}
+                                                        </h2>
+                                                        <h2 className="font-medium text-gray-900">
+                                                            {order?.User?.firstName} {order?.User?.lastName}
+                                                        </h2>
+                                                        <div className="text-xs text-gray-500">
+                                                            {order?.orderStatus[0]?.status === 'AWATING_PAYMENT'
+                                                                ? 'Menunggu Pembayaran'
+                                                                : 'Terbayarkan'}
                                                         </div>
+                                                        <p className="text-xs text-gray-500">
+                                                            {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                        </p>
                                                     </div>
-                                                </ConfirmAlert>
-                                                <div className="flex gap-1">
-                                                    <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                        <FaWhatsapp />
-                                                    </Link>
                                                 </div>
-                                            </section>
-                                        ))}
-                                        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                    </CardContent>
-                                </TabsContent>
-                            </Tabs>
+                                            </ConfirmAlert>
+                                            <div className="flex gap-1">
+                                                <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                                    <FaWhatsapp />
+                                                </Link>
+                                            </div>
+                                        </section>
+                                    ))
+                                ) : (
+                                    !dataOrderListLoading && (
+                                        <NoData />
+                                    )
 
-                        </div>
-                    </main>
-                </section>
-            </main>
+                                )}
+                                {!dataOrderListLoading && dataOrderList?.orders?.length > 0 && (
+                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                                )}                                    </CardContent>
+                        </TabsContent>
+                    </Tabs>
+
+                </div>
+            </MobileSessionLayout>
 
             {/* web sesi */}
             <ContentWebLayout caption="Order">
-                <div className="w-full h-fit flex items-center">
-                    <div className="w-1/2 h-fit flex items-center">
-                        <Select value={sortOption} onValueChange={setSortOption}>
-                            <SelectTrigger className="w-[150px] border rounded-full py-2 px-3">
-                                <SelectValue placeholder="Sort By" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
-                                <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
-                                <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
-                                <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
-                                <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
-                                <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <Link href='/admin/worker/c'>
-                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
-                        </Link>
-                    </div>
-                </div>
-
+                <FilterWeb
+                    isSearchValues={isSearchValues}
+                    setIsSearchValues={setIsSearchValues}
+                    debounce={debounce}
+                    sortOption={sortOption}
+                    setSortOption={setSortOption}
+                    dateFrom={dateFrom}
+                    dateUntil={dateUntil}
+                    setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil}
+                    setActiveTab={setActiveTab}
+                    setSearchInput={setSearchInput}
+                    activeTab={activeTab}
+                    setPage={setPage}
+                    showStoreSelect={false}
+                    searchInput={searchInput}
+                    options={[
+                        { value: 'verification', label: 'Verifikasi' },
+                        { value: 'waiting-payment', label: 'Belum Bayar' },
+                        { value: 'done', label: 'Selesai' },
+                    ]}
+                    borderReset="border rounded-full"
+                />
                 {/* table */}
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
@@ -270,25 +279,50 @@ export default function DeliveryRequest() {
                             </tr>
                         </thead>
                         <tbody>
-                            {getDataItem?.length > 0 ? (
-                                getDataItem?.map((order: any, i: number) => {
-                                    return (
+
+                            {isFetching ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
+                                </tr>
+                            ) : (
+                                !dataOrderListLoading && getDataItem?.length > 0 ? (
+                                    getDataItem?.map((order: any, i: number) => (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' ? 'Menunggu Verifikasi' : ''}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' ? 'Menunggu Verifikasi' : 'Terbayarkan'}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
                                             <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <Link href={`/admin/worker/detail/${order?.id}`}>View</Link>
+                                                <ConfirmAlert
+                                                    caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?"
+                                                    description={
+                                                        <Image
+                                                            src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
+                                                            alt="payment proof"
+                                                            width={500}
+                                                            height={200}
+
+                                                        />
+                                                    }
+                                                    disabled={handlConfirmPaymentPending}
+                                                    onClick={() => handleConfirmPayment(order?.id)}
+
+                                                >
+                                                    <div>View</div>
+                                                </ConfirmAlert>
                                             </td>
                                         </tr>
-                                    )
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? 'Mohon tunggu...' : 'Data tidak tersedia'}</td>
-                                </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {dataOrderListLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                )
                             )}
                         </tbody>
                     </table>

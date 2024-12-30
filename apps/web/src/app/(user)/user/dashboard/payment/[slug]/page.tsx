@@ -63,8 +63,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const { slug } = React.use(params);
     const router = useRouter()
 
-    const token = authStore((state) => state.token);
-    const email = authStore((state) => state.email);
+    const token = authStore((state) => state?.token);
+    const email = authStore((state) => state?.email);
     const { toast } = useToast();
 
     const { mutate: handlePaymmentOrder, isPending } = useMutation({

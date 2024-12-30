@@ -11,7 +11,7 @@ const useNotaOrderHooks = () => {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
-    const token = authStore((state) => state.token);
+    const token = authStore((state) => state?.token);
 
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
