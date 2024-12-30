@@ -11,8 +11,6 @@ import authStore from "@/zustand/authstore"
 import { useState, useEffect, ChangeEvent } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { FaSearch } from 'react-icons/fa';
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
@@ -157,7 +155,7 @@ export default function Page() {
 
     return (
         <>
-            <main className="w-full h-fit">
+            <main className="w-full h-fit md:hidden block">
                 <section className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
                     <HeaderMobile />
                     <main className="w-full">
@@ -269,7 +267,7 @@ export default function Page() {
                         <select name="searchWorker" value={activeTab} onChange={(e) => {
                             setActiveTab(e.target.value)
                             setPage(1)
-                        }} id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                        }} id="searchWorker" className="px-4 py-2 focus:outline-none focus:border-orange-500 border rounded-2xl border-gray-300 text-sm text-neutral-600">
                             <option value="" disabled>-- Pilih Opsi --</option>
                             <option value="all">Semua Pesanan</option>
                             <option value="waiting-pickup">Belum pickup</option>
@@ -280,7 +278,7 @@ export default function Page() {
                         <select name="sort" value={sortOption} onChange={(e) => {
                             setSortOption(e.target.value)
                             setPage(1)
-                        }} id="sort" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm text-neutral-600">
+                        }} id="sort" className="px-4 py-2 focus:outline-none focus:border-orange-500 border rounded-2xl border-gray-300 text-sm text-neutral-600">
                             <option value="" disabled>-- Pilih Opsi --</option>
                             <option value="date-asc">Tanggal Terlama</option>
                             <option value="date-desc">Tanggal Terbaru</option>

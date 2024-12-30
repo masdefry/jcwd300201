@@ -69,20 +69,20 @@ export default function Footer() {
               <div>
                 <h1 className="text-lg font-bold text-neutral-700 pb-5">Tentang Kami</h1>
                 <ul className="space-y-2 text-neutral-500 font-sans font-semibold">
-                  <li><a href="/home" className="hover:underline">Beranda</a></li>
-                  <li><a href="/about" className="hover:underline">Tentang Kami</a></li>
-                  <li><a href="/services" className="hover:underline">Layanan</a></li>
-                  <li><a href="/contact" className="hover:underline">Kontak</a></li>
+                  <li><Link href="/" className="hover:underline">Beranda</Link></li>
+                  <li><Link href="/about-us" className="hover:underline">Tentang Kami</Link></li>
+                  <li><Link href="/service" className="hover:underline">Layanan</Link></li>
+                  <li><Link href="/contact" className="hover:underline">Kontak</Link></li>
                 </ul>
               </div>
 
               <div>
                 <h1 className="text-lg font-bold text-neutral-700 pb-5">Link Lainnya</h1>
                 <ul className="space-y-2 text-neutral-500 font-sans font-semibold">
-                  <li><a href="/terms" className="hover:underline">Syarat dan Ketentuan</a></li>
-                  <li><a href="/faq" className="hover:underline">FAQ</a></li>
-                  <li><a href="/privacy-policy" className="hover:underline">Kebijakan Privasi</a></li>
-                  <li><a href="/help" className="hover:underline">Bantuan</a></li>
+                  <li><Link href="/terms-condition" className="hover:underline">Syarat dan Ketentuan</Link></li>
+                  <li><Link href="/faq" className="hover:underline">FAQ</Link></li>
+                  <li><Link href="/privacy-policy" className="hover:underline">Kebijakan Privasi</Link></li>
+                  <li><Link href="/help" className="hover:underline">Bantuan</Link></li>
                 </ul>
               </div>
 

@@ -61,7 +61,6 @@ export default function Page() {
                             })
                             setIsPickLocationSuccess(false)
                         }
-                        console.log(values)
                     }}
 
                     initialValues={{

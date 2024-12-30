@@ -85,6 +85,5 @@ export const roleCheckCustomer = (req: Request, res: Response, next: NextFunctio
         req.body.userId = userId
     }
 
-    console.log('trigger role bawah')
     next()
 }

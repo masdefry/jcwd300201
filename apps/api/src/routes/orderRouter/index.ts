@@ -3,8 +3,6 @@ import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOr
 import { limiter } from "@/middlewares/rateLimit";
 import { roleCheckAdmin, roleCheckCustomer, roleCheckDriver, roleCheckIroningWorker, roleCheckPackingWorker, roleCheckSuperAdmin, roleCheckWashingWorker } from "@/middlewares/roleCheck";
 import { uploader } from "@/middlewares/uploader";
-import { requestPickUpValidation } from "@/middlewares/validation";
-import { expressValidatorErrorHandling } from "@/middlewares/validation/errorHandlingValidator";
 
 import { tokenValidation } from "@/middlewares/verifyToken";
 import { Router } from "express";

@@ -29,7 +29,7 @@ export const userEditAddress = async (req: Request, res: Response, next: NextFun
 
     res.status(200).json({
       error: false,
-      message: "Alamat anda berhasil di-update!",
+      message: "Alamat anda berhasil di update!",
       data: updatedAddress,
     });
 

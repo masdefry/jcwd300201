@@ -120,7 +120,6 @@ export default function HistoryOrderPacking() {
                                 {dataOrderPackingProcessLoading && <p>Loading...</p>}
                                 {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                                 {dataOrderPackingProcess?.orders?.map((order: any) => {
-                                    console.log(order?.isSolved)
                                     return (
                                         <section
                                             key={order.id}

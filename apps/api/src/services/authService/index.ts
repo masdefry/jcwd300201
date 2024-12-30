@@ -258,7 +258,6 @@ export const createWorkerService = async ({
     await prisma.$transaction(async (tx) => {
         let dataWorker: any
         let token: string
-
         if (workerRole != 'DRIVER') {
             dataWorker = await tx.worker.create({
                 data: {

@@ -50,13 +50,24 @@ export default function Page() {
         setIsDay(isDayNow)
     }, [])
 
-    const { data: dataOrderAwaitingPickup, refetch, isLoading: dataOrderAwaitingPickupLoading, isError: dataOrderAwaitingPickupError } = useQuery({
-        queryKey: ['get-order'],
+    const { data: dataOrderAwaitingPickup, isLoading: dataOrderAwaitingPickupLoading, isError: dataOrderAwaitingPickupError } = useQuery({
+        queryKey: ['get-order-request'],
         queryFn: async () => {
             const res = await instance.get('/order/order', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
+            return res?.data?.data;
+        },
+    });
+
+    const { data: dataOrderDelivery, isLoading: dataOrderDeliveryLoading, isError: dataOrderDeliveryError } = useQuery({
+        queryKey: ['get-order-delivery'],
+        queryFn: async () => {
+            const res = await instance.get(`/order/delivery`, {
+                params: { tab: 'all' },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
             return res?.data?.data;
         },
     });
@@ -255,7 +266,7 @@ export default function Page() {
                             <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                         </div>
                         <div className="w-full space-y-4">
-                            {dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => (
+                            {dataOrderDelivery?.orders?.map((order: any, i: number) => (
                                 <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
                                     <div className="w-full flex items-center">
                                         <div className="w-2 h-2 bg-green-600 rounded-full"></div>
@@ -270,7 +281,7 @@ export default function Page() {
                                         </div>
                                     </div>
                                     <div className="flex items-center gap-3">
-                                        <Link href='/worker/driver/pickup-request' className='text-blue-500 hover:text-blue-700 text-sm'>
+                                        <Link href='/worker/driver/delivery-request' className='text-blue-500 hover:text-blue-700 text-sm'>
                                             Proses
                                         </Link>
                                     </div>

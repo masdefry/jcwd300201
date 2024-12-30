@@ -31,12 +31,11 @@ app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
             fs.rmSync(`${img?.path}`)
         });
     }
-
+    
     if (error?.message === 'jwt expired') throw { msg: 'jwt expired', status: 401 }
-
     res.status(error?.status || 500).json({
         error: true,
-        message: error?.msg || error?.message /* *Sementara, ganti jadi something went wrong */,
+        message: error?.msg || 'Ada kesalahan server, coba beberapa saat lagi',
         data: {}
     })
 })

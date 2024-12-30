@@ -88,9 +88,7 @@ export default function Page() {
                                         <ConfirmAlert
                                             caption={`Hapus "${worker?.firstName.toUpperCase()}"?`}
                                             description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
-                                            onClick={() => { console.log('delete') }}
-                                        >
-
+                                            onClick={() => { console.log('delete') }}>
                                             <div className="flex items-center justify-center space-x-2 px-2 py-2 w-9  bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
                                                 <BsTrash />
                                             </div>

@@ -474,8 +474,6 @@ export const getOrdersForWashingService = async ({
     select: { storeId: true },
   });
 
-  console.log(worker, '<< worker line 477')
-
   if (!worker) throw { msg: "Driver tidak tersedia", status: 404 };
 
   let statusFilter: any;
@@ -584,8 +582,6 @@ export const getOrdersForWashingService = async ({
 
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
-    console.log(order.id, 'orderid')
-    console.log(latestStatus, 'lateststatus')
     return statusFilter.includes(latestStatus)
   });
 
@@ -1424,11 +1420,8 @@ export const getNotesService = async ({ userId, authorizationRole, tab, limit_da
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 };
 
   const offset = Number(limit_data) * (Number(page) - 1);
-
   const parsedDateFrom = dateFrom ? new Date(dateFrom as string) : undefined;
-  console.log(parsedDateFrom)
   const parsedDateUntil = dateUntil ? new Date(dateUntil as string) : undefined;
-  console.log(parsedDateUntil)
 
   let tabFilter: Prisma.OrderWhereInput = {};
   if (tab === 'bermasalah') {
@@ -1645,7 +1638,6 @@ export const getCreateNoteOrderService = async ({
 
   const filteredOrders = orders.filter(order => {
     const latestStatus = order.orderStatus[0]?.status;
-    console.log(order.id)
     return statusFilter.includes(latestStatus);
   });
 
@@ -1654,7 +1646,6 @@ export const getCreateNoteOrderService = async ({
   const totalCount = filteredOrders.length;
 
   const totalPage = Math.ceil(totalCount / Number(limit_data));
-  console.log(totalPage)
   return {
     totalPage,
     orders: paginatedOrders,
@@ -1978,9 +1969,7 @@ export const getOrdersForDriverDeliveryService = async ({
   });
 
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));
-
   const totalCount = filteredOrders.length;
-
   const totalPage = Math.ceil(totalCount / Number(limit_data));
 
   return {

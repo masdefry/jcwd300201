@@ -116,7 +116,6 @@ export default function HistoryOrderWashing() {
                                 {dataOrderWashingProcessLoading && <p>Loading...</p>}
                                 {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                                 {dataOrderWashingProcess?.orders?.map((order: any) => {
-                                    console.log(order?.isSolved)
                                     return (
                                         <section
                                             key={order.id}

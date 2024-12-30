@@ -162,7 +162,6 @@ export default function Page() {
                                         {dataOrderWashingProcessLoading && <p>Loading...</p>}
                                         {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                                         {dataOrderWashingProcess?.orders?.map((order: any) => {
-                                            console.log(order?.isSolved)
                                             return (
                                                 <section
                                                     key={order.id}
@@ -309,7 +308,6 @@ export default function Page() {
                         <tbody>
                             {dataOrderWashingProcess?.orders?.length > 0 ? (
                                 dataOrderWashingProcess?.orders?.map((order: any, i: number) => {
-                                    console.log(order?.orderStatus[0]?.status, '<< status')
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>

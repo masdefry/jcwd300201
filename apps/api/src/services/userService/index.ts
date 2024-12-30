@@ -3,10 +3,7 @@ import { comparePassword } from "@/utils/passwordHash"
 import { validateEmail } from "@/middlewares/validation/emailValidation"
 import { phoneNumberValidation } from "@/middlewares/validation/phoneNumberValidation"
 import { hashPassword } from "@/utils/passwordHash"
-import { encodeToken } from "@/utils/tokenValidation"
-import { transporter } from "@/utils/transporter"
 import fs, { rmSync } from 'fs'
-import { compile } from "handlebars"
 import { ICreateAddressUser, IEditAddressUser, IUpdateProfileUser } from "./types"
 import dotenv from 'dotenv'
 import axios from "axios"
@@ -48,7 +45,6 @@ export const userCreateAddressService = async ({ userId, addressName, addressDet
         }
     })
 
-    console.log(checkedAddressUser, "< dapet ga")
     if (checkedAddressUser) throw { msg: 'Alamat sudah tersedia, harap masukan alamat berbeda', status: 400 }
     const newAddress = await prisma.userAddress.create({
         data: {
@@ -258,11 +254,8 @@ export const deleteUserAddressService = async ({ userId, addressId }: { userId: 
         where: {
             userId,
             UserAddress: { id: addressId, userId },
-            // isConfirm: false || null sementara gini dulu
         }
     })
-
-    console.log(findOrderUser, "<<< ddapet ga")
 
     if (findOrderUser) throw { msg: 'Kamu sedang melakukan pesanan, tidak dapat menghapus alamat', status: 400 }
     if (!findAddressById) throw { msg: 'Alamat sudah tidak tersedia atau sudah terhapus', status: 404 }

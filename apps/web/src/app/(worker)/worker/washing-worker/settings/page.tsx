@@ -20,7 +20,7 @@ export default function Page() {
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
         handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword } = useWashingWorkerSettingsHooks()
-        
+
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
             <section className="w-full flex flex-col p-4 rounded-xl h-full bg-white">
@@ -44,7 +44,7 @@ export default function Page() {
 
             {/* web sesi */}
             <ContentWebLayout caption='Pengaturan'>
-                
+
                 {/* tabs */}
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -93,12 +93,7 @@ export default function Page() {
                                 password: Yup.string().required('Password baru harus diisi'),
                                 confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
                             })}
-                            onSubmit={(values) => {
-                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                console.log(values)
-                            }}>
-
-                            {/* change password setting */}
+                            onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                 isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}

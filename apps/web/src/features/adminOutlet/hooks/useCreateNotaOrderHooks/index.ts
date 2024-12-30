@@ -52,7 +52,6 @@ const useCreateNotaOrderHooks = ({ params }: { params: Promise<{ slug: string }>
             const res = await instance.get(`/order/detail-order-note/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res?.data?.data, 'ordernote');
             return res?.data?.data;
         },
     });
@@ -63,7 +62,6 @@ const useCreateNotaOrderHooks = ({ params }: { params: Promise<{ slug: string }>
             const res = await instance.get('/laundry', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res, 'itemname');
             return res?.data?.data;
         },
     });

@@ -5,7 +5,7 @@ export interface ICreateUserBody {
     phoneNumber: string,
     workerRole: string,
     identityNumber: string,
-    storeId: string,
+    outletId: string,
     motorcycleType: string,
     plateNumber: string,
     shiftId: string

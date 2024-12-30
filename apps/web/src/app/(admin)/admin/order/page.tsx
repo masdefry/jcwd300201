@@ -77,7 +77,6 @@ export default function OrderList() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res.data.data)
             return res?.data?.data;
         },
     });
@@ -99,7 +98,6 @@ export default function OrderList() {
         queryKey: ['get-data-store'],
         queryFn: async () => {
             const res = await instance.get('/store')
-            console.log(res)
             return res?.data?.data
         }
     })
@@ -174,7 +172,6 @@ export default function OrderList() {
                                         value={outletId || ""}
                                         onChange={(e) => {
                                             setOutletId(e.target.value);
-                                            console.log(e.target.value);
                                         }}
 
                                         disabled={isStoreLoading || isStoreError}
@@ -278,7 +275,6 @@ export default function OrderList() {
                                             !dataOrderListLoading && (
                                                 <NoData />
                                             )
-
                                         )}
                                         {!dataOrderListLoading && dataOrderList?.orders?.length > 0 && (
                                             <Pagination page={page} totalPages={totalPages} setPage={setPage} />
@@ -291,31 +287,29 @@ export default function OrderList() {
                                     <DialogHeader>
                                         <DialogTitle>Detail Order</DialogTitle>
                                     </DialogHeader>
-
                                     {orderData ? (
                                         <>
-                                            <div className="grid gap-4 py-4">
+                                            <div className="grid gap-4 py-2 border-b border-neutral-400">
                                                 <div className="flex justify-between gap-3 items-center">
                                                     <div className="w-2/3 flex flex-col">
-                                                        <h2 className="text-base font-semibold">{orderData?.order?.id}</h2>
-                                                        <h2 className="text-base">{orderData?.order?.OrderType?.type}</h2>
+                                                        <h2 className="text-sm font-semibold">{orderData?.order?.id?.length > 15 ? <span>{orderData?.order?.id.slice(0, 15)}..</span> : orderData?.order?.id}</h2>
+                                                        <h2 className="text-sm">{orderData?.order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
+                                                            orderData?.order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Setrika'}</h2>
                                                     </div>
-                                                    <div className="w-1/3 flex flex-col">
-
+                                                    <div className="w-1/3 flex flex-col items-end">
                                                         <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
                                                         <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
-
                                                     </div>
                                                 </div>
                                             </div>
 
-                                            <div className="flex flex-row justify-between">
-                                                <div>
-                                                    Proses :
+                                            <span className='font-semibold'>Proses Laundry:</span>
+                                            <div className="flex flex-row justify-between pb-2">
+                                                <div className='space-y-2'>
                                                     <Timeline orderStatus={orderData?.orderStatus} />
                                                 </div>
                                                 <div className="space-y-3">
-                                                    <div className="border rounded-lg border-gray-700 p-2 shadow-md">
+                                                    <div className="border rounded-lg border-gray-700 p-2 text-sm">
                                                         <div className="font-semibold">Driver Pickup:</div>
                                                         <div>
                                                             {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
@@ -332,7 +326,7 @@ export default function OrderList() {
                                                             )}
                                                         </div>
                                                     </div>
-                                                    <div className="border rounded-lg border-gray-700 p-2 shadow-md">
+                                                    <div className="border rounded-lg border-gray-700 p-2 text-sm">
                                                         <div className="font-semibold">Delivery Driver:</div>
                                                         <div>
                                                             {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERTLET" ? (
@@ -351,30 +345,29 @@ export default function OrderList() {
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            {/* Map Order Items */}
-                                            <div className="text-center">
-                                                <h3 className="font-medium">Order Items</h3>
-                                                <div className="grid grid-cols-2  justify-items-center">
-                                                    {orderData.orderDetail?.map((item: any, index: number) => (
-                                                        <div key={index} className="border-b border-black py-1 flex items-center justify-center">
-                                                            <span>{item?.quantity}x {item?.LaundryItem?.itemName}</span>
-                                                        </div>
-                                                    ))}
+                                            <div className="w-full h-fit py-2 border-t space-y-1 border-neutral-400">
+                                                <div className="flex justify-between text-sm items-end">
+                                                    <h1 className="font-medium">Produk:</h1>
+                                                    <div className="h-4 overflow-y-auto">
+                                                        {orderData.orderDetail?.map((item: any, index: number) => (
+                                                            <div key={index} className="flex items-center justify-center">
+                                                                <p>{item?.quantity}x {item?.LaundryItem?.itemName}</p>
+                                                            </div>
+                                                        ))}
+                                                    </div>
                                                 </div>
-                                            </div>
-                                            {/* Delivery Fee and Total Price */}
-                                            <div className="flex justify-between">
-                                                <span className="font-medium">Biaya Kirim:</span>
-                                                <span>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</span>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <span>Harga Laundry:</span>
-                                                <span>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</span>
-                                            </div>
-                                            <div className="flex justify-between font-semibold">
-                                                <span>Total Harga:</span>
-                                                <span>Rp{(orderData?.order?.deliveryFee + orderData?.order?.laundryPrice)?.toLocaleString("id-ID")}</span>
+                                                <div className="flex justify-between text-sm">
+                                                    <h1 className="font-medium">Biaya Kirim:</h1>
+                                                    <p>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</p>
+                                                </div>
+                                                <div className="flex justify-between text-sm">
+                                                    <h1 className="font-medium">Harga Laundry:</h1>
+                                                    <p>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</p>
+                                                </div>
+                                                <div className="flex justify-between text-sm">
+                                                    <h1 className="font-medium">Total Harga:</h1>
+                                                    <p>Rp{(orderData?.order?.deliveryFee + orderData?.order?.laundryPrice)?.toLocaleString("id-ID")}</p>
+                                                </div>
                                             </div>
                                         </>
                                     ) : (

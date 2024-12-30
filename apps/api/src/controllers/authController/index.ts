@@ -5,8 +5,6 @@ import { nanoid } from "nanoid";
 import jwt from 'jsonwebtoken'
 import { hashPassword } from "@/utils/passwordHash";
 import { encodeToken } from "@/utils/tokenValidation";
-import { compile } from "handlebars";
-import fs from 'fs'
 
 const secret_key: string | undefined = process.env.JWT_SECRET as string
 
@@ -21,7 +19,7 @@ export const userRegister = async (req: Request, res: Response, next: NextFuncti
 
         res?.status(200).json({
             error: false,
-            message: 'Berhasil membuat akun, silahkan verifikasi email untuk login!',
+            message: 'Berhasil mendaftar akun, silahkan verifikasi email untuk melanjutkan login',
             data: {}
         })
 
@@ -38,7 +36,7 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
 
         res?.status(200).json({
             error: false,
-            message: 'Berhasil login, silahkan masuk!',
+            message: 'Berhasil, silahkan masuk!',
             data: {
                 token: dataLogin?.token,
                 email,
@@ -61,18 +59,18 @@ export const userLogout = async (req: Request, res: Response, next: NextFunction
         const { authorization } = req.headers
 
         const findUser = await prisma.user.findFirst({ where: { email } })
-        if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
+        if (!findUser) throw { msg: 'Pengguna tidak tersedia', status: 404 }
         let token = authorization?.split(' ')[1] as string
 
         jwt.verify(token, secret_key, (err) => {
-            if (err) throw { msg: 'Token tidak valid', status: 401 }
+            if (err) throw { msg: 'Ada kesalahan saat mencoba logout', status: 401 }
 
             req.app.locals.credentials = null
         })
 
         res.status(200).json({
             error: false,
-            message: 'Berhasil logout!',
+            message: 'Logout Berhasil!',
             data: {}
         })
     } catch (error) {
@@ -92,7 +90,7 @@ export const signInWithGoogle = async (req: Request, res: Response, next: NextFu
         if (findEmail) {
             res.status(200).json({
                 error: false,
-                message: 'Login menggunakan Google berhasil!',
+                message: 'Masuk menggunakan Google berhasil!',
                 data: {
                     token,
                     email,
@@ -184,7 +182,7 @@ export const setPasswordUser = async (req: Request, res: Response, next: NextFun
 
         res.status(200).json({
             error: false,
-            message: 'Berhasil, silahkan masuk',
+            message: 'Berhasil, silahkan masuk!',
             data: {}
         })
 
@@ -201,7 +199,7 @@ export const setPasswordWorker = async (req: Request, res: Response, next: NextF
 
         res.status(200).json({
             error: false,
-            message: 'Berhasil, silahkan masuk',
+            message: 'Berhasil, silahkan masuk!',
             data: {}
         })
 
@@ -217,7 +215,7 @@ export const workerLogin = async (req: Request, res: Response, next: NextFunctio
 
         res?.status(200).json({
             error: false,
-            message: 'Berhasil login, silahkan masuk',
+            message: 'Berhasil, silahkan masuk!',
             data: {
                 token,
                 email,
@@ -236,7 +234,7 @@ export const workerLogin = async (req: Request, res: Response, next: NextFunctio
 
 export const workerRegisterByAdmin = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { email, firstName, lastName, phoneNumber, workerRole, identityNumber, storeId, shiftId, motorcycleType, plateNumber } = req.body
+        const { email, firstName, lastName, phoneNumber, workerRole, identityNumber, outletId, shiftId, motorcycleType, plateNumber } = req.body
         const dateNow = Date.now() * Math.random()
         const customRole = workerRole?.slice(0, 3)
         const id = `${customRole}${Math.floor(dateNow)}${firstName?.toUpperCase()}`
@@ -249,7 +247,7 @@ export const workerRegisterByAdmin = async (req: Request, res: Response, next: N
             phoneNumber,
             workerRole,
             identityNumber,
-            storeId,
+            storeId: outletId,
             motorcycleType,
             plateNumber,
             shiftId
@@ -257,7 +255,7 @@ export const workerRegisterByAdmin = async (req: Request, res: Response, next: N
 
         res.status(201).json({
             error: false,
-            message: 'Berhasil membuat data, silahkan login',
+            message: 'Berhasil membuat data pekerja, silahkan verifikasi email anda',
             data: {}
         })
 
@@ -273,20 +271,20 @@ export const workerLogout = async (req: Request, res: Response, next: NextFuncti
             where: { email }
         })
 
-        if (!findAdmin) throw { msg: 'User belom login', status: 400 }
+        if (!findAdmin) throw { msg: 'Pengguna belom melakukan login', status: 400 }
 
         const { authorization } = req.headers
         let token = authorization?.split(' ')[1] as string
 
         jwt.verify(token, secret_key, (err) => {
-            if (err) throw { msg: 'Invalid token', status: 401 }
+            if (err) throw { msg: 'Ada kesalahan saat proses logout, silahkan coba lagi nanti', status: 401 }
 
             req.app.locals.credentials = null
         })
 
         res.status(200).json({
             error: false,
-            message: 'Berhasil logout!',
+            message: 'Logout berhasil!',
             data: {}
         })
     } catch (error) {

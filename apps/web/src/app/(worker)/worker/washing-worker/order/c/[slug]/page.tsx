@@ -68,7 +68,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             const res = await instance.get(`/order/detail-order-note/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(dataOrderNote)
             return res?.data?.data;
         },
     });
@@ -178,7 +177,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         const isDataMatching = compareData(itemOrder, dataOrderDetail);
 
                                         if (isDataMatching) {
-                                            console.log("Data is matching, submitting form...");
                                             submitForm()
                                         } else {
                                             const initialNotes = values.items
@@ -433,7 +431,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                     </div>
                                                     <div className="w-full">
                                                         <label className="font-semibold">Jumlah <span className="text-red-600">*</span></label>
-                                                        <Field name="quantity" type="number" placeholder="Quantity" className="w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500 rounded-md" min="1" />
+                                                        <Field name="quantity" max="1000" type="number" placeholder="Quantity" className="w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500 rounded-md" min="1" />
                                                     </div>
                                                     <div className='flex flex-col items-end'>
                                                         <ButtonCustom type="button"
