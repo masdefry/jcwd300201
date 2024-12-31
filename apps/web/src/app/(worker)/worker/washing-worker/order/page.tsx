@@ -22,7 +22,7 @@ import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus } from "react-icons/fa6"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import NoData from "@/components/core/noData"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import Loading from "@/components/core/loading"
 import FilterWeb from "@/components/core/filterWeb"
 

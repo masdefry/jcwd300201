@@ -1,5 +1,5 @@
 import prisma from "@/connection"
-import { ICreateStore, IGetAllStore, IStoreMap } from "./types"
+import { ICreateStore, IGetAllStore, IStoreMap, IUpdateStore } from "./types"
 import axios from "axios"
 import { Prisma } from "@prisma/client"
 
@@ -74,6 +74,42 @@ export const createStoreByAdminService = async ({ storeName, address, province, 
 
     if (findExistingStore) throw { msg: 'Outlet sudah tersedia harap tambah tempat lain', status: 400 }
     await prisma.store.create({
+        data: {
+            storeName,
+            address,
+            city,
+            province: provinceName,
+            country: 'Indonesia',
+            zipCode,
+            latitude: parseFloat(latitude),
+            longitude: parseFloat(longitude)
+        }
+    })
+}
+
+export const updateStoreService = async ({ storeName, address, city, province, zipCode, latitude, longitude, outletId }: IUpdateStore) => {
+    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+        headers: { key: rajaOngkirApiKey }
+    })
+
+    if (!responseApi) throw { msg: 'Gagal mendapatkan data provinsi', status: 400 }
+    const provinceName: string = responseApi?.data?.rajaongkir?.results?.province
+
+    const findStore = await prisma.store.findFirst({
+        where: {
+            AND: [
+                { storeName },
+                { address },
+                { city },
+                { province: provinceName },
+                { zipCode },
+            ]
+        }
+    })
+
+    if (findStore) throw { msg: 'Alamat outlet tidak ada yang diubah', status: 400 }
+    await prisma.store.update({
+        where: { id: outletId },
         data: {
             storeName,
             address,

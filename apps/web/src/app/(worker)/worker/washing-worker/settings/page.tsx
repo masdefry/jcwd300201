@@ -12,7 +12,7 @@ import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
 import { useWashingWorkerSettingsHooks } from '@/features/washingWorker/hooks/useWashingWorkerSettingsHooks';
 import ContentWebLayout from '@/components/core/webSessionContent';
-import MobileSessionLayout from '@/components/core/mobileSessionLayout';
+import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { washingAkunValidation } from '@/features/washingWorker/schemas/washingAkunValidationSchema';
 import { washingChangePasswordValidation } from '@/features/washingWorker/schemas/washingChangePasswordValidationSchema';

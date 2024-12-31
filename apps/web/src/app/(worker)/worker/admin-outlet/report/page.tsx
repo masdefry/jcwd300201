@@ -31,7 +31,7 @@ import {
 } from "@/components/ui/alert-dialog"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 
 export default function DriverPickUp() {
     const params = useSearchParams();

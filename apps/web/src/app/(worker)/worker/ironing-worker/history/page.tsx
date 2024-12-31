@@ -15,7 +15,7 @@ import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 
