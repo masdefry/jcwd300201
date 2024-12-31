@@ -12,7 +12,7 @@ import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
 import { useDriverSettingsHooks } from '@/features/driver/hooks/useDriverSettingsHooks';
 import ContentWebLayout from '@/components/core/webSessionContent';
-import MobileSessionLayout from '@/components/core/mobileSessionLayout';
+import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {  driverChangePasswordValidation } from '@/features/driver/schemas/driverChangePasswordValidationSchema';
 import { driverAkunValidation } from '@/features/driver/schemas/driverAkunValidationSchema';

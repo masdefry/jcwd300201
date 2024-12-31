@@ -1,6 +1,9 @@
-import { createStoreByAdminService, getAllStoreService, getStoreService } from '@/services/storeService';
+import prisma from '@/connection';
+import { createStoreByAdminService, getAllStoreService, getStoreService, updateStoreService } from '@/services/storeService';
+import axios from 'axios';
 import { Request, Response, NextFunction } from 'express'
 
+const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
 export const getStore = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { dataStore } = await getStoreService()
@@ -47,6 +50,39 @@ export const createStoreByAdmin = async (req: Request, res: Response, next: Next
         res.status(201).json({
             error: false,
             message: 'Selamat! Anda berhasil membuat outlet baru',
+            data: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const getSingleStore = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { outletId } = req.params
+        const findOutlet = await prisma.store.findFirst({ where: { id: outletId } })
+        if (!findOutlet) throw { msg: 'Data outlet tidak tersedia', status: 404 }
+
+        res.status(200).json({
+            error: false,
+            message: 'Berhasil mendapatkan data outlet',
+            data: findOutlet
+        })
+    } catch (error) {
+
+    }
+}
+
+export const updateStore = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { storeName, address, city, province, zipCode, latitude, longitude } = req.body
+        const { outletId } = req.params
+
+        await updateStoreService({ storeName, address, city, province, zipCode, latitude, longitude, outletId })
+
+        res.status(200).json({
+            error: false,
+            message: 'Berhasil mengubah data outlet',
             data: {}
         })
     } catch (error) {

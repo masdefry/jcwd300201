@@ -32,7 +32,7 @@ export default function Page({ params }: { params: Promise<any> }) {
     const [isPosition, setIsPosition] = useState({ lat: latitudeGlobal || -6.200000, lng: lngGlobal || 106.816666 });
     const [selectedProvince, setSelectedProvince] = useState<string>('')
     const [dataUser, setDataUser] = useState<any>({})
-   
+
     const { data: cities, isLoading: citiesLoading, isFetching: loadingPage } = useQuery({
         queryKey: ['get-city', selectedProvince],
         queryFn: async () => {
@@ -263,15 +263,6 @@ export default function Page({ params }: { params: Promise<any> }) {
                                             error={touched.zipCode && Boolean(errors.zipCode)}
                                             helperText={touched.zipCode && errors.zipCode}
                                         />
-
-
-                                        {/* <div className="mt-4 h-80 block md:hidden">
-                                            <MapContainer id="map-container-mobile" key={time} center={isPosition} zoom={13} style={{ height: "100%", width: "100%" }}>
-                                                <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                                <LocationPicker setFieldValue={setFieldValue} position={isPosition} setPosition={setIsPosition} />
-                                            </MapContainer>
-                                        </div> */}
-
                                         <ButtonCustom disabled={isPending} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
                                             Tambah Alamat
                                         </ButtonCustom>
@@ -294,8 +285,8 @@ export default function Page({ params }: { params: Promise<any> }) {
                                 province: values?.province,
                                 city: values?.city,
                                 zipCode: values?.zipCode,
-                                latitude: values?.latitude.toString(),
-                                longitude: values?.longitude.toString()
+                                latitude: String(isPosition?.lat),
+                                longitude: String(isPosition?.lng)
                             }, {
                                 onSuccess: () => {
                                     resetForm()
@@ -334,12 +325,6 @@ export default function Page({ params }: { params: Promise<any> }) {
                         }}>
                         {({ setFieldValue, values, handleChange }) => (
                             <Form className="flex gap-5 h-full w-full justify-center">
-                                {/* <div className="h-full w-full relative">
-                                    <MapContainer id="map-container" key={time} center={isPosition} zoom={13} className="w-full h-full rounded-2xl">
-                                        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-                                        <LocationPicker setFieldValue={setFieldValue} position={isPosition} setPosition={setIsPosition} />
-                                        </MapContainer>
-                                        </div> */}
                                 <div className="flex flex-col pb-5 pr-2 justify-center gap-4 w-full h-full overflow-y-auto">
                                     <ButtonCustom onClick={() => router.push('/user/dashboard/settings/address/set-location')} disabled={isPending} width="w-full" btnColor="bg-blue-500 hover:bg-blue-600" txtColor="text-white" type="button">
                                         Dapatkan posisi terkini
@@ -408,7 +393,7 @@ export default function Page({ params }: { params: Promise<any> }) {
                                         <ErrorMessage component='div' name="zipCode" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                     </div>
                                     <ButtonCustom disabled={isPending} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
-                                        Tambah Alamat
+                                        Ubah Alamat
                                     </ButtonCustom>
                                 </div>
                             </Form>

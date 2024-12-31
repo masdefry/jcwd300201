@@ -12,9 +12,10 @@ import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { useState } from "react";
 import Image from "next/image";
-import { FaIdCard, FaVoicemail } from "react-icons/fa6";
+import { FaIdCard, FaUserCheck, FaVoicemail } from "react-icons/fa6";
 import ListCustom from "@/components/core/listSettings";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Page() {
@@ -35,12 +36,12 @@ export default function Page() {
         { name: 'Umpan Balik Pelanggan', description: 'Atur dan kelola umpan balik pelanggan, serta kelola data kasir.', icon: FaCashRegister, url: '/admin/contact' },
         { name: 'Pengaturan Nota', description: 'Atur tampilan dan format nota untuk transaksi laundry.', icon: FaReceipt, url: '/admin/settings/receipt' },
     ];
-    
-    
+
+
 
     const { mutate: handleLogoutAdmin, isPending } = useMutation({
         mutationFn: async () => {
-                return await instance.post('/auth/worker/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
+            return await instance.post('/auth/worker/logout', { email }, { headers: { Authorization: `Bearer ${token}` } })
         },
         onSuccess: (res) => {
             if (res) {
@@ -70,38 +71,23 @@ export default function Page() {
 
     return (
         <>
-            <main className="w-full h-fit">
-                <section className="w-full h-fit max-w-[425px] md:max-w-full md:w-full block md:hidden">
-                    <HeaderMobile />
-                    <main className="mx-8">
-                        <section className="bg-white font-bold w-full fixed pt-16 text-lg border-b-2 pb-4">
-                            PENGATURAN
-                        </section>
-                        <div className="py-28 space-y-4">
-                            {settingsItems.map((item, index) => (
-                                <div
-                                    key={index}
-                                    className="flex items-center bg-white p-4 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100"
-                                >
-                                    <div className="flex-shrink-0 p-3 bg-orange-400 rounded-lg">
-                                        <item.icon className="h-6 w-6 text-white" />
-                                    </div>
-                                    <div className="ml-4">
-                                        <h2 className="font-medium text-gray-900">{item.name}</h2>
-                                        <p className="text-sm text-gray-500">{item.description}</p>
-                                    </div>
-                                </div>
-                            ))}
-                            <div className="flex justify-center w-full ">
-                                <ButtonCustom rounded="rounded-lg" btnColor="bg-red-500"><RiShutDownLine />
-                                    <span className="ml-2">Keluar Akun</span></ButtonCustom>
+            <ContentMobileLayout title='Pengaturan' icon={<FaUserCheck className='text-lg' />}>
+                <div className="min-h-44 px-3 flex gap-5 flex-col w-full">
+                    {settingsItems?.map((set, i) => (
+                        <Link href={set?.url} key={i} className="flex border-b pb-2 justify-between w-full h-fit items-center">
+                            <div className="flex items-center gap-5 text-neutral-700">
+                                <set.icon />
+                                <h1 className="text-neutral-700">{set?.name}</h1>
                             </div>
-                        </div>
-                    </main>
-                </section>
-            </main>
+                            <div className='w-2 h-2 rounded-full bg-green-700'></div>
+                        </Link>
+                    ))}
+                </div>
+                <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
+                    <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-orange-500" disabled={isPending || isDisabledSucces}>Logout</ButtonCustom>
+                </ConfirmAlert>
+            </ContentMobileLayout>
 
-            {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
                 <section className="w-full flex flex-col p-4 rounded-xl h-full bg-white">
                     <div className="flex flex-col w-full gap-5">
@@ -127,7 +113,7 @@ export default function Page() {
                             <div className="w-full flex px-3 items-center gap-4">
                                 <div className="w-12 h-12 rounded-full">
                                     <Image
-                                    src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
+                                        src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
                                         width={600}
                                         height={600}
                                         alt="user-profile"

@@ -19,12 +19,10 @@ import { useQuery } from "@tanstack/react-query";
 import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
 import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import MobileSessionLayout from "@/components/core/mobileSessionLayout";
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 
 export default function Page() {
     const [date, setDate] = useState<Date | undefined>(new Date())
-    const totalWorker = authStore((state) => state?.totalWorker)
-    const totalOrders = authStore((state) => state?.orders)
     const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
     const name = authStore((state) => state?.firstName)
@@ -100,65 +98,7 @@ export default function Page() {
     ]
     return (
         <>
-            {/* <main className="w-full h-fit md:hidden block">
-                <section className="w-full h-fit md:max-w-full max-w-[425px]">
-                    <section>
-                        <Image src={'/images/New Project.webp'} alt="header"
-                            height={500} width={500} />
-                    </section>
-
-                    <section className="border border-gray-400 rounded-t-lg p-4 mt-4 mx-8">
-                        <div className="flex justify-between items-center">
-                            <div className="font-semibold text-gray-600">CnC Jakarta</div>
-                            <button className="text-sm flex items-center border rounded-lg border-gray-400 p-2 gap-1">
-                                Tambah Lokasi <IoAddCircleSharp />
-                            </button>
-                        </div>
-                    </section>
-
-                    <section className="border border-gray-400 bg-sky-200 rounded-b-lg text-sm p-4 mx-8 text-gray-700">
-                        <div className="flex justify-between">
-                            <div className="flex items-center gap-1">
-                                <MdOutlineStickyNote2 size={20} /> Pesanan Hari Ini
-                            </div>
-                            <div className="font-semibold text-right">
-                                <div>Rp0</div>
-                                <div>0 pesanan</div>
-                            </div>
-                        </div>
-                        <div className="border-t-2 border-gray-400 mt-4 pt-4 flex">
-                            <div className="flex-1 text-center text-lg font-bold">
-                                0 <span className="text-sm">kg</span>
-                            </div>
-                            <div className="flex-1 text-center text-lg font-bold">
-                                0 <span className="text-sm">pcs</span>
-                            </div>
-                        </div>
-                    </section>
-
-                    <section className="bg-white mx-8 grid grid-cols-2 gap-y-6 justify-around my-6">
-                        {iconButtons.map((item, index) => (
-                            <button key={index} className="flex flex-col items-center space-y-1">
-                                <item.icon className="text-gray-500 text-5xl border-2 w-24 h-24 rounded-lg border-gray-300 p-6 bg-white transition-colors ease-in-out duration-200 active:bg-gray-300" />
-                                <span className="text-base">{item.label}</span>
-                            </button>
-                        ))}
-                    </section>
-
-                    <section className="bg-green-100 p-4 mx-8 mb-4 rounded-lg">
-                        <div className="flex items-center space-x-2">
-                            <FaWhatsapp className="text-gray-600" size={24} />
-                            <span className="font-semibold">Butuh bantuan?</span>
-                        </div>
-                        <div className="mt-2 text-sm text-gray-600">
-                            Chat kami di WhatsApp apabila terdapat error.
-                        </div>
-                    </section>
-
-                </section>
-            </main> */}
-
-            <MobileSessionLayout title="Dashboard">
+            <ContentMobileLayout title='Dashboard' icon={<FaDashcube className="text-lg" />}>
                 <div className="w-full h-fit py-5 flex flex-col p-5 bg-orange-500 rounded-3xl">
                     <h1 className='text-white font-bold'>Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}!</h1>
                     <p className="text-neutral-200 text-sm">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
@@ -178,7 +118,7 @@ export default function Page() {
                 <div className="w-full border rounded-2xl h-fit py-14 flex justify-center items-center">
                     <h1>Contact</h1>
                 </div>
-            </MobileSessionLayout>
+            </ContentMobileLayout>
 
             {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">

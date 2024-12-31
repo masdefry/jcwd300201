@@ -18,7 +18,7 @@ import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionCon
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
 import ButtonCustom from "@/components/core/button";
 import { ironingItemValidation } from "@/features/ironingWorker/schemas/ironingItemValidation";
-import MobileSessionLayout from "@/components/core/mobileSessionLayout";
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
 
 const validationSchema = Yup.object().shape({
