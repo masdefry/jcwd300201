@@ -22,6 +22,8 @@ export const registerUserValidation = Yup.object().shape({
     phoneNumber: Yup.string()
         .required('Nomor telepon harap diisi!')
         .matches(/^[0-9]+$/, 'Nomor telepon hanya boleh berisi angka')
+        .min(10, 'Minimal 10 angka')
+        .max(15, 'Maximal 15 angka')
         .test('no-whitespace', 'Nomor telepon tidak boleh hanya terdiri dari spasi', (value: any) => value && !/^\s+$/.test(value))
         .trim(),
 });

@@ -1,7 +1,7 @@
 'use client'
 
 import ButtonCustom from "@/components/core/button";
-import { FaEdit, FaTrashAlt, FaArrowLeft } from 'react-icons/fa';
+import { FaEdit, FaTrashAlt, FaArrowLeft, FaSearch } from 'react-icons/fa';
 import Image from "next/image";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import Link from "next/link";
@@ -9,13 +9,18 @@ import HeaderMobileUser from "@/components/core/headerMobileUser";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import SearchInputCustom from "@/components/core/searchBar";
 import { ChangeEvent } from "react";
-import { FaPlus } from "react-icons/fa6";
+import { FaAddressCard, FaEllipsisVertical, FaPlus } from "react-icons/fa6";
 import TableNotFoundComponent from "@/features/user/components/tableNotFound";
 import { useUserAddressHooks } from "@/features/user/hooks/useUserAddressHooks";
 import SkeletonLoadingComponent from "@/features/user/components/skeletonLoadingComponents";
 import PaginationWebLayout from "@/components/core/paginationWebLayout";
 import TableAddressUser from "@/features/user/components/tableAddressUser";
 import TableHeadUserAddress from "@/features/user/components/tableHeadUserAddress";
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { BsPencil, BsTrash } from "react-icons/bs";
+import NoData from "@/components/core/noData";
 
 export default function Page() {
     const { currentPage, entriesPerPage, debounce, getDataItem, isFetching, isPending, handleDeleteItem,
@@ -27,66 +32,51 @@ export default function Page() {
 
     return (
         <>
-            <HeaderMobileUser />
-            <main className="mx-8 md:hidden block">
-                <section className="flex justify-between bg-white w-full pr-14 font-bold fixed pt-16 text-lg border-b-2 pb-4">
-                    <div className="flex items-center gap-2"> <Link href='/users/settings'><FaArrowLeft /></Link> Alamat</div>
-                    <div> <ButtonCustom btnColor="bg-orange-500">+ Tambah Alamat</ButtonCustom> </div>
-                </section>
-                <div className="py-32 space-y-4">
-                    {settingsItems.map((item, index) => (
-                        <div
-                            key={index}
-                            className="flex items-center justify-between bg-white py-4 px-2 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100"
-                        >
-                            <div className="flex items-center">
-                                <div className="flex-shrink-0 p-1 bg-orange-400 rounded-lg">
-                                    <Image
-                                        src="https://img.freepik.com/premium-vector/shopping-store-building-icon-vector_620118-14.jpg?semt=ais_hybrid"
-                                        alt="store"
-                                        height={200}
-                                        width={200}
-                                        className="h-10 w-10 rounded-lg object-cover"
-                                    />
-                                </div>
-                                <div className="ml-2">
-                                    <h2 className="font-medium text-gray-900">{item.name}</h2>
-                                    <p className="text-xs text-gray-500">{item.description}</p>
-                                    <p className="text-xs text-gray-500">+62 8464654653515</p>
-                                </div>
-                            </div>
-
-                            <div className="flex space-x-1">
-                                <button className="flex items-center space-x-2 px-2 py-0 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
-                                    <FaEdit />
-                                </button>
-                                <button className="flex items-center space-x-2 px-0 py-0 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <div className="flex items-center h-fit space-x-2 px-2 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                                <FaTrashAlt />
-                                            </div>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>Hapus &quot;Nama Outlet&quot;?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    Semua data yang berkaitan dengan outlet ini akan ikut terhapus.
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>Batal</AlertDialogCancel>
-                                                <AlertDialogAction>Hapus</AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                                </button>
-
-                            </div>
+            <ContentMobileLayout title="Alamat Saya" icon={<FaAddressCard className="text-lg" />}>
+                <div className="w-full flex gap-2 items-center">
+                    <div className="flex w-full items-center justify-center">
+                        <div className="relative w-full">
+                            <input
+                                type="text"
+                                onChange={(e) => debounce(e.target.value)}
+                                placeholder="Search..."
+                                className="w-full pl-10 pr-4 py-2 border z-0 text-sm border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+                            />
+                            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                         </div>
-                    ))}
+                    </div>
+                    <ButtonCustom onClick={() => router.push('/user/dashboard/settings/address/c')} py='py-3' rounded="rounded-xl flex items-center" btnColor="bg-orange-500" width="w-fit"><FaPlus className="text-sm" /></ButtonCustom>
                 </div>
-            </main>
+                {getDataItem?.length > 0 ? (
+                    getDataItem?.map((address: any, i: number) => {
+                        return (
+                            <div key={i} className='flex w-full justify-between items-center h-fit'>
+                                <div className="flex items-center">
+                                    <div className="flex-shrink-0 p-1 bg-orange-400 rounded-lg">
+                                        <Image
+                                            src="https://img.freepik.com/premium-vector/shopping-store-building-icon-vector_620118-14.jpg?semt=ais_hybrid"
+                                            alt="store"
+                                            height={200}
+                                            width={200}
+                                            className="h-10 w-10 rounded-lg object-cover"
+                                        />
+                                    </div>
+                                    <div className="ml-2">
+                                        <h2 className="font-medium text-sm text-gray-900">{address?.addressDetail}, {address?.city}</h2>
+                                        <p className="text-xs text-gray-500">{address?.province}, {address?.country}, {address?.zipCode}</p>
+                                    </div>
+                                </div>
+                                <div className='flex gap-2'>
+                                    <ConfirmAlert disabled={isPendingDelete} caption="Apakah anda yakin ingin menghapus alamat anda?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={()=> handleDeleteItem(address?.id)}>
+                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /></button>
+                                    </ConfirmAlert>
+                                    <Link href={`/user/dashboard/settings/address/e/${address?.id}CNC${Date.now()}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /></Link>
+                                </div>
+                            </div>
+                        )
+                    })
+                ) : <NoData />}
+            </ContentMobileLayout>
 
             <ContentWebLayout caption="Alamat Saya">
                 <div className="w-full h-fit flex">
