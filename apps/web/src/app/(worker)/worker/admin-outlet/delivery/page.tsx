@@ -146,7 +146,7 @@ export default function DeliveryRequest() {
     return (
         <>
             <MobileSessionLayout title="REQUEST DELIVERY">
-                <div className="mx-4 space-y-4">
+                <div className="pb-24 mx-4 space-y-4">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="hidden w-full">
                             <TabsTrigger value="ready-to-deliver" onClick={() => { setActiveTab("ready-to-deliver"); setPage(1) }} >Siap Kirim</TabsTrigger>

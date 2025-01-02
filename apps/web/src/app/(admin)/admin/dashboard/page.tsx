@@ -160,8 +160,8 @@ export default function Page() {
 
             <MobileSessionLayout title="Dashboard">
                 <div className="w-full h-fit py-5 flex flex-col p-5 bg-orange-500 rounded-3xl">
-                    <h1 className='text-white font-bold'>Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}!</h1>
-                    <p className="text-neutral-200 text-sm">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
+                    <h1 className='text-white font-bold text-center'>Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}!</h1>
+                    <p className="text-neutral-200 text-sm text-center">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
                 </div>
                 <div className="flex justify-center h-fit w-full p-2 bg-gradient-to-tr rounded-2xl">
                     <div className='grid grid-cols-2 gap-2 w-full h-fit'>
@@ -172,6 +172,7 @@ export default function Page() {
                         ))}
                     </div>
                 </div>
+                
                 <div className='w-full h-fit py-5 rounded-xl border'>
                     <ChartComponents completedOrders={completedOrders} pendingOrders={pendingOrders} />
                 </div>

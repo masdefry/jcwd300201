@@ -14,7 +14,7 @@ import { useDriverSettingsHooks } from '@/features/driver/hooks/useDriverSetting
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {  driverChangePasswordValidation } from '@/features/driver/schemas/driverChangePasswordValidationSchema';
+import { driverChangePasswordValidation } from '@/features/driver/schemas/driverChangePasswordValidationSchema';
 import { driverAkunValidation } from '@/features/driver/schemas/driverAkunValidationSchema';
 
 
@@ -48,7 +48,7 @@ export default function Page() {
         <>
             <MobileSessionLayout title="PENGATURAN">
 
-                <div className="mx-4 space-y-4">
+                <div className="pb-24 mx-4 space-y-4">
                     <Tabs defaultValue="1" className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="1" >Akun</TabsTrigger>

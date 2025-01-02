@@ -17,20 +17,20 @@ export default function Footer() {
   };
 
   const dataPath = [
-    { icon: <IoHomeSharp size={30} />, label: "Beranda", path: '/admin/dashboard' },
-    { icon: <GrNotes size={30} />, label: "Pesanan", path: '/admin/order' },
-    { icon: <IoSearchSharp size={30} />, label: "Laporan", path: '/admin/report' },
-    { icon: <FaGear size={30} />, label: "Pengaturan", path: '/admin/settings' },
+    { icon: <IoHomeSharp size={25} />, label: "Beranda", path: '/admin/dashboard' },
+    { icon: <GrNotes size={25} />, label: "Pesanan", path: '/admin/order' },
+    { icon: <IoSearchSharp size={25} />, label: "Laporan", path: '/admin/report' },
+    { icon: <FaGear size={25} />, label: "Pengaturan", path: '/admin/settings' },
   ]
 
   return (
     <>
       <main className="w-full h-fit">
-        <section className="fixed border-t-4 bottom-0 bg-white text-gray-800 p-3 md:hidden flex justify-around max-w-[765px] w-full md:max-w-full md:w-full items-center">
+        <section className="fixed border-t-4 bottom-0 bg-white text-gray-800 p-2 md:hidden flex justify-around max-w-[765px] w-full md:max-w-full md:w-full items-center">
           {dataPath?.map((item, index) => (
             <Link href={item?.path} key={index}>
               <div onClick={() => handleClick(index)} className="flex flex-col items-center gap-1 cursor-pointer">
-                <div className={`relative w-12 h-12 rounded-lg transition-all duration-500 ease-in-out flex justify-center items-center ${pathname?.split('/')[2] === item?.path?.split('/')[2] ? 'bg-blue-300' : 'bg-transparent'}`}>
+                <div className={`relative w-12 h-9 rounded-lg transition-all duration-500 ease-in-out flex justify-center items-center ${pathname?.split('/')[2] === item?.path?.split('/')[2] ? 'bg-orange-300' : 'bg-transparent'}`}>
                   <span className={`text-${pathname?.split('/')[2] === item?.path?.split('/')[2] ? 'black' : 'gray-400'}`}>
                     {item.icon}
                   </span>
@@ -63,7 +63,7 @@ export default function Footer() {
                       />
                     </Link>
                   </div>
-                  <h1 className="text-blue-400 font-bold text-lg">Clean&<span className="text-orange-400">Click</span></h1>
+                  <h1 className="text-orange-400 font-bold text-lg">Clean&<span className="text-orange-400">Click</span></h1>
                 </div>
               </div>
               <div>

@@ -28,6 +28,8 @@ import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
 import { IoMdRefresh } from "react-icons/io"
 import FilterWeb from "@/components/core/filterWeb"
+import { truncate } from "fs"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout"
 
 export default function OrderList() {
     const params = useSearchParams();
@@ -149,228 +151,192 @@ export default function OrderList() {
 
     return (
         <>
-            <main className="w-full h-fit md:hidden block">
-                <section className="w-full h-fit">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex justify-between gap-2 items-center font-bold w-screen pr-16">
-                                <div className="flex justify-center items-center gap-2"><Link href='/admin/settings'><FaArrowLeft /></Link> ORDER</div>
-                                <div>
-                                    <select
-                                        className="border rounded px-4 py-1"
-                                        value={outletId || ""}
-                                        onChange={(e) => {
-                                            setOutletId(e.target.value);
-                                        }}
+            <MobileSessionLayout title="ORDER" showStoreSelect={true} getDataStore={getDataStore} setOutletId={setOutletId} outletId={outletId} isStoreLoading={isStoreLoading} isStoreError={isStoreError}>
+                <div className="pb-24 mx-4 space-y-4">
+                    <Tabs defaultValue={activeTab} className="fit">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
+                            <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value={activeTab}>
+                            <CardContent className="space-y-2 pt-2">
+                                <FilterWorker
+                                    debounce={debounce}
+                                    sortOption={sortOption}
+                                    setSortOption={setSortOption}
+                                    dateFrom={dateFrom}
+                                    dateUntil={dateUntil}
+                                    setDateFrom={setDateFrom}
+                                    setDateUntil={setDateUntil}
+                                    setActiveTab={setActiveTab}
+                                    setSearchInput={setSearchInput}
+                                    searchInput={searchInput}
+                                    setPage={setPage}
+                                    setIsSearchValues={setIsSearchValues}
+                                    isSearchValues={isSearchValues}
+                                />
+                                {dataOrderListLoading && <Loading />}
+                                {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
+                                {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
+                                    dataOrderList?.orders?.map((order: any) => (
+                                        <section
+                                            key={order.id}
+                                            className="flex justify-between items-center border-b py-4"
+                                        >
 
-                                        disabled={isStoreLoading || isStoreError}
-                                    >
-                                        <option value="" disabled>
-                                            {isStoreLoading
-                                                ? "Memuat..."
-                                                : isStoreError
-                                                    ? "Gagal Memuat"
-                                                    : "Pilih Toko"}
-                                        </option>
-                                        <option value="">Semua</option>
+                                            <div
+                                                onClick={() => {
+                                                    setOrderData(null);
+                                                    handleOrderDetail(order?.id);
+                                                    setOpenDialog(true)
+                                                }}
 
-                                        {getDataStore?.map((store: any) => (
-                                            <option key={store?.storeId} value={store?.storeId}>
-                                                {store?.storeName}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-                        </section>
-                        <div className="py-28 mx-4 space-y-4">
-                            <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-2">
-                                    <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
-                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value={activeTab}>
-                                    <CardContent className="space-y-2 pt-2">
-                                        <FilterWorker
-                                            debounce={debounce}
-                                            sortOption={sortOption}
-                                            setSortOption={setSortOption}
-                                            dateFrom={dateFrom}
-                                            dateUntil={dateUntil}
-                                            setDateFrom={setDateFrom}
-                                            setDateUntil={setDateUntil}
-                                            setActiveTab={setActiveTab}
-                                            setSearchInput={setSearchInput}
-                                            searchInput={searchInput}
-                                            setPage={setPage}
-                                            setIsSearchValues={setIsSearchValues}
-                                            isSearchValues={isSearchValues}
-                                        />
-                                        {dataOrderListLoading && <Loading />}
-                                        {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
-                                        {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
-                                            dataOrderList?.orders?.map((order: any) => (
-                                                <section
-                                                    key={order.id}
-                                                    className="flex justify-between items-center border-b py-4"
-                                                >
+                                                className="flex items-center">
+                                                <div className="ml-2">
+                                                    <h2 className="font-medium text-gray-900">
+                                                        {order?.id}
+                                                    </h2>
+                                                    <h2 className="font-medium text-gray-900">
+                                                        {order?.User?.firstName} {order?.User?.lastName}
+                                                    </h2>
+                                                    <div className="text-xs text-gray-500">
+                                                        {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                            ? 'Menunggu Driver'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
+                                                                ? 'Driver Menuju Store'
+                                                                : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
+                                                                    ? 'Diterima Outlet'
+                                                                    : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                        ? 'Proses Cuci'
+                                                                        : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'
+                                                                            ? 'Proses Setrika'
+                                                                            : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                                                ? 'Proses Packing'
+                                                                                : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
+                                                                                    ? 'Proses Delivery'
+                                                                                    : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
+                                                                                        ? 'Laundry Sampai'
+                                                                                        : 'Status tidak dikenal'}
+                                                    </div>
+                                                    <p className="text-xs text-gray-500">
+                                                        {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                    </p>
+                                                </div>
+                                            </div>
 
-                                                    <div
-                                                        onClick={() => {
-                                                            setOrderData(null);
-                                                            handleOrderDetail(order?.id);
-                                                            setOpenDialog(true)
-                                                        }}
+                                            <div className="flex gap-1">
+                                                <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                                    <FaWhatsapp />
+                                                </Link>
+                                            </div>
+                                        </section>
+                                    ))
+                                ) : (
+                                    !dataOrderListLoading && (
+                                        <NoData />
+                                    )
+                                )}
+                                {!dataOrderListLoading && dataOrderList?.orders?.length > 0 && (
+                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                                )}
+                            </CardContent>
+                        </TabsContent>
+                    </Tabs>
+                    <Dialog open={openDialog} onOpenChange={(isOpen) => setOpenDialog(isOpen)}>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Detail Order</DialogTitle>
+                            </DialogHeader>
+                            {orderData ? (
+                                <>
+                                    <div className="grid gap-4 py-2 border-b border-neutral-400">
+                                        <div className="flex justify-between gap-3 items-center">
+                                            <div className="w-2/3 flex flex-col">
+                                                <h2 className="text-sm font-semibold">{orderData?.order?.id?.length > 15 ? <span>{orderData?.order?.id.slice(0, 15)}..</span> : orderData?.order?.id}</h2>
+                                                <h2 className="text-sm">{orderData?.order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
+                                                    orderData?.order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Setrika'}</h2>
+                                            </div>
+                                            <div className="w-1/3 flex flex-col items-end">
+                                                <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
+                                                <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                                        className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
-                                                            <div className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
-                                                                    ? 'Menunggu Driver'
-                                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
-                                                                        ? 'Driver Menuju Store'
-                                                                        : order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
-                                                                            ? 'Diterima Outlet'
-                                                                            : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
-                                                                                ? 'Proses Cuci'
-                                                                                : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'
-                                                                                    ? 'Proses Setrika'
-                                                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                                        ? 'Proses Packing'
-                                                                                        : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
-                                                                                            ? 'Proses Delivery'
-                                                                                            : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
-                                                                                                ? 'Laundry Sampai'
-                                                                                                : 'Status tidak dikenal'}
+                                    <span className='font-semibold'>Proses Laundry:</span>
+                                    <div className="flex flex-row justify-between pb-2">
+                                        <div className='space-y-2'>
+                                            <Timeline orderStatus={orderData?.orderStatus} />
+                                        </div>
+                                        <div className="space-y-3">
+                                            <div className="border rounded-lg border-gray-700 p-2 text-sm">
+                                                <div className="font-semibold">Driver Pickup:</div>
+                                                <div>
+                                                    {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
+                                                        <>
+                                                            <div>
+                                                                {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
                                                             </div>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-
-                                                    <div className="flex gap-1">
-                                                        <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                            <FaWhatsapp />
-                                                        </Link>
-                                                    </div>
-                                                </section>
-                                            ))
-                                        ) : (
-                                            !dataOrderListLoading && (
-                                                <NoData />
-                                            )
-                                        )}
-                                        {!dataOrderListLoading && dataOrderList?.orders?.length > 0 && (
-                                            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                        )}
-                                    </CardContent>
-                                </TabsContent>
-                            </Tabs>
-                            <Dialog open={openDialog} onOpenChange={(isOpen) => setOpenDialog(isOpen)}>
-                                <DialogContent className="sm:max-w-[425px]">
-                                    <DialogHeader>
-                                        <DialogTitle>Detail Order</DialogTitle>
-                                    </DialogHeader>
-                                    {orderData ? (
-                                        <>
-                                            <div className="grid gap-4 py-2 border-b border-neutral-400">
-                                                <div className="flex justify-between gap-3 items-center">
-                                                    <div className="w-2/3 flex flex-col">
-                                                        <h2 className="text-sm font-semibold">{orderData?.order?.id?.length > 15 ? <span>{orderData?.order?.id.slice(0, 15)}..</span> : orderData?.order?.id}</h2>
-                                                        <h2 className="text-sm">{orderData?.order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                            orderData?.order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Setrika'}</h2>
-                                                    </div>
-                                                    <div className="w-1/3 flex flex-col items-end">
-                                                        <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
-                                                        <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <span className='font-semibold'>Proses Laundry:</span>
-                                            <div className="flex flex-row justify-between pb-2">
-                                                <div className='space-y-2'>
-                                                    <Timeline orderStatus={orderData?.orderStatus} />
-                                                </div>
-                                                <div className="space-y-3">
-                                                    <div className="border rounded-lg border-gray-700 p-2 text-sm">
-                                                        <div className="font-semibold">Driver Pickup:</div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
-                                                                <>
-                                                                    <div>
-                                                                        {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
-                                                                    </div>
-                                                                    <div>
-                                                                        {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
-                                                                    </div>
-                                                                </>
-                                                            ) : (
-                                                                "Menunggu Driver"
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <div className="border rounded-lg border-gray-700 p-2 text-sm">
-                                                        <div className="font-semibold">Delivery Driver:</div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERTLET" ? (
-                                                                <>
-                                                                    <div>
-                                                                        {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
-                                                                    </div>
-                                                                    <div>
-                                                                        {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
-                                                                    </div>
-                                                                </>
-                                                            ) : (
-                                                                "Belum Ada Driver"
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="w-full h-fit py-2 border-t space-y-1 border-neutral-400">
-                                                <div className="flex justify-between text-sm items-end">
-                                                    <h1 className="font-medium">Produk:</h1>
-                                                    <div className="h-4 overflow-y-auto">
-                                                        {orderData.orderDetail?.map((item: any, index: number) => (
-                                                            <div key={index} className="flex items-center justify-center">
-                                                                <p>{item?.quantity}x {item?.LaundryItem?.itemName}</p>
+                                                            <div>
+                                                                {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
                                                             </div>
-                                                        ))}
-                                                    </div>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <h1 className="font-medium">Biaya Kirim:</h1>
-                                                    <p>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</p>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <h1 className="font-medium">Harga Laundry:</h1>
-                                                    <p>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</p>
-                                                </div>
-                                                <div className="flex justify-between text-sm">
-                                                    <h1 className="font-medium">Total Harga:</h1>
-                                                    <p>Rp{(orderData?.order?.deliveryFee + orderData?.order?.laundryPrice)?.toLocaleString("id-ID")}</p>
+                                                        </>
+                                                    ) : (
+                                                        "Menunggu Driver"
+                                                    )}
                                                 </div>
                                             </div>
-                                        </>
-                                    ) : (
-                                        <Loading />
-                                    )}
-                                </DialogContent>
-                            </Dialog>
-                        </div>
-                    </main>
-                </section>
-            </main>
+                                            <div className="border rounded-lg border-gray-700 p-2 text-sm">
+                                                <div className="font-semibold">Delivery Driver:</div>
+                                                <div>
+                                                    {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERTLET" ? (
+                                                        <>
+                                                            <div>
+                                                                {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
+                                                            </div>
+                                                            <div>
+                                                                {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        "Belum Ada Driver"
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="w-full h-fit py-2 border-t space-y-1 border-neutral-400">
+                                        <div className="flex justify-between text-sm items-end">
+                                            <h1 className="font-medium">Produk:</h1>
+                                            <div className="h-4 overflow-y-auto">
+                                                {orderData.orderDetail?.map((item: any, index: number) => (
+                                                    <div key={index} className="flex items-center justify-center">
+                                                        <p>{item?.quantity}x {item?.LaundryItem?.itemName}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <h1 className="font-medium">Biaya Kirim:</h1>
+                                            <p>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</p>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <h1 className="font-medium">Harga Laundry:</h1>
+                                            <p>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</p>
+                                        </div>
+                                        <div className="flex justify-between text-sm">
+                                            <h1 className="font-medium">Total Harga:</h1>
+                                            <p>Rp{(orderData?.order?.deliveryFee + orderData?.order?.laundryPrice)?.toLocaleString("id-ID")}</p>
+                                        </div>
+                                    </div>
+                                </>
+                            ) : (
+                                <Loading />
+                            )}
+                        </DialogContent>
+                    </Dialog>
+                </div>
+            </MobileSessionLayout>
 
             <ContentWebLayout caption="Order">
                 <FilterWeb
@@ -392,7 +358,7 @@ export default function OrderList() {
                     isStoreLoading={isStoreLoading}
                     isStoreError={isStoreError}
                     setPage={setPage}
-                    showStoreSelect={false}
+                    showStoreSelect={true}
                     searchInput={searchInput}
                     options={[
                         { value: 'proses', label: 'Dalam Proses' },

@@ -47,7 +47,7 @@ export default function Page() {
         <>
             <MobileSessionLayout title="PENGATURAN">
 
-                <div className="mx-4 space-y-4">
+                <div className="pb-24 mx-4 space-y-4">
                     <Tabs defaultValue="1" className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="1" >Akun</TabsTrigger>

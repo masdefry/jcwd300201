@@ -1360,3 +1360,75 @@ export const userConfirmOrder = async (req: Request, res: Response, next: NextFu
     next(error)
   }
 }
+
+
+export const orderTrackingSuperAdmin = async (req: Request, res: Response, next: NextFunction) => {
+
+  try {
+    const { period } = req.query;
+
+    if (!period || (period !== 'today' && period !== 'month')) {
+      return res.status(400).json({ error: 'Invalid period, must be "today" or "month"' });
+    }
+
+    // Get the current date
+    const now = new Date();
+
+    // Declare startDate and endDate
+    let startDate: Date | undefined = undefined;
+    let endDate: Date | undefined = undefined;
+
+    if (period === 'today') {
+      // For "today", the range is from midnight to the end of the day
+      startDate = new Date(now.setHours(0, 0, 0, 0)); // Start of today
+      endDate = new Date(now.setHours(23, 59, 59, 999)); // End of today
+    } else if (period === 'month') {
+      // For "month", the range is from the first day of the current month to the last day of the month
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1); // Start of current month
+      endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999); // End of current month
+    }
+
+      // Fetch stats from the database
+      const stats = await prisma.order.aggregate({
+        _sum: {
+          laundryPrice: true,
+          totalWeight: true,
+        },
+        _count: {
+          id: true,
+        },
+        where: {
+          createdAt: {
+            gte: startDate,
+            lte: endDate,
+          },
+        },
+      });
+
+      // Calculate total pcs from the order details (if any)
+      const totalPcs = await prisma.orderDetail.aggregate({
+        _count: {
+          id: true,
+        },
+        where: {
+          Order: {
+            createdAt: {
+              gte: startDate,
+              lte: endDate,
+            },
+          },
+        },
+      });
+
+      // Return the aggregated data
+      return res.status(200).json({
+        laundryPrice: stats._sum.laundryPrice || 0,
+        orderCount: stats._count.id || 0,
+        totalKg: stats._sum.totalWeight || 0,
+        totalPcs: totalPcs._count.id || 0,
+      });
+    } catch (error) {
+      console.error(error);
+      return res.status(500).json({ error: 'Error fetching stats' });
+    }
+}

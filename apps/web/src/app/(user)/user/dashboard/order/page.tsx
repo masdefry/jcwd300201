@@ -37,6 +37,7 @@ import HorizontalTimeline from "@/components/core/timelineUser"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout"
 
 
 export default function DeliveryRequest() {
@@ -178,237 +179,227 @@ export default function DeliveryRequest() {
 
     return (
         <>
-            <main className="w-full h-fit md:hidden block">
-                <section className="w-full h-fit">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex justify-between gap-2 items-center font-bold w-screen pr-16">
-                                <div className="flex justify-center items-center gap-2"><Link href='/admin/settings'><FaArrowLeft /></Link> ORDER</div>
-                            </div>
-                        </section>
-                        <div className="py-28 mx-4 space-y-4">
-                            <Tabs defaultValue={activeTab} className="fit">
-                                <TabsList className="grid w-full grid-cols-3">
-                                    <TabsTrigger value="waiting-payment" onClick={() => { setActiveTab("waiting-payment"); setPage(1) }} >Belum Bayar</TabsTrigger>
-                                    <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
-                                    <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value={activeTab}>
-                                    <CardContent className="space-y-2 pt-2">
-                                        <FilterWorker
-                                            debounce={debounce}
-                                            sortOption={sortOption}
-                                            setSortOption={setSortOption}
-                                            dateFrom={dateFrom}
-                                            dateUntil={dateUntil}
-                                            setDateFrom={setDateFrom}
-                                            setDateUntil={setDateUntil}
-                                            setActiveTab={setActiveTab}
-                                            setSearchInput={setSearchInput}
-                                            searchInput={searchInput}
-                                            setPage={setPage}
-                                            setIsSearchValues={setIsSearchValues}
-                                            isSearchValues={isSearchValues}
-                                        />
-                                        {dataOrderListLoading && <div>Loading...</div>}
-                                        {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
-                                        {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
-                                            dataOrderList?.orders?.map((order: any) => (
-                                                <section
-                                                    key={order.id}
-                                                    className="flex justify-between items-center border-b py-4"
-                                                >
+            <MobileSessionLayout title="ORDER">
+                <div className="pb-24 mx-4 space-y-4">
+                    <Tabs defaultValue={activeTab} className="fit">
+                        <TabsList className="grid w-full grid-cols-3">
+                            <TabsTrigger value="waiting-payment" onClick={() => { setActiveTab("waiting-payment"); setPage(1) }} >Belum Bayar</TabsTrigger>
+                            <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
+                            <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value={activeTab}>
+                            <CardContent className="space-y-2 pt-2">
+                                <FilterWorker
+                                    debounce={debounce}
+                                    sortOption={sortOption}
+                                    setSortOption={setSortOption}
+                                    dateFrom={dateFrom}
+                                    dateUntil={dateUntil}
+                                    setDateFrom={setDateFrom}
+                                    setDateUntil={setDateUntil}
+                                    setActiveTab={setActiveTab}
+                                    setSearchInput={setSearchInput}
+                                    searchInput={searchInput}
+                                    setPage={setPage}
+                                    setIsSearchValues={setIsSearchValues}
+                                    isSearchValues={isSearchValues}
+                                />
+                                {dataOrderListLoading && <div>Loading...</div>}
+                                {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
+                                {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
+                                    dataOrderList?.orders?.map((order: any) => (
+                                        <section
+                                            key={order.id}
+                                            className="flex justify-between items-center border-b py-4"
+                                        >
 
-                                                    <div
-                                                        onClick={() => {
-                                                            setOrderData(null);
-                                                            handleOrderDetail(order?.id);
-                                                            setOpenDialog(true)
-                                                        }}
+                                            <div
+                                                onClick={() => {
+                                                    setOrderData(null);
+                                                    handleOrderDetail(order?.id);
+                                                    setOpenDialog(true)
+                                                }}
 
-                                                        className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
-                                                            <div className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
-                                                                    ? 'Menunggu Driver'
-                                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' || order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
-                                                                        ? 'Proses Pickup'
-                                                                        : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' || order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                            ? 'Proses Laundry'
-                                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
-                                                                                ? 'Proses Delivery'
-                                                                                : 'Status tidak dikenal'}
-                                                            </div>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                            </p>
-                                                        </div>
+                                                className="flex items-center">
+                                                <div className="ml-2">
+                                                    <h2 className="font-medium text-gray-900">
+                                                        {order?.id}
+                                                    </h2>
+                                                    <h2 className="font-medium text-gray-900">
+                                                        {order?.User?.firstName} {order?.User?.lastName}
+                                                    </h2>
+                                                    <div className="text-xs text-gray-500">
+                                                        {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
+                                                            ? 'Menunggu Driver'
+                                                            : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' || order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
+                                                                ? 'Proses Pickup'
+                                                                : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' || order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
+                                                                    ? 'Proses Laundry'
+                                                                    : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
+                                                                        ? 'Proses Delivery'
+                                                                        : 'Status tidak dikenal'}
                                                     </div>
-                                                    {
-                                                        order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === false ?
-                                                            <div className="border text-center w-fit text-sm px-1 rounded-md bg-yellow-200 border-yellow-600 text-yellow-600">
-                                                                Konfirmasi Order
-                                                            </div>
-                                                            : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === true ?
-                                                                <div className="border w-fit text-sm px-1 rounded-md bg-green-200 border-green-600 text-green-600">
-                                                                    Terkonfirmasi
-                                                                </div>
-                                                                : ''
-                                                    }
-                                                </section>
-                                            ))
-                                        ) : (
-                                            !dataOrderListLoading && (
-                                                <NoData />
-                                            )
-
-                                        )}
-                                        {!dataOrderListLoading && dataOrderList?.orders?.length > 0 && (
-                                            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                        )}
-                                    </CardContent>
-                                </TabsContent>
-                            </Tabs>
-                            <Dialog open={openDialog} onOpenChange={(isOpen) => setOpenDialog(isOpen)}>
-                                <DialogContent className="sm:max-w-[425px]">
-                                    <DialogHeader>
-                                        <DialogTitle>Detail Order</DialogTitle>
-                                    </DialogHeader>
-
-                                    {/* Order Detail Content */}
-                                    {orderData ? (
-                                        <>
-                                            <div className="grid gap-4 py-4">
-                                                <div className="flex justify-between items-center">
-                                                    <div className="flex flex-col">
-                                                        <h2 className="text-base font-semibold">{orderData?.order?.id}</h2>
-                                                        <h2 className="text-base">{orderData?.order?.OrderType?.type}</h2>
-
-                                                        {orderData?.order?.isPaid ?
-                                                            <div className="border w-fit px-1 mt-1 rounded-md bg-green-200 border-green-600 text-green-600">
-                                                                Pembayaran Berhasil
-                                                            </div>
-                                                            :
-                                                            <div className="border w-fit px-1 rounded-md bg-red-200 border-red-600 text-red-600">
-                                                                Menunggu Pembayaran
-                                                            </div>
-                                                        }
-                                                    </div>
-                                                    <div className="flex flex-col w-2/6">
-                                                        <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
-                                                        <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
-                                                    </div>
+                                                    <p className="text-xs text-gray-500">
+                                                        {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                    </p>
                                                 </div>
                                             </div>
+                                            {
+                                                order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === false ?
+                                                    <div className="border text-center w-fit text-sm px-1 rounded-md bg-yellow-200 border-yellow-600 text-yellow-600">
+                                                        Konfirmasi Order
+                                                    </div>
+                                                    : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === true ?
+                                                        <div className="border w-fit text-sm px-1 rounded-md bg-green-200 border-green-600 text-green-600">
+                                                            Terkonfirmasi
+                                                        </div>
+                                                        : ''
+                                            }
+                                        </section>
+                                    ))
+                                ) : (
+                                    !dataOrderListLoading && (
+                                        <NoData />
+                                    )
+
+                                )}
+                                {!dataOrderListLoading && dataOrderList?.orders?.length > 0 && (
+                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                                )}
+                            </CardContent>
+                        </TabsContent>
+                    </Tabs>
+                    <Dialog open={openDialog} onOpenChange={(isOpen) => setOpenDialog(isOpen)}>
+                        <DialogContent className="sm:max-w-[425px]">
+                            <DialogHeader>
+                                <DialogTitle>Detail Order</DialogTitle>
+                            </DialogHeader>
+
+                            {/* Order Detail Content */}
+                            {orderData ? (
+                                <>
+                                    <div className="grid gap-4 py-4">
+                                        <div className="flex justify-between items-center">
+                                            <div className="flex flex-col">
+                                                <h2 className="text-base font-semibold">{orderData?.order?.id}</h2>
+                                                <h2 className="text-base">{orderData?.order?.OrderType?.type}</h2>
+
+                                                {orderData?.order?.isPaid ?
+                                                    <div className="border w-fit px-1 mt-1 rounded-md bg-green-200 border-green-600 text-green-600">
+                                                        Pembayaran Berhasil
+                                                    </div>
+                                                    :
+                                                    <div className="border w-fit px-1 rounded-md bg-red-200 border-red-600 text-red-600">
+                                                        Menunggu Pembayaran
+                                                    </div>
+                                                }
+                                            </div>
+                                            <div className="flex flex-col w-2/6">
+                                                <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
+                                                <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
+                                            </div>
+                                        </div>
+                                    </div>
 
 
 
 
-                                            <div className="flex flex-col justify-between">
+                                    <div className="flex flex-col justify-between">
+                                        <div>
+                                            Proses: <HorizontalTimeline orderStatus={orderData?.orderStatus} />
+                                        </div>
+                                        <div className="space-y-3 my-3">
+                                            <div className="border rounded-lg border-gray-700 p-2 shadow-md">
+                                                <div className="font-semibold">Driver Pickup:</div>
                                                 <div>
-                                                    Proses: <HorizontalTimeline orderStatus={orderData?.orderStatus} />
-                                                </div>
-                                                <div className="space-y-3 my-3">
-                                                    <div className="border rounded-lg border-gray-700 p-2 shadow-md">
-                                                        <div className="font-semibold">Driver Pickup:</div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
-                                                                <>
-                                                                    <div>
-                                                                        {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
-                                                                    </div>
-                                                                    <div>
-                                                                        {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
-                                                                    </div>
-                                                                </>
-                                                            ) : (
-                                                                "Menunggu Driver"
-                                                            )}
-                                                        </div>
-                                                    </div>
-                                                    <div className="border rounded-lg border-gray-700 p-2 shadow-md">
-                                                        <div className="font-semibold">Delivery Driver:</div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERT" ? (
-                                                                <>
-                                                                    <div>
-                                                                        {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
-                                                                    </div>
-                                                                    <div>
-                                                                        {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
-                                                                    </div>
-                                                                </>
-                                                            ) : (
-                                                                "Belum Ada Driver"
-                                                            )}
-                                                        </div>
-                                                    </div>
+                                                    {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
+                                                        <>
+                                                            <div>
+                                                                {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
+                                                            </div>
+                                                            <div>
+                                                                {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        "Menunggu Driver"
+                                                    )}
                                                 </div>
                                             </div>
+                                            <div className="border rounded-lg border-gray-700 p-2 shadow-md">
+                                                <div className="font-semibold">Delivery Driver:</div>
+                                                <div>
+                                                    {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERT" ? (
+                                                        <>
+                                                            <div>
+                                                                {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
+                                                            </div>
+                                                            <div>
+                                                                {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                            </div>
+                                                        </>
+                                                    ) : (
+                                                        "Belum Ada Driver"
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                            {/* Map Order Items */}
-                                            <div className="text-center">
-                                                <h3 className="font-medium">Order Items</h3>
-                                                <div className="grid grid-cols-2  justify-items-center overflow-y-auto max-h-20">
-                                                    {orderData.orderDetail?.map((item: any, index: number) => (
-                                                        <div key={index} className="border-b border-black py-1 flex items-center justify-center">
-                                                            <span>{item?.quantity}x {item?.LaundryItem?.itemName}</span>
-                                                        </div>
-                                                    ))}
+                                    {/* Map Order Items */}
+                                    <div className="text-center">
+                                        <h3 className="font-medium">Order Items</h3>
+                                        <div className="grid grid-cols-2  justify-items-center overflow-y-auto max-h-20">
+                                            {orderData.orderDetail?.map((item: any, index: number) => (
+                                                <div key={index} className="border-b border-black py-1 flex items-center justify-center">
+                                                    <span>{item?.quantity}x {item?.LaundryItem?.itemName}</span>
                                                 </div>
-                                            </div>
-                                            {/* Delivery Fee and Total Price */}
-                                            <div className="flex justify-between">
-                                                <span className="font-medium">Biaya Kirim:</span>
-                                                <span>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</span>
-                                            </div>
-                                            <div className="flex justify-between">
-                                                <span>Harga Laundry:</span>
-                                                <span>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</span>
-                                            </div>
-                                            <div className="flex justify-between font-semibold">
-                                                <span>Total Harga:</span>
-                                                <span>Rp{(orderData?.order?.deliveryFee + orderData?.order?.laundryPrice)?.toLocaleString("id-ID")}</span>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <div>Loading order details...</div>
-                                    )}
-                                    {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true ?
-                                        <ConfirmAlert
-                                            disabled={isPending}
-                                            caption="Apakah anda yakin ingin mengkonfirmasi order laundry berikut?"
-                                            description="Pastikan laundry telah sampai di lokasi anda"
-                                            onClick={() => { handleOrderConfirmation(orderData?.order?.id) }}>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    {/* Delivery Fee and Total Price */}
+                                    <div className="flex justify-between">
+                                        <span className="font-medium">Biaya Kirim:</span>
+                                        <span>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <span>Harga Laundry:</span>
+                                        <span>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</span>
+                                    </div>
+                                    <div className="flex justify-between font-semibold">
+                                        <span>Total Harga:</span>
+                                        <span>Rp{(orderData?.order?.deliveryFee + orderData?.order?.laundryPrice)?.toLocaleString("id-ID")}</span>
+                                    </div>
+                                </>
+                            ) : (
+                                <div>Loading order details...</div>
+                            )}
+                            {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true ?
+                                <ConfirmAlert
+                                    disabled={isPending}
+                                    caption="Apakah anda yakin ingin mengkonfirmasi order laundry berikut?"
+                                    description="Pastikan laundry telah sampai di lokasi anda"
+                                    onClick={() => { handleOrderConfirmation(orderData?.order?.id) }}>
 
-                                            <div className="flex justify-center">
-                                                <ButtonCustom disabled={isPending} btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
-                                            </div>
-                                        </ConfirmAlert>
-                                        : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.laundryPrice > 1 ?
-                                            <div className="flex justify-center">
-                                                <ButtonCustom btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`/user/dashboard/payment/${orderData?.order?.id}`)}
-                                                    disabled={orderData?.order?.laundryPrice === null || orderData?.order?.laundryPrice === 0}>Bayar Sekarang</ButtonCustom>
-                                            </div>
-                                            : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof ?
-                                                <div className="flex justify-center">
-                                                    <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Menunggu Verivikasi Admin</ButtonCustom>
-                                                </div>
-                                                : ''
-                                    }
-                                </DialogContent>
-                            </Dialog>
-                        </div>
-                    </main>
-                </section>
-            </main>
+                                    <div className="flex justify-center">
+                                        <ButtonCustom disabled={isPending} btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
+                                    </div>
+                                </ConfirmAlert>
+                                : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.laundryPrice > 1 ?
+                                    <div className="flex justify-center">
+                                        <ButtonCustom btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`/user/dashboard/payment/${orderData?.order?.id}`)}
+                                            disabled={orderData?.order?.laundryPrice === null || orderData?.order?.laundryPrice === 0}>Bayar Sekarang</ButtonCustom>
+                                    </div>
+                                    : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof ?
+                                        <div className="flex justify-center">
+                                            <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Menunggu Verivikasi Admin</ButtonCustom>
+                                        </div>
+                                        : ''
+                            }
+                        </DialogContent>
+                    </Dialog>
+                </div>
+            </MobileSessionLayout>
 
             {/* web sesi */}
             <ContentWebLayout caption="Pesanan">
