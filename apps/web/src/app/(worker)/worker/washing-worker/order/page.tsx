@@ -166,22 +166,17 @@ export default function Page() {
                                 {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                                 {!dataOrderWashingProcessLoading && dataOrderWashingProcess?.orders?.length > 0 ? (
                                     dataOrderWashingProcess?.orders?.map((order: any) => (
-                                        <section
-                                            key={order.id}
-                                            className="flex justify-between items-center border-b py-4"
-                                        >
+                                        <section key={order.id} className="flex justify-between items-center border-b py-4">
                                             {order?.orderStatus[0]?.status !== 'IN_IRONING_PROCESS' ? (
-                                                <ConfirmAlert
-                                                    colorConfirmation="blue"
-                                                    caption={
-                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
-                                                            ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
-                                                            : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === true
-                                                                ? 'Apakah anda yakin ingin melakukan proses cuci pada order ini?'
-                                                                : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
-                                                                    ? 'Apakah anda yakin ingin menyelesaikan proses pada order ini?'
-                                                                    : ''
-                                                    }
+                                                <ConfirmAlert colorConfirmation="blue" caption={
+                                                    order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
+                                                        ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
+                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === true
+                                                            ? 'Apakah anda yakin ingin melakukan proses cuci pada order ini?'
+                                                            : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                ? 'Apakah anda yakin ingin menyelesaikan proses pada order ini?'
+                                                                : ''
+                                                }
                                                     description={
                                                         order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
                                                             ? 'Silahkan hubungi admin'

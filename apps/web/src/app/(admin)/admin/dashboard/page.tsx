@@ -3,11 +3,11 @@
 import { IoAddCircleSharp, IoSearchSharp, IoPersonSharp } from "react-icons/io5";
 import { GrUserWorker } from "react-icons/gr";
 import { FaTint, FaWhatsapp } from "react-icons/fa";
-import { MdOutlineStickyNote2 } from "react-icons/md";
+import { MdFeedback, MdOutlineStickyNote2, MdWorkHistory } from "react-icons/md";
 import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
-import { FaArrowRight, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying, FaStore } from "react-icons/fa6";
+import { FaArrowRight, FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying, FaStore } from "react-icons/fa6";
 import { FaCloud, FaTemperatureHigh } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
@@ -20,6 +20,7 @@ import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder
 import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
+import { RiProfileFill } from "react-icons/ri";
 
 export default function Page() {
     const [date, setDate] = useState<Date | undefined>(new Date())
@@ -91,36 +92,70 @@ export default function Page() {
     )
 
     const arrIcon = [
-        { icon: <FaDashcube />, url: '/admin/dashboard' },
-        { icon: <FaStore />, url: '/admin/outlet' },
-        { icon: <FaMoneyBillWave />, url: '/admin/order' },
-        { icon: <FaSpaghettiMonsterFlying />, url: '/admin/dashboard' },
+        { icon: <FaDashcube />, url: '/admin/dashboard', name: 'Dashboard' },
+        { icon: <FaStore />, url: '/admin/outlet', name: 'Outlet' },
+        { icon: <FaMoneyBillWave />, url: '/admin/order', name: 'Pesanan' },
+        { icon: <FaSpaghettiMonsterFlying />, url: '/admin/settings', name: 'Pengaturan' },
     ]
+
+    const arrMenu = [
+        { icon: <FaCartArrowDown />, url: '/admin/product', name: 'Produk' },
+        { icon: <MdFeedback />, url: '/admin/contact', name: 'Umpan Balik' },
+        { icon: <MdWorkHistory />, url: '/admin/worker', name: 'Kelola Pekerja' },
+        { icon: <RiProfileFill />, url: '/admin/settings/account', name: 'Kelola Profil' },
+    ]
+
     return (
         <>
-            <ContentMobileLayout title='Dashboard' icon={<FaDashcube className="text-lg" />}>
-                <div className="w-full h-fit py-5 flex flex-col p-5 bg-orange-500 rounded-3xl">
-                    <h1 className='text-white font-bold'>Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}!</h1>
-                    <p className="text-neutral-200 text-sm">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />}>
+                <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
+                    <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
+                    <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
                 </div>
-                <div className="flex justify-center h-fit w-full p-2 bg-gradient-to-tr rounded-2xl">
-                    <div className='grid grid-cols-2 gap-2 w-full h-fit'>
+
+                <div className="flex justify-center h-fit w-full p-2 mt-5 bg-gradient-to-tr from-white via-sky-50 to-sky-100 rounded-2xl">
+                    <div className="grid grid-cols-4 gap-2 w-full">
                         {arrIcon?.map((item: any, i: number) => (
-                            <Link href={item?.url} className="w-full h-fit py-5 bg-white shadow-sm border rounded-2xl flex justify-center items-center" key={i}>
-                                <span className='text-3xl text-orange-500'>{item?.icon}</span>
+                            <Link href={item?.url} className="w-full p-3 flex flex-col items-center justify-center gap-2 bg-white shadow-sm border rounded-2xl hover:shadow-md transition-all" key={i}>
+                                <span className="text-2xl text-orange-500">{item?.icon}</span>
+                                <h1 className="text-xs text-gray-700">{item?.name}</h1>
                             </Link>
                         ))}
                     </div>
                 </div>
-                <div className='w-full h-fit py-5 rounded-xl border'>
-                    <ChartComponents completedOrders={completedOrders} pendingOrders={pendingOrders} />
+
+                <div className="w-full flex flex-col md:flex-row gap-4 px-2 mt-5 h-auto">
+                    <div className="w-full md:w-1/2 h-auto">
+                        <div className="grid grid-cols-1 gap-3 w-full">
+                            {arrMenu?.map((menu, i) => (
+                                <Link href={menu?.url} key={i} className="w-full flex gap-3 items-center py-3 px-4 bg-white border rounded-lg shadow-sm hover:bg-gray-100 transition-all">
+                                    <span className="text-lg text-neutral-500">{menu?.icon}</span>
+                                    <span className="text-sm text-neutral-700">{menu?.name}</span>
+                                </Link>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="w-full md:w-1/2 h-auto bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-4 rounded-2xl shadow-md">
+                        <div className="h-full bg-white bg-opacity-70 rounded-lg p-4">
+                            <h2 className="text-lg font-semibold text-gray-700 mb-2">Status Cuaca</h2>
+                            <p className="text-sm text-gray-600">
+                                {isCurrentWeither?.weather && isCurrentWeither.weather[0]?.description
+                                    ? `${isCurrentWeither.weather[0].description}, ${(
+                                        isCurrentWeither.main.temp - 273.15
+                                    ).toFixed(1)}°C`
+                                    : "Data cuaca tidak tersedia"}
+                            </p>
+                        </div>
+                    </div>
                 </div>
-                <div className="w-full border rounded-2xl h-fit py-14 flex justify-center items-center">
-                    <h1>Contact</h1>
+
+                <div className="w-full h-fit py-5 mt-5 rounded-xl border bg-white shadow-sm">
+                    <ChartComponents completedOrders={completedOrders} pendingOrders={pendingOrders} />
                 </div>
             </ContentMobileLayout>
 
-            {/* Web sesi */}
+
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
                 <section className="w-full h-1/2 rounded-xl flex gap-2">
                     <div className="w-full rounded-xl h-full flex items-center bg-orange-500 p-5">

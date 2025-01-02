@@ -6,9 +6,11 @@ import ContentWebLayout from "@/components/core/webSessionContent";
 import { useCreateWorkerHooks } from "@/features/superAdmin/hooks/useCreateWorkerHooks";
 import { createUserValidation } from "@/features/superAdmin/schemas/createUserValidation";
 import { ErrorMessage, Field, Form, Formik } from "formik";
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 
 export default function Page() {
-    const { getDataStore, handleCreateUser, isPending } = useCreateWorkerHooks()
+    const { getDataStore, handleCreateUser, isPending, isValuePhoneNumber, setIsValuePhoneNumber } = useCreateWorkerHooks()
 
     return (
         <>
@@ -52,7 +54,12 @@ export default function Page() {
                                     </div>
                                     <div className="w-full flex flex-col gap-2 relative">
                                         <label htmlFor="phoneNumber" className="font-semibold">Nomor Telepon <span className="text-red-600">*</span></label>
-                                        <Field type='text' name='phoneNumber' placeholder='Masukan nomor telepon anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
+                                        <PhoneInput name='phoneNumber' countryCallingCodeEditable={false} onChange={(value: any) => {
+                                            setIsValuePhoneNumber(value)
+                                            if (value) {
+                                                setFieldValue('phoneNumber', value?.slice(1))
+                                            }
+                                        }} international value={isValuePhoneNumber} defaultCountry="ID" className="z-20 w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500" placeholder='Masukan nomor telepon anda dengan diawali angka 8' />
                                         <ErrorMessage component='div' name="phoneNumber" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                     </div>
 
@@ -123,7 +130,6 @@ export default function Page() {
                 </div>
             </MobileSessionLayout>
 
-            {/* web */}
             <ContentWebLayout caption="Tambah Data Pekerja">
                 <div className="w-full h-fit pb-10">
                     <Formik
@@ -165,7 +171,12 @@ export default function Page() {
                                         </div>
                                         <div className="w-full flex flex-col gap-2 relative">
                                             <label htmlFor="phoneNumber" className="font-semibold">Nomor Telepon <span className="text-red-600">*</span></label>
-                                            <Field type='text' name='phoneNumber' placeholder='Masukan nomor telepon anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
+                                            <PhoneInput name='phoneNumber' countryCallingCodeEditable={false} onChange={(value: any) => {
+                                                setIsValuePhoneNumber(value)
+                                                if (value) {
+                                                    setFieldValue('phoneNumber', value?.slice(1))
+                                                }
+                                            }} international value={isValuePhoneNumber} defaultCountry="ID" className="z-20 w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500" placeholder='Masukan nomor telepon anda dengan diawali angka 8' />
                                             <ErrorMessage component='div' name="phoneNumber" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                         </div>
                                     </div>

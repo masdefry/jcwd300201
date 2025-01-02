@@ -104,39 +104,6 @@ export default function Page() {
                         </ConfirmAlert>
                     </div>
                 </section>
-                <section className="w-1/2 rounded-xl h-full flex flex-col gap-2">
-                    <div className='w-full h-full bg-white rounded-xl flex flex-col gap-2'>
-                        <div className="w-full h-fit py-3 bg-orange-500 rounded-t-xl px-4">
-                            <h1 className="font-bold text-base text-white flex items-center gap-3"><FaUser /> Pengaturan Akun</h1>
-                        </div>
-                        <div className="w-full h-full bg-white rounded-xl flex flex-col gap-2 px-2 pt-3">
-                            <div className="w-full flex px-3 items-center gap-4">
-                                <div className="w-12 h-12 rounded-full">
-                                    <Image
-                                        src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
-                                        width={600}
-                                        height={600}
-                                        alt="user-profile"
-                                        className="w-12 h-12 object-cover rounded-full border-[1px] border-white"
-                                    />
-                                </div>
-                                <div className="text-black flex flex-col">
-                                    <h1 className="font-semibold">{name && name?.length > 9 ? name?.slice(0, 9) : name || 'Admin'}</h1>
-                                    <h1 className="italic text-[9px] text-neutral-500">{email || 'admin@cnc.com'}</h1>
-                                </div>
-                            </div>
-                            <ListCustom caption={name || 'Admin'} url="/admin/settings/account" border='border-none'><FaIdCard /></ListCustom>
-                            <ListCustom caption={email || 'admin@cnc.com'} url="/admin/settings/account" border='border-none'><FaVoicemail /></ListCustom>
-                            <Link href='/admin/settings/account' className="w-full text-center bg-white py-1 hover:text-neutral-900 px-3 rounded-2xl text-neutral-700 border">Edit</Link>
-                        </div>
-                    </div>
-                    <div className='w-full h-full bg-white rounded-xl'>
-                        <div className="w-full h-fit py-3 bg-orange-500 rounded-t-xl px-4">
-                            <h1 className="font-bold text-base text-white flex items-center gap-3"><FaStore /> Pengaturan Outlet</h1>
-                        </div>
-                    </div>
-                </section>
-
             </main>
         </>
     )

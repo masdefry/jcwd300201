@@ -13,8 +13,9 @@ export const createMessageValidation = Yup.object().shape({
         .matches(/^[a-zA-Z0-9\s.,!?'-]+$/, 'Harap masukan format yang benar')
         .test('no-whitespace', 'Harap diisi terlebih dahulu', (value: any) => value && !/^\s+$/.test(value)),
 
-    phoneNumber: Yup.string()
-        .matches(/^\d{10,}$/, 'Harap masukan nomor yang valid')
+    phoneNumber: Yup.string().matches(/^[0-9]+$/, 'Nomor telepon hanya boleh berisi angka')
+        .min(10, 'Minimal 10 angka')
+        .max(15, 'Maximal 15 angka')
         .required('Harap diisi terlebih dahulu')
         .test('no-whitespace', 'Nomor telepon tidak boleh hanya terdiri dari spasi', (value: any) => value && !/^\s+$/.test(value)),
 

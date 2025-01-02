@@ -45,7 +45,7 @@ export default function Page() {
         const isMonth = date.getMonth()
         const isYear = date.getFullYear()
 
-        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        const newDateFormat = `${isDateNow}/${isMonth + 1}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
@@ -130,7 +130,6 @@ export default function Page() {
                 </section>
             </main>
 
-            {/* Web sesi */}
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
                 <section className="w-full h-1/2 rounded-xl flex gap-2">
                     <div className="w-full rounded-xl h-full flex items-center bg-orange-500 p-5">
@@ -207,7 +206,7 @@ export default function Page() {
                     <div className="w-full h-full space-y-2 rounded-2xl">
                         <Link href='/admin-outlet/nota-order' className="w-full py-2 flex items-center justify-between bg-white bg-opacity-45 rounded-full px-3">
                             <h1 className="text-neutral-600 font-semibold hover:text-neutral-700">Buat Nota Pesanan</h1>
-                            <span className="p-2 rounded-full hover:animate-wiggle-more bg-neutral-400"><FaArrowRight className="text-white text-xl"/> </span>
+                            <span className="p-2 rounded-full hover:animate-wiggle-more bg-neutral-400"><FaArrowRight className="text-white text-xl" /> </span>
                         </Link>
                     </div>
                     <div className="w-full h-full bg-white bg-opacity-45 rounded-2xl"></div>

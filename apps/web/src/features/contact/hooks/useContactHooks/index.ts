@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation'
 export const useContactHooks = ()=> {
     const token = authStore((state) => state?.token)
     const [isDisabledSuccess, setIsDisabledSuccess] = useState<boolean>(false)
+    const [isValuePhoneNumber, setIsValuePhoneNumber] = useState<string>('')
     const router = useRouter()
     const { mutate: handleSendMessage, isPending: isPendingSendMessage } = useMutation({
         mutationFn: async ({ name, email, textHelp, phoneNumber }: { name: string, email: string, textHelp: string, phoneNumber: string }) => {
@@ -40,6 +41,7 @@ export const useContactHooks = ()=> {
 
     return {
         isDisabledSuccess, setIsDisabledSuccess,
-        handleSendMessage, isPendingSendMessage
+        handleSendMessage, isPendingSendMessage,
+        isValuePhoneNumber, setIsValuePhoneNumber
     }
 }

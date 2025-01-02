@@ -6,8 +6,9 @@ import { useState } from "react"
 import { IRegisterUser } from "./types"
 import { instance } from "@/utils/axiosInstance"
 
-export const useRegisterHooks = ()=> {
+export const useRegisterHooks = () => {
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
+    const [isValuePhoneNumber, setIsValuePhoneNumber] = useState<string>('')
     const { toast } = useToast()
 
     const { mutate: handleRegister, isPending } = useMutation({
@@ -31,9 +32,9 @@ export const useRegisterHooks = ()=> {
     })
 
     return {
-        isDisabledSucces, 
+        isDisabledSucces,
         setIsDisabledSucces,
         handleRegister,
-        isPending
+        isPending, isValuePhoneNumber, setIsValuePhoneNumber
     }
 }

@@ -13,6 +13,8 @@ import ChangePassword from '@/components/core/changePassword';
 import { useAdminSettingsHooks } from '@/features/superAdmin/hooks/useAdminSettingsHooks';
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { CardContent } from '@/components/ui/card';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -21,6 +23,7 @@ export default function Page() {
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
         handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword } = useAdminSettingsHooks()
+        const [activeTab, setActiveTab] = React.useState('')
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
@@ -43,7 +46,64 @@ export default function Page() {
     return (
         <>
             <MobileSessionLayout title='Pengaturan'>
-                <h1></h1>
+                <Tabs defaultValue='change-profile' onValueChange={(tab) => setActiveTab(tab)}>
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="change-profile">Ubah Profil</TabsTrigger>
+                        <TabsTrigger value="change-password">Ganti Password</TabsTrigger>
+                    </TabsList>
+
+                    <TabsContent value="change-profile">
+                        <CardContent className="space-y-2 pt-2">
+                        <Formik initialValues={{
+                            firstName: getDataWorker?.firstName || '',
+                            lastName: getDataWorker?.lastName || '',
+                            email: getDataWorker?.email || '',
+                            phoneNumber: getDataWorker?.phoneNumber || '',
+                            images: null
+                        }}
+                            onSubmit={(values) => {
+                                const fd = new FormData()
+                                fd.append('email', values?.email)
+                                fd.append('firstName', values?.firstName)
+                                fd.append('lastName', values?.lastName)
+                                fd.append('phoneNumber', values?.phoneNumber)
+                                if (values?.images) fd.append('images', values?.images)
+
+                                handleUpdateProfile(fd)
+                            }}>
+                            {({ setFieldValue, values }) => (
+                                <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
+                                    disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
+                                    handleDeleteProfilePicture={handleDeleteProfilePicture}
+                                    profilePict={profilePict} setFieldValue={setFieldValue}
+                                    setTempProfilePict={setTempProfilePict} tempProfilePict={tempProfilePict} />
+                            )}
+                        </Formik>
+                        </CardContent>
+                    </TabsContent>
+
+                    <TabsContent value="change-password">
+                        <CardContent className="space-y-2 pt-2">
+                        <Formik initialValues={{
+                            existingPassword: '',
+                            password: '',
+                            confirmPassword: ''
+                        }}
+                            validationSchema={Yup.object().shape({
+                                existingPassword: Yup.string().required('Password lama harus diisi'),
+                                password: Yup.string().required('Password baru harus diisi'),
+                                confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
+                            })}
+                            onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
+                            <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
+                                confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
+                                isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
+                                toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
+                        </Formik>
+                        </CardContent>
+                    </TabsContent>
+                </Tabs>
+
             </MobileSessionLayout>
 
             <ContentWebLayout caption='Pengaturan'>
