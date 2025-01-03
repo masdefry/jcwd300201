@@ -21,7 +21,7 @@ import { FaPlus } from "react-icons/fa6";
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import FilterWeb from "@/components/core/filterWeb"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 
 
 export default function DeliveryRequest() {

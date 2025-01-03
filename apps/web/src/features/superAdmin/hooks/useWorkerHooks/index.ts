@@ -13,6 +13,7 @@ const useWorkerHooks = () => {
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
     const [searchWorker, setSearchWorker] = useState<string>(params.get('search') || '')
     const [sortWorker, setSortWorker] = useState<string>(params.get('sort') || '')
+    const [isValueSearch, setIsValueSearch] = useState<string>('')
     const router = useRouter()
     const pathname = usePathname()
 
@@ -71,7 +72,8 @@ const useWorkerHooks = () => {
         sortWorker, setSortWorker,
         getDataWorker, refetch, isFetching,
         dataWorker, totalPages,
-        handlePageChange, debounce, isLoading
+        handlePageChange, debounce, isLoading,
+        isValueSearch, setIsValueSearch
     }
 }
 

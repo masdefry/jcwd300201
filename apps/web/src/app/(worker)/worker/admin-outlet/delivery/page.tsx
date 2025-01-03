@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/select"
 import { FaArrowUpRightFromSquare, FaCheck, FaPlus } from "react-icons/fa6";
 import { ConfirmAlert } from "@/components/core/confirmAlert"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 
 export default function DeliveryRequest() {
     const params = useSearchParams();

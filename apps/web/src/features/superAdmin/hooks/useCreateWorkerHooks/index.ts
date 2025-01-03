@@ -5,9 +5,11 @@ import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ICreateUserBody } from "./types";
+import { useState } from "react";
 
 const useCreateWorkerHooks = () => {
     const token = authStore((state) => state?.token)
+    const [isValuePhoneNumber, setIsValuePhoneNumber] = useState<string>('')
     const { data: getDataStore } = useQuery({
         queryKey: ['get-data-store'],
         queryFn: async () => {
@@ -41,7 +43,7 @@ const useCreateWorkerHooks = () => {
         }
     })
 
-    return { getDataStore, handleCreateUser, isPending }
+    return { getDataStore, handleCreateUser, isPending, isValuePhoneNumber, setIsValuePhoneNumber }
 }
 
 export { useCreateWorkerHooks }

@@ -12,7 +12,7 @@ import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
 import { useIroningWorkerSettingsHooks } from '@/features/ironingWorker/hooks/useIroningWorkerSettingsHooks';
 import ContentWebLayout from '@/components/core/webSessionContent';
-import MobileSessionLayout from '@/components/core/mobileSessionLayout';
+import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ironingChangePasswordValidation } from '@/features/ironingWorker/schemas/ironingChangePasswordValidationSchema';
 import { ironingAkunValidation } from '@/features/ironingWorker/schemas/ironingAkunValidationSchema';

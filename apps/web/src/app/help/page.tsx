@@ -1,6 +1,6 @@
 'use client'
 
-import MobileWebLayout from "@/components/core/mobileSessionLayout";
+import MobileWebLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { useRouter } from "next/navigation";
 import { CgArrowLeft } from "react-icons/cg";
 

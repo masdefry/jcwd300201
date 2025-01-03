@@ -12,10 +12,13 @@ import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
 import { useWashingWorkerSettingsHooks } from '@/features/washingWorker/hooks/useWashingWorkerSettingsHooks';
 import ContentWebLayout from '@/components/core/webSessionContent';
-import MobileSessionLayout from '@/components/core/mobileSessionLayout';
+import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { washingAkunValidation } from '@/features/washingWorker/schemas/washingAkunValidationSchema';
 import { washingChangePasswordValidation } from '@/features/washingWorker/schemas/washingChangePasswordValidationSchema';
+import { ConfirmAlert } from '@/components/core/confirmAlert';
+import { FaSignOutAlt } from 'react-icons/fa';
+import ButtonCustom from '@/components/core/button';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -23,7 +26,7 @@ export default function Page() {
         passwordVisible, confirmPasswordVisible, handleChange, togglePasswordVisibility,
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
-        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword } = useWashingWorkerSettingsHooks()
+        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useWashingWorkerSettingsHooks()
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
@@ -46,8 +49,12 @@ export default function Page() {
     return (
         <>
             <MobileSessionLayout title="Pengaturan">
+<<<<<<< HEAD
 
                 <div className="pb-24 mx-4 space-y-4">
+=======
+                <div className="px-4 space-y-4">
+>>>>>>> 9a1d5e1137cefdc37c20f5c0b564e8b152899b45
                     <Tabs defaultValue="1" className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="1" >Akun</TabsTrigger>
@@ -73,8 +80,6 @@ export default function Page() {
                                     handleUpdateProfile(fd)
                                 }}>
                                 {({ setFieldValue, values }) => (
-
-                                    // profile settings
                                     <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                         disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                         handleDeleteProfilePicture={handleDeleteProfilePicture}
@@ -90,12 +95,7 @@ export default function Page() {
                                 confirmPassword: ''
                             }}
                                 validationSchema={washingChangePasswordValidation}
-                                onSubmit={(values) => {
-                                    handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                    console.log(values)
-                                }}>
-
-                                {/* change password setting */}
+                                onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
                                 <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                     confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                     isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
@@ -103,12 +103,13 @@ export default function Page() {
                             </Formik>
                         </TabsContent>
                     </Tabs>
+                    <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisableSucces}>
+                        <ButtonCustom btnColor='bg-red-500 hover:bg-red-500' rounded='rounded-2xl' type='button' disabled={isDisableSucces || isPending} width='w-full'>Logout</ButtonCustom>
+                    </ConfirmAlert>
                 </div>
             </MobileSessionLayout>
-            {/* web sesi */}
-            <ContentWebLayout caption='Pengaturan'>
 
-                {/* tabs */}
+            <ContentWebLayout caption='Pengaturan'>
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Pengaturan tabs">
@@ -135,8 +136,6 @@ export default function Page() {
                                 handleUpdateProfile(fd)
                             }}>
                             {({ setFieldValue, values }) => (
-
-                                // profile settings
                                 <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                     disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                     handleDeleteProfilePicture={handleDeleteProfilePicture}

@@ -20,7 +20,7 @@ import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import FilterWeb from "@/components/core/filterWeb"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 
 export default function HistoryOrderWashing() {
     const { page, totalPages, sortOption, dateFrom, dateUntil, limit,

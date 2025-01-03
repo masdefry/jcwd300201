@@ -21,6 +21,17 @@ export interface IStoreMap {
     deletedAt: Date | null
 }
 
+export interface IUpdateStore {
+    storeName: string
+    address: string
+    city: string
+    province: string
+    zipCode: string
+    latitude: string
+    longitude: string
+    outletId: string
+}
+
 export interface ICreateStore {
     storeName: string,
     address: string,

@@ -24,7 +24,7 @@ import FilterWorker from "@/components/core/filter"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 
 export default function DriverDelivery() {
     const params = useSearchParams();

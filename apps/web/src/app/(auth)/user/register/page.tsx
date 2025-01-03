@@ -6,9 +6,11 @@ import ButtonCustom from "@/components/core/button";
 import Link from "next/link";
 import { useRegisterHooks } from "@/features/user/hooks/useRegisterHooks";
 import { registerUserValidation } from "@/features/user/schemas/registerUserValidation";
+import 'react-phone-number-input/style.css'
+import PhoneInput from 'react-phone-number-input'
 
 export default function Page() {
-    const { handleRegister, isPending } = useRegisterHooks()
+    const { handleRegister, isPending, isValuePhoneNumber, setIsValuePhoneNumber } = useRegisterHooks()
 
     return (
 
@@ -34,7 +36,6 @@ export default function Page() {
                         email: '',
                         firstName: '',
                         lastName: '',
-                        confirmPassword: '',
                         phoneNumber: '',
                     }}
 
@@ -45,41 +46,53 @@ export default function Page() {
                             firstName: values.firstName,
                             lastName: values.lastName,
                             phoneNumber: values.phoneNumber,
-                        }, { onSuccess: () => { resetForm() } })
+                        }, {
+                            onSuccess: () => {
+                                resetForm()
+                                setIsValuePhoneNumber('')
+                            }
+                        })
                     }}>
-                    <Form className='flex flex-col justify-center items-center w-full space-y-4'>
-                        <div id="firstName-input" className="w-full">
-                            <div className="flex gap-5 items-center relative">
-                                <label>Nama Depan<span className="text-red-500">*</span></label>
-                                <ErrorMessage name="firstName" component="div" className="text-red-500 flex w-full justify-end text-xs absolute" />
+                    {({ setFieldValue }) => (
+                        <Form className='flex flex-col justify-center items-center w-full space-y-4'>
+                            <div id="firstName-input" className="w-full">
+                                <div className="flex gap-5 items-center relative">
+                                    <label>Nama Depan<span className="text-red-500">*</span></label>
+                                    <ErrorMessage name="firstName" component="div" className="text-red-500 flex w-full justify-end text-xs absolute" />
+                                </div>
+                                <Field name="firstName" className=" w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10" placeholder="John" type="text" />
                             </div>
-                            <Field name="firstName" className=" w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10" placeholder="John" type="text" />
-                        </div>
-                        <div id="lastName-input" className="w-full">
-                            <div className="flex gap-5 items-center relative">
-                                <label>Nama Belakang<span className="text-red-500">*</span></label>
-                                <ErrorMessage name="lastName" component="div" className="text-red-500 flex w-full justify-end text-xs absolute" />
+                            <div id="lastName-input" className="w-full">
+                                <div className="flex gap-5 items-center relative">
+                                    <label>Nama Belakang<span className="text-red-500">*</span></label>
+                                    <ErrorMessage name="lastName" component="div" className="text-red-500 flex w-full justify-end text-xs absolute" />
+                                </div>
+                                <Field name="lastName" className=" w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10" placeholder="Doe" type="text" />
                             </div>
-                            <Field name="lastName" className=" w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10" placeholder="Doe" type="text" />
-                        </div>
-                        <div id="email-input" className="w-full">
-                            <div className="flex gap-5 items-center relative">
-                                <label>Email<span className="text-red-500">*</span></label>
-                                <ErrorMessage name="email" component="div" className="text-red-500 flex w-full justify-end text-xs absolute" />
+                            <div id="email-input" className="w-full">
+                                <div className="flex gap-5 items-center relative">
+                                    <label>Email<span className="text-red-500">*</span></label>
+                                    <ErrorMessage name="email" component="div" className="text-red-500 flex w-full justify-end text-xs absolute" />
+                                </div>
+                                <Field name="email" className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10" placeholder="example@gmail.com" type="email" />
                             </div>
-                            <Field name="email" className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10" placeholder="example@gmail.com" type="email" />
-                        </div>
-                        <div id="phoneNumber-input" className="w-full">
-                            <div className="flex gap-5 items-center relative">
-                                <label>Nomor Telepon <span className="text-red-500">*</span></label>
-                                <ErrorMessage name="phoneNumber" component="div" className="text-red-500 flex w-full justify-end text-xs absolute" />
+                            <div id="phoneNumber-input" className="w-full">
+                                <div className="flex gap-5 items-center relative">
+                                    <label>Nomor Telepon <span className="text-red-500">*</span></label>
+                                    <ErrorMessage name="phoneNumber" component="div" className="text-red-500 flex w-full justify-end text-xs absolute" />
+                                </div>
+                                <PhoneInput name='phoneNumber' countryCallingCodeEditable={false} onChange={(value: any) => {
+                                    setIsValuePhoneNumber(value)
+                                    if (value) {
+                                        setFieldValue('phoneNumber', value?.slice(1))
+                                    }
+                                }} international value={isValuePhoneNumber} defaultCountry="ID" className=" w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm mt-1" placeholder='Masukan nomor telepon anda dengan diawali angka 8' />
                             </div>
-                            <Field name="phoneNumber" className=" w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10" placeholder="0856..." type="phoneNumber" />
-                        </div>
-                        <ButtonCustom disabled={isPending} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
-                            Daftar
-                        </ButtonCustom>
-                    </Form>
+                            <ButtonCustom disabled={isPending} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
+                                Daftar
+                            </ButtonCustom>
+                        </Form>
+                    )}
                 </Formik>
                 <div className="flex flex-col gap-2 w-full my-2">
                     <div className="flex w-full justify-between items-center">

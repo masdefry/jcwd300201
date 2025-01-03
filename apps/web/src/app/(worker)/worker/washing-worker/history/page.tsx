@@ -15,9 +15,14 @@ import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
+import ContentWebLayout from "@/components/core/webSessionContent"
+import FilterWeb from "@/components/core/filterWeb"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import ButtonCustom from "@/components/core/button"
+import { ConfirmAlert } from "@/components/core/confirmAlert"
 
 export default function HistoryOrderWashing() {
     const params = useSearchParams();
@@ -36,7 +41,7 @@ export default function HistoryOrderWashing() {
     const [isSearchValues, setIsSearchValues] = useState<string>('')
     const limit = 5;
 
-    const { data: dataOrderWashingProcess, refetch, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
+    const { data: dataOrderWashingProcess, refetch, isFetching, isLoading: dataOrderWashingProcessLoading, isError: dataOrderWashingProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption],
         queryFn: async () => {
 
@@ -121,11 +126,7 @@ export default function HistoryOrderWashing() {
                         {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                         {!dataOrderWashingProcessLoading && dataOrderWashingProcess?.orders?.length > 0 ? (
                             dataOrderWashingProcess?.orders?.map((order: any) => (
-                                <section
-                                    key={order.id}
-                                    className="flex justify-between items-center border-b py-4"
-                                >
-
+                                <section key={order.id} className="flex justify-between items-center border-b py-4">
                                     <div className="flex items-center">
                                         <div className="ml-2">
                                             <h2 className="font-medium text-gray-900">
@@ -165,6 +166,119 @@ export default function HistoryOrderWashing() {
                     </CardContent>
                 </div>
             </MobileSessionLayout>
+
+            <ContentWebLayout caption='Riwayat Pesanan'>
+                <FilterWeb
+                    activeTab={activeTab}
+                    dateFrom={dateFrom}
+                    dateUntil={dateUntil}
+                    debounce={debounce}
+                    isSearchValues={isSearchValues}
+                    searchInput={searchInput}
+                    setActiveTab={setActiveTab}
+                    setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil}
+                    setIsSearchValues={setIsSearchValues}
+                    setPage={setPage}
+                    setSearchInput={setSearchInput}
+                    setSortOption={setSortOption}
+                    sortOption={sortOption}
+                    borderReset="rounded-full border"
+                    options={[
+                        { value: 'all', label: 'Semua' },
+                        { value: 'not-washed', label: 'Belum Dicuci' },
+                        { value: 'in-washing', label: 'Proses Cuci' },
+                        { value: 'done', label: 'Selesai' },
+                    ]}
+                />
+                <div className="w-full flex flex-col justify-center">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe Order</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tanggal dibuat</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {isFetching ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
+                                </tr>
+                            ) : (
+                                !dataOrderWashingProcessLoading && dataOrderWashingProcess?.orders?.length > 0 ? (
+                                    dataOrderWashingProcess?.orders?.map((order: any, i: number) => (
+                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
+                                                    ? 'Menunggu Persetujuan Admin'
+                                                    : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true
+                                                        ? 'Belum Dicuci'
+                                                        : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                            ? 'Proses Cuci'
+                                                            : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'
+                                                                ? 'Selesai'
+                                                                : order?.orderStatus[0]?.status}
+                                            </td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
+                                            <td className="py-4 px-6 hover:underline break-words">
+                                                {/* <ConfirmAlert disabled={isPending} colorConfirmation="blue" caption={
+                                                    order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
+                                                        ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
+                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === true
+                                                            ? 'Apakah anda yakin ingin melakukan proses cuci pada order ini?'
+                                                            : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                ? 'Apakah anda yakin ingin menyelesaikan proses pada order ini?'
+                                                                : ''
+                                                }
+                                                    description={
+                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
+                                                            ? 'Silahkan hubungi admin'
+                                                            : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === true
+                                                                ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
+                                                                    ? 'Pastikan anda memilih order yang tepat/benar'
+                                                                    : ''
+                                                    }
+                                                    hideButtons={order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false}
+                                                    onClick={() => {
+                                                        if (order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false) {
+                                                            router.push(`/worker/washing-worker/order/c/${order?.id}`);
+                                                        } else {
+                                                            handleProcessWashing(order?.id)
+                                                        }
+                                                    }}>
+                                                    <button disabled={order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
+                                                        {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' : 'Selesaikan'}
+                                                    </button>
+                                                </ConfirmAlert> */}
+                                            </td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {dataOrderWashingProcessLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                )
+                            )}
+                        </tbody>
+                    </table>
+                    <PaginationWebLayout currentPage={page} totalPages={totalPages || '1'}>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>Sebelumnya</ButtonCustom>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => { setPage((prev) => Math.min(prev + 1, totalPages)) }}>Selanjutnya</ButtonCustom>
+                    </PaginationWebLayout>
+                </div>
+            </ContentWebLayout>
         </>
     )
 }

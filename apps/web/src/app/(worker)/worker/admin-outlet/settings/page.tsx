@@ -12,7 +12,7 @@ import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
 import { useAdminOutletSettingsHooks } from '@/features/adminOutlet/hooks/useAdminOutletSettingsHooks';
 import ContentWebLayout from '@/components/core/webSessionContent';
-import MobileSessionLayout from '@/components/core/mobileSessionLayout';
+import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { oAdminAkunValidation } from '@/features/adminOutlet/schemas/oAdminAkunValidationSchema';
 import { oAdminChangePasswordValidation } from '@/features/adminOutlet/schemas/oAdminChangePasswordValidationSchema';

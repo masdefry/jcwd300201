@@ -17,7 +17,7 @@ import ContentWebLayout from "@/components/core/webSessionContent";
 import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionContent";
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
 import ButtonCustom from "@/components/core/button";
-import MobileSessionLayout from "@/components/core/mobileSessionLayout";
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { packingItemValidation } from "@/features/packingWorker/schemas/packingItemValidation";
 
 

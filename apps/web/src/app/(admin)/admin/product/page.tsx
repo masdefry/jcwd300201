@@ -10,13 +10,16 @@ import DialogUpdateProduct from "@/features/superAdmin/components/dialogUpdatePr
 import ContentWebLayout from "@/components/core/webSessionContent";
 import { BsTrash } from "react-icons/bs";
 import PaginationWebLayout from "@/components/core/paginationWebLayout";
-import HeaderMobile from "@/components/core/headerMobile";
-import { FaEdit, FaSearch } from "react-icons/fa";
-import Link from "next/link";
+import { FaSearch } from "react-icons/fa";
 import Loading from "@/components/core/loading";
 import NoData from "@/components/core/noData";
-import { FaArrowLeft } from "react-icons/fa6";
+import { FaCartArrowDown, FaEllipsisVertical, FaPlus } from "react-icons/fa6";
 import Pagination from "@/components/core/pagination";
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import { createProductLaundryValidation } from "@/features/superAdmin/schemas/createProductLaundryValidation";
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 
 export default function Page() {
     const { currentPage, entriesPerPage, sortProduct, setSortProduct, isLoading, createProductItem,
@@ -25,47 +28,87 @@ export default function Page() {
 
     return (
         <>
-            <HeaderMobile />
-
-            <main className="mx-8 md:hidden block">
-                <section className="flex justify-between bg-white w-full pr-14 font-bold fixed pt-16 text-lg border-b-2 pb-4">
-                    <div className="flex items-center gap-2"> <Link href='/admin/settings'><FaArrowLeft /></Link> PRODUCT</div>
-                    <div> <ButtonCustom btnColor="bg-blue-500">+ Tambah Produk</ButtonCustom> </div>
-                </section>
-                <div className="py-32 space-y-4">
-                    <div className="w-full flex justify-between gap-1 items-center">
-                        <div className="w-1/2 flex justify-between gap-1 items-center">
-                            <div className="flex items-center justify-center">
-                                <div className="relative w-full max-w-md">
-                                    <input
-                                        type="text"
-                                        onChange={(e) => debounce(e.target.value)}
-                                        value={searchItem}
-                                        placeholder="Search..."
-                                        className="w-full pl-10 pr-4 py-2 border z-0 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    />
-                                    <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
-                                </div>
+            <ContentMobileLayout icon={<FaCartArrowDown className="text-lg" />} title='Produk'>
+                <div className="w-full flex justify-between gap-1 items-center">
+                    <div className="w-full flex gap-2 items-center">
+                        <div className="flex w-full items-center justify-center">
+                            <div className="relative w-full">
+                                <input
+                                    type="text"
+                                    onChange={(e) => debounce(e.target.value)}
+                                    value={searchItem}
+                                    placeholder="Search..."
+                                    className="w-full pl-10 pr-4 py-2 border z-0 text-sm border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
+                                />
+                                <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                             </div>
                         </div>
-                        <select name="searchWorker"
-                            value={sortProduct} onChange={(e) => setSortProduct(e.target.value)}
-                            id="searchWorker" className="w-1/2 px-4 py-2 border h-10 rounded-lg border-gray-300 text-sm text-neutral-600">
-                            <option value="" disabled>-- Pilih Opsi --</option>
-                            <option value="name-asc">Produk A - Z</option>
-                            <option value="name-desc">Produk Z - A</option>
-                            <option value="latest-item">Data terbaru</option>
-                            <option value="oldest-item">Data terlama</option>
-                            <option value="">Reset</option>
-                        </select>
+                        <Dialog>
+                            <DialogTrigger asChild>
+                                <ButtonCustom py='py-3' rounded="rounded-xl flex items-center" btnColor="bg-orange-500" width="w-fit"><FaPlus className="text-sm" /></ButtonCustom>
+                            </DialogTrigger>
+                            <DialogContent className="sm:max-w-[425px]">
+                                <DialogHeader>
+                                    <DialogTitle>Buat item baru</DialogTitle>
+                                    <DialogDescription>
+                                        Harap masukan nama produk atau item yang ingin ditambahkan.
+                                    </DialogDescription>
+                                </DialogHeader>
+                                <div className="w-full">
+                                    <Formik
+                                        initialValues={{ itemName: '' }}
+                                        validationSchema={createProductLaundryValidation}
+                                        onSubmit={(values, { resetForm }) => createProductItem({ itemName: values?.itemName }, {
+                                            onSuccess: () => {
+                                                resetForm()
+                                            }
+                                        })}>
+                                        <Form className="w-full">
+                                            <div className="space-y-2 flex flex-col relative">
+                                                <label htmlFor="itemName" className="font-semibold">Nama Produk <span className="text-red-500">*</span></label>
+                                                <Field name='itemName' placeholder="Masukan Nama Item.."
+                                                    className='border focus:outline-none py-2 px-4' />
+                                                <ErrorMessage component='div' className="text-red top-0 right-0 absolute text-xs text-red-500" name="itemName" />
+                                            </div>
+                                            <div className="py-2 w-full flex justify-end">
+                                                <ButtonCustom disabled={isPending} type="submit" rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500 text-sm">Tambah</ButtonCustom>
+                                            </div>
+                                        </Form>
+                                    </Formik>
+                                </div>
+                            </DialogContent>
+                        </Dialog>
+                        <div className="w-fit py-2 flex items-center">
+                            <Dialog>
+                                <DialogTrigger asChild>
+                                    <button><FaEllipsisVertical className="text-xl" /></button>
+                                </DialogTrigger>
+                                <DialogContent className="w-fit rounded-xl p-4 px-5 pb-5">
+                                    <DialogHeader>
+                                        <DialogTitle className="text-lg text-left font-semibold">Sortir Data</DialogTitle>
+                                        <DialogDescription className="text-sm text-center text-gray-500"></DialogDescription>
+                                    </DialogHeader>
+                                    <section className="gap-2 bg-white space-y-2 w-full h-fit justify-center items-center">
+                                        <select name="searchWorker"
+                                            value={sortProduct} onChange={(e) => setSortProduct(e.target.value)}
+                                            id="searchWorker" className="w-full px-4 py-2 border h-fit rounded-lg border-gray-300 text-sm text-neutral-600">
+                                            <option value="" disabled>-- Pilih Opsi --</option>
+                                            <option value="name-asc">Produk A - Z</option>
+                                            <option value="name-desc">Produk Z - A</option>
+                                            <option value="latest-item">Data terbaru</option>
+                                            <option value="oldest-item">Data terlama</option>
+                                            <option value="">Reset</option>
+                                        </select>
+                                    </section>
+                                </DialogContent>
+                            </Dialog>
+                        </div>
                     </div>
-
-                    {getDataItem?.length > 0 ? (
-                        getDataItem?.map((prod: any, i: number) => {
-                            return (< div
-                                key={i}
-                                className="flex items-center justify-between bg-white py-4 px-2 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100"
-                            >
+                </div>
+                {getDataItem?.length > 0 ? (
+                    getDataItem?.map((prod: any, i: number) => {
+                        return (
+                            <div key={i} className="flex items-center justify-between bg-white py-4 px-2 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100">
                                 <div className="flex items-center">
                                     <div className="ml-2">
                                         <h2 className="font-medium text-gray-900">{prod?.itemName}</h2>
@@ -74,37 +117,23 @@ export default function Page() {
                                 </div>
 
                                 <div className="flex space-x-1">
-                                    <button className="flex items-center justify-center space-x-2 px-2 py-2 w-12 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
-                                        <FaEdit />
-                                    </button>
-                                    <button className="flex items-center space-x-2 px-2 py-2 bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                        <ConfirmAlert
-                                            caption={`Hapus "${prod?.itemName?.toUpperCase()}"?`}
-                                            description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
-                                            onClick={() => { console.log('delete') }}
-                                        >
-
-                                            <div className="flex items-center justify-center space-x-2 px-2 py-2 w-9  bg-red-500 hover:bg-red-600 text-white font-semibold rounded-lg">
-                                                <BsTrash />
-                                            </div>
-                                        </ConfirmAlert>
-                                    </button>
-
+                                    <DialogUpdateProduct handleUpdateItem={handleUpdateItem} product={prod} isPendingUpdate={isPendingUpdate} />
+                                    <ConfirmAlert disabled={isPendingDelete} caption="Apakah anda yakin ingin menghapus data ini?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => handleDeleteItem(prod?.id)}>
+                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
+                                    </ConfirmAlert>
                                 </div>
                             </div>
-                            )
-                        })
-                    ) : (
+                        )
+                    }))
+                    : (
                         <div>
                             <div className="text-center py-20 font-bold">{isLoading ? <Loading /> : <NoData />}</div>
                         </div>
                     )}
-                    {!isLoading && getDataItem?.length > 0 && (
-                        <Pagination page={currentPage} totalPages={totalPages} setPage={setCurrentPage} />
-                    )}
-                </div>
-            </main>
-            {/* web */}
+                {!isLoading && getDataItem?.length > 0 && (
+                    <Pagination page={currentPage} totalPages={totalPages} setPage={setCurrentPage} />
+                )}
+            </ContentMobileLayout>
             <ContentWebLayout caption="Produk Laundry">
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 h-fit flex items-center">

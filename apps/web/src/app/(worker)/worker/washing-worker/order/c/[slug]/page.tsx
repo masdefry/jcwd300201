@@ -18,7 +18,7 @@ import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionCon
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
 import NotaHeader from "@/components/core/createNotaHeaders";
 import { washingItemValidation } from "@/features/washingWorker/schemas/washingItemValidation";
-import MobileSessionLayout from "@/components/core/mobileSessionLayout";
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
 const validationSchema = Yup.object().shape({
     customerName: Yup.string().required("Customer name is required"),

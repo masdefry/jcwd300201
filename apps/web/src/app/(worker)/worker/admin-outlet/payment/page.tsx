@@ -31,7 +31,7 @@ import { ConfirmAlert } from "@/components/core/confirmAlert"
 import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
 import FilterWeb from "@/components/core/filterWeb"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout"
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 
 
 export default function DeliveryRequest() {

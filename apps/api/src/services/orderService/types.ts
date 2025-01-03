@@ -163,3 +163,31 @@ export interface IGeDriverHistory {
     dateUntil: string,
     sort: string,
 }
+
+export interface IOrderTrackingAdminParams {
+    userId: string;
+    authorizationRole: Role
+    period: string | undefined;
+    storeId?: string;
+}
+
+export interface IOrderStats {
+    _sum: {
+        laundryPrice: number | null;
+        totalWeight: number | null;
+    };
+    _count: {
+        id: number;
+    };
+}
+
+export interface ITotalPcs {
+    _count: {
+        id: number;
+    };
+}
+
+export interface IOrderTrackingAdminResponse {
+    totalPcs: ITotalPcs;
+    stats: IOrderStats;
+}
