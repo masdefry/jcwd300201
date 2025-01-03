@@ -81,7 +81,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="w-full h-fit pb-3 flex flex-col gap-4">
                     <Link href='/user/dashboard/home' className={`w-full flex ${pathname.startsWith('/user/dashboard/home') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
-                    <Link href='/user/dashboard/pickup' className={`w-full flex ${pathname.startsWith('/user/dashboard/pickup') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/user/dashboard/c' className={`w-full flex ${pathname.startsWith('/user/dashboard/pickup') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <MdSportsMotorsports /> Permintaan Pickup</Link>
                     <Link href='/user/dashboard/order' className={`w-full flex ${pathname.startsWith('/user/dashboard/order') || pathname.startsWith('/user/dashboard/payment') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaCartShopping /> Pesanan</Link>

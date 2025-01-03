@@ -191,3 +191,8 @@ export interface IOrderTrackingAdminResponse {
     totalPcs: ITotalPcs;
     stats: IOrderStats;
 }
+
+export interface IOrderTrackingUser {
+    userId: string;
+    period: string | undefined;
+}

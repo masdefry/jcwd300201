@@ -14,6 +14,7 @@ export const useAdminSettingsHooks = () => {
   const [confirmPasswordVisible, setConfirmPasswordVisible] = React.useState<boolean>(false)
   const [isDisableSucces, setIsDisableSucces] = React.useState(false)
   const [isChangePassword, setIsChangePassword] = React.useState(false)
+  const [activeTab, setActiveTab] = React.useState('')
 
   const handleChange = (event: React.SyntheticEvent, newValue: string) => setValue(newValue);
   const togglePasswordVisibility = () => setPasswordVisible(!passwordVisible)
@@ -35,6 +36,33 @@ export const useAdminSettingsHooks = () => {
   })
 
   const { mutate: handleUpdateProfile, isPending: isPendingUpdate } = useMutation({
+    mutationFn: async (fd: FormData) => {
+      return await instance.patch('/worker/profile', fd, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
+    },
+    onSuccess: (res) => {
+      toast({
+        description: res?.data?.message,
+        className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+      })
+      setIsDisableSucces(true)
+
+      window.location.reload()
+      console.log(res)
+    },
+    onError: (err: any) => {
+      toast({
+        description: err?.response?.data?.message,
+        className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
+      })
+      console.log(err)
+    }
+  })
+
+  const { mutate: handleUpdateProfileMobile, isPending: isPendingUpdateMobile } = useMutation({
     mutationFn: async (fd: FormData) => {
       return await instance.patch('/worker/profile', fd, {
         headers: {
@@ -120,6 +148,6 @@ export const useAdminSettingsHooks = () => {
     passwordVisible, setPasswordVisible, confirmPasswordVisible, setConfirmPasswordVisible, handleChange,
     togglePasswordVisibility, toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
     handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete, handleChangePassword, isPendingChangePassword,
-    isDisableSucces, isChangePassword
+    isDisableSucces, isChangePassword, handleUpdateProfileMobile, isPendingUpdateMobile,activeTab, setActiveTab
   }
 }

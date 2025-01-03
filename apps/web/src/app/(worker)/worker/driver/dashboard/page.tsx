@@ -19,12 +19,7 @@ import { locationStore } from "@/zustand/locationStore";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
+
 import TabTrackingDriver from "@/features/driver/components/tabDriverTracking";
 
 const iconButtons = [
@@ -53,7 +48,7 @@ export default function Page() {
         const isMonth = date.getMonth()
         const isYear = date.getFullYear()
 
-        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        const newDateFormat = `${isDateNow}/${isMonth + 1}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])

@@ -17,8 +17,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { washingAkunValidation } from '@/features/washingWorker/schemas/washingAkunValidationSchema';
 import { washingChangePasswordValidation } from '@/features/washingWorker/schemas/washingChangePasswordValidationSchema';
 import { ConfirmAlert } from '@/components/core/confirmAlert';
-import { FaSignOutAlt } from 'react-icons/fa';
 import ButtonCustom from '@/components/core/button';
+import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -49,64 +49,57 @@ export default function Page() {
     return (
         <>
             <MobileSessionLayout title="Pengaturan">
-<<<<<<< HEAD
 
-                <div className="pb-24 mx-4 space-y-4">
-=======
-                <div className="px-4 space-y-4">
->>>>>>> 9a1d5e1137cefdc37c20f5c0b564e8b152899b45
-                    <Tabs defaultValue="1" className="fit">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="1" >Akun</TabsTrigger>
-                            <TabsTrigger value="2" >Change Password</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="1">
-                            <Formik initialValues={{
-                                firstName: getDataWorker?.firstName || '',
-                                lastName: getDataWorker?.lastName || '',
-                                email: getDataWorker?.email || '',
-                                phoneNumber: getDataWorker?.phoneNumber || '',
-                                images: null
-                            }}
-                                validationSchema={washingAkunValidation}
-                                onSubmit={(values) => {
-                                    const fd = new FormData()
-                                    fd.append('email', values?.email)
-                                    fd.append('firstName', values?.firstName)
-                                    fd.append('lastName', values?.lastName)
-                                    fd.append('phoneNumber', values?.phoneNumber)
-                                    if (values?.images) fd.append('images', values?.images)
+                <Tabs defaultValue="1" className="fit">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="1" >Akun</TabsTrigger>
+                        <TabsTrigger value="2" >Change Password</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="1">
+                        <Formik initialValues={{
+                            firstNames: getDataWorker?.firstName || '',
+                            lastNames: getDataWorker?.lastName || '',
+                            emails: getDataWorker?.email || '',
+                            phoneNumbers: getDataWorker?.phoneNumber || '',
+                            img: null
+                        }}
+                            onSubmit={(values) => {
+                                const fd = new FormData()
+                                fd.append('email', values?.emails)
+                                fd.append('firstName', values?.firstNames)
+                                fd.append('lastName', values?.lastNames)
+                                fd.append('phoneNumber', values?.phoneNumbers)
+                                if (values?.img) fd.append('images', values?.img)
 
-                                    handleUpdateProfile(fd)
-                                }}>
-                                {({ setFieldValue, values }) => (
-                                    <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
-                                        disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
-                                        handleDeleteProfilePicture={handleDeleteProfilePicture}
-                                        profilePict={profilePict} setFieldValue={setFieldValue}
-                                        setTempProfilePict={setTempProfilePict} tempProfilePict={tempProfilePict} />
-                                )}
-                            </Formik>
-                        </TabsContent>
-                        <TabsContent value="2">
-                            <Formik initialValues={{
-                                existingPassword: '',
-                                password: '',
-                                confirmPassword: ''
-                            }}
-                                validationSchema={washingChangePasswordValidation}
-                                onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
-                                <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
-                                    confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
-                                    isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
-                                    toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
-                            </Formik>
-                        </TabsContent>
-                    </Tabs>
-                    <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisableSucces}>
-                        <ButtonCustom btnColor='bg-red-500 hover:bg-red-500' rounded='rounded-2xl' type='button' disabled={isDisableSucces || isPending} width='w-full'>Logout</ButtonCustom>
-                    </ConfirmAlert>
-                </div>
+                                handleUpdateProfile(fd)
+                            }}>
+                            {({ setFieldValue, values }) => (
+                                <ProfileSettingsMobile disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
+                                    disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
+                                    handleDeleteProfilePicture={handleDeleteProfilePicture}
+                                    profilePict={profilePict} setFieldValue={setFieldValue}
+                                    setTempProfilePict={setTempProfilePict} tempProfilePict={tempProfilePict} />
+                            )}
+                        </Formik>
+                    </TabsContent>
+                    <TabsContent value="2">
+                        <Formik initialValues={{
+                            existingPassword: '',
+                            password: '',
+                            confirmPassword: ''
+                        }}
+                            validationSchema={washingChangePasswordValidation}
+                            onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
+                            <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
+                                confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
+                                isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
+                                toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
+                        </Formik>
+                    </TabsContent>
+                </Tabs>
+                <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisableSucces}>
+                    <ButtonCustom btnColor='bg-red-500 hover:bg-red-500' rounded='rounded-2xl' type='button' disabled={isDisableSucces || isPending} width='w-full'>Logout</ButtonCustom>
+                </ConfirmAlert>
             </MobileSessionLayout>
 
             <ContentWebLayout caption='Pengaturan'>

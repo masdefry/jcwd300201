@@ -43,13 +43,13 @@ export default function Footer() {
     IRONING_WORKER: [
       { icon: <IoHomeSharp className="text-xl" />, label: "Beranda", path: '/worker/ironing-worker/dashboard' },
       { icon: <GrNotes className="text-xl" />, label: "Pesanan", path: '/worker/ironing-worker/order' },
-      { icon: <IoSearchSharp className="text-xl" />, label: "Laporan", path: '/worker/ironing-worker/history' },
+      { icon: <FaHistory className="text-xl" />, label: "Laporan", path: '/worker/ironing-worker/history' },
       { icon: <FaGear className="text-xl" />, label: "Pengaturan", path: '/worker/ironing-worker/settings' },
     ],
     OUTLET_ADMIN: [
       { icon: <IoHomeSharp className="text-xl" />, label: "Beranda", path: '/worker/admin-outlet/dashboard' },
       { icon: <GrNotes className="text-xl" />, label: "Pesanan", path: '/worker/admin-outlet/order' },
-      { icon: <IoSearchSharp className="text-xl" />, label: "Laporan", path: '/worker/admin-outlet/history' },
+      { icon: <FaHistory className="text-xl" />, label: "Laporan", path: '/worker/admin-outlet/history' },
       { icon: <FaGear className="text-xl" />, label: "Pengaturan", path: '/worker/admin-outlet/settings' },
     ],
     DRIVER: [
@@ -61,7 +61,7 @@ export default function Footer() {
     PACKING_WORKER: [
       { icon: <IoHomeSharp className="text-xl" />, label: "Beranda", path: '/worker/packing-worker/dashboard' },
       { icon: <GrNotes className="text-xl" />, label: "Pesanan", path: '/worker/packing-worker/order' },
-      { icon: <IoSearchSharp className="text-xl" />, label: "Laporan", path: '/worker/packing-worker/history' },
+      { icon: <FaHistory className="text-xl" />, label: "Laporan", path: '/worker/packing-worker/history' },
       { icon: <FaGear className="text-xl" />, label: "Pengaturan", path: '/worker/packing-worker/settings' },
     ]
   }
@@ -69,8 +69,8 @@ export default function Footer() {
   const dataPath: MenuItem[] = menuByRole[role as Role] || []
   const defaultMenu = [
     { icon: <IoHomeSharp className="text-xl" />, label: "Beranda", path: '/' },
-    { icon: <FaInfoCircle className="text-xl" />, label: "Tentang Kami", path: '/about-us' },
-    { icon: <FaHandsHelping className="text-xl" />, label: "Layanan Kami", path: '/service' },
+    { icon: <FaInfoCircle className="text-xl" />, label: "Tentang", path: '/about-us' },
+    { icon: <FaHandsHelping className="text-xl" />, label: "Layanan", path: '/service' },
     { icon: <FaPhoneAlt className="text-xl" />, label: "Kontak", path: '/contact' },
   ]
   

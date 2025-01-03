@@ -4,7 +4,7 @@ import { phoneNumberValidation } from "@/middlewares/validation/phoneNumberValid
 import fs, { rmSync } from 'fs'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
-import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory, IPaymentOrder, IPaymentOrderTf, IOrderTrackingAdminParams } from "./types"
+import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory, IPaymentOrder, IPaymentOrderTf, IOrderTrackingAdminParams, IOrderTrackingUser } from "./types"
 import { Prisma, Role, Status, Payment } from "@prisma/client"
 import { addHours, isBefore } from "date-fns"
 import { formatOrder } from "@/utils/formatOrder"
@@ -3127,6 +3127,65 @@ export const orderTrackingWorkerService = async ({
   return {
     orderCount,
     totalKg: stats._sum.totalWeight || 0,
+    totalPcs: totalPcs._sum.quantity || 0,
+  };
+};
+
+export const orderTrackingUserService = async ({ userId, period }: IOrderTrackingUser) => {
+  if (!period || (period !== 'today' && period !== 'month')) {
+    throw { msg: 'Invalid period', status: 400 };
+  }
+
+  const now = new Date();
+  let startDate: Date | undefined = undefined;
+  let endDate: Date | undefined = undefined;
+
+  if (period === 'today') {
+    startDate = new Date(now.setHours(0, 0, 0, 0));
+    endDate = new Date(now.setHours(23, 59, 59, 999));
+  } else if (period === 'month') {
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  }
+
+  const orderFilter = {
+    userId: userId,
+    createdAt: {
+      gte: startDate,
+      lte: endDate,
+    },
+  };
+
+  const stats = await prisma.order.aggregate({
+    _sum: {
+      laundryPrice: true,
+      totalWeight: true,
+    },
+    _count: {
+      id: true,
+    },
+    where: orderFilter,
+  });
+
+  const totalPcs = await prisma.orderDetail.aggregate({
+    _sum: {
+      quantity: true,
+    },
+    where: {
+      Order: {
+        userId: userId,
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    },
+  });
+
+  return {
+    totalOrders: stats._count.id,
+    totalSpent: stats._sum.laundryPrice || 0,
+    totalWeight: stats._sum.totalWeight || 0,
     totalPcs: totalPcs._sum.quantity || 0,
   };
 };

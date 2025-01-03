@@ -1,6 +1,6 @@
 export default function TableWeightComponent({ values }: { values: any }) {
     return (
-        <div className="">
+        <div className="w-full overflow-y-auto">
             <table className="min-w-full bg-white border border-gray-200">
                 <thead className="bg-gray-200">
                     <tr>

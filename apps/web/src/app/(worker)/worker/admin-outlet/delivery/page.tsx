@@ -31,6 +31,7 @@ import {
 import { FaArrowUpRightFromSquare, FaCheck, FaPlus } from "react-icons/fa6";
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
+import FilterWeb from "@/components/core/filterWeb";
 
 export default function DeliveryRequest() {
     const params = useSearchParams();
@@ -145,146 +146,109 @@ export default function DeliveryRequest() {
 
     return (
         <>
-            <MobileSessionLayout title="REQUEST DELIVERY">
-                <div className="pb-24 mx-4 space-y-4">
-                    <Tabs defaultValue={activeTab} className="fit">
-                        <TabsList className="hidden w-full">
-                            <TabsTrigger value="ready-to-deliver" onClick={() => { setActiveTab("ready-to-deliver"); setPage(1) }} >Siap Kirim</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value={activeTab}>
-                            <CardContent className="space-y-2 pt-2">
-                                <FilterWorker
-                                    debounce={debounce}
-                                    sortOption={sortOption}
-                                    setSortOption={setSortOption}
-                                    dateFrom={dateFrom}
-                                    dateUntil={dateUntil}
-                                    setDateFrom={setDateFrom}
-                                    setDateUntil={setDateUntil}
-                                    setActiveTab={setActiveTab}
-                                    setSearchInput={setSearchInput}
-                                    setPage={setPage}
-                                    searchInput={searchInput}
-                                    setIsSearchValues={setIsSearchValues}
-                                    isSearchValues={isSearchValues}
-
-                                />
-                                {dataOrderDeliveryLoading && <Loading />}
-                                {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}
-                                {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 ? (
-                                    dataOrderDelivery?.orders?.map((order: any) => (
-                                        <section
-                                            key={order.id}
-                                            className="flex justify-between items-center border-b py-4"
-                                        >
-                                            {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true ? (
-                                                < ConfirmAlert
-                                                    colorConfirmation="blue"
-                                                    caption={
-                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                            ? 'Apakah Anda ingin request pengiriman untuk pesanan ini?'
-                                                            : ''
-                                                    }
-                                                    description={
-                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                            ? 'Pastikan anda memilih order yang tepat/benar'
-                                                            : ''
-                                                    }
-                                                    onClick={() => {
-                                                        handleRequestDelivery(order?.id);
-                                                    }}
-                                                >
-                                                    <div className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
-                                                            <div className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
-                                                                    ? 'Menunggu Pembayaran' :
-                                                                    order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
-                                                                        ? 'Siap untuk dikirim'
-                                                                        : 'tes'}
-                                                            </div>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </ConfirmAlert>
-                                            ) : (
-
+            <MobileSessionLayout title="Pengantaran">
+                <Tabs defaultValue={activeTab} className="fit">
+                    <TabsList className="hidden w-full">
+                        <TabsTrigger value="ready-to-deliver" onClick={() => { setActiveTab("ready-to-deliver"); setPage(1) }} >Siap Kirim</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value={activeTab}>
+                        <CardContent className="space-y-2 pt-2">
+                            <FilterWorker
+                                debounce={debounce}
+                                sortOption={sortOption}
+                                setSortOption={setSortOption}
+                                dateFrom={dateFrom}
+                                dateUntil={dateUntil}
+                                setDateFrom={setDateFrom}
+                                setDateUntil={setDateUntil}
+                                setActiveTab={setActiveTab}
+                                setSearchInput={setSearchInput}
+                                setPage={setPage}
+                                searchInput={searchInput}
+                                setIsSearchValues={setIsSearchValues}
+                                isSearchValues={isSearchValues}
+                            />
+                            {dataOrderDeliveryLoading && <Loading />}
+                            {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}
+                            {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 ? (
+                                dataOrderDelivery?.orders?.map((order: any) => (
+                                    <section key={order.id} className="flex justify-between items-center border-b py-4">
+                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true ? (
+                                            <ConfirmAlert colorConfirmation="blue" caption={order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                ? 'Apakah Anda ingin request pengiriman untuk pesanan ini?'
+                                                : ''}
+                                                description={order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                    ? 'Pastikan anda memilih order yang tepat/benar'
+                                                    : ''} onClick={() => { handleRequestDelivery(order?.id) }}>
                                                 <div className="flex items-center">
-                                                    <div className="ml-2">
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.id}
-                                                        </h2>
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.User?.firstName} {order?.User?.lastName}
-                                                        </h2>
+                                                    <div className="px-2">
+                                                        <h2 className="font-medium text-gray-900">{order?.id}</h2>
+                                                        <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
                                                         <div className="text-xs text-gray-500">
                                                             {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
                                                                 ? 'Menunggu Pembayaran' :
                                                                 order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
                                                                     ? 'Siap untuk dikirim'
-                                                                    : 'tes'}
+                                                                    : order?.orderStatus[0]?.status}
                                                         </div>
-                                                        <div className="text-xs text-gray-500">
-                                                            {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                        </div>
+                                                        <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                     </div>
                                                 </div>
-                                            )}
-
-                                            <div className="flex gap-1">
-                                                <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                    <FaWhatsapp />
-                                                </Link>
+                                            </ConfirmAlert>
+                                        ) : (
+                                            <div className="flex items-center">
+                                                <div className="px-2">
+                                                    <h2 className="font-medium text-gray-900">{order?.id}</h2>
+                                                    <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
+                                                    <div className="text-xs text-gray-500">
+                                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
+                                                            ? 'Menunggu Pembayaran' : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                                ? 'Siap untuk dikirim' : order?.orderStatus[0]?.status}
+                                                    </div>
+                                                    <div className="text-xs text-gray-500">
+                                                        {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </section>
-                                    ))
-                                ) : (
-                                    !dataOrderDeliveryLoading && (
-                                        <NoData />
-                                    )
+                                        )}
 
-                                )}
-                                {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 && (
-                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                )}
-                            </CardContent>
-                        </TabsContent>
-                    </Tabs>
-                </div>
+                                        <div className="flex gap-1">
+                                            <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                                <FaWhatsapp />
+                                            </Link>
+                                        </div>
+                                    </section>
+                                ))) : (
+                                !dataOrderDeliveryLoading && (
+                                    <NoData />
+                                ))}
+                            {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 && (
+                                <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                            )}
+                        </CardContent>
+                    </TabsContent>
+                </Tabs>
             </MobileSessionLayout>
 
             <ContentWebLayout caption='Pengiriman'>
-                <div className="w-full h-fit flex items-center">
-                    <div className="w-1/2 h-fit flex items-center">
-                        <Select value={sortOption} onValueChange={setSortOption}>
-                            <SelectTrigger className="w-[150px] border rounded-full py-2 px-3">
-                                <SelectValue placeholder="Sort By" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
-                                <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
-                                <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
-                                <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
-                                <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
-                                <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <Link href='/admin/worker/c'>
-                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
-                        </Link>
-                    </div>
-                </div>
+                <FilterWeb
+                    debounce={debounce}
+                    sortOption={sortOption}
+                    setSortOption={setSortOption}
+                    dateFrom={dateFrom}
+                    dateUntil={dateUntil}
+                    setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil}
+                    setActiveTab={setActiveTab}
+                    setSearchInput={setSearchInput}
+                    setPage={setPage}
+                    searchInput={searchInput}
+                    setIsSearchValues={setIsSearchValues}
+                    isSearchValues={isSearchValues}
+                    activeTab={activeTab}
+                    options={[{ label: 'Semua', value: 'All' }]}
+                    borderReset="border rounded-full"
+                />
 
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">

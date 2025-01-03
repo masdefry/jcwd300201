@@ -16,6 +16,7 @@ import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLa
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { oAdminAkunValidation } from '@/features/adminOutlet/schemas/oAdminAkunValidationSchema';
 import { oAdminChangePasswordValidation } from '@/features/adminOutlet/schemas/oAdminChangePasswordValidationSchema';
+import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -46,8 +47,7 @@ export default function Page() {
     return (
         <>
             <MobileSessionLayout title="Pengaturan">
-
-                <div className="pb-24 mx-4 space-y-4">
+                <div className="mx-4 space-y-4">
                     <Tabs defaultValue="1" className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="1" >Akun</TabsTrigger>
@@ -55,27 +55,24 @@ export default function Page() {
                         </TabsList>
                         <TabsContent value="1">
                             <Formik initialValues={{
-                                firstName: getDataWorker?.firstName || '',
-                                lastName: getDataWorker?.lastName || '',
-                                email: getDataWorker?.email || '',
-                                phoneNumber: getDataWorker?.phoneNumber || '',
-                                images: null
+                                firstNames: getDataWorker?.firstName || '',
+                                lastNames: getDataWorker?.lastName || '',
+                                emails: getDataWorker?.email || '',
+                                phoneNumbers: getDataWorker?.phoneNumber || '',
+                                img: null
                             }}
-                                validationSchema={oAdminAkunValidation}
                                 onSubmit={(values) => {
                                     const fd = new FormData()
-                                    fd.append('email', values?.email)
-                                    fd.append('firstName', values?.firstName)
-                                    fd.append('lastName', values?.lastName)
-                                    fd.append('phoneNumber', values?.phoneNumber)
-                                    if (values?.images) fd.append('images', values?.images)
+                                    fd.append('email', values?.emails)
+                                    fd.append('firstName', values?.firstNames)
+                                    fd.append('lastName', values?.lastNames)
+                                    fd.append('phoneNumber', values?.phoneNumbers)
+                                    if (values?.img) fd.append('images', values?.img)
 
                                     handleUpdateProfile(fd)
                                 }}>
                                 {({ setFieldValue, values }) => (
-
-                                    // profile settings
-                                    <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
+                                    <ProfileSettingsMobile disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                         disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                         handleDeleteProfilePicture={handleDeleteProfilePicture}
                                         profilePict={profilePict} setFieldValue={setFieldValue}

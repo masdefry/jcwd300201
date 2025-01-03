@@ -7,7 +7,6 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Formik } from 'formik';
-import * as Yup from 'yup'
 import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
 import { useIroningWorkerSettingsHooks } from '@/features/ironingWorker/hooks/useIroningWorkerSettingsHooks';
@@ -16,6 +15,7 @@ import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLa
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ironingChangePasswordValidation } from '@/features/ironingWorker/schemas/ironingChangePasswordValidationSchema';
 import { ironingAkunValidation } from '@/features/ironingWorker/schemas/ironingAkunValidationSchema';
+import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -46,68 +46,59 @@ export default function Page() {
     return (
         <>
             <MobileSessionLayout title="Pengaturan">
+                <Tabs defaultValue="1" className="fit">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="1">Akun</TabsTrigger>
+                        <TabsTrigger value="2">Ganti Password</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="1">
+                        <Formik initialValues={{
+                            firstNames: getDataWorker?.firstName || '',
+                            lastNames: getDataWorker?.lastName || '',
+                            emails: getDataWorker?.email || '',
+                            phoneNumbers: getDataWorker?.phoneNumber || '',
+                            img: null
+                        }}
+                            onSubmit={(values) => {
+                                const fd = new FormData()
+                                fd.append('email', values?.emails)
+                                fd.append('firstName', values?.firstNames)
+                                fd.append('lastName', values?.lastNames)
+                                fd.append('phoneNumber', values?.phoneNumbers)
+                                if (values?.img) fd.append('images', values?.img)
 
-                <div className="pb-24 mx-4 space-y-4">
-                    <Tabs defaultValue="1" className="fit">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="1" >Akun</TabsTrigger>
-                            <TabsTrigger value="2" >Change Password</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value="1">
-                            <Formik initialValues={{
-                                firstName: getDataWorker?.firstName || '',
-                                lastName: getDataWorker?.lastName || '',
-                                email: getDataWorker?.email || '',
-                                phoneNumber: getDataWorker?.phoneNumber || '',
-                                images: null
-                            }}
-                                validationSchema={ironingAkunValidation}
-                                onSubmit={(values) => {
-                                    const fd = new FormData()
-                                    fd.append('email', values?.email)
-                                    fd.append('firstName', values?.firstName)
-                                    fd.append('lastName', values?.lastName)
-                                    fd.append('phoneNumber', values?.phoneNumber)
-                                    if (values?.images) fd.append('images', values?.images)
+                                handleUpdateProfile(fd)
+                            }}>
+                            {({ setFieldValue, values }) => (
+                                <ProfileSettingsMobile disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
+                                    disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
+                                    handleDeleteProfilePicture={handleDeleteProfilePicture}
+                                    profilePict={profilePict} setFieldValue={setFieldValue}
+                                    setTempProfilePict={setTempProfilePict} tempProfilePict={tempProfilePict} />
+                            )}
+                        </Formik>
+                    </TabsContent>
+                    <TabsContent value="2">
+                        <Formik initialValues={{
+                            existingPassword: '',
+                            password: '',
+                            confirmPassword: ''
+                        }}
+                            validationSchema={ironingChangePasswordValidation}
+                            onSubmit={(values) => {
+                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
+                                console.log(values)
+                            }}>
 
-                                    handleUpdateProfile(fd)
-                                }}>
-                                {({ setFieldValue, values }) => (
-
-                                    // profile settings
-                                    <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
-                                        disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
-                                        handleDeleteProfilePicture={handleDeleteProfilePicture}
-                                        profilePict={profilePict} setFieldValue={setFieldValue}
-                                        setTempProfilePict={setTempProfilePict} tempProfilePict={tempProfilePict} />
-                                )}
-                            </Formik>
-                        </TabsContent>
-                        <TabsContent value="2">
-                            <Formik initialValues={{
-                                existingPassword: '',
-                                password: '',
-                                confirmPassword: ''
-                            }}
-                                validationSchema={ironingChangePasswordValidation}
-                                onSubmit={(values) => {
-                                    handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                    console.log(values)
-                                }}>
-
-                                <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
-                                    confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
-                                    isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
-                                    toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
-                            </Formik>
-                        </TabsContent>
-                    </Tabs>
-                </div>
+                            <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
+                                confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
+                                isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
+                                toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
+                        </Formik>
+                    </TabsContent>
+                </Tabs>
             </MobileSessionLayout>
-            {/* web sesi */}
             <ContentWebLayout caption='Pengaturan'>
-
-                {/* tabs */}
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Pengaturan tabs">
@@ -131,12 +122,10 @@ export default function Page() {
                                 fd.append('lastName', values?.lastName)
                                 fd.append('phoneNumber', values?.phoneNumber)
                                 if (values?.images) fd.append('images', values?.images)
-
+                                console.log(values)
                                 handleUpdateProfile(fd)
                             }}>
                             {({ setFieldValue, values }) => (
-
-                                // profile settings
                                 <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                     disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                     handleDeleteProfilePicture={handleDeleteProfilePicture}
@@ -156,8 +145,6 @@ export default function Page() {
                                 handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
                                 console.log(values)
                             }}>
-
-                            {/* change password setting */}
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                 isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}

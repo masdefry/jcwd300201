@@ -91,7 +91,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     </div>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Menu</h1>
-                <div className="w-full h-full flex flex-col gap-2">
+                <div className="w-full h-fit pb-3 flex flex-col gap-4">
                     <Link href={dashboardUrl} className={`w-full flex 
                         ${Object.values(dashboardMenuUrl).includes(pathname) ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
@@ -99,12 +99,10 @@ export default function Layout({ children }: { children: ReactNode }) {
                         <FaFileInvoice />Pesanan</Link>
                     <Link href='/worker/ironing-worker/history' className={`w-full flex ${pathname.startsWith('/worker/ironing-worker/history') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaHistory /> Riwayat</Link>
-                    <Link href='/worker/ironing-worker/p' className={`w-full flex ${pathname.startsWith('/worker/ironing-worker/payment') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaExclamationTriangle /> Laporan</Link>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2 pt-2">Account</h1>
                 <div className="w-full h-full flex flex-col gap-4">
-                    <Link href='/worker/ironing-worker/settings' className={`w-full flex ${pathname == '/worker/admin-outlet/settings' ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                    <Link href='/worker/ironing-worker/settings' className={`w-full flex ${pathname.startsWith('/worker/ironing-worker/settings') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaUserCheck /> Pengaturan</Link>
                     <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
                         <span className={`w-full cursor-pointer flex items-center gap-2 hover:text-white text-neutral-700 hover:bg-orange-500 py-2 rounded-full px-4`}>

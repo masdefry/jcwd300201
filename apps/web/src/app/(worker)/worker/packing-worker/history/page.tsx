@@ -2,7 +2,7 @@
 
 import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
-import { FaArrowLeft, FaRegEye } from "react-icons/fa"
+import { FaArrowLeft, FaHistory, FaRegEye } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
@@ -23,6 +23,7 @@ import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLa
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import FilterWeb from "@/components/core/filterWeb"
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 
 export default function HistoryOrderPacking() {
     const params = useSearchParams();
@@ -102,85 +103,43 @@ export default function HistoryOrderPacking() {
 
     return (
         <>
-            <MobileSessionLayout title="HISTORY ORDER">
-                <div className="pb-24 mx-4 space-y-4">
-
-                    <CardContent className="space-y-2 pt-2">
-                        <FilterWorker
-                            searchInput={searchInput}
-                            setPage={setPage}
-                            debounce={debounce}
-                            sortOption={sortOption}
-                            setSortOption={setSortOption}
-                            dateFrom={dateFrom}
-                            dateUntil={dateUntil}
-                            setDateFrom={setDateFrom}
-                            setDateUntil={setDateUntil}
-                            setActiveTab={setActiveTab}
-                            setSearchInput={setSearchInput}
-                            setIsSearchValues={setIsSearchValues}
-                            isSearchValues={isSearchValues}
-                        />
-                        {dataOrderPackingProcessLoading && <Loading />}
-                        {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
-                        {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
-                            dataOrderPackingProcess?.orders?.map((order: any) => (
-                                <section
-                                    key={order.id}
-                                    className="flex justify-between items-center border-b py-4"
-                                >
-
-                                    <div className="flex items-center">
-                                        <div className="ml-2">
-                                            <h2 className="font-medium text-gray-900">
-                                                {order?.User?.firstName} {order?.User?.lastName}
-                                            </h2>
-                                            <p className="text-xs text-gray-500">
-                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
-                                                    order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
-                                                        order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
-                                                            order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
-                                                                order?.orderStatus[0]?.status}
-                                            </p>
-                                            <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
-                                        </div>
+            <ContentMobileLayout icon={<FaHistory className="text-lg" />} title="Riwayat">
+                <CardContent className="space-y-2 pt-2">
+                    <FilterWorker searchInput={searchInput} setPage={setPage} debounce={debounce} sortOption={sortOption} setSortOption={setSortOption}
+                        dateFrom={dateFrom} dateUntil={dateUntil} setDateFrom={setDateFrom} setDateUntil={setDateUntil} setActiveTab={setActiveTab} setSearchInput={setSearchInput}
+                        setIsSearchValues={setIsSearchValues} isSearchValues={isSearchValues} />
+                    {dataOrderPackingProcessLoading && <Loading />}
+                    {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
+                    {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
+                        dataOrderPackingProcess?.orders?.map((order: any) => (
+                            <section key={order.id} className="flex justify-between items-center border-b py-4">
+                                <div className="flex items-center">
+                                    <div className="ml-2">
+                                        <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
+                                        <p className="text-xs text-gray-500">
+                                            {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
+                                                order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
+                                                    order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
+                                                        order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
+                                                            order?.orderStatus[0]?.status}</p>
+                                        <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                     </div>
-                                </section>
-                            ))
-                        ) : (
-                            !dataOrderPackingProcessLoading && (
-                                <NoData />
-                            )
+                                </div>
+                            </section>
+                        ))) : (
+                        !dataOrderPackingProcessLoading && (
+                            <NoData />
+                        ))}
+                    {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 && (
+                        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                    )}
+                </CardContent>
+            </ContentMobileLayout>
 
-                        )}
-                        {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 && (
-                            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                        )}
-                    </CardContent>
-                </div>
-            </MobileSessionLayout>
-
-            <ContentWebLayout caption='Riwayat Penjemputan'>
-                <FilterWeb
-                    isSearchValues={isSearchValues}
-                    setIsSearchValues={setIsSearchValues}
-                    debounce={debounce}
-                    sortOption={sortOption}
-                    setSortOption={setSortOption}
-                    dateFrom={dateFrom}
-                    dateUntil={dateUntil}
-                    setDateFrom={setDateFrom}
-                    setDateUntil={setDateUntil}
-                    setActiveTab={setActiveTab}
-                    setSearchInput={setSearchInput}
-                    activeTab={activeTab}
-                    setPage={setPage}
-                    showStoreSelect={false}
-                    searchInput={searchInput}
-                    showTabOption={false}
-                    borderReset="border rounded-full"
-                />
-
+            <ContentWebLayout caption='Riwayat'>
+                <FilterWeb isSearchValues={isSearchValues} setIsSearchValues={setIsSearchValues}
+                    debounce={debounce} sortOption={sortOption} setSortOption={setSortOption} dateFrom={dateFrom} dateUntil={dateUntil} setDateFrom={setDateFrom} setDateUntil={setDateUntil} setActiveTab={setActiveTab} setSearchInput={setSearchInput} activeTab={activeTab} setPage={setPage} showStoreSelect={false}
+                    searchInput={searchInput} showTabOption={false} borderReset="border rounded-full" />
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
                         <thead className="bg-gray-200">
@@ -215,15 +174,13 @@ export default function HistoryOrderPacking() {
                                             </td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
                                         </tr>
-                                    ))
-                                ) : (
+                                    ))) : (
                                     <tr>
                                         <td colSpan={6} className="text-center font-bold">
                                             {dataOrderPackingProcessLoading ? <span className="py-10"><Loading /></span> : <NoData />}
                                         </td>
                                     </tr>
-                                )
-                            )}
+                                ))}
                         </tbody>
                     </table>
                     <PaginationWebLayout currentPage={page} totalPages={totalPages || '1'}>
