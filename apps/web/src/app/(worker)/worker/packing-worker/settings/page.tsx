@@ -15,8 +15,14 @@ import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { packingChangePasswordValidation } from '@/features/packingWorker/schemas/packingChangePasswordValidationSchema';
-import { packingAkunValidation } from '@/features/packingWorker/schemas/packingAkunValidationSchema';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
+import { FaGear } from 'react-icons/fa6';
+import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
+import { packingAccountValidationSchema } from '@/features/packingWorker/schemas/packingAccountValidationSchema';
+import { packingAccountMobileSchema } from '@/features/packingWorker/schemas/packingAccountMobileSchema';
+import { ConfirmAlert } from '@/components/core/confirmAlert';
+import ButtonCustom from '@/components/core/button';
+import { FaSignOutAlt } from 'react-icons/fa';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -24,7 +30,7 @@ export default function Page() {
         passwordVisible, confirmPasswordVisible, handleChange, togglePasswordVisibility,
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
-        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword } = usePackingWorkerSettingsHooks()
+        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = usePackingWorkerSettingsHooks()
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
@@ -46,7 +52,7 @@ export default function Page() {
 
     return (
         <>
-            <MobileSessionLayout title="Pengaturan">
+            <ContentMobileLayout icon={<FaGear className='text-lg' />} title="Pengaturan">
                 <Tabs defaultValue="1" className="fit">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="1" >Akun</TabsTrigger>
@@ -59,7 +65,7 @@ export default function Page() {
                             emails: getDataWorker?.email || '',
                             phoneNumbers: getDataWorker?.phoneNumber || '',
                             img: null
-                        }}
+                        }} validationSchema={packingAccountMobileSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.emails)
@@ -85,8 +91,12 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }} validationSchema={packingChangePasswordValidation}
-                            onSubmit={(values) => {
-                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
+                            onSubmit={(values, { resetForm }) => {
+                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                    onSuccess: () => {
+                                        resetForm()
+                                    }
+                                })
                             }}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
@@ -95,7 +105,10 @@ export default function Page() {
                         </Formik>
                     </TabsContent>
                 </Tabs>
-            </MobileSessionLayout>
+                <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisableSucces}>
+                    <ButtonCustom btnColor='bg-orange-500 hover:bg-orange-500' rounded='rounded-full gap-2' disabled={isPending || isDisableSucces} width='w-full'><FaSignOutAlt /> Logout</ButtonCustom>
+                </ConfirmAlert>
+            </ContentMobileLayout>
 
             <ContentWebLayout caption='Pengaturan'>
                 <TabContext value={value}>
@@ -112,7 +125,7 @@ export default function Page() {
                             email: getDataWorker?.email || '',
                             phoneNumber: getDataWorker?.phoneNumber || '',
                             images: null
-                        }}
+                        }} validationSchema={packingAccountValidationSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.email)
@@ -124,8 +137,6 @@ export default function Page() {
                                 handleUpdateProfile(fd)
                             }}>
                             {({ setFieldValue, values }) => (
-
-                                // profile settings
                                 <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                     disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                     handleDeleteProfilePicture={handleDeleteProfilePicture}
@@ -140,12 +151,12 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={Yup.object().shape({
-                                existingPassword: Yup.string().required('Password lama harus diisi'),
-                                password: Yup.string().required('Password baru harus diisi'),
-                                confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
-                            })}
-                            onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
+                            validationSchema={packingChangePasswordValidation}
+                            onSubmit={(values, { resetForm }) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                onSuccess: () => {
+                                    resetForm()
+                                }
+                            })}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                 isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}

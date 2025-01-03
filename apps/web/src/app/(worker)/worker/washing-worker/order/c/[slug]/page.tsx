@@ -145,9 +145,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
     return (
         <>
-            <MobileSessionLayout title="ITEM CHECKING">
+            <MobileSessionLayout title="Pengecekan">
                 <section className="px-10">
-
                     <Formik
                         initialValues={{
                             items: [],

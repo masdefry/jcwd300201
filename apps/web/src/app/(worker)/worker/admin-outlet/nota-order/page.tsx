@@ -31,7 +31,7 @@ export default function HistoryOrderWashing() {
     return (
         <>
             <MobileSessionLayout title="Nota Pesanan">
-                <CardContent className="space-y-2 pt-2">
+                <CardContent className="space-y-2 pb-28">
                     <FilterWorker
                         debounce={debounce}
                         sortOption={sortOption}

@@ -76,7 +76,7 @@ export default function Page() {
         { icon: <FaSpaghettiMonsterFlying />, url: '/worker/packing-worker/settings', name: 'Pengaturan' },
     ]
 
-    if (dataOrderPackingPending && dataOrderPending) return (
+    if (dataOrderPackingPending) return (
         <>
             <LoadingDashboardWeb />
         </>
@@ -90,7 +90,7 @@ export default function Page() {
                     <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
                 </div>
                 <div className="flex justify-center h-fit w-full p-2 mt-5 bg-gradient-to-tr from-white via-sky-50 to-sky-100 rounded-2xl">
-                    <div className="grid grid-cols-3 gap-2 w-full">
+                    <div className="grid grid-cols-2 gap-2 w-full">
                         {arrIcon?.map((item: any, i: number) => (
                             <Link href={item?.url} className="w-full p-3 flex flex-col items-center justify-center gap-2 bg-white shadow-sm border rounded-2xl hover:shadow-md transition-all" key={i}>
                                 <span className="text-2xl text-orange-500">{item?.icon}</span>
@@ -116,7 +116,7 @@ export default function Page() {
 
                     <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                         <div className="flex items-center gap-4 pb-4">
-                            <h1 className='font-bold text-xl text-neutral-700'>Proses Packing</h1>
+                            <h1 className='font-bold text-base text-neutral-700'>Proses Packing</h1>
                             <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                         </div>
                         <div className="w-full space-y-4">

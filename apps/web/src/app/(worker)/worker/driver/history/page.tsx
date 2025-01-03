@@ -112,7 +112,7 @@ export default function HistoryOrderDriver() {
     return (
         <>
             <ContentMobileLayout icon={<FaHistory className='text-lg' />} title="Riwayat">
-                <div className="pb-24">
+                <div className="pb-28">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="pickup" onClick={() => { setActiveTab("pickup"); setPage(1) }} className='text-xs'>Pickup</TabsTrigger>

@@ -129,7 +129,7 @@ export default function Page() {
                     </div>
                     <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                         <div className="flex items-center gap-4 pb-4">
-                            <h1 className='font-bold text-xl text-neutral-700'>Proses Setrika</h1>
+                            <h1 className='font-bold text-base text-neutral-700'>Proses Setrika</h1>
                             <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                         </div>
                         <div className="w-full space-y-4">

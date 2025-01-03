@@ -104,7 +104,7 @@ export default function HistoryOrderPacking() {
     return (
         <>
             <ContentMobileLayout icon={<FaHistory className="text-lg" />} title="Riwayat">
-                <CardContent className="space-y-2 pt-2">
+                <CardContent className="space-y-2 pb-28">
                     <FilterWorker searchInput={searchInput} setPage={setPage} debounce={debounce} sortOption={sortOption} setSortOption={setSortOption}
                         dateFrom={dateFrom} dateUntil={dateUntil} setDateFrom={setDateFrom} setDateUntil={setDateUntil} setActiveTab={setActiveTab} setSearchInput={setSearchInput}
                         setIsSearchValues={setIsSearchValues} isSearchValues={isSearchValues} />

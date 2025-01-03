@@ -22,6 +22,8 @@ import NoData from "@/components/core/noData"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import Loading from "@/components/core/loading"
 import FilterWeb from "@/components/core/filterWeb"
+import { GrNotes } from "react-icons/gr"
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 
 export default function Page() {
     const params = useSearchParams();
@@ -133,14 +135,14 @@ export default function Page() {
 
     return (
         <>
-            <MobileSessionLayout title="ORDER">
-                <div className="pb-24">
+            <ContentMobileLayout icon={<GrNotes className='text-lg' />} title="Pesanan">
+                <div className="pb-28">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
-                            <TabsTrigger value="not-washed" onClick={() => { setActiveTab("not-washed"); setPage(1) }} >Belum Dicuci</TabsTrigger>
-                            <TabsTrigger value="in-washing" onClick={() => { setActiveTab("in-washing"); setPage(1) }} >Proses Cuci</TabsTrigger>
-                            <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }}>Selesai</TabsTrigger>
+                            <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
+                            <TabsTrigger value="not-washed" onClick={() => { setActiveTab("not-washed"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
+                            <TabsTrigger value="in-washing" onClick={() => { setActiveTab("in-washing"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
+                            <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} className='text-xs'>Selesai</TabsTrigger>
                         </TabsList>
                         <TabsContent value={activeTab}>
                             <CardContent className="space-y-2 pt-2">
@@ -191,16 +193,11 @@ export default function Page() {
                                                             handleProcessWashing(order?.id);
                                                         }
                                                     }}
-                                                    disabled={isPending}
-                                                >
+                                                    disabled={isPending}>
                                                     <div className="flex items-center">
                                                         <div className="px-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
+                                                            <h2 className="font-medium text-gray-900">{order?.id?.length > 15 ? <span>{order?.id?.slice(0, 15)}..</span> : order?.id}</h2>
+                                                            <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
                                                             <p className="text-xs text-gray-500">
                                                                 {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
                                                                     ? 'Menunggu Persetujuan Admin'
@@ -212,9 +209,7 @@ export default function Page() {
                                                                                 ? 'Selesai'
                                                                                 : order?.orderStatus[0]?.status}
                                                             </p>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                            </p>
+                                                            <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                         </div>
                                                     </div>
                                                 </ConfirmAlert>
@@ -258,7 +253,7 @@ export default function Page() {
                         </TabsContent>
                     </Tabs>
                 </div>
-            </MobileSessionLayout>
+            </ContentMobileLayout>
 
             <ContentWebLayout caption='Pesanan'>
                 <FilterWeb

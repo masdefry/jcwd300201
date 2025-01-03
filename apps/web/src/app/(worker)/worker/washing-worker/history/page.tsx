@@ -2,7 +2,7 @@
 
 import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
+import { FaArrowLeft, FaHistory } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
@@ -23,6 +23,7 @@ import FilterWeb from "@/components/core/filterWeb"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import ButtonCustom from "@/components/core/button"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 
 export default function HistoryOrderWashing() {
     const params = useSearchParams();
@@ -102,10 +103,9 @@ export default function HistoryOrderWashing() {
 
     return (
         <>
-            <MobileSessionLayout title="HISTORY ORDER">
-                <div className="pb-24">
-
-                    <CardContent className="space-y-2 pt-2">
+            <ContentMobileLayout icon={<FaHistory className='text-lg' />} title="Riwayat">
+                <div className="pb-28">
+                    <CardContent className="space-y-2">
                         <FilterWorker
                             searchInput={searchInput}
                             setPage={setPage}
@@ -165,7 +165,7 @@ export default function HistoryOrderWashing() {
                         )}
                     </CardContent>
                 </div>
-            </MobileSessionLayout>
+            </ContentMobileLayout>
 
             <ContentWebLayout caption='Riwayat Pesanan'>
                 <FilterWeb
