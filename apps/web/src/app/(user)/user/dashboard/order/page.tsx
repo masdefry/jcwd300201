@@ -1,8 +1,5 @@
 'use client'
 
-import HeaderMobile from "@/components/core/headerMobile"
-import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
@@ -11,22 +8,20 @@ import authStore from "@/zustand/authstore"
 import { useState, useEffect, ChangeEvent } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import Timeline from "@/components/core/timeline"
 import ContentWebLayout from "@/components/core/webSessionContent";
 import ButtonCustom from "@/components/core/button";
 import SearchInputCustom from "@/components/core/searchBar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { FaPlus } from "react-icons/fa6";
 import HorizontalTimeline from "@/components/core/timelineUser"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
+import { GrNotes } from "react-icons/gr"
 
 export default function DeliveryRequest() {
     const params = useSearchParams();
@@ -166,7 +161,7 @@ export default function DeliveryRequest() {
 
     return (
         <>
-            <ContentMobileLayout title='Pesanan Saya'>
+            <ContentMobileLayout title='Pesanan Saya' icon={<GrNotes className='text-lg' />}>
                 <Tabs defaultValue={activeTab} className="fit">
                     <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="waiting-payment" onClick={() => { setActiveTab("waiting-payment"); setPage(1) }} >Belum Bayar</TabsTrigger>
@@ -260,8 +255,6 @@ export default function DeliveryRequest() {
                         <DialogHeader>
                             <DialogTitle>Detail Order</DialogTitle>
                         </DialogHeader>
-
-                        {/* Order Detail Content */}
                         {orderData ? (
                             <>
                                 <div className="grid gap-4 py-4">
@@ -331,8 +324,6 @@ export default function DeliveryRequest() {
                                         </div>
                                     </div>
                                 </div>
-
-                                {/* Map Order Items */}
                                 <div className="text-center">
                                     <h3 className="font-medium">Order Items</h3>
                                     <div className="grid grid-cols-2  justify-items-center overflow-y-auto max-h-20">
@@ -343,7 +334,6 @@ export default function DeliveryRequest() {
                                         ))}
                                     </div>
                                 </div>
-                                {/* Delivery Fee and Total Price */}
                                 <div className="flex justify-between">
                                     <span className="font-medium">Biaya Kirim:</span>
                                     <span>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</span>
@@ -380,12 +370,10 @@ export default function DeliveryRequest() {
                                     <div className="flex justify-center">
                                         <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Menunggu Verivikasi Admin</ButtonCustom>
                                     </div>
-                                    : ''
-                        }
+                                    : ''}
                     </DialogContent>
                 </Dialog>
             </ContentMobileLayout>
-
             <ContentWebLayout caption="Pesanan">
                 <div className="w-full h-fit flex items-center">
                     <div className="w-1/2 h-fit flex items-center">
@@ -407,8 +395,6 @@ export default function DeliveryRequest() {
                         <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
                     </div>
                 </div>
-
-                {/* table */}
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
                         <thead className="bg-gray-200">

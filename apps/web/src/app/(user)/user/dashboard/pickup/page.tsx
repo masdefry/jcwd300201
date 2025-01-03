@@ -17,6 +17,7 @@ import ContentWebLayout from '@/components/core/webSessionContent';
 import ButtonCustom from '@/components/core/button';
 import Link from 'next/link'
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
+import { MdSportsMotorsports } from 'react-icons/md';
 
 const validationSchema = Yup.object({
     deliveryFee: Yup.number().required().positive().integer(),
@@ -129,7 +130,7 @@ export default function PickupLaundry() {
 
     return (
         <>
-            <ContentMobileLayout title='Permintaan Pickup'>
+            <ContentMobileLayout title='Permintaan Pickup' icon={<MdSportsMotorsports className='text-lg' />}>
                 <Formik
                     enableReinitialize
                     initialValues={{

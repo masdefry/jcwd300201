@@ -15,12 +15,8 @@ import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuL
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import TabTrackingPacking from "@/features/packingWorker/components/tabPackingTracking";
-
 
 export default function Page() {
-
-
     const name = authStore((state) => state?.firstName)
     const lat = locationStore((state) => state?.latitude)
     const lng = locationStore((state) => state?.longitude)
@@ -44,17 +40,7 @@ export default function Page() {
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
-
-    const { data: dataOrder, isPending:dataOrderPending } = useQuery({
-        queryKey: ['get-order-status', selectedTab],
-        queryFn: async () => {
-            const res = await instance.get(`/order/tracking-worker?period=${selectedTab}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            return res?.data?.data
-        },
-    });
-
+    
     const { data: dataOrderPacking, isPending: dataOrderPackingPending } = useQuery({
         queryKey: ['get-order-packing'],
         queryFn: async () => {
@@ -128,7 +114,7 @@ export default function Page() {
                         </div>
                     </div>
 
-                    <div className="w-full flex justify-center flex-col h-full border border-gray-300 mx-2  mr-10 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
+                    <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                         <div className="flex items-center gap-4 pb-4">
                             <h1 className='font-bold text-xl text-neutral-700'>Proses Packing</h1>
                             <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
@@ -159,13 +145,6 @@ export default function Page() {
                                 Lihat Selengkapnya...
                             </Link>
                         </div>
-                    </div>
-                    <div className="w-full flex gap-3 justify-center items-center py-3 px-4 bg-white border rounded-lg shadow-sm transition-all">
-                        <TabTrackingPacking
-                            selectedTab={selectedTab}
-                            setSelectedTab={setSelectedTab}
-                            dataOrder={dataOrder}
-                        />
                     </div>
                 </div>
             </ContentMobileLayout >
@@ -274,13 +253,6 @@ export default function Page() {
                                 Lihat Selengkapnya...
                             </Link>
                         </div>
-                    </div>
-                    <div className="w-full h-full flex justify-center bg-white bg-opacity-45 rounded-2xl ">
-                        <TabTrackingPacking
-                            selectedTab={selectedTab}
-                            setSelectedTab={setSelectedTab}
-                            dataOrder={dataOrder}
-                        />
                     </div>
                 </section>
             </main>

@@ -1,9 +1,4 @@
-import {
-    Accordion,
-    AccordionContent,
-    AccordionItem,
-    AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import Link from "next/link";
 
 export default function Page() {
@@ -13,11 +8,11 @@ export default function Page() {
                 <div className='flex flex-col justify-center w-full items-center mb-10'>
                     <h1 className="text-3xl font-bold text-center">FAQ - Clean&Click</h1>
                     <div className="flex gap-2 text-center w-full justify-center items-center">
-                        <Link href='/' className="hover:underline hover:text-neutral-400 text-neutral-500">Syarat dan ketentuan</Link>
+                        <Link href='/terms-condition' className="hover:underline hover:text-neutral-400 text-neutral-500">Syarat dan ketentuan</Link>
                         <div className="w-1 h-1 bg-black rounded-full"></div>
-                        <Link href='/' className="hover:underline hover:text-neutral-400 text-neutral-500">Kebijakan Privasi</Link>
+                        <Link href='/privacy-policy' className="hover:underline hover:text-neutral-400 text-neutral-500">Kebijakan Privasi</Link>
                         <div className="w-1 h-1 bg-black rounded-full"></div>
-                        <Link href='/' className="hover:underline hover:text-neutral-400 text-neutral-500">Bantuan</Link>
+                        <Link href='/help' className="hover:underline hover:text-neutral-400 text-neutral-500">Bantuan</Link>
                     </div>
                 </div>
                 <Accordion type="single" collapsible className="w-full">

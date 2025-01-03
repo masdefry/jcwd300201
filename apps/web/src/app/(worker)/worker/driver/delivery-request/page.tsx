@@ -17,7 +17,7 @@ import { ConfirmAlert } from "@/components/core/confirmAlert"
 import { IoLocationSharp } from "react-icons/io5";
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
-import { FaPlus } from "react-icons/fa6"
+import { FaPlus, FaTruck } from "react-icons/fa6"
 import ContentWebLayout from "@/components/core/webSessionContent"
 import Pagination from "@/components/core/pagination"
 import FilterWorker from "@/components/core/filter"
@@ -25,6 +25,7 @@ import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 
 export default function DriverDelivery() {
     const params = useSearchParams();
@@ -162,14 +163,14 @@ export default function DriverDelivery() {
 
     return (
         <>
-            <MobileSessionLayout title="REQUEST DELIVERY">
-                <div className=" pb-24 mx-4 space-y-4">
+            <ContentMobileLayout icon={<FaTruck className="text-lg" />} title="Pengantaran">
+                <div className=" pb-24">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
-                            <TabsTrigger value="menungguDriver" onClick={() => { setActiveTab("menungguDriver"); setPage(1) }} >Belum Dikirim</TabsTrigger>
-                            <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
-                            <TabsTrigger value="terkirim" onClick={() => { setActiveTab("terkirim"); setPage(1) }} >Terkirim</TabsTrigger>
+                            <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
+                            <TabsTrigger value="menungguDriver" onClick={() => { setActiveTab("menungguDriver"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
+                            <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
+                            <TabsTrigger value="terkirim" onClick={() => { setActiveTab("terkirim"); setPage(1) }} className='text-xs'>Terkirim</TabsTrigger>
                         </TabsList>
                         <TabsContent value={activeTab}>
                             <CardContent className="space-y-2 pt-2">
@@ -297,7 +298,7 @@ export default function DriverDelivery() {
                         </TabsContent>
                     </Tabs>
                 </div>
-            </MobileSessionLayout>
+            </ContentMobileLayout>
 
             <ContentWebLayout caption='Pengiriman'>
                 <div className="w-full h-fit flex">

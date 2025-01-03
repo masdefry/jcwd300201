@@ -21,8 +21,6 @@ import { RiProfileFill } from "react-icons/ri";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import TabTrackingIroning from "@/features/ironingWorker/components/tabIroningTracking";
-
 
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
@@ -70,17 +68,7 @@ export default function Page() {
 
             return res?.data?.data;
         },
-    });
-
-    const { data: dataOrder, isPending:dataOrderPending } = useQuery({
-        queryKey: ['get-order-status', selectedTab],
-        queryFn: async () => {
-            const res = await instance.get(`/order/tracking-worker?period=${selectedTab}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            return res?.data?.data
-        },
-    });
+    })
 
     useEffect(() => {
         const date = new Date()
@@ -89,7 +77,7 @@ export default function Page() {
         const isMonth = date.getMonth()
         const isYear = date.getFullYear()
 
-        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        const newDateFormat = `${isDateNow}/${(isMonth + 1) <= 9 ? `0${isMonth + 1}` : (isMonth + 1)}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
@@ -101,12 +89,11 @@ export default function Page() {
         { icon: <FaSpaghettiMonsterFlying />, url: '/worker/ironing-worker/settings', name: 'Pengaturan' },
     ]
 
-    if (dataOrderIroningPending && dataOrderPending) return (
+    if (dataOrderIroningPending) return (
         <>
             <LoadingDashboardWeb />
         </>
     )
-
 
     return (
         <>
@@ -140,7 +127,7 @@ export default function Page() {
                             </p>
                         </div>
                     </div>
-                    <div className="w-full flex justify-center flex-col h-full border border-gray-300 mx-2  mr-10 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
+                    <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                         <div className="flex items-center gap-4 pb-4">
                             <h1 className='font-bold text-xl text-neutral-700'>Proses Setrika</h1>
                             <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
@@ -171,14 +158,6 @@ export default function Page() {
                                 Lihat Selengkapnya...
                             </Link>
                         </div>
-                    </div>
-                    <div className="w-full flex gap-3 justify-center items-center py-3 px-4 bg-white border rounded-lg shadow-sm transition-all">
-                        <TabTrackingIroning
-                            selectedTab={selectedTab}
-                            setSelectedTab={setSelectedTab}
-                            dataOrder={dataOrder}
-                        />
-
                     </div>
                 </div>
             </ContentMobileLayout>
@@ -286,13 +265,6 @@ export default function Page() {
                                 Lihat Selengkapnya...
                             </Link>
                         </div>
-                    </div>
-                    <div className="w-full h-full flex justify-center bg-white bg-opacity-45 rounded-2xl ">
-                        <TabTrackingIroning
-                            selectedTab={selectedTab}
-                            setSelectedTab={setSelectedTab}
-                            dataOrder={dataOrder}
-                        />
                     </div>
                 </section>
             </main>

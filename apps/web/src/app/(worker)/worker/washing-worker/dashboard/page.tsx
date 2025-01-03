@@ -12,11 +12,9 @@ import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
 import Link from "next/link";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import TabTrackingWashing from "@/features/washingWorker/components/tabWashingTracking";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
@@ -42,16 +40,6 @@ export default function Page() {
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
-
-    const { data: dataOrder, isPending:dataOrderPending } = useQuery({
-        queryKey: ['get-order-status', selectedTab],
-        queryFn: async () => {
-            const res = await instance.get(`/order/tracking-worker?period=${selectedTab}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            return res?.data?.data
-        },
-    });
 
     const { data: dataOrderWashing, isPending: dataOrderWashingPending } = useQuery({
         queryKey: ['get-order-washing'],
@@ -89,7 +77,7 @@ export default function Page() {
 
     ]
 
-    if (dataOrderWashingPending && dataOrderPending) return (
+    if (dataOrderWashingPending) return (
         <>
             <LoadingDashboardWeb />
         </>
@@ -158,13 +146,6 @@ export default function Page() {
                                 Lihat Selengkapnya...
                             </Link>
                         </div>
-                    </div>
-                    <div className="w-full flex gap-3 justify-center items-center py-3 px-4 bg-white border rounded-lg shadow-sm transition-all">
-                        <TabTrackingWashing
-                            selectedTab={selectedTab}
-                            setSelectedTab={setSelectedTab}
-                            dataOrder={dataOrder}
-                        />
                     </div>
                 </div>
         </ContentMobileLayout >
@@ -273,13 +254,6 @@ export default function Page() {
                                 Lihat Selengkapnya...
                             </Link>
                         </div>
-                    </div>
-                    <div className="w-full h-full flex justify-center bg-white bg-opacity-45 rounded-2xl ">
-                        <TabTrackingWashing
-                            selectedTab={selectedTab}
-                            setSelectedTab={setSelectedTab}
-                            dataOrder={dataOrder}
-                        />
                     </div>
                 </section>
             </main>

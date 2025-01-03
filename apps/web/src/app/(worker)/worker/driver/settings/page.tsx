@@ -17,6 +17,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { driverChangePasswordValidation } from '@/features/driver/schemas/driverChangePasswordValidationSchema';
 import { driverAkunValidation } from '@/features/driver/schemas/driverAkunValidationSchema';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
+import ButtonCustom from '@/components/core/button';
+import { ConfirmAlert } from '@/components/core/confirmAlert';
+import { FaSignOutAlt } from 'react-icons/fa';
 
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
@@ -25,7 +28,7 @@ export default function Page() {
         passwordVisible, confirmPasswordVisible, handleChange, togglePasswordVisibility,
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
-        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword } = useDriverSettingsHooks()
+        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useDriverSettingsHooks()
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
@@ -92,8 +95,6 @@ export default function Page() {
                                     handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
                                     console.log(values)
                                 }}>
-
-                                {/* change password setting */}
                                 <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                     confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                     isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
@@ -101,14 +102,13 @@ export default function Page() {
                             </Formik>
                         </TabsContent>
                     </Tabs>
+                    <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisableSucces}>
+                        <ButtonCustom btnColor='bg-orange-500 hover:bg-orange-500' rounded='rounded-full gap-2' disabled={isPending || isDisableSucces} width='w-full'><FaSignOutAlt /> Logout</ButtonCustom>
+                    </ConfirmAlert>
                 </div>
             </MobileSessionLayout>
 
-
-            {/* web sesi */}
             <ContentWebLayout caption='Pengaturan'>
-
-                {/* tabs */}
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Pengaturan tabs">
@@ -136,8 +136,6 @@ export default function Page() {
                                 handleUpdateProfile(fd)
                             }}>
                             {({ setFieldValue, values }) => (
-
-                                // profile settings
                                 <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                     disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                     handleDeleteProfilePicture={handleDeleteProfilePicture}
@@ -157,8 +155,6 @@ export default function Page() {
                                 handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
                                 console.log(values)
                             }}>
-
-                            {/* change password setting */}
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                 isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}

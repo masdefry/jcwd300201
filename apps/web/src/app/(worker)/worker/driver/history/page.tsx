@@ -2,7 +2,7 @@
 
 import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
+import { FaArrowLeft, FaHistory } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
@@ -25,6 +25,7 @@ import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
 import FilterWeb from "@/components/core/filterWeb"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 
 export default function HistoryOrderDriver() {
     const params = useSearchParams();
@@ -110,12 +111,12 @@ export default function HistoryOrderDriver() {
 
     return (
         <>
-            <MobileSessionLayout title="HISTORY ORDER">
-                <div className=" pb-24 mx-4 space-y-4">
+            <ContentMobileLayout icon={<FaHistory className='text-lg' />} title="Riwayat">
+                <div className="pb-24">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="pickup" onClick={() => { setActiveTab("pickup"); setPage(1) }} >Pickup</TabsTrigger>
-                            <TabsTrigger value="delivery" onClick={() => { setActiveTab("delivery"); setPage(1) }} >Delivery</TabsTrigger>
+                            <TabsTrigger value="pickup" onClick={() => { setActiveTab("pickup"); setPage(1) }} className='text-xs'>Pickup</TabsTrigger>
+                            <TabsTrigger value="delivery" onClick={() => { setActiveTab("delivery"); setPage(1) }} className='text-xs'>Delivery</TabsTrigger>
                         </TabsList>
                         <TabsContent value={activeTab}>
                             <CardContent className="space-y-2 pt-2">
@@ -177,7 +178,7 @@ export default function HistoryOrderDriver() {
                         </TabsContent>
                     </Tabs>
                 </div>
-            </MobileSessionLayout>
+            </ContentMobileLayout>
 
             <ContentWebLayout caption='Riwayat Penjemputan'>
                 <FilterWeb

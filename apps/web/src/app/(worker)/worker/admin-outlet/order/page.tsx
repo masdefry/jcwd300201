@@ -142,7 +142,7 @@ export default function DeliveryRequest() {
 
     return (
         <>
-            <MobileSessionLayout title="ORDER">
+            <MobileSessionLayout title="Pesanan">
 
                 <Tabs defaultValue={activeTab} className="fit">
                     <TabsList className="grid w-full grid-cols-2">

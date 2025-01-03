@@ -1,10 +1,10 @@
 'use client'
 
-import { IoSearchSharp } from "react-icons/io5";
+import { IoSearchSharp  } from "react-icons/io5";
 import Image from "next/image";
 import { FiPlus } from "react-icons/fi";
 import { LuPackageCheck } from "react-icons/lu";
-import { FaTint, FaWhatsapp } from "react-icons/fa";
+import { FaHome, FaTint, FaWhatsapp } from "react-icons/fa";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import { FaAddressCard, FaArrowRight, FaCartShopping, FaUserCheck } from "react-icons/fa6";
@@ -14,12 +14,12 @@ import { Calendar } from "@/components/ui/calendar"
 import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
 import Link from "next/link";
-import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import { MdSportsMotorsports } from "react-icons/md";
 import TabTrackingUser from "@/features/user/components/tabUserTracking";
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)

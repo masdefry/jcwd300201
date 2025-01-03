@@ -1,13 +1,13 @@
 'use client'
 
-import {  IoSearchSharp, IoPersonSharp } from "react-icons/io5";
+import { IoSearchSharp, IoPersonSharp } from "react-icons/io5";
 import { GrUserWorker } from "react-icons/gr";
-import { FaTint, FaWhatsapp } from "react-icons/fa";
-import { MdFeedback, MdOutlineStickyNote2, MdWorkHistory } from "react-icons/md";
+import { FaTint } from "react-icons/fa";
+import { MdFeedback, MdWorkHistory } from "react-icons/md";
 import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
-import { FaArrowRight, FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying, FaStore } from "react-icons/fa6";
+import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying, FaStore } from "react-icons/fa6";
 import { FaCloud, FaTemperatureHigh } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
@@ -21,23 +21,20 @@ import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { RiProfileFill } from "react-icons/ri";
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
 import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
 import Notification from "@/components/core/notification";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
-    const [date, setDate] = useState<Date | undefined>(new Date())
-    const [isDate, setIsDate] = useState<string>('')
-    const [isDay, setIsDay] = useState<number>(0)
     const name = authStore((state) => state?.firstName)
     const lat = locationStore((state) => state?.latitude)
     const lng = locationStore((state) => state?.longitude)
     const token = authStore((state) => state?.token)
+    const params = useSearchParams()
+    const currentUrl = new URLSearchParams(params.toString())
+    const [date, setDate] = useState<Date | undefined>(new Date())
+    const [isDate, setIsDate] = useState<string>('')
+    const [isDay, setIsDay] = useState<number>(0)
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
     const [selectedTab, setSelectedTab] = useState<'today' | 'month'>('today');
 
@@ -51,11 +48,15 @@ export default function Page() {
             return res?.data?.data
         },
     });
+    const [isMonthlyStatistic, setIsMonthlyStatistic] = useState<string>(currentUrl.get('outletId') || '')
 
     const { data: dataOrderList, refetch, isPending } = useQuery({
         queryKey: ['get-order'],
         queryFn: async () => {
             const res = await instance.get(`/order/orders`, {
+                params: {
+                    outletId: ''
+                },
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -127,7 +128,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification />}>
                 <main className="pb-24">
                     <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                         <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
@@ -143,11 +144,6 @@ export default function Page() {
                             ))}
                         </div>
                     </div>
-
-                    <div className="flex w-full justify-end">
-                        <Notification />
-                    </div>
-
                     <div className="w-full flex flex-col md:flex-row gap-4 px-2 mt-5 h-auto">
                         <div className="w-full md:w-1/2 h-auto">
                             <div className="grid grid-cols-1 gap-3 w-full">
@@ -159,21 +155,17 @@ export default function Page() {
                                 ))}
                             </div>
                         </div>
-                        <div className="w-full flex gap-3 justify-center items-center py-3 px-4 bg-white border rounded-lg shadow-sm transition-all">
-                            <TabTracking
-                                selectedTab={selectedTab}
-                                setSelectedTab={setSelectedTab}
-                                dataOrder={dataOrder}
-                            />
-                        </div>
+                        <TabTracking
+                            selectedTab={selectedTab}
+                            setSelectedTab={setSelectedTab}
+                            dataOrder={dataOrder}
+                        />
                         <div className="w-full md:w-1/2 h-auto bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-4 rounded-2xl shadow-md">
                             <div className="h-full bg-white bg-opacity-70 rounded-lg p-4">
                                 <h2 className="text-lg font-semibold text-gray-700 mb-2">Status Cuaca</h2>
                                 <p className="text-sm text-gray-600">
                                     {isCurrentWeither?.weather && isCurrentWeither.weather[0]?.description
-                                        ? `${isCurrentWeither.weather[0].description}, ${(
-                                            isCurrentWeither.main.temp - 273.15
-                                        ).toFixed(1)}°C`
+                                        ? `${isCurrentWeither.weather[0].description}, ${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C`
                                         : "Data cuaca tidak tersedia"}
                                 </p>
                             </div>

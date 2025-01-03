@@ -24,6 +24,7 @@ import NoData from "@/components/core/noData"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import ContentWebLayout from "@/components/core/webSessionContent"
 import FilterWeb from "@/components/core/filterWeb"
+import ButtonCustom from "@/components/core/button"
 
 export default function DriverPickUp() {
     const params = useSearchParams();
@@ -133,7 +134,9 @@ export default function DriverPickUp() {
     }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
 
 
-    const totalPages = dataOrderPackingProcess?.totalPage || 1;
+    const totalPages = dataOrderPackingProcess?.totalPage || 1
+    const handlePageChange = (page: any) => setPage(page)
+
 
     return (
         <>
@@ -166,28 +169,15 @@ export default function DriverPickUp() {
                                 {dataOrderPackingProcessError && <div>Silahkan coba beberapa saat lagi.</div>}
                                 {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
                                     dataOrderPackingProcess?.orders?.map((order: any) => (
-                                        <section
-                                            key={order.id}
-                                            className="flex justify-between items-center border-b py-4"
-                                        >
+                                        <section key={order.id} className="flex justify-between items-center border-b py-4">
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
                                                     <div className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
-                                                            <div className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes
-                                                                    ? 'Terjadi Masalah'
-                                                                    : ''}
-                                                            </div>
-                                                            <div className="text-xs text-gray-500">
-                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                            </div>
+                                                        <div className="px-2">
+                                                            <h2 className="font-medium text-gray-900">{order?.id}</h2>
+                                                            <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
+                                                            <div className="text-xs text-gray-500">{order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes ? 'Terjadi Masalah' : ''}</div>
+                                                            <div className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</div>
                                                         </div>
                                                     </div>
                                                 </AlertDialogTrigger>
@@ -196,16 +186,9 @@ export default function DriverPickUp() {
                                                     <AlertDialogHeader>
                                                         <AlertDialogTitle>Terdapat perbedaan barang pada laundry berikut</AlertDialogTitle>
                                                         <AlertDialogDescription>
-                                                            <Formik
-                                                                initialValues={{ notes: '' }}
-                                                                validationSchema={notesSchema}
-                                                                onSubmit={async (values) => {
-                                                                    handleLaundryProblem({
-                                                                        notes: values.notes,
-                                                                        orderId: order?.id
-                                                                    });
-                                                                }}
-                                                            >
+                                                            <Formik initialValues={{ notes: '' }} validationSchema={notesSchema} onSubmit={async (values) => {
+                                                                handleLaundryProblem({ notes: values.notes, orderId: order?.id })
+                                                            }}>
                                                                 <Form>
                                                                     <div>
                                                                         <Field
@@ -266,7 +249,63 @@ export default function DriverPickUp() {
                     isSearchValues={isSearchValues}
                     activeTab={activeTab}
                     borderReset="border rounded-full"
+                    options={[
+                        { label: 'Bermasalah', value: 'bermasalah' },
+                        { label: 'Selesai', value: 'done' },
+                    ]}
                 />
+
+                <div className="w-full flex flex-col justify-center">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order ID</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Customer</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Store</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {dataOrderPackingProcessLoading ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
+                                </tr>
+                            ) : (
+                                !dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
+                                    dataOrderPackingProcess?.orders?.map((order: any, i: number) => (
+                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * page + i + 1}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes ? 'Terjadi Masalah' : ''}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
+                                            <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">View</td>
+                                        </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {dataOrderPackingProcessLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                )
+                            )}
+                        </tbody>
+                    </table>
+                    <div className='flex gap-2 justify-between py-2 px-2 items-center'>
+                        <div className="w-1/2 flex">
+                            <h1 className="text-neutral-400">Page {page} of {totalPages || '0'}</h1>
+                        </div>
+                        <div className="flex gap-2">
+                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => handlePageChange(page - 1)}>Sebelumnya</ButtonCustom>
+                            <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => handlePageChange(page + 1)}>Selanjutnya</ButtonCustom>
+                        </div>
+                    </div>
+                </div>
             </ContentWebLayout>
         </>
     )

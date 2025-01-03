@@ -88,7 +88,7 @@ export default async function Page() {
                         <div key={i} className="w-full h-fit py-4 px-5 border rounded-2xl flex flex-col bg-white">
                             <div className="w-full flex justify-between gap-2 items-center">
                                 <div className="flex">
-                                    <div className="w-12 h-12 rounded 12 rounde0-full">
+                                    <div className="w-12 h-12 rounded-full">
                                         <Image
                                             width={500}
                                             height={500}

@@ -17,10 +17,7 @@ import Link from "next/link";
 import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-
-import TabTrackingDriver from "@/features/driver/components/tabDriverTracking";
 
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
@@ -48,7 +45,7 @@ export default function Page() {
         const isMonth = date.getMonth()
         const isYear = date.getFullYear()
 
-        const newDateFormat = `${isDateNow}/${isMonth + 1}/${isYear}`
+        const newDateFormat = `${isDateNow}/${(isMonth + 1) < 10 ? `0${isMonth + 1}` : (isMonth + 1)}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
@@ -60,17 +57,6 @@ export default function Page() {
                 headers: { Authorization: `Bearer ${token}` }
             });
             return res?.data?.data;
-        },
-    });
-
-    const { data: dataOrder } = useQuery({
-        queryKey: ['get-order-status', selectedTab],
-        queryFn: async () => {
-            const res = await instance.get(`/order/tracking-driver?period=${selectedTab}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            console.log(res, '<<<<')
-            return res?.data?.data
         },
     });
 
@@ -110,7 +96,7 @@ export default function Page() {
         const isMonth = date.getMonth()
         const isYear = date.getFullYear()
 
-        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        const newDateFormat = `${isDateNow}/${(isMonth + 1) <= 9 ? `0${isMonth + 1}` : (isMonth + 1)}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
@@ -149,23 +135,12 @@ export default function Page() {
                     </div>
 
                     <div className="w-full flex flex-col md:flex-row gap-4 px-2 mt-5 h-auto">
-
-                        <div className="w-full flex gap-3 justify-center items-center py-3 px-4 bg-white border rounded-lg shadow-sm transition-all">
-                            <TabTrackingDriver
-                                selectedTab={selectedTab}
-                                setSelectedTab={setSelectedTab}
-                                dataOrder={dataOrder}
-                            />
-                        </div>
                         <div className="w-full md:w-1/2 h-auto bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-4 rounded-2xl shadow-md">
                             <div className="h-full bg-white bg-opacity-70 rounded-lg p-4">
                                 <h2 className="text-lg font-semibold text-gray-700 mb-2">Status Cuaca</h2>
                                 <p className="text-sm text-gray-600">
                                     {isCurrentWeither?.weather && isCurrentWeither.weather[0]?.description
-                                        ? `${isCurrentWeither.weather[0].description}, ${(
-                                            isCurrentWeither.main.temp - 273.15
-                                        ).toFixed(1)}°C`
-                                        : "Data cuaca tidak tersedia"}
+                                        ? `${isCurrentWeither.weather[0].description}, ${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C` : "Data cuaca tidak tersedia"}
                                 </p>
                             </div>
                         </div>
@@ -373,15 +348,7 @@ export default function Page() {
                             </Link>
                         </div>
                     </div>
-                    <div className="w-fit px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
-                    <TabTrackingDriver
-                        selectedTab={selectedTab}
-                        setSelectedTab={setSelectedTab}
-                        dataOrder={dataOrder}
-                    />
-                    </div>
                 </section>
-
             </main>
         </>
     );
