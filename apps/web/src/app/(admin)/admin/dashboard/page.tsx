@@ -21,16 +21,20 @@ import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { RiProfileFill } from "react-icons/ri";
+import { useSearchParams } from "next/navigation";
 
 export default function Page() {
-    const [date, setDate] = useState<Date | undefined>(new Date())
-    const [isDate, setIsDate] = useState<string>('')
-    const [isDay, setIsDay] = useState<number>(0)
     const name = authStore((state) => state?.firstName)
     const lat = locationStore((state) => state?.latitude)
     const lng = locationStore((state) => state?.longitude)
     const token = authStore((state) => state?.token)
+    const params = useSearchParams()
+    const currentUrl = new URLSearchParams(params.toString())
+    const [date, setDate] = useState<Date | undefined>(new Date())
+    const [isDate, setIsDate] = useState<string>('')
+    const [isDay, setIsDay] = useState<number>(0)
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
+    const [isMonthlyStatistic, setIsMonthlyStatistic] = useState<string>(currentUrl.get('outletId') || '')
 
     const { data: dataOrderList, refetch, isPending } = useQuery({
         queryKey: ['get-order'],
@@ -81,6 +85,14 @@ export default function Page() {
         const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
+    }, [])
+    
+    useEffect(() => {
+        if (isMonthlyStatistic) {
+            currentUrl.set('outletId', isMonthlyStatistic)
+        } else {
+            currentUrl.delete('outletId')
+        }
     }, [])
 
     const completedOrders = dataOrderList?.trackingOrder?.filter((order: any) => order?.isDone);
