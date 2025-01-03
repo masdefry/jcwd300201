@@ -4,8 +4,6 @@ import { NextFunction, Request, Response } from "express";
 export const uploader = (req: Request, res: Response, next: NextFunction) => {
     const uploads = uploadMulter.fields([{ name: 'images', maxCount: 1 }])
     const { userId, authorizationRole } = req.body
-    
-    
     uploads(req, res, (err) => {
         try {
             if (err) throw { msg: err?.message, status: 400 }

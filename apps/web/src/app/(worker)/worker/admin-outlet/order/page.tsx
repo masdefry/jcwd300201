@@ -143,7 +143,6 @@ export default function DeliveryRequest() {
     return (
         <>
             <MobileSessionLayout title="ORDER">
-                <div className="mx-4 space-y-4">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
@@ -298,10 +297,9 @@ export default function DeliveryRequest() {
                             )}
                         </DialogContent>
                     </Dialog>
-                </div>
             </MobileSessionLayout>
 
-            <ContentWebLayout caption="Order">
+            <ContentWebLayout caption="Riwayat Pesanan">
                 <FilterWeb isSearchValues={isSearchValues} setIsSearchValues={setIsSearchValues} debounce={debounce} sortOption={sortOption}
                     setSortOption={setSortOption} dateFrom={dateFrom} dateUntil={dateUntil} setDateFrom={setDateFrom}
                     setDateUntil={setDateUntil} setActiveTab={setActiveTab} setSearchInput={setSearchInput} activeTab={activeTab}

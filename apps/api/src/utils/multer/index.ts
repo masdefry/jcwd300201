@@ -1,6 +1,5 @@
 import multer from "multer";
 
-/* on local images */
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'src/public/images')
@@ -12,10 +11,8 @@ const storage = multer.diskStorage({
     }
 })
 
-/* Filtering extension */
 const fileFilter = (req: any, file: any, cb: any) => {
     const extensionAccepted = ['jpg', 'jpeg', 'png', 'gif']
-
     const imagesExt = file.originalname.split('.')
     if (!extensionAccepted.includes(imagesExt[imagesExt.length - 1])) {
         return cb(new Error('Format file tidak sesuai'))
@@ -24,7 +21,6 @@ const fileFilter = (req: any, file: any, cb: any) => {
     return cb(null, true)
 }
 
-/* Set Uploader */
 export const uploadMulter = multer({
     storage: storage,
     fileFilter: fileFilter,

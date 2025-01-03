@@ -40,7 +40,7 @@ export default function Page() {
         const isMonth = date.getMonth()
         const isYear = date.getFullYear()
 
-        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        const newDateFormat = `${isDateNow}/${(isMonth + 1) < 10 ? `0${isMonth + 1}` : isMonth + 1}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])

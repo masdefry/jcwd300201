@@ -11,7 +11,6 @@ export const updateProfileWorker = async (req: Request, res: Response, next: Nex
   try {
     const imageUploaded: any = req.files
     const { userId, email, phoneNumber, firstName, lastName } = req.body
-
     await updateProfileWorkerService({ userId, email, phoneNumber, firstName, lastName, imageUploaded })
 
     res.status(200).json({

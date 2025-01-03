@@ -24,6 +24,7 @@ import { FaWallet } from "react-icons/fa6";
 import { RiBankCardFill } from "react-icons/ri";
 import ButtonCustom from "@/components/core/button";
 import Image from "next/image";
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
 
 const validationSchema = Yup.object().shape({
@@ -137,7 +138,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     // if (isFetching) return <div></div>
     return (
         <>
-            <main className="w-full h-fit md:hidden block">
+            {/* <main className="w-full h-fit md:hidden block">
                 <section className="w-full h-fit">
                     <HeaderMobile />
                     <main className="w-full">
@@ -276,7 +277,115 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         </section>
                     </main>
                 </section>
-            </main>
+            </main> */}
+            <MobileSessionLayout title='Pembayaran'>
+                <NotaHeader />
+                <div className="w-full md:w-1/2 space-y-4">
+                    <h1 className="font-bold text-2xl text-gray-800 mb-4">Detail Pesanan</h1>
+                    <div className="space-y-3">
+                        <InputDisplay caption="Order ID" value={dataOrderNote?.order?.id || 'ORD123123'} />
+                        <InputDisplay caption="Ongkos Kirim" value={dataOrderNote?.order?.deliveryFee || '0'} />
+                        <InputDisplay caption="Biaya Laundry" value={dataOrderNote?.order?.laundryPrice || '0'} />
+                    </div>
+                </div>
+                <div className="w-full md:w-1/2 space-y-4">
+                    <h1 className="font-bold text-2xl text-gray-800">Metode Pembayaran</h1>
+                    <div className="w-full h-fit">
+                        <div className="flex justify-start w-full h-fit">
+                            <div className="grid grid-cols-4 h-fit gap-2">
+                                {isArrCardPayment.map((img: { img: string }, i: number) => (
+                                    <div key={i} className='w-fit h-fit flex justify-center'>
+                                        <Image
+                                            className='w-fit h-10'
+                                            width={500}
+                                            height={500}
+                                            alt='card'
+                                            src={img?.img}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                    {dataOrderNote?.order?.isPaid === false && !dataOrderNote?.order?.paymentProof ? (
+                        <>
+                            <div className="space-y-4">
+                                <label htmlFor="midtrans-mobile" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                    <div className='flex gap-2 items-center'>
+                                        <FaWallet className="text-lg" />
+                                        <span className="text-gray-700 flex">Pembayaran Online</span>
+                                    </div>
+                                    <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='midtrans-mobile' type="radio" name="paymentMethod" id="midtrans-mobile" className="w-4 h-4 text-blue-600" />
+                                </label>
+                                <label htmlFor="manualTransfer-mobile" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                                    <div className='flex gap-2 items-center'>
+                                        <RiBankCardFill className="text-lg" />
+                                        <span className="text-gray-700 flex">Transfer Bank</span>
+                                    </div>
+                                    <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='manualTransfer-mobile' type="radio" name="paymentMethod" id="manualTransfer-mobile" className="w-4 h-4 text-blue-600" />
+                                </label>
+                            </div>
+                            <ButtonCustom type="button" btnColor="bg-blue-500 hover:bg-blue-500" disabled={!isPaymentMethod || dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0} width="w-full" onClick={() => {
+                                isPaymentMethod === 'midtrans' || isPaymentMethod === 'midtrans-mobile' ? handlePaymmentOrder(dataOrderNote?.order?.id) : setIsUploadDialogOpen(true)
+                            }}>Bayar sekarang</ButtonCustom>
+                        </>
+                    ) : (
+                        <div className="text-lg mt-8 border-gray-300 p-4">
+                            <h1 className="font-bold">Terima kasih,</h1>
+                            <p>Anda Telah Melakukan Pembayaran!</p>
+                        </div>
+                    )}
+                </div>
+            </MobileSessionLayout>
+
+            <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Upload Bukti Pembayaran</DialogTitle>
+                        <DialogDescription>
+                            Silakan unggah bukti pembayaran Anda di bawah ini.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <Formik
+                        initialValues={{ images: null }}
+                        onSubmit={(values: any) => {
+                            const fd = new FormData();
+                            fd.append("images", values.images);
+                            uploadPaymentProof(fd)
+                        }}>
+                        {({ setFieldValue }) => (
+                            <Form>
+                                <div className="mt-4">
+                                    <label className="block mb-2 text-sm font-medium text-gray-600">
+                                        Upload File
+                                    </label>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(event: any) => setFieldValue("images", event.currentTarget.files[0])}
+                                        className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                    />
+                                </div>
+                                <DialogFooter>
+                                    <Button
+                                        variant="secondary"
+                                        type="button"
+                                        onClick={() => setIsUploadDialogOpen(false)}
+                                        disabled={isUploading}>
+                                        Cancel
+                                    </Button>
+                                    <Button
+                                        type="submit"
+                                        className="bg-blue-600 hover:bg-blue-700"
+                                        disabled={isUploading}>
+                                        {isUploading ? "Uploading..." : "Upload"}
+                                    </Button>
+                                </DialogFooter>
+                            </Form>
+                        )}
+                    </Formik>
+                </DialogContent>
+            </Dialog>
 
             <ContentWebLayout caption='Detail Pembayaran'>
                 <NotaHeader />

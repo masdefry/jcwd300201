@@ -16,14 +16,13 @@ import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 import ContentWebLayout from "@/components/core/webSessionContent"
-import SearchInputCustom from "@/components/core/searchBar"
 import ButtonCustom from "@/components/core/button"
-import { FaPlus } from "react-icons/fa6"
+import { FaCartArrowDown } from "react-icons/fa6"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import NoData from "@/components/core/noData"
 import FilterWeb from "@/components/core/filterWeb"
 import Loading from "@/components/core/loading"
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 
 export default function DriverPickUp() {
     const params = useSearchParams();
@@ -131,50 +130,72 @@ export default function DriverPickUp() {
 
     return (
         <>
-            <MobileSessionLayout title="ORDER">
-                <div className="mx-4 space-y-4">
-                    <Tabs defaultValue={activeTab} className="fit">
-                        <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
-                            <TabsTrigger value="not-packed-yet" onClick={() => { setActiveTab("not-packed-yet"); setPage(1) }} >Belum Packing</TabsTrigger>
-                            <TabsTrigger value="packing-process" onClick={() => { setActiveTab("packing-process"); setPage(1) }} >Proses Packing</TabsTrigger>
-                            <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }}>Selesai</TabsTrigger>
-                        </TabsList>
-                        <TabsContent value={activeTab}>
-                            <CardContent className="space-y-2 pt-2">
-                                <FilterWorker
-                                    searchInput={searchInput}
-                                    setPage={setPage}
-                                    debounce={debounce}
-                                    sortOption={sortOption}
-                                    setSortOption={setSortOption}
-                                    dateFrom={dateFrom}
-                                    dateUntil={dateUntil}
-                                    setDateFrom={setDateFrom}
-                                    setDateUntil={setDateUntil}
-                                    setActiveTab={setActiveTab}
-                                    setSearchInput={setSearchInput}
-                                    setIsSearchValues={setIsSearchValues}
-                                    isSearchValues={isSearchValues}
-                                />
-                                {dataOrderPackingProcessLoading && <Loading />}
-                                {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
-                                {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
-                                    dataOrderPackingProcess?.orders?.map((order: any) => (
-                                        <section
-                                            key={order.id}
-                                            className="flex justify-between items-center border-b py-4"
-                                        >
-
-                                            {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isDone === true ? (
+            <ContentMobileLayout icon={<FaCartArrowDown className='text-lg' />} title="Pesanan">
+                <Tabs defaultValue={activeTab} className="fit">
+                    <TabsList className="grid w-full grid-cols-4">
+                        <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
+                        <TabsTrigger value="not-packed-yet" onClick={() => { setActiveTab("not-packed-yet"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
+                        <TabsTrigger value="packing-process" onClick={() => { setActiveTab("packing-process"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
+                        <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} className='text-xs'>Selesai</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value={activeTab}>
+                        <CardContent className="space-y-2 pt-2">
+                            <FilterWorker
+                                searchInput={searchInput}
+                                setPage={setPage}
+                                debounce={debounce}
+                                sortOption={sortOption}
+                                setSortOption={setSortOption}
+                                dateFrom={dateFrom}
+                                dateUntil={dateUntil}
+                                setDateFrom={setDateFrom}
+                                setDateUntil={setDateUntil}
+                                setActiveTab={setActiveTab}
+                                setSearchInput={setSearchInput}
+                                setIsSearchValues={setIsSearchValues}
+                                isSearchValues={isSearchValues}
+                            />
+                            {dataOrderPackingProcessLoading && <Loading />}
+                            {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
+                            {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
+                                dataOrderPackingProcess?.orders?.map((order: any) => (
+                                    <section key={order.id} className="flex justify-between items-center border-b py-4">
+                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isDone === true ? (
+                                            <div className="flex items-center">
+                                                <div className="px-2">
+                                                    <h2 className="font-medium text-gray-900">{order?.id}</h2>
+                                                    <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
+                                                    <p className="text-xs text-gray-500">
+                                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false
+                                                            ? 'Belum Packing'
+                                                            : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true
+                                                                ? 'Proses Packing'
+                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isDone === true
+                                                                    ? 'Selesai'
+                                                                    : order?.orderStatus[0]?.status}</p>
+                                                    <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            <ConfirmAlert colorConfirmation="blue" caption={
+                                                order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isSolved === false ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
+                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' &&
+                                                        order?.isProcessed === false && order?.isSolved === true ? 'Apakah anda yakin ingin melakukan proses packing pada order ini?'
+                                                        : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true ? 'Apakah anda yakin ingin menyelesaikan proses packing pada order ini?' : ''}
+                                                description={order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isSolved === false ? 'Silahkan hubungi admin'
+                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isSolved === true ? 'Pastikan anda memilih order yang tepat/benar'
+                                                        : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' ? 'Pastikan anda memilih order yang tepat/benar' : ''}
+                                                onClick={() => {
+                                                    if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false) {
+                                                        router.push(`/worker/packing-worker/order/c/${order?.id}`);
+                                                    } else if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true) {
+                                                        handleProcessPacking(order?.id);
+                                                    }
+                                                }} disabled={isPending}>
                                                 <div className="flex items-center">
-                                                    <div className="ml-2">
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.id}
-                                                        </h2>
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.User?.firstName} {order?.User?.lastName}
-                                                        </h2>
+                                                    <div className="px-2">
+                                                        <h2 className="font-medium text-gray-900">{order?.id}</h2>
+                                                        <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
                                                         <p className="text-xs text-gray-500">
                                                             {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false
                                                                 ? 'Belum Packing'
@@ -182,89 +203,25 @@ export default function DriverPickUp() {
                                                                     ? 'Proses Packing'
                                                                     : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isDone === true
                                                                         ? 'Selesai'
-                                                                        : order?.orderStatus[0]?.status}
-                                                        </p>
-                                                        <p className="text-xs text-gray-500">
-                                                            {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                        </p>
+                                                                        : order?.orderStatus[0]?.status}</p>
+                                                        <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                     </div>
                                                 </div>
-                                            ) : (
-                                                <ConfirmAlert
-                                                    colorConfirmation="blue"
-                                                    caption={
-                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' &&
-                                                            order?.isProcessed === false &&
-                                                            order?.isSolved === false
-                                                            ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
-                                                            : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' &&
-                                                                order?.isProcessed === false &&
-                                                                order?.isSolved === true
-                                                                ? 'Apakah anda yakin ingin melakukan proses packing pada order ini?'
-                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true
-                                                                    ? 'Apakah anda yakin ingin menyelesaikan proses packing pada order ini?'
-                                                                    : ''
-                                                    }
-                                                    description={
-                                                        order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isSolved === false
-                                                            ? 'Silahkan hubungi admin'
-                                                            : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isSolved === true
-                                                                ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                    ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                    : ''
-                                                    }
-                                                    onClick={() => {
-                                                        if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false) {
-                                                            router.push(`/worker/packing-worker/order/c/${order?.id}`);
-                                                        } else if (order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true) {
-                                                            handleProcessPacking(order?.id);
-                                                        }
-                                                    }}
-                                                    disabled={isPending}
-                                                >
-                                                    <div className="flex items-center">
-                                                        <div className="ml-2">
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.id}
-                                                            </h2>
-                                                            <h2 className="font-medium text-gray-900">
-                                                                {order?.User?.firstName} {order?.User?.lastName}
-                                                            </h2>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false
-                                                                    ? 'Belum Packing'
-                                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true
-                                                                        ? 'Proses Packing'
-                                                                        : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isDone === true
-                                                                            ? 'Selesai'
-                                                                            : order?.orderStatus[0]?.status}
-                                                            </p>
-                                                            <p className="text-xs text-gray-500">
-                                                                {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </ConfirmAlert>
-                                            )}
-
-
-                                        </section>
-                                    ))
-                                ) : (
-                                    !dataOrderPackingProcessLoading && (
-                                        <NoData />
-                                    )
-
-                                )}
-                                {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 && (
-                                    <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                )}
-                            </CardContent>
-                        </TabsContent>
-                    </Tabs>
-                </div>
-            </MobileSessionLayout>
+                                            </ConfirmAlert>
+                                        )}
+                                    </section>
+                                ))
+                            ) : (
+                                !dataOrderPackingProcessLoading && (
+                                    <NoData />
+                                ))}
+                            {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 && (
+                                <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                            )}
+                        </CardContent>
+                    </TabsContent>
+                </Tabs>
+            </ContentMobileLayout>
 
             <ContentWebLayout caption='Pesanan'>
                 <FilterWeb
