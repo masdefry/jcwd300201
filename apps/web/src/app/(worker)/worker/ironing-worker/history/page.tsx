@@ -137,6 +137,7 @@ export default function HistoryOrderIroning() {
                                                             order?.orderStatus[0]?.status}
                                         </p>
                                         <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
+
                                     </div>
                                 </div>
 
@@ -153,7 +154,7 @@ export default function HistoryOrderIroning() {
                     )}
                 </CardContent>
             </MobileSessionLayout>
-
+        
             <ContentWebLayout caption='Riwayat Pesanan'>
                 <FilterWeb activeTab={activeTab} dateFrom={dateFrom} dateUntil={dateUntil} debounce={debounce} isSearchValues={isSearchValues}
                     setIsSearchValues={setIsSearchValues} searchInput={searchInput} setActiveTab={setActiveTab} setDateFrom={setDateFrom} setDateUntil={setDateUntil}
@@ -193,6 +194,7 @@ export default function HistoryOrderIroning() {
                                                             order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
                                                                 order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
                                                                     order?.orderStatus[0]?.status}
+
                                                 </td>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
                                             </tr>

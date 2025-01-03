@@ -49,7 +49,6 @@ export default function Page() {
     return (
         <>
             <MobileSessionLayout title="Pengaturan">
-
                 <Tabs defaultValue="1" className="fit">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="1" >Akun</TabsTrigger>

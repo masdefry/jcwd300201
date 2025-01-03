@@ -23,6 +23,7 @@ import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import TabTrackingIroning from "@/features/ironingWorker/components/tabIroningTracking";
 
+
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
     { icon: CgSmartHomeWashMachine, label: "Cuci" },
@@ -106,6 +107,7 @@ export default function Page() {
         </>
     )
 
+
     return (
         <>
             <ContentMobileLayout title='Dashboard' icon={<FaDashcube className='text-xl' />}>
@@ -176,6 +178,7 @@ export default function Page() {
                             setSelectedTab={setSelectedTab}
                             dataOrder={dataOrder}
                         />
+
                     </div>
                 </div>
             </ContentMobileLayout>

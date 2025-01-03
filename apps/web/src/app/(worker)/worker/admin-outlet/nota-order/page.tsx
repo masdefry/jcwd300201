@@ -30,10 +30,6 @@ export default function HistoryOrderWashing() {
 
     return (
         <>
-<<<<<<< HEAD
-            <MobileSessionLayout title="BUAT NOTA ORDER">
-                <div className=" pb-24 mx-4 space-y-4">
-=======
             <MobileSessionLayout title="Nota Pesanan">
                 <CardContent className="space-y-2 pt-2">
                     <FilterWorker
@@ -50,8 +46,6 @@ export default function HistoryOrderWashing() {
                         setPage={setPage}
                         setIsSearchValues={setIsSearchValues}
                         isSearchValues={isSearchValues}
->>>>>>> 10c014111ba97b6e44e616dd19878ac618400429
-
                     />
                     {dataCreateOrderLoading && <Loading />}
                     {dataCreateOrderError && <p>Silahkan coba beberapa saat lagi.</p>}
