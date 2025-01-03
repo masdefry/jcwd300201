@@ -18,36 +18,23 @@ import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
-import {
-    AlertDialog,
-    AlertDialogAction,
-    AlertDialogCancel,
-    AlertDialogContent,
-    AlertDialogDescription,
-    AlertDialogFooter,
-    AlertDialogHeader,
-    AlertDialogTitle,
-    AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
+import ContentWebLayout from "@/components/core/webSessionContent"
+import FilterWeb from "@/components/core/filterWeb"
 
 export default function DriverPickUp() {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
-
     const { toast } = useToast()
-
     const token = authStore((state) => state?.token);
     const email = authStore((state) => state?.email);
-
     const notesSchema = Yup.object({
-        notes: Yup.string().required("Notes are required"),
-    });
-
-
+        notes: Yup.string().required("Harap diisi terlebih dahulu"),
+    })
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
@@ -56,8 +43,7 @@ export default function DriverPickUp() {
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [isSearchValues, setIsSearchValues] = useState<string>('')
-
-    const limit = 5;
+    const limit = 5
 
     const { data: dataOrderPackingProcess, refetch, isLoading: dataOrderPackingProcessLoading, isError: dataOrderPackingProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
@@ -151,7 +137,7 @@ export default function DriverPickUp() {
 
     return (
         <>
-            <MobileSessionLayout title="ORDER BERMASALAH">
+            <MobileSessionLayout title="Laporan Pesanan">
                 <div className="mx-4 space-y-4">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-2">
@@ -262,6 +248,26 @@ export default function DriverPickUp() {
                     </Tabs>
                 </div>
             </MobileSessionLayout>
+
+            <ContentWebLayout caption="Laporan Pesanan">
+                <FilterWeb
+                    debounce={debounce}
+                    sortOption={sortOption}
+                    setSortOption={setSortOption}
+                    dateFrom={dateFrom}
+                    dateUntil={dateUntil}
+                    setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil}
+                    setActiveTab={setActiveTab}
+                    setSearchInput={setSearchInput}
+                    searchInput={searchInput}
+                    setPage={setPage}
+                    setIsSearchValues={setIsSearchValues}
+                    isSearchValues={isSearchValues}
+                    activeTab={activeTab}
+                    borderReset="border rounded-full"
+                />
+            </ContentWebLayout>
         </>
     )
 }

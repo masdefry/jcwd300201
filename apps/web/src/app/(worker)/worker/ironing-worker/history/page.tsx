@@ -18,6 +18,11 @@ import Pagination from "@/components/core/pagination"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
+import ContentWebLayout from "@/components/core/webSessionContent"
+import FilterWeb from "@/components/core/filterWeb"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import ButtonCustom from "@/components/core/button"
+import { ConfirmAlert } from "@/components/core/confirmAlert"
 
 export default function HistoryOrderIroning() {
     const params = useSearchParams();
@@ -36,7 +41,7 @@ export default function HistoryOrderIroning() {
     const [isSearchValues, setIsSearchValues] = useState<string>('')
     const limit = 5;
 
-    const { data: dataOrderIroningProcess, refetch, isLoading: dataOrderIroningProcessLoading, isError: dataOrderIroningProcessError } = useQuery({
+    const { data: dataOrderIroningProcess, isFetching, refetch, isLoading: dataOrderIroningProcessLoading, isError: dataOrderIroningProcessError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption],
         queryFn: async () => {
 
@@ -50,8 +55,7 @@ export default function HistoryOrderIroning() {
                     dateUntil: dateUntil ?? '',
                 },
                 headers: { Authorization: `Bearer ${token}` }
-            });
-            console.log(res)
+            })
             return res?.data?.data;
         },
     });
@@ -98,8 +102,6 @@ export default function HistoryOrderIroning() {
     return (
         <>
             <MobileSessionLayout title="HISTORY ORDER">
-                <div className="mx-4 space-y-4">
-
                     <CardContent className="space-y-2 pt-2">
                         <FilterWorker
                             searchInput={searchInput}
@@ -115,18 +117,13 @@ export default function HistoryOrderIroning() {
                             setSearchInput={setSearchInput}
                             setIsSearchValues={setIsSearchValues}
                             isSearchValues={isSearchValues}
-
                         />
                         {dataOrderIroningProcessLoading && <Loading />}
                         {dataOrderIroningProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                         {!dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
 
                             dataOrderIroningProcess?.orders?.map((order: any) => (
-                                <section
-                                    key={order.id}
-                                    className="flex justify-between items-center border-b py-4"
-                                >
-
+                                <section key={order.id} className="flex justify-between items-center border-b py-4">
                                     <div className="flex items-center">
                                         <div className="ml-2">
                                             <h2 className="font-medium text-gray-900">
@@ -155,8 +152,68 @@ export default function HistoryOrderIroning() {
                             <Pagination page={page} totalPages={totalPages} setPage={setPage} />
                         )}
                     </CardContent>
-                </div>
             </MobileSessionLayout>
+
+            <ContentWebLayout caption='Riwayat Pesanan'>
+                <FilterWeb activeTab={activeTab} dateFrom={dateFrom} dateUntil={dateUntil} debounce={debounce} isSearchValues={isSearchValues}
+                    setIsSearchValues={setIsSearchValues} searchInput={searchInput} setActiveTab={setActiveTab} setDateFrom={setDateFrom} setDateUntil={setDateUntil}
+                    setPage={setPage} setSearchInput={setSearchInput} setSortOption={setSortOption} sortOption={sortOption} borderReset="rounded-full border" options={[
+                        { value: 'all', label: 'Semua' }
+                    ]} />
+
+                <div className="w-full flex flex-col justify-center">
+                    <table className="min-w-full bg-white border border-gray-200">
+                        <thead className="bg-gray-200">
+                            <tr>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe Order</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tanggal dibuat</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {isFetching ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
+                                </tr>
+                            ) : (
+                                !dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
+                                    dataOrderIroningProcess?.orders?.map((order: any, i: number) => {
+                                        return (
+                                            <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
+                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
+                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderTypeId === 1 ? 'Layanan Mencuci' : order?.orderTypeId === 2 ? 'Layanan Strika' : order?.orderTypeId === 3 ? 'Mencuci dan Setrika' : ''}</td>
+                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
+                                                    order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
+                                                        order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
+                                                            order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
+                                                                order?.orderStatus[0]?.status}
+                                                </td>
+                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
+                                            </tr>
+                                        )
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {dataOrderIroningProcessLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                )
+                            )}
+                        </tbody>
+                    </table>
+                    <PaginationWebLayout currentPage={page} totalPages={totalPages || '1'}>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == 1} onClick={() => setPage((prev) => Math.max(prev - 1, 1))}>Sebelumnya</ButtonCustom>
+                        <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500" disabled={page == totalPages || page > totalPages} onClick={() => { setPage((prev) => Math.min(prev + 1, totalPages)) }}>Selanjutnya</ButtonCustom>
+                    </PaginationWebLayout>
+                </div>
+            </ContentWebLayout>
         </>
     )
 }

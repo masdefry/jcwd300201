@@ -17,8 +17,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { washingAkunValidation } from '@/features/washingWorker/schemas/washingAkunValidationSchema';
 import { washingChangePasswordValidation } from '@/features/washingWorker/schemas/washingChangePasswordValidationSchema';
 import { ConfirmAlert } from '@/components/core/confirmAlert';
-import { FaSignOutAlt } from 'react-icons/fa';
 import ButtonCustom from '@/components/core/button';
+import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -57,25 +57,24 @@ export default function Page() {
                         </TabsList>
                         <TabsContent value="1">
                             <Formik initialValues={{
-                                firstName: getDataWorker?.firstName || '',
-                                lastName: getDataWorker?.lastName || '',
-                                email: getDataWorker?.email || '',
-                                phoneNumber: getDataWorker?.phoneNumber || '',
-                                images: null
+                                firstNames: getDataWorker?.firstName || '',
+                                lastNames: getDataWorker?.lastName || '',
+                                emails: getDataWorker?.email || '',
+                                phoneNumbers: getDataWorker?.phoneNumber || '',
+                                img: null
                             }}
-                                validationSchema={washingAkunValidation}
                                 onSubmit={(values) => {
                                     const fd = new FormData()
-                                    fd.append('email', values?.email)
-                                    fd.append('firstName', values?.firstName)
-                                    fd.append('lastName', values?.lastName)
-                                    fd.append('phoneNumber', values?.phoneNumber)
-                                    if (values?.images) fd.append('images', values?.images)
+                                    fd.append('email', values?.emails)
+                                    fd.append('firstName', values?.firstNames)
+                                    fd.append('lastName', values?.lastNames)
+                                    fd.append('phoneNumber', values?.phoneNumbers)
+                                    if (values?.img) fd.append('images', values?.img)
 
                                     handleUpdateProfile(fd)
                                 }}>
                                 {({ setFieldValue, values }) => (
-                                    <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
+                                    <ProfileSettingsMobile disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                         disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                         handleDeleteProfilePicture={handleDeleteProfilePicture}
                                         profilePict={profilePict} setFieldValue={setFieldValue}

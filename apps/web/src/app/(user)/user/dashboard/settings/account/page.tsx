@@ -53,8 +53,6 @@ export default function Page() {
                         <div className="w-full py-4 bg-orange-500 px-14 rounded-xl">
                             <h1 className="font-bold text-white">Pengaturan</h1>
                         </div>
-
-                        {/* Tabs */}
                         <TabContext value={value}>
                             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                                 <TabList onChange={handleChange} aria-label="Pengaturan tabs">
@@ -81,8 +79,6 @@ export default function Page() {
                                         handleUpdateProfile(fd)
                                     }}>
                                     {({ setFieldValue, values }) => (
-
-                                        // profile settings
                                         <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                             disabledSubmitButton={isPendingUpdate} getData={getDataUser}
                                             handleDeleteProfilePicture={handleDeleteProfilePicture}
@@ -103,7 +99,6 @@ export default function Page() {
                                         })}
                                         onSubmit={(values) => handleChangePasswordGoogleRegister({ password: values?.password })}>
 
-                                        {/* change password setting */}
                                         <Form className='w-full'>
                                             <div className="w-full flex flex-col gap-2 py-2">
                                                 <label htmlFor="password" className="font-semibold">Password baru</label>

@@ -1225,10 +1225,10 @@ export const getIroningHistoryService = async ({ userId, authorizationRole, stor
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
