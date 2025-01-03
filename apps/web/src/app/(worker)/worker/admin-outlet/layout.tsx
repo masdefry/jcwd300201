@@ -96,10 +96,10 @@ export default function Layout({ children }: { children: ReactNode }) {
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/worker/admin-outlet/nota-order' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/nota-order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaFileInvoice />Nota Pesanan</Link>
-                    <Link href='/worker/admin-outlet/order' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaHistory /> Riwayat</Link>
                     <Link href='/worker/admin-outlet/delivery' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/delivery') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaTruck /> Pengiriman</Link>
+                    <Link href='/worker/admin-outlet/order' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
+                        <FaHistory /> Riwayat</Link>
                     <Link href='/worker/admin-outlet/payment' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/payment') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaCreditCard /> Transaksi</Link>
                     <Link href='/worker/admin-outlet/report' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/report') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>

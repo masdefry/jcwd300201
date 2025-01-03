@@ -1,8 +1,5 @@
 'use client'
 
-import HeaderMobile from "@/components/core/headerMobile"
-import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
@@ -137,7 +134,7 @@ export default function Page() {
     return (
         <>
             <MobileSessionLayout title="ORDER">
-                <div className="mx-4 space-y-4">
+                <div className="pb-24">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
                             <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
@@ -197,7 +194,7 @@ export default function Page() {
                                                     disabled={isPending}
                                                 >
                                                     <div className="flex items-center">
-                                                        <div className="ml-2">
+                                                        <div className="px-2">
                                                             <h2 className="font-medium text-gray-900">
                                                                 {order?.id}
                                                             </h2>
@@ -223,7 +220,7 @@ export default function Page() {
                                                 </ConfirmAlert>
                                             ) : (
                                                 <div className="flex items-center">
-                                                    <div className="ml-2">
+                                                    <div className="px-2">
                                                         <h2 className="font-medium text-gray-900">
                                                             {order?.User?.firstName} {order?.User?.lastName}
                                                         </h2>

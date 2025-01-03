@@ -1,4 +1,4 @@
-import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory, getAllOrderForUser, paymentOrderVA, paymentOrderTf, getPaymentOrderForAdmin, paymentDone, userConfirmOrder } from "@/controllers/orderController";
+import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory, getAllOrderForUser, paymentOrderVA, paymentOrderTf, getPaymentOrderForAdmin, paymentDone, userConfirmOrder, orderTrackingAdmin, orderTrackingDriver, orderTrackingWorker, orderTrackingUser } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
 import { limiter } from "@/middlewares/rateLimit";
 import { roleCheckAdmin, roleCheckCustomer, roleCheckDriver, roleCheckIroningWorker, roleCheckPackingWorker, roleCheckSuperAdmin, roleCheckWashingWorker } from "@/middlewares/roleCheck";
@@ -52,7 +52,7 @@ orderRouter.patch('/order-delivery/:orderId', tokenValidation, requestDeliveryDo
 
 orderRouter.get('/delivery', tokenValidation, getOrdersForDriverDelivery)
 orderRouter.post('/delivery-process/:orderId', tokenValidation, processOrderDelivery)
-orderRouter.post('/delivery-accept/:orderId', tokenValidation, acceptOrderDelivery)/* tracking order super admin */
+orderRouter.post('/delivery-accept/:orderId', tokenValidation, acceptOrderDelivery)
 
 orderRouter.get('/orders', tokenValidation, getAllOrderForAdmin)
 orderRouter.get('/orders-detail/:orderId', tokenValidation, orderStatus)
@@ -66,4 +66,8 @@ orderRouter.post('/payment-done/:orderId', tokenValidation, paymentDone)
 
 orderRouter.post('/confirm/:orderId', tokenValidation, userConfirmOrder)
 
+orderRouter.get('/tracking', tokenValidation, orderTrackingAdmin)
+orderRouter.get('/tracking-driver', tokenValidation, orderTrackingDriver)
+orderRouter.get('/tracking-worker', tokenValidation, orderTrackingWorker)
+orderRouter.get('/tracking-user', tokenValidation, orderTrackingUser)
 export default orderRouter

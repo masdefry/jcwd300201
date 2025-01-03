@@ -1,30 +1,24 @@
 'use client'
 
-import { IoAddCircleSharp } from "react-icons/io5";
-import { FaTint, FaWhatsapp } from "react-icons/fa";
-import { MdOutlineStickyNote2 } from "react-icons/md";
+import { FaExclamationTriangle, FaTint } from "react-icons/fa";
 import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
-import { FaArrowRight, FaClipboardCheck, FaMoneyBillWave, FaNoteSticky } from "react-icons/fa6";
-import { FaRegPlusSquare } from "react-icons/fa";
-import { MdOutlineReportProblem } from "react-icons/md";
-import { GrUnorderedList } from "react-icons/gr";
+import {  FaDashcube, FaFileInvoice, FaMoneyBillWave,  FaRegCreditCard,  FaUserCheck } from "react-icons/fa6";
 import { FaCloud, FaTemperatureHigh } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
 import Link from "next/link";
+import { instance } from "@/utils/axiosInstance";
+import { useQuery } from "@tanstack/react-query";
+import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
+import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
+import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 
-
-const iconButtons = [
-    { icon: FaRegPlusSquare, label: "Create Nota Order" },
-    { icon: FaMoneyBillWave, label: "Pembayaran" },
-    { icon: GrUnorderedList, label: "Order" },
-    { icon: MdOutlineReportProblem, label: "Masalah" },
-];
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
@@ -35,6 +29,7 @@ export default function Page() {
     const [isDay, setIsDay] = useState<number>(0)
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
     const [date, setDate] = useState<Date | undefined>(new Date())
+    const [selectedTab, setSelectedTab] = useState<'today' | 'month'>('today');
 
     const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
@@ -50,6 +45,26 @@ export default function Page() {
         setIsDay(isDayNow)
     }, [])
 
+    const { data: dataOrder } = useQuery({
+        queryKey: ['get-order-status', selectedTab],
+        queryFn: async () => {
+            const res = await instance.get(`/order/tracking?period=${selectedTab}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            console.log(res, '<<<<')
+            return res?.data?.data
+        },
+    });
+    const { data: dataOrderList, refetch, isPending } = useQuery({
+        queryKey: ['get-order'],
+        queryFn: async () => {
+            const res = await instance.get(`/order/orders`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            return res?.data?.data
+        },
+    });
 
 
     useEffect(() => {
@@ -68,67 +83,74 @@ export default function Page() {
         }
     }, [lat, lng])
 
+
+    const completedOrders = dataOrderList?.trackingOrder?.filter((order: any) => order?.isConfirm);
+    const pendingOrders = dataOrderList?.trackingOrder?.filter((order: any) => !order?.isDone);
+
+
+    if (isPending) return (
+        <>
+            <LoadingDashboardWeb />
+        </>
+    )
+
+    const arrIcon = [
+        { icon: <FaDashcube />, url: '/worker/admin-outlet/dashboard', name: 'Dashboard' },
+        { icon: <FaFileInvoice />, url: '/worker/admin-outlet/nota-order', name: 'Buat Nota' },
+        { icon: <FaMoneyBillWave />, url: '/worker/admin-outlet/order', name: 'Pesanan' },
+        { icon: <FaRegCreditCard />, url: '/worker/admin-outlet/payment', name: 'Pembayaran' },
+        { icon: <FaExclamationTriangle />, url: '/worker/admin-outlet/report', name: 'Laopran' },
+        { icon: <FaUserCheck />, url: '/worker/admin-outlet/settings', name: 'Pengaturan' },
+    ]
+
+
     return (
         <>
-            <main className="w-full h-fit">
-                <section className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
-                    <section>
-                        <Image src={'/images/New Project.webp'} alt="header"
-                            height={500} width={500} />
-                    </section>
-
-                    <section className="border border-gray-400 rounded-t-lg p-4 mt-4 mx-8">
-                        <div className="flex justify-between items-center">
-                            <div className="font-semibold text-gray-600">CnC Jakarta</div>
-                            <button className="text-sm flex items-center border rounded-lg border-gray-400 p-2 gap-1">
-                                Tambah Lokasi <IoAddCircleSharp />
-                            </button>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />}>
+                <main className="pb-24">
+                    <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
+                        <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
+                        <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
+                    </div>
+                    <div className="flex justify-center h-fit w-full p-2 mt-5 bg-gradient-to-tr from-white via-sky-50 to-sky-100 rounded-2xl">
+                        <div className="grid grid-cols-2 gap-2 w-full">
+                            {arrIcon?.map((item: any, i: number) => (
+                                <Link href={item?.url} className="w-full p-3 flex flex-col items-center justify-center gap-2 bg-white shadow-sm border rounded-2xl hover:shadow-md transition-all" key={i}>
+                                    <span className="text-2xl text-orange-500">{item?.icon}</span>
+                                    <h1 className="text-xs text-gray-700">{item?.name}</h1>
+                                </Link>
+                            ))}
                         </div>
-                    </section>
+                    </div>
 
-                    <section className="border border-gray-400 bg-sky-200 rounded-b-lg text-sm p-4 mx-8 text-gray-700">
-                        <div className="flex justify-between">
-                            <div className="flex items-center gap-1">
-                                <MdOutlineStickyNote2 size={20} /> Pesanan Hari Ini
+                    <div className="w-full flex flex-col md:flex-row gap-4 px-2 mt-5 h-auto">
+
+                        <div className="w-full flex gap-3 justify-center items-center py-3 px-4 bg-white border rounded-lg shadow-sm transition-all">
+                            <TabTracking
+                                selectedTab={selectedTab}
+                                setSelectedTab={setSelectedTab}
+                                dataOrder={dataOrder}
+                            />
+                        </div>
+                        <div className="w-full md:w-1/2 h-auto bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-4 rounded-2xl shadow-md">
+                            <div className="h-full bg-white bg-opacity-70 rounded-lg p-4">
+                                <h2 className="text-lg font-semibold text-gray-700 mb-2">Status Cuaca</h2>
+                                <p className="text-sm text-gray-600">
+                                    {isCurrentWeither?.weather && isCurrentWeither.weather[0]?.description
+                                        ? `${isCurrentWeither.weather[0].description}, ${(
+                                            isCurrentWeither.main.temp - 273.15
+                                        ).toFixed(1)}°C`
+                                        : "Data cuaca tidak tersedia"}
+                                </p>
                             </div>
-                            <div className="font-semibold text-right">
-                                <div>Rp0</div>
-                                <div>0 pesanan</div>
-                            </div>
                         </div>
-                        <div className="border-t-2 border-gray-400 mt-4 pt-4 flex">
-                            <div className="flex-1 text-center text-lg font-bold">
-                                0 <span className="text-sm">kg</span>
-                            </div>
-                            <div className="flex-1 text-center text-lg font-bold">
-                                0 <span className="text-sm">pcs</span>
-                            </div>
-                        </div>
-                    </section>
+                    </div>
 
-                    {/* Icon Buttons Section */}
-                    <section className="bg-white mx-8 grid grid-cols-2 gap-y-6 justify-around my-6">
-                        {iconButtons.map((item, index) => (
-                            <button key={index} className="flex flex-col items-center space-y-1">
-                                <item.icon className="text-gray-500 text-5xl border-2 w-24 h-24 rounded-lg border-gray-300 p-6 bg-white transition-colors ease-in-out duration-200 active:bg-gray-300" />
-                                <span className="text-base">{item.label}</span>
-                            </button>
-                        ))}
-                    </section>
-
-                    {/* Help Section */}
-                    <section className="bg-green-100 p-4 mx-8 mb-4 rounded-lg">
-                        <div className="flex items-center space-x-2">
-                            <FaWhatsapp className="text-gray-600" size={24} />
-                            <span className="font-semibold">Butuh bantuan?</span>
-                        </div>
-                        <div className="mt-2 text-sm text-gray-600">
-                            Chat kami di WhatsApp apabila terdapat error.
-                        </div>
-                    </section>
-
-                </section>
-            </main>
+                    <div className="w-full h-fit py-5 mt-5 rounded-xl border bg-white shadow-sm">
+                        <ChartComponents completedOrders={completedOrders} pendingOrders={pendingOrders} />
+                    </div>
+                </main>
+            </ContentMobileLayout>
 
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
                 <section className="w-full h-1/2 rounded-xl flex gap-2">
@@ -138,7 +160,7 @@ export default function Page() {
                                 <h1 className='font-bold border-b text-xl text-white pb-2'>Welcome, {name && name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}!</h1>
                             </div>
                             <div className="w-full">
-                                <p className="text-white">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
+                                <p className="text-white">Pantau data order, dan kelola outlet satu tempat.</p>
                                 <p className="text-white pt-2">{isDayArr[isDay]} {isDate || '00/00/0000'}</p>
                             </div>
                         </div>
@@ -203,14 +225,19 @@ export default function Page() {
                     </div>
                 </section>
                 <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
-                    <div className="w-full h-full space-y-2 rounded-2xl">
-                        <Link href='/admin-outlet/nota-order' className="w-full py-2 flex items-center justify-between bg-white bg-opacity-45 rounded-full px-3">
-                            <h1 className="text-neutral-600 font-semibold hover:text-neutral-700">Buat Nota Pesanan</h1>
-                            <span className="p-2 rounded-full hover:animate-wiggle-more bg-neutral-400"><FaArrowRight className="text-white text-xl" /> </span>
-                        </Link>
+                    <div className="w-full px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
+                        <MonthlyCharts monthlyData={dataOrderList?.monthlyStatistic} />
                     </div>
-                    <div className="w-full h-full bg-white bg-opacity-45 rounded-2xl"></div>
-                    <div className="w-full h-full bg-white bg-opacity-45 rounded-2xl"></div>
+                    <div className="w-fit px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
+                        <TabTracking
+                            selectedTab={selectedTab}
+                            setSelectedTab={setSelectedTab}
+                            dataOrder={dataOrder}
+                        />
+                    </div>
+                    <div className="w-fit h-full bg-white bg-opacity-45 py-3 rounded-2xl flex items-center justify-center">
+                        <ChartComponents completedOrders={completedOrders} pendingOrders={pendingOrders} />
+                    </div>
                 </section>
             </main>
         </>

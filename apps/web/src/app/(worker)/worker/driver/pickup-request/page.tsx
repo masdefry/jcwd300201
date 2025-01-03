@@ -17,7 +17,7 @@ import { ConfirmAlert } from "@/components/core/confirmAlert"
 import { IoLocationSharp } from "react-icons/io5";
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
-import { FaPlus } from "react-icons/fa6"
+import { FaBoxOpen, FaPlus } from "react-icons/fa6"
 import ContentWebLayout from "@/components/core/webSessionContent"
 import Pagination from "@/components/core/pagination"
 import FilterWorker from "@/components/core/filter"
@@ -26,6 +26,7 @@ import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import FilterWeb from "@/components/core/filterWeb"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 
 export default function Page() {
     const params = useSearchParams();
@@ -166,14 +167,14 @@ export default function Page() {
 
     return (
         <>
-            <MobileSessionLayout title="DRIVER PICKUP">
-                <div className="mx-4 space-y-4">
+            <ContentMobileLayout icon={<FaBoxOpen className='text-lg' />} title="Permintaan Pickup">
+                <div className="pb-24">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
-                            <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} >Semua</TabsTrigger>
-                            <TabsTrigger value="waiting-pickup" onClick={() => { setActiveTab("waiting-pickup"); setPage(1) }}>Belum PickUp</TabsTrigger>
-                            <TabsTrigger value="process-pickup" onClick={() => { setActiveTab("process-pickup"); setPage(1) }}>Proses</TabsTrigger>
-                            <TabsTrigger value="arrived" onClick={() => { setActiveTab("arrived"); setPage(1) }}>Selesai</TabsTrigger>
+                            <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
+                            <TabsTrigger value="waiting-pickup" onClick={() => { setActiveTab("waiting-pickup"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
+                            <TabsTrigger value="process-pickup" onClick={() => { setActiveTab("process-pickup"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
+                            <TabsTrigger value="arrived" onClick={() => { setActiveTab("arrived"); setPage(1) }} className='text-xs'>Selesai</TabsTrigger>
                         </TabsList>
                         <TabsContent value={activeTab}>
                             <CardContent className="space-y-2 pt-2">
@@ -196,11 +197,7 @@ export default function Page() {
                                 {dataOrderAwaitingPickupError && <p>Silahkan coba beberapa saat lagi.</p>}
                                 {!dataOrderAwaitingPickupLoading && dataOrderAwaitingPickup?.orders?.length > 0 ? (
                                     dataOrderAwaitingPickup?.orders?.map((order: any) => (
-                                        <section
-                                            key={order.id}
-                                            className="flex justify-between items-center border-b py-4"
-                                        >
-
+                                        <section key={order.id} className="flex justify-between items-center border-b py-4">
                                             <ConfirmAlert
                                                 colorConfirmation="blue"
                                                 caption={
@@ -216,36 +213,25 @@ export default function Page() {
                                                         : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
                                                             ? () => handleProcessOrderOutlet(order?.id)
                                                             : () => { }
-                                                }
-                                                description={
+                                                } description={
                                                     order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
                                                         ? 'Konfirmasi bahwa Anda akan mengambil laundry untuk order ini'
                                                         : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
                                                             ? 'Konfirmasi bahwa barang untuk order ini telah berhasil diantar ke laundry'
                                                             : ''
-                                                }
-                                                disabled={
+                                                } disabled={
                                                     (order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' && handleProcessOrderPending) ||
                                                     (order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' && handleProcessOrderOutletPending)
-                                                }
-
-
-                                            >
+                                                }>
                                                 <div className="flex items-center">
-                                                    <div className="ml-2">
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.id}
-                                                        </h2>
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.User?.firstName} {order?.User?.lastName}
-                                                        </h2>
+                                                    <div className="px-2">
+                                                        <h2 className="font-medium text-gray-900">{order?.id?.length > 15 ? <span>{order?.id?.slice(0, 15)}..</span> : order?.id}</h2>
+                                                        <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
                                                         <p className="text-xs text-gray-500">
                                                             {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Menunggu Pickup' :
                                                                 order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Perjalanan Menuju Outlet' :
                                                                     order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET' ? 'Sampai Pada Outlet' :
-                                                                        order?.orderStatus[0]?.status}
-
-                                                        </p>
+                                                                        order?.orderStatus[0]?.status}</p>
                                                         <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                     </div>
                                                 </div>
@@ -275,7 +261,7 @@ export default function Page() {
                         </TabsContent>
                     </Tabs>
                 </div>
-            </MobileSessionLayout>
+            </ContentMobileLayout>
 
             {/* web ssi */}
             <ContentWebLayout caption='Permintaan Pesanan'>

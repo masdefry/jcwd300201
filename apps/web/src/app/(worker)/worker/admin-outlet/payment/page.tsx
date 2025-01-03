@@ -150,8 +150,8 @@ export default function DeliveryRequest() {
 
     return (
         <>
-            <MobileSessionLayout title="PEMBAYARAN">
-                <div className="mx-4 space-y-4">
+            <MobileSessionLayout title="Pembayaran">
+                <div className="pb-24">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-3">
                             <TabsTrigger value="verification" onClick={() => { setActiveTab("verification"); setPage(1) }} >Verifikasi</TabsTrigger>
@@ -179,22 +179,16 @@ export default function DeliveryRequest() {
                                 {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
                                 {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
                                     dataOrderList?.orders?.map((order: any) => (
-                                        <section
-                                            key={order.id}
-                                            className="flex justify-between items-center border-b py-4"
-                                        >
+                                        <section key={order.id} className="flex justify-between items-center border-b py-4">
+                                            <ConfirmAlert caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?" description={
+                                                <Image
+                                                    src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
+                                                    alt="payment proof"
+                                                    width={500}
+                                                    height={200}
 
-                                            <ConfirmAlert
-                                                caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?"
-                                                description={
-                                                    <Image
-                                                        src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
-                                                        alt="payment proof"
-                                                        width={500}
-                                                        height={200}
-
-                                                    />
-                                                }
+                                                />
+                                            }
                                                 disabled={handlConfirmPaymentPending}
                                                 onClick={() => handleConfirmPayment(order?.id)}
 
@@ -233,15 +227,15 @@ export default function DeliveryRequest() {
                                 )}
                                 {!dataOrderListLoading && dataOrderList?.orders?.length > 0 && (
                                     <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                )}                                    </CardContent>
+                                )}
+                            </CardContent>
                         </TabsContent>
                     </Tabs>
 
                 </div>
             </MobileSessionLayout>
 
-            {/* web sesi */}
-            <ContentWebLayout caption="Order">
+            <ContentWebLayout caption="Pembayaran">
                 <FilterWeb
                     isSearchValues={isSearchValues}
                     setIsSearchValues={setIsSearchValues}

@@ -4,7 +4,7 @@ import { phoneNumberValidation } from "@/middlewares/validation/phoneNumberValid
 import fs, { rmSync } from 'fs'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
-import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory, IPaymentOrder, IPaymentOrderTf } from "./types"
+import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory, IPaymentOrder, IPaymentOrderTf, IOrderTrackingAdminParams, IOrderTrackingUser } from "./types"
 import { Prisma, Role, Status, Payment } from "@prisma/client"
 import { addHours, isBefore } from "date-fns"
 import { formatOrder } from "@/utils/formatOrder"
@@ -1121,10 +1121,10 @@ export const getPackingHistoryService = async ({ userId, authorizationRole, stor
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -1336,10 +1336,10 @@ export const getWashingHistoryService = async ({ userId, authorizationRole, stor
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -1436,10 +1436,10 @@ export const getNotesService = async ({ userId, authorizationRole, tab, limit_da
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -1574,10 +1574,10 @@ export const getCreateNoteOrderService = async ({
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -1711,10 +1711,10 @@ export const getOrdersForDeliveryService = async ({
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -1888,10 +1888,10 @@ export const getOrdersForDriverDeliveryService = async ({
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -2152,10 +2152,10 @@ export const getAllOrderForAdminService = async ({
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -2361,10 +2361,10 @@ export const getDriverHistoryService = async ({ tab, userId, authorizationRole, 
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -2494,10 +2494,10 @@ export const getAllOrderForUserService = async ({
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -2743,10 +2743,10 @@ export const getPaymentOrderForAdminService = async ({
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -2899,4 +2899,310 @@ export const userConfirmOrderService = async ({ orderId, email, userId }: IIroni
   if (!orderUpdate) throw { msg: "Data konfirmasi order gagal dibuat", status: 404 };
 
   return { orderUpdate };
+};
+
+
+export const orderTrackingAdminService = async ({ userId, authorizationRole, period, storeId }: IOrderTrackingAdminParams) => {
+  const worker = await prisma.worker.findUnique({
+    where: {
+      id: userId,
+      workerRole: authorizationRole,
+    },
+  });
+
+  if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
+
+  if (!period || (period !== 'today' && period !== 'month')) throw { msg: 'Periode Salah', status: 404 }
+
+  const now = new Date();
+
+  let startDate: Date | undefined = undefined;
+  let endDate: Date | undefined = undefined;
+
+  if (period === 'today') {
+    startDate = new Date(now.setHours(0, 0, 0, 0));
+    endDate = new Date(now.setHours(23, 59, 59, 999));
+  } else if (period === 'month') {
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  }
+
+  const whereFilter: any = {
+    createdAt: {
+      gte: startDate,
+      lte: endDate,
+    },
+  };
+
+  if (authorizationRole !== 'SUPER_ADMIN' && storeId) {
+    whereFilter.storeId = storeId;
+  }
+
+  const stats = await prisma.order.aggregate({
+    _sum: {
+      laundryPrice: true,
+      totalWeight: true,
+    },
+    _count: {
+      id: true,
+    },
+    where: whereFilter,
+  });
+
+  const totalPcs = await prisma.orderDetail.aggregate({
+    _count: {
+      id: true,
+    },
+    where: {
+      Order: {
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+        storeId: storeId,
+      },
+    },
+  });
+  return { totalPcs, stats }
+}
+
+export const orderTrackingDriverService = async ({ userId, authorizationRole, period }: IOrderTrackingAdminParams) => {
+  const worker = await prisma.worker.findUnique({
+    where: {
+      id: userId,
+      workerRole: authorizationRole,
+    },
+  });
+
+  if (!worker) throw { msg: "Worker tidak ters edia", status: 404 }
+
+  if (!period || (period !== 'today' && period !== 'month')) throw { msg: 'Periode Salah', status: 404 }
+
+  const now = new Date();
+  let startDate: Date | undefined = undefined;
+  let endDate: Date | undefined = undefined;
+
+  if (period === 'today') {
+    startDate = new Date(now.setHours(0, 0, 0, 0));
+    endDate = new Date(now.setHours(23, 59, 59, 999));
+  } else if (period === 'month') {
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  }
+
+  const orders = await prisma.order.findMany({
+    where: {
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+      orderStatus: {
+        some: {
+          workerId: userId,
+          status: {
+            in: ['DRIVER_ARRIVED_AT_OUTLET', 'DRIVER_DELIVERED_LAUNDRY'],
+          },
+        },
+      },
+    },
+    include: {
+      orderStatus: true,
+      orderDetail: true,
+    },
+  });
+
+  let totalEarnings = 0;
+  let totalOrders = 0;
+  let totalWeight = 0;
+  let totalPcs = 0;
+
+  orders.forEach(order => {
+    const handledStatuses = new Set(order.orderStatus.map(status => status.status));
+
+    if (handledStatuses.has('DRIVER_ARRIVED_AT_OUTLET') && handledStatuses.has('DRIVER_DELIVERED_LAUNDRY')) {
+      totalEarnings += order.deliveryFee || 0;
+    } else {
+      totalEarnings += (order.deliveryFee || 0) / 2;
+    }
+
+    totalOrders++;
+    totalWeight += order.totalWeight || 0;
+    totalPcs += order.orderDetail.reduce((sum, detail) => sum + (detail.quantity || 0), 0);
+  });
+
+  return {
+    earnings: totalEarnings,
+    orderCount: totalOrders,
+    totalKg: totalWeight,
+    totalPcs: totalPcs,
+  };
+};
+
+
+export const orderTrackingWorkerService = async ({
+  userId,
+  authorizationRole,
+  period,
+}: {
+  userId: string;
+  authorizationRole: Role;
+  period: string;
+}) => {
+
+  const role = authorizationRole
+
+  const worker = await prisma.worker.findUnique({
+    where: {
+      id: userId,
+      workerRole: authorizationRole,
+    },
+  });
+
+  if (!worker) throw { msg: "Worker tidak ters edia", status: 404 }
+
+  if (!period || (period !== 'today' && period !== 'month')) {
+    throw { msg: 'Periode Salah', status: 404 };
+  }
+
+  const now = new Date();
+  let startDate: Date | undefined = undefined;
+  let endDate: Date | undefined = undefined;
+
+  if (period === 'today') {
+    startDate = new Date(now.setHours(0, 0, 0, 0));
+    endDate = new Date(now.setHours(23, 59, 59, 999));
+  } else if (period === 'month') {
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  }
+
+  const roleStatusMap: Record<Role, Status> = {
+    [Role.WASHING_WORKER]: Status.IN_WASHING_PROCESS,
+    [Role.IRONING_WORKER]: Status.IN_IRONING_PROCESS,
+    [Role.PACKING_WORKER]: Status.IN_PACKING_PROCESS,
+    [Role.SUPER_ADMIN]: Status.AWAITING_DRIVER_PICKUP,
+    [Role.OUTLET_ADMIN]: Status.AWAITING_DRIVER_PICKUP,
+    [Role.DRIVER]: Status.AWAITING_DRIVER_PICKUP
+  };
+
+  const targetStatus = roleStatusMap[role];
+  if (!targetStatus) {
+    throw { msg: 'Role tidak valid', status: 400 };
+  }
+
+  const orderCount = await prisma.orderStatus.count({
+    where: {
+      workerId: userId,
+      status: targetStatus,
+      Order: {
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    },
+  });
+
+  const stats = await prisma.order.aggregate({
+    _sum: {
+      totalWeight: true,
+    },
+    where: {
+      orderStatus: {
+        some: {
+          workerId: userId,
+          status: targetStatus,
+        },
+      },
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+  });
+
+  const totalPcs = await prisma.orderDetail.aggregate({
+    _sum: {
+      quantity: true,
+    },
+    where: {
+      Order: {
+        orderStatus: {
+          some: {
+            workerId: userId,
+            status: targetStatus,
+          },
+        },
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    },
+  });
+
+  return {
+    orderCount,
+    totalKg: stats._sum.totalWeight || 0,
+    totalPcs: totalPcs._sum.quantity || 0,
+  };
+};
+
+export const orderTrackingUserService = async ({ userId, period }: IOrderTrackingUser) => {
+  if (!period || (period !== 'today' && period !== 'month')) {
+    throw { msg: 'Invalid period', status: 400 };
+  }
+
+  const now = new Date();
+  let startDate: Date | undefined = undefined;
+  let endDate: Date | undefined = undefined;
+
+  if (period === 'today') {
+    startDate = new Date(now.setHours(0, 0, 0, 0));
+    endDate = new Date(now.setHours(23, 59, 59, 999));
+  } else if (period === 'month') {
+    startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+  }
+
+  const orderFilter = {
+    userId: userId,
+    createdAt: {
+      gte: startDate,
+      lte: endDate,
+    },
+  };
+
+  const stats = await prisma.order.aggregate({
+    _sum: {
+      laundryPrice: true,
+      totalWeight: true,
+    },
+    _count: {
+      id: true,
+    },
+    where: orderFilter,
+  });
+
+  const totalPcs = await prisma.orderDetail.aggregate({
+    _sum: {
+      quantity: true,
+    },
+    where: {
+      Order: {
+        userId: userId,
+        createdAt: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    },
+  });
+
+  return {
+    totalOrders: stats._count.id,
+    totalSpent: stats._sum.laundryPrice || 0,
+    totalWeight: stats._sum.totalWeight || 0,
+    totalPcs: totalPcs._sum.quantity || 0,
+  };
 };

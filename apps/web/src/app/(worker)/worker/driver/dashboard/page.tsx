@@ -1,12 +1,10 @@
 'use client'
 
-import { FaWhatsapp, FaStore, FaTint } from "react-icons/fa";
-import { MdDashboard, MdOutlineStickyNote2 } from "react-icons/md";
+import { FaHistory, FaTint } from "react-icons/fa";
 import Image from "next/image";
 import { MdOutlineIron } from "react-icons/md";
 import { CgSmartHomeWashMachine } from "react-icons/cg";
-import { FaCloud, FaFirstOrderAlt, FaMotorcycle, FaTemperatureHigh } from "react-icons/fa6";
-import { IoLocationOutline } from "react-icons/io5";
+import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaUserCheck, FaCloud, FaMotorcycle, FaTemperatureHigh, FaBoxOpen, FaTruck } from "react-icons/fa6";
 import { BsPerson } from "react-icons/bs";
 import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
 import authStore from "@/zustand/authstore";
@@ -18,6 +16,8 @@ import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
+import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
@@ -35,7 +35,7 @@ export default function Page() {
     const [isDate, setIsDate] = useState<string>('')
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
     const [isDay, setIsDay] = useState<number>(0)
-
+    const [selectedTab, setSelectedTab] = useState<'today' | 'month'>('today');
     const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
     useEffect(() => {
@@ -50,7 +50,7 @@ export default function Page() {
         setIsDay(isDayNow)
     }, [])
 
-    const { data: dataOrderAwaitingPickup, isLoading: dataOrderAwaitingPickupLoading, isError: dataOrderAwaitingPickupError } = useQuery({
+    const { data: dataOrderAwaitingPickup, isPending: dataOrderAwaitingPickupPending } = useQuery({
         queryKey: ['get-order-request'],
         queryFn: async () => {
             const res = await instance.get('/order/order', {
@@ -60,7 +60,7 @@ export default function Page() {
         },
     });
 
-    const { data: dataOrderDelivery, isLoading: dataOrderDeliveryLoading, isError: dataOrderDeliveryError } = useQuery({
+    const { data: dataOrderDelivery, isPending: dataOrderDeliveryPending } = useQuery({
         queryKey: ['get-order-delivery'],
         queryFn: async () => {
             const res = await instance.get(`/order/delivery`, {
@@ -88,73 +88,129 @@ export default function Page() {
         }
     }, [lat, lng])
 
+
+    useEffect(() => {
+        const date = new Date()
+        const isDayNow = date.getDay()
+        const isDateNow = date.getDate()
+        const isMonth = date.getMonth()
+        const isYear = date.getFullYear()
+
+        const newDateFormat = `${isDateNow}/${(isMonth + 1) <= 9 ? `0${isMonth + 1}` : (isMonth + 1)}/${isYear}`
+        setIsDate(newDateFormat)
+        setIsDay(isDayNow)
+    }, [])
+
+
+    if (dataOrderAwaitingPickupPending && dataOrderDeliveryPending) return (
+        <>
+            <LoadingDashboardWeb />
+        </>
+    )
+
+    const arrIcon = [
+        { icon: <FaDashcube />, url: '/worker/driver/dashboard', name: 'Dashboard' },
+        { icon: <FaTruck />, url: '/worker/driver/delivery-request', name: 'Pengantaran' },
+        { icon: <FaBoxOpen />, url: '/worker/driver/pickup-request', name: 'Penjemputan' },
+        { icon: <FaHistory />, url: '/worker/driver/history', name: 'Riwayat' },
+    ]
+
     return (
         <>
-            <main className="w-full h-fit">
-                <section className="w-full h-fit md:hidden block md:max-w-full max-w-[425px]">
-                    <section>
-                        <Image src={'/images/headerlogouser.jpg'} alt="header"
-                            height={500} width={500} className="w-full" />
-                    </section>
-
-                    <section className="border border-gray-400 rounded-t-lg p-4 mt-4 mx-8">
-                        <div className="flex justify-between items-center">
-                            <div className="font-semibold text-gray-600">Outlet : CnC Jakarta</div>
-
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />}>
+                <main className="pb-24">
+                    <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
+                        <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
+                        <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
+                    </div>
+                    <div className="flex justify-center h-fit w-full p-2 mt-5 bg-gradient-to-tr from-white via-sky-50 to-sky-100 rounded-2xl">
+                        <div className="grid grid-cols-2 gap-2 w-full">
+                            {arrIcon?.map((item: any, i: number) => (
+                                <Link href={item?.url} className="w-full p-3 flex flex-col items-center justify-center gap-2 bg-white shadow-sm border rounded-2xl hover:shadow-md transition-all" key={i}>
+                                    <span className="text-2xl text-orange-500">{item?.icon}</span>
+                                    <h1 className="text-xs text-gray-700">{item?.name}</h1>
+                                </Link>
+                            ))}
                         </div>
-                    </section>
+                    </div>
 
-                    <section className="border border-gray-400 bg-orange-300 rounded-b-lg text-sm p-4 mx-8 text-gray-700">
-                        <div className="flex justify-between items-stretch">
-                            <div className="text-left flex-1">
-                                <div>Pendapatan</div>
-                                <div className="font-semibold">hari ini</div>
-                                <div className="text-base">Rp0</div>
-                            </div>
-
-                            <div className="w-[1px] bg-gray-400 mx-4"></div>
-
-                            <div className="text-right flex-1">
-                                <div>Pendapatan</div>
-                                <div className="font-semibold">bulan ini</div>
-                                <div className="text-base">Rp0</div>
+                    <div className="w-full flex flex-col md:flex-row gap-4 px-2 mt-5 h-auto">
+                        <div className="w-full md:w-1/2 h-auto bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-4 rounded-2xl shadow-md">
+                            <div className="h-full bg-white bg-opacity-70 rounded-lg p-4">
+                                <h2 className="text-lg font-semibold text-gray-700 mb-2">Status Cuaca</h2>
+                                <p className="text-sm text-gray-600">
+                                    {isCurrentWeither?.weather && isCurrentWeither.weather[0]?.description
+                                        ? `${isCurrentWeither.weather[0].description}, ${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C` : "Data cuaca tidak tersedia"}
+                                </p>
                             </div>
                         </div>
-
-                        <div className="border-t-2 border-gray-400 mt-4 pt-4 flex items-center">
-                            <div className="flex-1 flex-col text-center text-lg font-bold">
-                                <div className="text-sm font-normal">Pesanan (bulan ini)</div>
-                                <span>0</span>
-                                <span className="text-sm">order</span>
+                        <div className="w-full flex justify-center flex-col h-full border border-gray-300 mx-2  mr-10 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
+                            <div className="flex items-center gap-4 pb-4">
+                                <h1 className='font-bold text-xl text-neutral-700'>Permintaan Pickup</h1>
+                                <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                             </div>
-                            <div className="flex-1 flex-col text-center text-lg font-bold">
-                                <div className="text-sm font-normal">Berat (bulan ini)</div>
-                                <span>0</span>
-                                <span className="text-sm">kg</span>
+                            <div className="w-full space-y-2 max-h-[calc(3*3rem)] overflow-y-auto"> {/* Limit to 3 rows */}
+                                {dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => (
+                                    <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
+                                        <div className="w-full flex items-center">
+                                            <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                            <div className='w-fit px-3'>
+                                                <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
+                                                <p className="text-gray-500 text-sm">
+                                                    {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
+                                                        order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
+                                                            order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                                'Layanan Laundry'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <Link href='/worker/driver/pickup-request' className='text-blue-500 hover:text-blue-700 text-sm'>
+                                                Proses
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))}
+                                <Link href='/worker/driver/pickup-request' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                                    Lihat Selengkapnya...
+                                </Link>
                             </div>
                         </div>
-                    </section>
-
-                    <section className="bg-white mx-8 grid grid-cols-2 gap-y-6 justify-around my-6">
-                        {iconButtons.map((item, index) => (
-                            <button key={index} className="flex flex-col items-center space-y-1">
-                                <item.icon className="text-gray-500 text-5xl border-2 w-24 h-24 rounded-lg border-gray-300 p-6 bg-white transition-colors ease-in-out duration-200 active:bg-gray-300" />
-                                <span className="text-base">{item.label}</span>
-                            </button>
-                        ))}
-                    </section>
-
-                    <section className="bg-green-100 p-4 mx-8 mb-4 rounded-lg">
-                        <div className="flex items-center space-x-2">
-                            <FaWhatsapp className="text-gray-600" size={24} />
-                            <span className="font-semibold">Butuh bantuan?</span>
+                        <div className="w-full flex justify-center flex-col h-full border border-gray-300 mx-2  mr-10 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
+                            <div className="flex items-center gap-4 pb-4">
+                                <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Antar</h1>
+                                <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                            </div>
+                            <div className="w-full space-y-4">
+                                {dataOrderDelivery?.orders?.map((order: any, i: number) => (
+                                    <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
+                                        <div className="w-full flex items-center">
+                                            <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                            <div className='w-fit px-3'>
+                                                <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
+                                                <p className="text-gray-500 text-sm">
+                                                    {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
+                                                        order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
+                                                            order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                                'Layanan Laundry'}
+                                                </p>
+                                            </div>
+                                        </div>
+                                        <div className="flex items-center gap-3">
+                                            <Link href='/worker/driver/delivery-request' className='text-blue-500 hover:text-blue-700 text-sm'>
+                                                Proses
+                                            </Link>
+                                        </div>
+                                    </div>
+                                ))}
+                                <Link href='/worker/driver/pickup-request' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                                    Lihat Selengkapnya...
+                                </Link>
+                            </div>
                         </div>
-                        <div className="mt-2 text-sm text-gray-600">
-                            Chat kami di WhatsApp apabila terdapat error.
-                        </div>
-                    </section>
-                </section>
-            </main>
+                    </div>
+                </main>
+            </ContentMobileLayout>
 
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
                 <section className="w-full h-1/2 rounded-xl flex gap-2">
@@ -292,9 +348,7 @@ export default function Page() {
                             </Link>
                         </div>
                     </div>
-
                 </section>
-
             </main>
         </>
     );

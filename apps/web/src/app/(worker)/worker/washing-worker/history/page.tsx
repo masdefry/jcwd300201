@@ -103,7 +103,7 @@ export default function HistoryOrderWashing() {
     return (
         <>
             <MobileSessionLayout title="HISTORY ORDER">
-                <div className="mx-4 space-y-4">
+                <div className="pb-24">
 
                     <CardContent className="space-y-2 pt-2">
                         <FilterWorker
@@ -128,7 +128,7 @@ export default function HistoryOrderWashing() {
                             dataOrderWashingProcess?.orders?.map((order: any) => (
                                 <section key={order.id} className="flex justify-between items-center border-b py-4">
                                     <div className="flex items-center">
-                                        <div className="ml-2">
+                                        <div className="px-2">
                                             <h2 className="font-medium text-gray-900">
                                                 {order?.id}
                                             </h2>
@@ -229,38 +229,7 @@ export default function HistoryOrderWashing() {
                                                                 : order?.orderStatus[0]?.status}
                                             </td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
-                                            <td className="py-4 px-6 hover:underline break-words">
-                                                {/* <ConfirmAlert disabled={isPending} colorConfirmation="blue" caption={
-                                                    order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
-                                                        ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
-                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === true
-                                                            ? 'Apakah anda yakin ingin melakukan proses cuci pada order ini?'
-                                                            : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
-                                                                ? 'Apakah anda yakin ingin menyelesaikan proses pada order ini?'
-                                                                : ''
-                                                }
-                                                    description={
-                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
-                                                            ? 'Silahkan hubungi admin'
-                                                            : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === true
-                                                                ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                : order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS'
-                                                                    ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                    : ''
-                                                    }
-                                                    hideButtons={order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false}
-                                                    onClick={() => {
-                                                        if (order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false) {
-                                                            router.push(`/worker/washing-worker/order/c/${order?.id}`);
-                                                        } else {
-                                                            handleProcessWashing(order?.id)
-                                                        }
-                                                    }}>
-                                                    <button disabled={order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                        {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' : 'Selesaikan'}
-                                                    </button>
-                                                </ConfirmAlert> */}
-                                            </td>
+                                            <td className="py-4 px-6 hover:underline break-words"></td>
                                         </tr>
                                     ))
                                 ) : (

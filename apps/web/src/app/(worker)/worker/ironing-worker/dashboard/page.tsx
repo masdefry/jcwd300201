@@ -18,6 +18,9 @@ import { locationStore } from "@/zustand/locationStore";
 import Link from "next/link";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { RiProfileFill } from "react-icons/ri";
+import { instance } from "@/utils/axiosInstance";
+import { useQuery } from "@tanstack/react-query";
+import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
@@ -35,6 +38,7 @@ export default function Page() {
     const [isDay, setIsDay] = useState<number>(0)
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
     const [date, setDate] = useState<Date | undefined>(new Date())
+    const [selectedTab, setSelectedTab] = useState<'today' | 'month'>('today');
 
 
     useEffect(() => {
@@ -42,7 +46,6 @@ export default function Page() {
             const handleCurrentWeither = async () => {
                 try {
                     const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${process.env.NEXT_PUBLIC_OPEN_WEITHER}&lang=id`)
-
                     setIsCurrentWeither(res?.data)
                 } catch (error) {
                     console.log(error)
@@ -55,6 +58,18 @@ export default function Page() {
 
     const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
+    const { data: dataOrderIroning, isPending: dataOrderIroningPending } = useQuery({
+        queryKey: ['get-order-ironing'],
+        queryFn: async () => {
+            const res = await instance.get(`/order/order-ironing`, {
+                params: { tab: 'proses-setrika' },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            return res?.data?.data;
+        },
+    })
+
     useEffect(() => {
         const date = new Date()
         const isDayNow = date.getDay()
@@ -62,7 +77,7 @@ export default function Page() {
         const isMonth = date.getMonth()
         const isYear = date.getFullYear()
 
-        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        const newDateFormat = `${isDateNow}/${(isMonth + 1) <= 9 ? `0${isMonth + 1}` : (isMonth + 1)}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
@@ -73,6 +88,12 @@ export default function Page() {
         { icon: <FaHistory />, url: '/worker/ironing-worker/history', name: 'Riwayat' },
         { icon: <FaSpaghettiMonsterFlying />, url: '/worker/ironing-worker/settings', name: 'Pengaturan' },
     ]
+
+    if (dataOrderIroningPending) return (
+        <>
+            <LoadingDashboardWeb />
+        </>
+    )
 
     return (
         <>
@@ -104,6 +125,38 @@ export default function Page() {
                                     ).toFixed(1)}°C`
                                     : "Data cuaca tidak tersedia"}
                             </p>
+                        </div>
+                    </div>
+                    <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
+                        <div className="flex items-center gap-4 pb-4">
+                            <h1 className='font-bold text-xl text-neutral-700'>Proses Setrika</h1>
+                            <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                        </div>
+                        <div className="w-full space-y-4">
+                            {dataOrderIroning?.orders?.map((order: any, i: number) => (
+                                <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
+                                    <div className="w-full flex items-center">
+                                        <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                        <div className='w-fit px-3'>
+                                            <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
+                                            <p className="text-gray-500 text-sm">
+                                                {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                            'Layanan Laundry'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <Link href='/worker/driver/delivery-request' className='text-blue-500 hover:text-blue-700 text-sm'>
+                                            Proses
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                            <Link href='/worker/ironing-worker/order' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                                Lihat Selengkapnya...
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -181,14 +234,38 @@ export default function Page() {
                     </div>
                 </section>
                 <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
-                    <div className="w-full h-full space-y-2 rounded-2xl">
-                        <Link href='/admin-outlet/nota-order' className="w-full py-2 flex items-center justify-between bg-white bg-opacity-45 rounded-full px-3">
-                            <h1 className="text-neutral-600 font-semibold hover:text-neutral-700">Buat Nota Pesanan</h1>
-                            <span className="p-2 rounded-full hover:animate-wiggle-more bg-neutral-400"><FaArrowRight className="text-white text-xl" /> </span>
-                        </Link>
+                    <div className="w-full h-full overflow-y-auto bg-white bg-opacity-45 rounded-xl p-4">
+                        <div className="flex items-center gap-4 pb-4">
+                            <h1 className='font-bold text-2xl text-neutral-700'>Proses Setrika</h1>
+                            <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                        </div>
+                        <div className="w-full space-y-4">
+                            {dataOrderIroning?.orders?.map((order: any, i: number) => (
+                                <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
+                                    <div className="w-full flex items-center">
+                                        <div className="w-2 h-2 bg-green-600 rounded-full"></div>
+                                        <div className='w-fit px-3'>
+                                            <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
+                                            <p className="text-gray-500 text-sm">
+                                                {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                            'Layanan Laundry'}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        <Link href='/worker/driver/delivery-request' className='text-blue-500 hover:text-blue-700 text-sm'>
+                                            Proses
+                                        </Link>
+                                    </div>
+                                </div>
+                            ))}
+                            <Link href='/worker/driver/pickup-request' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                                Lihat Selengkapnya...
+                            </Link>
+                        </div>
                     </div>
-                    <div className="w-full h-full bg-white bg-opacity-45 rounded-2xl"></div>
-                    <div className="w-full h-full bg-white bg-opacity-45 rounded-2xl"></div>
                 </section>
             </main>
         </>

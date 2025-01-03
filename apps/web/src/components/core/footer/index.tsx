@@ -63,7 +63,7 @@ export default function Footer() {
     DRIVER: [
       { icon: <IoHomeSharp className="text-xl" />, label: "Beranda", path: '/worker/driver/dashboard' },
       { icon: <GrNotes className="text-xl" />, label: "Pesanan", path: '/worker/driver/pickup-request' },
-      { icon: <IoSearchSharp className="text-xl" />, label: "Laporan", path: '/worker/driver/delivery-request' },
+      { icon: <MdSportsMotorsports className="text-xl" />, label: "Antar", path: '/worker/driver/delivery-request' },
       { icon: <FaGear className="text-xl" />, label: "Pengaturan", path: '/worker/driver/settings' },
     ],
     PACKING_WORKER: [
@@ -134,7 +134,7 @@ export default function Footer() {
                       />
                     </Link>
                   </div>
-                  <h1 className="text-blue-400 font-bold text-lg">Clean&<span className="text-orange-400">Click</span></h1>
+                  <h1 className="text-orange-400 font-bold text-lg">Clean&<span className="text-orange-400">Click</span></h1>
                 </div>
               </div>
               <div>
