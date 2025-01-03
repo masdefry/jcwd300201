@@ -69,7 +69,7 @@ export default function Footer() {
     PACKING_WORKER: [
       { icon: <IoHomeSharp className="text-xl" />, label: "Beranda", path: '/worker/packing-worker/dashboard' },
       { icon: <GrNotes className="text-xl" />, label: "Pesanan", path: '/worker/packing-worker/order' },
-      { icon: <FaHistory className="text-xl" />, label: "Laporan", path: '/worker/packing-worker/history' },
+      { icon: <FaHistory className="text-xl" />, label: "Riwayat", path: '/worker/packing-worker/history' },
       { icon: <FaGear className="text-xl" />, label: "Pengaturan", path: '/worker/packing-worker/settings' },
     ],
     CUSTOMER: [

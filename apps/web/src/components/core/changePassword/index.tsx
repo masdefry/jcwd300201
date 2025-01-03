@@ -14,7 +14,7 @@ export default function ChangePassword({ oldPasswordVisible, passwordVisible, to
                     <span className="absolute right-3 top-3 flex items-center cursor-pointer text-gray-500" onClick={toggleOldPasswordVisibility}>
                         {oldPasswordVisible ? <FaEye /> : <FaEyeSlash />}
                     </span>
-                    <ErrorMessage component='div' className='text-red-600 absolute text-sm right-3 top-[-25px]' name='existingPassword' />
+                    <ErrorMessage component='div' className='text-red-600 absolute text-[10px] md:text-sm right-3 top-[-25px]' name='existingPassword' />
                 </div>
             </div>
             <div className="w-full flex flex-col gap-2 py-2">
@@ -24,17 +24,17 @@ export default function ChangePassword({ oldPasswordVisible, passwordVisible, to
                     <span className="absolute right-3 top-3 flex items-center cursor-pointer text-gray-500" onClick={togglePasswordVisibility}>
                         {passwordVisible ? <FaEye /> : <FaEyeSlash />}
                     </span>
-                    <ErrorMessage component='div' className='text-red-600 absolute text-sm right-3 top-[-25px]' name='password' />
+                    <ErrorMessage component='div' className='text-red-600 absolute text-[10px] md:text-sm right-3 top-[-25px]' name='password' />
                 </div>
             </div>
             <div className="w-full flex flex-col gap-2 py-2">
-                <label htmlFor="confirmPassword" className="font-semibold">Ulangi password baru</label>
+                <label htmlFor="confirmPassword" className="font-semibold">Konfirmasi password</label>
                 <div className='flex w-full relative'>
                     <Field name='confirmPassword' type={confirmPasswordVisible ? 'text' : 'password'} className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Masukan password baru..' />
                     <span className="absolute right-3 top-3 flex items-center cursor-pointer text-gray-500" onClick={toggleConfirmPasswordVisibility}>
                         {confirmPasswordVisible ? <FaEye /> : <FaEyeSlash />}
                     </span>
-                    <ErrorMessage component='div' className='text-red-600 absolute text-sm right-3 top-[-25px]' name='confirmPassword' />
+                    <ErrorMessage component='div' className='text-red-600 absolute text-[10px] md:text-sm right-3 top-[-25px]' name='confirmPassword' />
                 </div>
             </div>
             <div className='py-2'>

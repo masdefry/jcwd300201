@@ -1,17 +1,12 @@
 'use client'
 
-import HeaderMobile from "@/components/core/headerMobile"
-import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import { useQuery, useMutation } from "@tanstack/react-query"
+import { useQuery, } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
 import authStore from "@/zustand/authstore"
 import { useState, useEffect } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
-import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
@@ -23,6 +18,8 @@ import FilterWeb from "@/components/core/filterWeb"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import ButtonCustom from "@/components/core/button"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
+import { FaGear } from "react-icons/fa6"
 
 export default function HistoryOrderIroning() {
     const params = useSearchParams();
@@ -101,7 +98,7 @@ export default function HistoryOrderIroning() {
 
     return (
         <>
-            <MobileSessionLayout title="HISTORY ORDER">
+            <ContentMobileLayout title="Riwayat Pesanan" icon={<FaGear className='text-lg' />}>
                 <CardContent className="space-y-2 pt-2">
                     <FilterWorker
                         searchInput={searchInput}
@@ -153,8 +150,8 @@ export default function HistoryOrderIroning() {
                         <Pagination page={page} totalPages={totalPages} setPage={setPage} />
                     )}
                 </CardContent>
-            </MobileSessionLayout>
-        
+            </ContentMobileLayout>
+
             <ContentWebLayout caption='Riwayat Pesanan'>
                 <FilterWeb activeTab={activeTab} dateFrom={dateFrom} dateUntil={dateUntil} debounce={debounce} isSearchValues={isSearchValues}
                     setIsSearchValues={setIsSearchValues} searchInput={searchInput} setActiveTab={setActiveTab} setDateFrom={setDateFrom} setDateUntil={setDateUntil}

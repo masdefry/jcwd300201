@@ -14,11 +14,12 @@ import { useWashingWorkerSettingsHooks } from '@/features/washingWorker/hooks/us
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { washingAkunValidation } from '@/features/washingWorker/schemas/washingAkunValidationSchema';
 import { washingChangePasswordValidation } from '@/features/washingWorker/schemas/washingChangePasswordValidationSchema';
 import { ConfirmAlert } from '@/components/core/confirmAlert';
 import ButtonCustom from '@/components/core/button';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
+import { washingAccountMobileValidation } from '@/features/washingWorker/schemas/washingAccountMobileSchema';
+import { washingAccountValidationSchema } from '@/features/washingWorker/schemas/washingAccountValidationSchema';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -52,7 +53,7 @@ export default function Page() {
                 <Tabs defaultValue="1" className="fit">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="1" >Akun</TabsTrigger>
-                        <TabsTrigger value="2" >Change Password</TabsTrigger>
+                        <TabsTrigger value="2" >Ganti Password</TabsTrigger>
                     </TabsList>
                     <TabsContent value="1">
                         <Formik initialValues={{
@@ -61,7 +62,7 @@ export default function Page() {
                             emails: getDataWorker?.email || '',
                             phoneNumbers: getDataWorker?.phoneNumber || '',
                             img: null
-                        }}
+                        }} validationSchema={washingAccountMobileValidation}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.emails)
@@ -88,7 +89,11 @@ export default function Page() {
                             confirmPassword: ''
                         }}
                             validationSchema={washingChangePasswordValidation}
-                            onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
+                            onSubmit={(values, { resetForm }) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                onSuccess: () => {
+                                    resetForm()
+                                }
+                            })}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                 isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
@@ -116,7 +121,7 @@ export default function Page() {
                             email: getDataWorker?.email || '',
                             phoneNumber: getDataWorker?.phoneNumber || '',
                             images: null
-                        }}
+                        }} validationSchema={washingAccountValidationSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.email)
@@ -142,12 +147,12 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={Yup.object().shape({
-                                existingPassword: Yup.string().required('Password lama harus diisi'),
-                                password: Yup.string().required('Password baru harus diisi'),
-                                confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
-                            })}
-                            onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
+                            validationSchema={washingChangePasswordValidation}
+                            onSubmit={(values, { resetForm }) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                onSuccess: () => {
+                                    resetForm()
+                                }
+                            })}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                 isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}

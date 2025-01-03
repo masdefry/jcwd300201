@@ -14,9 +14,15 @@ import { useAdminOutletSettingsHooks } from '@/features/adminOutlet/hooks/useAdm
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { oAdminAkunValidation } from '@/features/adminOutlet/schemas/oAdminAkunValidationSchema';
 import { oAdminChangePasswordValidation } from '@/features/adminOutlet/schemas/oAdminChangePasswordValidationSchema';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
+import { ConfirmAlert } from '@/components/core/confirmAlert';
+import { FaSignOutAlt } from 'react-icons/fa';
+import ButtonCustom from '@/components/core/button';
+import { oAdminAccountMobileSchema } from '@/features/adminOutlet/schemas/oAdminAccountMobileSchema';
+import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
+import { FaGear } from 'react-icons/fa6';
+import { oAdminAccountValidation } from '@/features/adminOutlet/schemas/oAdminAccountValidationSchema';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -24,7 +30,7 @@ export default function Page() {
         passwordVisible, confirmPasswordVisible, handleChange, togglePasswordVisibility,
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
-        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword } = useAdminOutletSettingsHooks()
+        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useAdminOutletSettingsHooks()
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
@@ -46,8 +52,8 @@ export default function Page() {
 
     return (
         <>
-            <MobileSessionLayout title="Pengaturan">
-                <div className="mx-4 space-y-4">
+            <ContentMobileLayout icon={<FaGear className='text-lg' />} title="Pengaturan">
+                <div className="space-y-4 pb-24">
                     <Tabs defaultValue="1" className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="1" >Akun</TabsTrigger>
@@ -61,6 +67,7 @@ export default function Page() {
                                 phoneNumbers: getDataWorker?.phoneNumber || '',
                                 img: null
                             }}
+                                validationSchema={oAdminAccountMobileSchema}
                                 onSubmit={(values) => {
                                     const fd = new FormData()
                                     fd.append('email', values?.emails)
@@ -87,12 +94,11 @@ export default function Page() {
                                 confirmPassword: ''
                             }}
                                 validationSchema={oAdminChangePasswordValidation}
-                                onSubmit={(values) => {
-                                    handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                    console.log(values)
+                                onSubmit={(values, { resetForm }) => {
+                                    handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                        onSuccess: () => resetForm()
+                                    })
                                 }}>
-
-                                {/* change password setting */}
                                 <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                     confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                     isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
@@ -100,12 +106,12 @@ export default function Page() {
                             </Formik>
                         </TabsContent>
                     </Tabs>
+                    <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisableSucces}>
+                        <ButtonCustom width='w-full gap-2' rounded='rounded-full' btnColor='bg-orange-500 hover:bg-orange-500' disabled={isPending || isDisableSucces}><FaSignOutAlt /> Logout</ButtonCustom>
+                    </ConfirmAlert>
                 </div>
-            </MobileSessionLayout>
-            {/* web sesi */}
-            <ContentWebLayout caption='PENGATURAN'>
-
-                {/* tabs */}
+            </ContentMobileLayout>
+            <ContentWebLayout caption='Pengaturan'>
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
                         <TabList onChange={handleChange} aria-label="Pengaturan tabs">
@@ -121,6 +127,7 @@ export default function Page() {
                             phoneNumber: getDataWorker?.phoneNumber || '',
                             images: null
                         }}
+                            validationSchema={oAdminAccountValidation}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.email)
@@ -132,8 +139,6 @@ export default function Page() {
                                 handleUpdateProfile(fd)
                             }}>
                             {({ setFieldValue, values }) => (
-
-                                // profile settings
                                 <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
                                     disabledSubmitButton={isPendingUpdate} getData={getDataWorker}
                                     handleDeleteProfilePicture={handleDeleteProfilePicture}
@@ -148,17 +153,12 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={Yup.object().shape({
-                                existingPassword: Yup.string().required('Password lama harus diisi'),
-                                password: Yup.string().required('Password baru harus diisi'),
-                                confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
-                            })}
-                            onSubmit={(values) => {
-                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                console.log(values)
+                            validationSchema={oAdminChangePasswordValidation}
+                            onSubmit={(values, { resetForm }) => {
+                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                    onSuccess: () => resetForm()
+                                })
                             }}>
-
-                            {/* change password setting */}
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
                                 isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}

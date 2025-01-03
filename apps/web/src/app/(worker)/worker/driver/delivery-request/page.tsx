@@ -164,7 +164,7 @@ export default function DriverDelivery() {
     return (
         <>
             <ContentMobileLayout icon={<FaTruck className="text-lg" />} title="Pengantaran">
-                <div className=" pb-24">
+                <div className="pb-28">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
                             <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>

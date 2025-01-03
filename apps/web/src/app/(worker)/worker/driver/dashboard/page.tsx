@@ -18,6 +18,7 @@ import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
+import Notification from "@/components/core/notification";
 
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
@@ -117,8 +118,8 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />}>
-                <main className="pb-24">
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification />}>
+                <main className="pb-28">
                     <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                         <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
                         <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
@@ -144,12 +145,12 @@ export default function Page() {
                                 </p>
                             </div>
                         </div>
-                        <div className="w-full flex justify-center flex-col h-full border border-gray-300 mx-2  mr-10 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
+                        <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                             <div className="flex items-center gap-4 pb-4">
-                                <h1 className='font-bold text-xl text-neutral-700'>Permintaan Pickup</h1>
+                                <h1 className='font-bold text-base text-neutral-700'>Permintaan Pickup</h1>
                                 <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                             </div>
-                            <div className="w-full space-y-2 max-h-[calc(3*3rem)] overflow-y-auto"> {/* Limit to 3 rows */}
+                            <div className="w-full space-y-2 max-h-[calc(3*3rem)] overflow-y-auto">
                                 {dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => (
                                     <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
                                         <div className="w-full flex items-center">
@@ -176,9 +177,9 @@ export default function Page() {
                                 </Link>
                             </div>
                         </div>
-                        <div className="w-full flex justify-center flex-col h-full border border-gray-300 mx-2  mr-10 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
+                        <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                             <div className="flex items-center gap-4 pb-4">
-                                <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Antar</h1>
+                                <h1 className='font-bold text-base text-neutral-700'>Permintaan Antar</h1>
                                 <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                             </div>
                             <div className="w-full space-y-4">

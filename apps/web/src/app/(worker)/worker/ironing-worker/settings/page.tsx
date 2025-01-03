@@ -14,8 +14,14 @@ import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ironingChangePasswordValidation } from '@/features/ironingWorker/schemas/ironingChangePasswordValidationSchema';
-import { ironingAkunValidation } from '@/features/ironingWorker/schemas/ironingAkunValidationSchema';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
+import { ironingAccountValidation } from '@/features/ironingWorker/schemas/ironingAccountValidationSchema';
+import { ironingAccountMobileValidation } from '@/features/ironingWorker/schemas/ironingAccountMobileSchema';
+import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
+import { FaGear } from 'react-icons/fa6';
+import ButtonCustom from '@/components/core/button';
+import { FaSignOutAlt } from 'react-icons/fa';
+import { ConfirmAlert } from '@/components/core/confirmAlert';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -23,7 +29,7 @@ export default function Page() {
         passwordVisible, confirmPasswordVisible, handleChange, togglePasswordVisibility,
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
-        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword } = useIroningWorkerSettingsHooks()
+        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useIroningWorkerSettingsHooks()
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
@@ -45,7 +51,7 @@ export default function Page() {
 
     return (
         <>
-            <MobileSessionLayout title="Pengaturan">
+            <ContentMobileLayout icon={<FaGear className='text-lg' />} title="Pengaturan">
                 <Tabs defaultValue="1" className="fit">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="1">Akun</TabsTrigger>
@@ -58,7 +64,7 @@ export default function Page() {
                             emails: getDataWorker?.email || '',
                             phoneNumbers: getDataWorker?.phoneNumber || '',
                             img: null
-                        }}
+                        }} validationSchema={ironingAccountMobileValidation}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.emails)
@@ -85,9 +91,12 @@ export default function Page() {
                             confirmPassword: ''
                         }}
                             validationSchema={ironingChangePasswordValidation}
-                            onSubmit={(values) => {
-                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                console.log(values)
+                            onSubmit={(values, { resetForm }) => {
+                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                    onSuccess: () => {
+                                        resetForm()
+                                    }
+                                })
                             }}>
 
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
@@ -97,7 +106,10 @@ export default function Page() {
                         </Formik>
                     </TabsContent>
                 </Tabs>
-            </MobileSessionLayout>
+                <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisableSucces}>
+                    <ButtonCustom btnColor='bg-orange-500 hover:bg-orange-500' rounded='rounded-full gap-2' disabled={isPending || isDisableSucces} width='w-full'><FaSignOutAlt /> Logout</ButtonCustom>
+                </ConfirmAlert>
+            </ContentMobileLayout>
             <ContentWebLayout caption='Pengaturan'>
                 <TabContext value={value}>
                     <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -114,7 +126,7 @@ export default function Page() {
                             phoneNumber: getDataWorker?.phoneNumber || '',
                             images: null
                         }}
-                            validationSchema={ironingAkunValidation}
+                            validationSchema={ironingAccountValidation}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.email)
@@ -122,7 +134,7 @@ export default function Page() {
                                 fd.append('lastName', values?.lastName)
                                 fd.append('phoneNumber', values?.phoneNumber)
                                 if (values?.images) fd.append('images', values?.images)
-                                console.log(values)
+
                                 handleUpdateProfile(fd)
                             }}>
                             {({ setFieldValue, values }) => (
@@ -141,9 +153,12 @@ export default function Page() {
                             confirmPassword: ''
                         }}
                             validationSchema={ironingChangePasswordValidation}
-                            onSubmit={(values) => {
-                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                console.log(values)
+                            onSubmit={(values, { resetForm }) => {
+                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                    onSuccess: () => {
+                                        resetForm()
+                                    }
+                                })
                             }}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}

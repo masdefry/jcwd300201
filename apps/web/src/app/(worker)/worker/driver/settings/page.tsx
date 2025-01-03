@@ -15,11 +15,12 @@ import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { driverChangePasswordValidation } from '@/features/driver/schemas/driverChangePasswordValidationSchema';
-import { driverAkunValidation } from '@/features/driver/schemas/driverAkunValidationSchema';
+import { driverAccountValidationSchema } from '@/features/driver/schemas/driverAccountValidationSchema';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 import ButtonCustom from '@/components/core/button';
 import { ConfirmAlert } from '@/components/core/confirmAlert';
 import { FaSignOutAlt } from 'react-icons/fa';
+import { driverAccountMobileSchema } from '@/features/driver/schemas/driverAccountMobileSchema';
 
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
@@ -51,7 +52,7 @@ export default function Page() {
     return (
         <>
             <MobileSessionLayout title="PENGATURAN">
-                <div className="mx-4 space-y-4">
+                <div className="space-y-4 pb-24">
                     <Tabs defaultValue="1" className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="1" >Akun</TabsTrigger>
@@ -65,6 +66,7 @@ export default function Page() {
                                 phoneNumbers: getDataWorker?.phoneNumber || '',
                                 img: null
                             }}
+                                validationSchema={driverAccountMobileSchema}
                                 onSubmit={(values) => {
                                     const fd = new FormData()
                                     fd.append('email', values?.emails)
@@ -91,9 +93,12 @@ export default function Page() {
                                 confirmPassword: ''
                             }}
                                 validationSchema={driverChangePasswordValidation}
-                                onSubmit={(values) => {
-                                    handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                    console.log(values)
+                                onSubmit={(values, { resetForm }) => {
+                                    handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                        onSuccess: () => {
+                                            resetForm()
+                                        }
+                                    })
                                 }}>
                                 <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                     confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
@@ -124,7 +129,7 @@ export default function Page() {
                             phoneNumber: getDataWorker?.phoneNumber || '',
                             images: null
                         }}
-                            validationSchema={driverAkunValidation}
+                            validationSchema={driverAccountValidationSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.email)
@@ -151,9 +156,12 @@ export default function Page() {
                             confirmPassword: ''
                         }}
                             validationSchema={driverChangePasswordValidation}
-                            onSubmit={(values) => {
-                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })
-                                console.log(values)
+                            onSubmit={(values, { resetForm }) => {
+                                handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                    onSuccess: () => {
+                                        resetForm()
+                                    }
+                                })
                             }}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}

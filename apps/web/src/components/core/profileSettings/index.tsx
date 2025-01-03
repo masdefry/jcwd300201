@@ -1,4 +1,4 @@
-import { Field, Form } from "formik"
+import { ErrorMessage, Field, Form } from "formik"
 import Image from "next/image"
 import { ConfirmAlert } from "../confirmAlert"
 import ButtonCustom from "../button"
@@ -64,22 +64,34 @@ export default function ProfileSettings({ tempProfilePict, getData, profilePict,
 
             <div className="w-full flex gap-4 mb-6">
                 <div className="w-full flex flex-col gap-2">
-                    <label htmlFor="firstName" className="font-semibold">Nama Depan</label>
+                    <div className="w-full flex justify-between relative">
+                        <label htmlFor="firstName" className="font-semibold">Nama Depan</label>
+                        <ErrorMessage component='div' className='text-red-600 absolute text-[10px] md:text-sm right-3 top-0' name='firstName' />
+                    </div>
                     <Field name='firstName' type="text" className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Nama depan..' />
                 </div>
                 <div className="w-full flex flex-col gap-2">
-                    <label htmlFor="lastName" className="font-semibold">Nama Belakang</label>
+                    <div className="w-full flex justify-between relative">
+                        <label htmlFor="lastName" className="font-semibold">Nama Belakang</label>
+                        <ErrorMessage component='div' className='text-red-600 absolute text-[10px] md:text-sm right-3 top-0' name='lastName' />
+                    </div>
                     <Field name='lastName' type="text" className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Nama belakang..' />
                 </div>
             </div>
 
             <div className="w-full flex gap-4 mb-6">
                 <div className="w-full flex flex-col gap-2">
-                    <label htmlFor="email" className="font-semibold">Email</label>
+                    <div className="w-full flex justify-between relative">
+                        <label htmlFor="email" className="font-semibold">Email</label>
+                        <ErrorMessage component='div' className='text-red-600 absolute text-[10px] md:text-sm right-3 top-0' name='email' />
+                    </div>
                     <Field name='email' type="text" className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Email..' />
                 </div>
                 <div className="w-full flex flex-col gap-2">
-                    <label htmlFor="phoneNumber" className="font-semibold">Nomor Telepon</label>
+                    <div className="w-full flex justify-between relative">
+                        <label htmlFor="phoneNumber" className="font-semibold">Nomor Telepon</label>
+                        <ErrorMessage component='div' className='text-red-600 absolute text-[10px] md:text-sm right-3 top-0' name='phoneNumber' />
+                    </div>
                     <Field name='phoneNumber' type="text" className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Nomor telepon..' />
                 </div>
             </div>

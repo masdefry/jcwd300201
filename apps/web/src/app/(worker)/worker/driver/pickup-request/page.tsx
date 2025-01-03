@@ -168,7 +168,7 @@ export default function Page() {
     return (
         <>
             <ContentMobileLayout icon={<FaBoxOpen className='text-lg' />} title="Permintaan Pickup">
-                <div className="pb-24">
+                <div className="pb-28">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
                             <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
@@ -218,10 +218,11 @@ export default function Page() {
                                                         ? 'Konfirmasi bahwa Anda akan mengambil laundry untuk order ini'
                                                         : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET'
                                                             ? 'Konfirmasi bahwa barang untuk order ini telah berhasil diantar ke laundry'
-                                                            : ''
-                                                } disabled={
+                                                            : 'Pesanan sudah diselesaikan'
+                                                } hideButtons={order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'} disabled={
                                                     (order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' && handleProcessOrderPending) ||
-                                                    (order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' && handleProcessOrderOutletPending)
+                                                    (order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' && handleProcessOrderOutletPending) ||
+                                                    order?.orderStatus[0]?.status === 'DRIVER_ARRIVED_AT_OUTLET'
                                                 }>
                                                 <div className="flex items-center">
                                                     <div className="px-2">
