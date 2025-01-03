@@ -1,7 +1,7 @@
 import prisma from "@/connection"
 import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService } from "@/services/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService, orderTrackingAdminService, orderTrackingDriverService, orderTrackingWorkerService, orderTrackingUserService } from "@/services/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/services/orderService/types";
 import dotenv from 'dotenv'
 import { addHours } from "date-fns";
@@ -1131,6 +1131,8 @@ export const getAllOrderForAdmin = async (req: Request, res: Response, next: Nex
     next(error);
   }
 };
+
+
 export const orderStatus = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
@@ -1358,5 +1360,106 @@ export const userConfirmOrder = async (req: Request, res: Response, next: NextFu
     });
   } catch (error) {
     next(error)
+  }
+}
+
+
+export const orderTrackingAdmin = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const { period } = req.query;
+
+    const periodTypes = typeof period !== 'string' ? "" : period
+
+    const { totalPcs, stats } = await orderTrackingAdminService({ userId, authorizationRole, period: periodTypes, storeId })
+
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        laundryPrice: stats._sum.laundryPrice || 0,
+        orderCount: stats._count.id || 0,
+        totalKg: stats._sum.totalWeight || 0,
+        totalPcs: totalPcs._count.id || 0,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const orderTrackingDriver = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole } = req.body;
+    const { period } = req.query;
+
+    const periodTypes = typeof period !== 'string' ? "" : period
+
+    const { earnings, orderCount, totalKg, totalPcs } = await orderTrackingDriverService({ userId, authorizationRole, period: periodTypes })
+
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        earnings,
+        orderCount,
+        totalKg,
+        totalPcs,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+export const orderTrackingWorker = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole } = req.body;
+    const { period } = req.query;
+
+    const periodTypes = typeof period !== 'string' ? "" : period
+
+    const { orderCount, totalKg, totalPcs } = await orderTrackingWorkerService({ userId, authorizationRole, period: periodTypes })
+
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        orderCount,
+        totalKg,
+        totalPcs,
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+}
+
+
+export const orderTrackingUser = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId } = req.body;
+    const { period } = req.query;
+
+    const periodTypes = typeof period !== 'string' ? "" : period
+
+    const { totalOrders, totalSpent, totalWeight, totalPcs } = await orderTrackingUserService({ userId, period: periodTypes })
+
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil diupdate!",
+      data: {
+        totalOrders,        
+        totalSpent,
+          totalWeight,
+        totalPcs
+      }
+    });
+  } catch (error) {
+    next(error);
   }
 }

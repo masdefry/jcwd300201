@@ -6,6 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa6";
 import { GrMail } from "react-icons/gr";
+import { useState } from "react";
+import { CardContent } from "@/components/ui/card";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 const getMessageCustomer = async () => {
     const token = (await cookies()).get('__toksed')?.value
@@ -86,7 +88,7 @@ export default async function Page() {
                         <div key={i} className="w-full h-fit py-4 px-5 border rounded-2xl flex flex-col bg-white">
                             <div className="w-full flex justify-between gap-2 items-center">
                                 <div className="flex">
-                                    <div className="w-12 w-10 h-12 rounded 12 rounde0-full">
+                                    <div className="w-12 h-12 rounded 12 rounde0-full">
                                         <Image
                                             width={500}
                                             height={500}

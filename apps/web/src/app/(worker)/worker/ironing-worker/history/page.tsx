@@ -102,58 +102,59 @@ export default function HistoryOrderIroning() {
     return (
         <>
             <MobileSessionLayout title="HISTORY ORDER">
-                    <CardContent className="space-y-2 pt-2">
-                        <FilterWorker
-                            searchInput={searchInput}
-                            setPage={setPage}
-                            debounce={debounce}
-                            sortOption={sortOption}
-                            setSortOption={setSortOption}
-                            dateFrom={dateFrom}
-                            dateUntil={dateUntil}
-                            setDateFrom={setDateFrom}
-                            setDateUntil={setDateUntil}
-                            setActiveTab={setActiveTab}
-                            setSearchInput={setSearchInput}
-                            setIsSearchValues={setIsSearchValues}
-                            isSearchValues={isSearchValues}
-                        />
-                        {dataOrderIroningProcessLoading && <Loading />}
-                        {dataOrderIroningProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
-                        {!dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
+                <CardContent className="space-y-2 pt-2">
+                    <FilterWorker
+                        searchInput={searchInput}
+                        setPage={setPage}
+                        debounce={debounce}
+                        sortOption={sortOption}
+                        setSortOption={setSortOption}
+                        dateFrom={dateFrom}
+                        dateUntil={dateUntil}
+                        setDateFrom={setDateFrom}
+                        setDateUntil={setDateUntil}
+                        setActiveTab={setActiveTab}
+                        setSearchInput={setSearchInput}
+                        setIsSearchValues={setIsSearchValues}
+                        isSearchValues={isSearchValues}
+                    />
+                    {dataOrderIroningProcessLoading && <Loading />}
+                    {dataOrderIroningProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
+                    {!dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
 
-                            dataOrderIroningProcess?.orders?.map((order: any) => (
-                                <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                    <div className="flex items-center">
-                                        <div className="ml-2">
-                                            <h2 className="font-medium text-gray-900">
-                                                {order?.User?.firstName} {order?.User?.lastName}
-                                            </h2>
-                                            <p className="text-xs text-gray-500">
-                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
-                                                    order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
-                                                        order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
-                                                            order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
-                                                                order?.orderStatus[0]?.status}
-                                            </p>
-                                            <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
-                                        </div>
+                        dataOrderIroningProcess?.orders?.map((order: any) => (
+                            <section key={order.id} className="flex justify-between items-center border-b py-4">
+                                <div className="flex items-center">
+                                    <div className="ml-2">
+                                        <h2 className="font-medium text-gray-900">
+                                            {order?.User?.firstName} {order?.User?.lastName}
+                                        </h2>
+                                        <p className="text-xs text-gray-500">
+                                            {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
+                                                order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
+                                                    order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
+                                                        order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
+                                                            order?.orderStatus[0]?.status}
+                                        </p>
+                                        <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
+
                                     </div>
+                                </div>
 
-                                </section>
-                            ))
-                        ) : (
-                            !dataOrderIroningProcessLoading && (
-                                <NoData />
-                            )
+                            </section>
+                        ))
+                    ) : (
+                        !dataOrderIroningProcessLoading && (
+                            <NoData />
+                        )
 
-                        )}
-                        {!dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 && (
-                            <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                        )}
-                    </CardContent>
+                    )}
+                    {!dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 && (
+                        <Pagination page={page} totalPages={totalPages} setPage={setPage} />
+                    )}
+                </CardContent>
             </MobileSessionLayout>
-
+        
             <ContentWebLayout caption='Riwayat Pesanan'>
                 <FilterWeb activeTab={activeTab} dateFrom={dateFrom} dateUntil={dateUntil} debounce={debounce} isSearchValues={isSearchValues}
                     setIsSearchValues={setIsSearchValues} searchInput={searchInput} setActiveTab={setActiveTab} setDateFrom={setDateFrom} setDateUntil={setDateUntil}
@@ -188,11 +189,12 @@ export default function HistoryOrderIroning() {
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderTypeId === 1 ? 'Layanan Mencuci' : order?.orderTypeId === 2 ? 'Layanan Strika' : order?.orderTypeId === 3 ? 'Mencuci dan Setrika' : ''}</td>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">
-                                                {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
-                                                    order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
-                                                        order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
-                                                            order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
-                                                                order?.orderStatus[0]?.status}
+                                                    {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
+                                                        order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :
+                                                            order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS' ? 'Proses Cuci' :
+                                                                order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
+                                                                    order?.orderStatus[0]?.status}
+
                                                 </td>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
                                             </tr>

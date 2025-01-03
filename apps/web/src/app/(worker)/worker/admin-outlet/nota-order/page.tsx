@@ -46,7 +46,6 @@ export default function HistoryOrderWashing() {
                         setPage={setPage}
                         setIsSearchValues={setIsSearchValues}
                         isSearchValues={isSearchValues}
-
                     />
                     {dataCreateOrderLoading && <Loading />}
                     {dataCreateOrderError && <p>Silahkan coba beberapa saat lagi.</p>}

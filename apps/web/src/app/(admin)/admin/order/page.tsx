@@ -144,7 +144,7 @@ export default function OrderList() {
     return (
         <>
             <ContentMobileLayout title="Pesanan" icon={<FaMoneyBillWave className='text-lg' />}>
-                <Tabs defaultValue={activeTab} className="fit">
+                <Tabs defaultValue={activeTab} className="fit pb-24">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
                         <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
@@ -336,7 +336,7 @@ export default function OrderList() {
                     isStoreLoading={isStoreLoading}
                     isStoreError={isStoreError}
                     setPage={setPage}
-                    showStoreSelect={false}
+                    showStoreSelect={true}
                     searchInput={searchInput}
                     options={[
                         { value: 'proses', label: 'Dalam Proses' },

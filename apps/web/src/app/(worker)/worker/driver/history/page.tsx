@@ -111,7 +111,7 @@ export default function HistoryOrderDriver() {
     return (
         <>
             <MobileSessionLayout title="HISTORY ORDER">
-                <div className=" mx-4 space-y-4">
+                <div className=" pb-24 mx-4 space-y-4">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="pickup" onClick={() => { setActiveTab("pickup"); setPage(1) }} >Pickup</TabsTrigger>

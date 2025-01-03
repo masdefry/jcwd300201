@@ -151,7 +151,7 @@ export default function DeliveryRequest() {
     return (
         <>
             <MobileSessionLayout title="PEMBAYARAN">
-                <div className="mx-4 space-y-4">
+                <div className="pb-24 mx-4 space-y-4">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-3">
                             <TabsTrigger value="verification" onClick={() => { setActiveTab("verification"); setPage(1) }} >Verifikasi</TabsTrigger>

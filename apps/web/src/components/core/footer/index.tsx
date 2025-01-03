@@ -127,7 +127,7 @@ export default function Footer() {
                       />
                     </Link>
                   </div>
-                  <h1 className="text-blue-400 font-bold text-lg">Clean&<span className="text-orange-400">Click</span></h1>
+                  <h1 className="text-orange-400 font-bold text-lg">Clean&<span className="text-orange-400">Click</span></h1>
                 </div>
               </div>
               <div>

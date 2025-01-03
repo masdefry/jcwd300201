@@ -77,6 +77,6 @@ export default function MonthlyCharts({ monthlyData }: any) {
     };
 
     return (
-        <Bar data={data} options={options} className='w-full' style={{ width: '100%' }} />
+        <Bar data={data} options={options} className='w-full h-full ' style={{ width: '100%' }} />
     );
 }
