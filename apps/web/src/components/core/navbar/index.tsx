@@ -18,9 +18,9 @@ import { IoAlbumsOutline } from "react-icons/io5";
 import { LuContact } from "react-icons/lu";
 import { ConfirmAlert } from "../confirmAlert";
 import { MdArrowDropDown } from "react-icons/md";
+import { FiHelpCircle } from "react-icons/fi";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
-
 export default function Header() {
   const token = authStore((state) => state?.token)
   const email = authStore((state) => state?.email)
@@ -125,8 +125,6 @@ export default function Header() {
             <h1 className="font-bold text-xl text-orange-500">CLEAN&CLICK</h1>
           </Link>
         </div>
-
-        {/* web */}
         <div className="hidden md:flex items-center space-x-8 text-neutral-500 font-bold">
           <Link href='/' className={`hover:border-b-2 hover:border-orange-500 hover:text-neutral-600 cursor-pointer text-lg ${pathname == '/' ? 'font-bold border-b-2 border-b-orange-500 text-neutral-600' : ''}`}>Beranda</Link>
           <Link href='/about-us' className={`hover:border-b-2 hover:border-orange-500 hover:text-neutral-600 cursor-pointer text-lg ${pathname.startsWith('/about-us') ? 'font-bold border-b-2 border-b-orange-500 text-neutral-600' : ''}`}>Tentang kami</Link>
@@ -168,7 +166,6 @@ export default function Header() {
             </div>
           )}
         </div>
-
         {showSideBarMenu &&
           <aside onMouseLeave={handleOpenMenuUser} className="w-4/12 z-50 text-neutral-400 animate-fade-left overflow-hidden absolute right-0 top-0 h-screen bg-white pt-8 px-6 transition-all duration-300 ease-in-out transform translate-x-0 shadow-lg">
             <div className="w-full h-fit">
@@ -199,7 +196,7 @@ export default function Header() {
                   </div>
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">
-                    <MenuCustom url='/faq' navigation="FAQ"><FaQq /></MenuCustom>
+                    <MenuCustom url='/faq' navigation="FAQ"><FiHelpCircle /></MenuCustom>
                     <MenuCustom url='/user/dashboard/settings' navigation="Settings"><BsGearFill /></MenuCustom>
                     <ConfirmAlert disabled={isPending || isDisabledSucces} caption="Apakah anda yakin ingin logout?" onClick={() => handleLogout()}>
                       <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
@@ -216,7 +213,7 @@ export default function Header() {
                   </div>
                   <p className="text-xs py-5">Profil</p>
                   <div className="flex flex-col gap-5">
-                    <MenuCustom url='/faq' navigation="FAQ"><FaQq /></MenuCustom>
+                    <MenuCustom url='/faq' navigation="FAQ"><FiHelpCircle /></MenuCustom>
                     <MenuCustom url={settingsUrl} navigation="Settings"><BsGearFill /></MenuCustom>
                     <ConfirmAlert disabled={isPending || isDisabledSucces} caption="Apakah anda yakin ingin logout?" onClick={() => handleLogout()}>
                       <ButtonCustom disabled={isPending || isDisabledSucces} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Logout</ButtonCustom>
@@ -226,17 +223,13 @@ export default function Header() {
               }
             </div>
           </aside>}
-
-
-        {/* mobile */}
         <div className='w-full flex lg:hidden justify-end'>
           <span onClick={handleOpenNav}>
             <FaBurger />
           </span>
         </div>
       </div>
-      {isNavOpen ? <div className="w-full h-44 bg-purple-900 z-30"> </div> : ''}
-
+      {isNavOpen ? <div className="w-full h-44 bg-white z-30"> </div> : ''}
     </nav >
   )
 }

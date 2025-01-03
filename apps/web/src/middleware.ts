@@ -61,5 +61,7 @@ export const middleware = (req: NextRequest) => {
         return NextResponse.redirect(new URL('/user/login', req.url))
     }
 
+    console.log(role)
+
     return NextResponse.next()
 }

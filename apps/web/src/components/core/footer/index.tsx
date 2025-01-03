@@ -9,6 +9,7 @@ import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { FaAddressCard, FaHandsHelping, FaHistory, FaInfoCircle, FaPhoneAlt } from "react-icons/fa";
 import authStore from "@/zustand/authstore";
+import { MdSportsMotorsports } from "react-icons/md";
 
 type MenuItem = {
   icon: JSX.Element;
@@ -16,7 +17,7 @@ type MenuItem = {
   path: string;
 };
 
-type Role = 'SUPER_ADMIN' | 'WASHING_WORKER' | 'IRONING_WORKER' | 'OUTLET_ADMIN' | 'DRIVER' | 'PACKING_WORKER';
+type Role = 'SUPER_ADMIN' | 'WASHING_WORKER' | 'IRONING_WORKER' | 'OUTLET_ADMIN' | 'DRIVER' | 'PACKING_WORKER' | 'CUSTOMER';
 
 export default function Footer() {
   const role = authStore((state) => state?.role)
@@ -26,6 +27,13 @@ export default function Footer() {
   const handleClick = (index: number) => {
     setActiveIndex(index);
   };
+
+  const defaultMenu = [
+    { icon: <IoHomeSharp className="text-xl" />, label: "Beranda", path: '/' },
+    { icon: <FaInfoCircle className="text-xl" />, label: "Tentang", path: '/about-us' },
+    { icon: <FaHandsHelping className="text-xl" />, label: "Layanan", path: '/service' },
+    { icon: <FaPhoneAlt className="text-xl" />, label: "Kontak", path: '/contact' },
+  ]
 
   const menuByRole: Record<Role, MenuItem[]> = {
     SUPER_ADMIN: [
@@ -63,17 +71,16 @@ export default function Footer() {
       { icon: <GrNotes className="text-xl" />, label: "Pesanan", path: '/worker/packing-worker/order' },
       { icon: <FaHistory className="text-xl" />, label: "Laporan", path: '/worker/packing-worker/history' },
       { icon: <FaGear className="text-xl" />, label: "Pengaturan", path: '/worker/packing-worker/settings' },
+    ],
+    CUSTOMER: [
+      { icon: <IoHomeSharp className="text-xl" />, label: "Dashboard", path: '/user/dashboard/home' },
+      { icon: <GrNotes className="text-xl" />, label: "Pesanan", path: '/user/dashboard/order' },
+      { icon: <MdSportsMotorsports className="text-xl" />, label: "Pickup", path: '/user/dashboard/pickup' },
+      { icon: <FaGear className="text-xl" />, label: "Pengaturan", path: '/user/dashboard/settings' },
     ]
   }
-
   const dataPath: MenuItem[] = menuByRole[role as Role] || []
-  const defaultMenu = [
-    { icon: <IoHomeSharp className="text-xl" />, label: "Beranda", path: '/' },
-    { icon: <FaInfoCircle className="text-xl" />, label: "Tentang", path: '/about-us' },
-    { icon: <FaHandsHelping className="text-xl" />, label: "Layanan", path: '/service' },
-    { icon: <FaPhoneAlt className="text-xl" />, label: "Kontak", path: '/contact' },
-  ]
-  
+
   return (
     <>
       <main className={`w-full h-fit ${pathname == '/worker/login' ? 'hidden' : 'block'}`}>

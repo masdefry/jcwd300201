@@ -2237,19 +2237,36 @@ export const getAllOrderForAdminService = async ({
     const startOfMonth = new Date(new Date().getFullYear(), month, 1);
     const endOfMonth = new Date(new Date().getFullYear(), month + 1, 0);
 
-    const monthlyStatistics = await prisma.order.groupBy({
-      by: ['createdAt'],
-      where: {
-        createdAt: {
-          gte: startOfMonth,
-          lte: endOfMonth
+    if (outletId) {
+      const monthlyStatistics = await prisma.order.groupBy({
+        by: ['createdAt'],
+        where: {
+          createdAt: {
+            gte: startOfMonth,
+            lte: endOfMonth
+          },
+          storeId: outletId
         },
-      },
-      _sum: {
-        totalPrice: true
-      }
-    });
-    monthlyStatistic.push({ month, monthlyStatistics })
+        _sum: {
+          totalPrice: true
+        }
+      });
+      monthlyStatistic.push({ month, monthlyStatistics })
+    } else {
+      const monthlyStatistics = await prisma.order.groupBy({
+        by: ['createdAt'],
+        where: {
+          createdAt: {
+            gte: startOfMonth,
+            lte: endOfMonth
+          },
+        },
+        _sum: {
+          totalPrice: true
+        }
+      });
+      monthlyStatistic.push({ month, monthlyStatistics })
+    }
   }
 
   const paginatedOrders = filteredOrders.slice(offset, offset + Number(limit_data));

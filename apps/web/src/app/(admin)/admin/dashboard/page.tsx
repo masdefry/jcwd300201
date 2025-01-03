@@ -36,6 +36,9 @@ export default function Page() {
         queryKey: ['get-order'],
         queryFn: async () => {
             const res = await instance.get(`/order/orders`, {
+                params: {
+                    outletId: ''
+                },
                 headers: { Authorization: `Bearer ${token}` }
             });
 
