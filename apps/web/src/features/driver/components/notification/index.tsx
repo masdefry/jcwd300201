@@ -7,7 +7,7 @@ interface NotificationData {
     message: string;
 }
 
-export default function Notification({ dataOrderNotif }: INotificationProps) {
+export default function NotificationDriver({ dataOrderNotif }: INotificationProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
     const notifications: NotificationData[] = [
@@ -43,7 +43,15 @@ export default function Notification({ dataOrderNotif }: INotificationProps) {
                                     className={`text-sm text-gray-600 py-2 ${i !== dataOrderNotif.orders.length - 1 ? "border-b border-gray-300" : ""
                                         }`}
                                 >
-                                    Pekerjaan Baru: <b>#{order?.id}</b> | {order?.User?.firstName} {order?.User?.lastName} | {order?.OrderType?.type}
+                                    {order?.orderStatus[0]?.status === "AWAITING_DRIVER_PICKUP" ? (
+                                        <>
+                                            Pengantaran Laundry Baru: <b>#{order?.id}</b> | {order?.User?.firstName} {order?.User?.lastName} | {order?.OrderType?.type}
+                                        </>
+                                    ) : (
+                                        <>
+                                            Penjemputan Laundry Baru: <b>#{order?.id}</b> | {order?.User?.firstName} {order?.User?.lastName} | {order?.OrderType?.type}
+                                        </>
+                                    )}
                                 </li>
                             ))
                         ) : (

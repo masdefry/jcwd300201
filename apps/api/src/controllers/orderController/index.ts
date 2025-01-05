@@ -1,7 +1,7 @@
 import prisma from "@/connection"
 import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService, orderTrackingAdminService, orderTrackingDriverService, orderTrackingWorkerService, orderTrackingUserService } from "@/services/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService, orderTrackingAdminService, orderTrackingDriverService, orderTrackingWorkerService, orderTrackingUserService, getOrdersForNotifService } from "@/services/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/services/orderService/types";
 import dotenv from 'dotenv'
 import { addHours } from "date-fns";
@@ -1453,9 +1453,9 @@ export const orderTrackingUser = async (req: Request, res: Response, next: NextF
       error: false,
       message: "Order berhasil diupdate!",
       data: {
-        totalOrders,        
+        totalOrders,
         totalSpent,
-          totalWeight,
+        totalWeight,
         totalPcs
       }
     });
@@ -1463,3 +1463,35 @@ export const orderTrackingUser = async (req: Request, res: Response, next: NextF
     next(error);
   }
 }
+
+
+export const getOrdersForNotif = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { userId, authorizationRole, storeId } = req.body;
+    const { tab, page } = req.query;
+
+    const tabTypes = typeof tab !== 'string' ? "" : tab
+    const pageTypes = typeof page !== 'string' ? "" : page
+
+    const { totalPage, orders: paginatedOrders } = await getOrdersForNotifService(
+      {
+        userId,
+        authorizationRole,
+        storeId,
+        page: pageTypes,
+        tab: tabTypes,
+      }
+    );
+
+    res.status(200).json({
+      error: false,
+      message: "Order berhasil didapatkan!",
+      data: {
+        totalPage,
+        orders: paginatedOrders,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
