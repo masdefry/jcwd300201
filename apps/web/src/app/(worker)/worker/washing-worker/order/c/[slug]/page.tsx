@@ -20,29 +20,6 @@ import NotaHeader from "@/components/core/createNotaHeaders";
 import { washingItemValidation } from "@/features/washingWorker/schemas/washingItemValidation";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
-const validationSchema = Yup.object().shape({
-    customerName: Yup.string().required("Customer name is required"),
-    customerAddress: Yup.string().required("Customer address is required"),
-    orderTypeId: Yup.string().required("Order type is required"),
-    items: Yup.array()
-        .of(
-            Yup.object().shape({
-                itemName: Yup.string().required("Item name is required"),
-                quantity: Yup.number()
-                    .required("Quantity is required")
-                    .min(1, "Quantity must be at least 1"),
-                weight: Yup.number()
-                    .required("Weight is required")
-                    .min(0.1, "Weight must be at least 0.1 kg"),
-            })
-        )
-        .min(1, "At least one item is required"),
-});
-
-interface ICreateOrder {
-    id: string,
-    values: FormData
-}
 type Iitem = {
     id: number,
     itemName: string,

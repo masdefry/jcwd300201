@@ -5,7 +5,7 @@ import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
-import {  FaDashcube, FaFileInvoice, FaMoneyBillWave,  FaRegCreditCard,  FaUserCheck } from "react-icons/fa6";
+import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaUserCheck } from "react-icons/fa6";
 import { FaCloud, FaTemperatureHigh } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
@@ -18,6 +18,7 @@ import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
+import NotificationOutletAdmin from "@/features/adminOutlet/components/notification";
 
 
 export default function Page() {
@@ -66,6 +67,18 @@ export default function Page() {
         },
     });
 
+    const { data: dataOrderNotif } = useQuery({
+        queryKey: ['get-order-notif'],
+        queryFn: async () => {
+            const res = await instance.get('/order/notification', {
+                params: { tab: 'admin' },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            console.log(res)
+            return res?.data?.data;
+        },
+    });
+
 
     useEffect(() => {
         if (lat && lng) {
@@ -106,7 +119,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<NotificationOutletAdmin dataOrderNotif={dataOrderNotif}/>}>
                 <main className="pb-28">
                     <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                         <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
@@ -173,6 +186,9 @@ export default function Page() {
                                 alt="logo"
                                 src={'/images/charr.png'}
                             />
+                        </div>
+                        <div className="flex items-start h-full">
+                            <NotificationOutletAdmin dataOrderNotif={dataOrderNotif} />
                         </div>
                     </div>
                     <div className="w-full rounded-xl h-full bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-2 gap-2 flex items-center">

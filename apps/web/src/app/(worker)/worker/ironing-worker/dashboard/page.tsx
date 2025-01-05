@@ -21,6 +21,7 @@ import { RiProfileFill } from "react-icons/ri";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
+import Notification from "@/components/core/notification";
 
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
@@ -69,6 +70,17 @@ export default function Page() {
             return res?.data?.data;
         },
     })
+    const { data: dataOrderIroningNotif } = useQuery({
+        queryKey: ['get-order-ironing'],
+        queryFn: async () => {
+            const res = await instance.get(`/order/order-ironing`, {
+                params: { tab: 'belum-disetrika' },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            return res?.data?.data;
+        },
+    })
 
     useEffect(() => {
         const date = new Date()
@@ -97,7 +109,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title='Dashboard' icon={<FaDashcube className='text-xl' />}>
+            <ContentMobileLayout title='Dashboard' icon={<FaDashcube className='text-xl' />} notification={<Notification dataOrderNotif={dataOrderIroningNotif} />}>
                 <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                     <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
                     <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
@@ -160,7 +172,7 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-            </ContentMobileLayout>
+            </ContentMobileLayout >
 
             <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex flex-col">
                 <section className="w-full h-1/2 rounded-xl flex gap-2">
@@ -235,9 +247,12 @@ export default function Page() {
                 </section>
                 <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
                     <div className="w-full h-full overflow-y-auto bg-white bg-opacity-45 rounded-xl p-4">
-                        <div className="flex items-center gap-4 pb-4">
-                            <h1 className='font-bold text-2xl text-neutral-700'>Proses Setrika</h1>
-                            <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                        <div className="flex justify-between">
+                            <div className="flex items-center gap-4 pb-4">
+                                <h1 className='font-bold text-2xl text-neutral-700'>Proses Setrika</h1>
+                                <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                            </div>
+                            <Notification dataOrderNotif={dataOrderIroningNotif} />
                         </div>
                         <div className="w-full space-y-4">
                             {dataOrderIroning?.orders?.map((order: any, i: number) => (

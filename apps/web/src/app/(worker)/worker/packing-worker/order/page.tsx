@@ -121,6 +121,9 @@ export default function DriverPickUp() {
         } else {
             currentUrl.delete('page')
         }
+        if (totalPages === undefined || page > totalPages) {
+            setPage(1)
+        }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
     }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
