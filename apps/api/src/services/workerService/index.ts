@@ -83,7 +83,7 @@ export const createNotesService = async ({ email, notes, orderId }: ICreateNotes
         }
     })
 
-    return note
+    return { note }
 }
 
 export const getAllWorkerService = async ({ whereClause, take, skip }: IGetAllWorker) => {

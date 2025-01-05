@@ -7,7 +7,6 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Formik } from 'formik';
-import * as Yup from 'yup'
 import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
 import { useAdminSettingsHooks } from '@/features/superAdmin/hooks/useAdminSettingsHooks';
@@ -16,6 +15,9 @@ import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLa
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CardContent } from '@/components/ui/card';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
+import { adminAccountValidationSchema } from '@/features/superAdmin/schemas/adminAccountValidationSchema';
+import { adminAccountMobileValidationSchema } from '@/features/superAdmin/schemas/adminAccountMobileValidation';
+import { adminChangePasswordValidationSchema } from '@/features/superAdmin/schemas/adminChangePasswordSchema';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -59,7 +61,7 @@ export default function Page() {
                                 emails: getDataWorker?.email || '',
                                 phoneNumbers: getDataWorker?.phoneNumber || '',
                                 img: null
-                            }}
+                            }} validationSchema={adminAccountMobileValidationSchema}
                                 onSubmit={(values) => {
                                     const fd = new FormData()
                                     fd.append('email', values?.emails)
@@ -87,11 +89,7 @@ export default function Page() {
                                 password: '',
                                 confirmPassword: ''
                             }}
-                                validationSchema={Yup.object().shape({
-                                    existingPassword: Yup.string().required('Password lama harus diisi'),
-                                    password: Yup.string().required('Password baru harus diisi'),
-                                    confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
-                                })}
+                                validationSchema={adminChangePasswordValidationSchema}
                                 onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
                                 <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                     confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
@@ -118,7 +116,7 @@ export default function Page() {
                             email: getDataWorker?.email || '',
                             phoneNumber: getDataWorker?.phoneNumber || '',
                             images: null
-                        }}
+                        }} validationSchema={adminAccountValidationSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.email)
@@ -144,11 +142,7 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={Yup.object().shape({
-                                existingPassword: Yup.string().required('Password lama harus diisi'),
-                                password: Yup.string().required('Password baru harus diisi'),
-                                confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
-                            })}
+                            validationSchema={adminChangePasswordValidationSchema}
                             onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}

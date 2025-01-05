@@ -143,8 +143,7 @@ export default function DeliveryRequest() {
     return (
         <>
             <MobileSessionLayout title="Pesanan">
-
-                <Tabs defaultValue={activeTab} className="fit">
+                <Tabs defaultValue={activeTab} className="fit pb-28">
                     <TabsList className="grid w-full grid-cols-2">
                         <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
                         <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>

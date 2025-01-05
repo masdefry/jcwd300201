@@ -1,6 +1,6 @@
 'use client'
 
-import { IoSearchSharp  } from "react-icons/io5";
+import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
 import { FiPlus } from "react-icons/fi";
 import { LuPackageCheck } from "react-icons/lu";
@@ -20,6 +20,7 @@ import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import { MdSportsMotorsports } from "react-icons/md";
 import TabTrackingUser from "@/features/user/components/tabUserTracking";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
+import Notification from "@/components/core/notification";
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
@@ -46,7 +47,7 @@ export default function Page() {
         setIsDay(isDayNow)
     }, [])
 
- const { data: dataOrderUser, isPending: dataOrderUserPending } = useQuery({
+    const { data: dataOrderUser, isPending: dataOrderUserPending } = useQuery({
         queryKey: ['get-order-user'],
         queryFn: async () => {
             const res = await instance.get(`/order/history-user`, {
@@ -58,7 +59,7 @@ export default function Page() {
         },
     });
 
-    const { data: dataOrder, isPending:dataOrderPending } = useQuery({
+    const { data: dataOrder, isPending: dataOrderPending } = useQuery({
         queryKey: ['get-order-status', selectedTab],
         queryFn: async () => {
             const res = await instance.get(`/order/tracking-user?period=${selectedTab}`, {
@@ -85,10 +86,10 @@ export default function Page() {
     }, [lat, lng])
 
     if (dataOrderUserPending && dataOrderPending) return (
-            <>
-                <LoadingDashboardWeb />
-            </>
-        )
+        <>
+            <LoadingDashboardWeb />
+        </>
+    )
 
     const arrIcon = [
         { icon: <FaDashcube />, url: '/user/dashboard/home', name: 'Dashboard' },
@@ -99,7 +100,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification />}>
                 <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                     <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
                     <p className="text-neutral-200 text-sm mt-1">Selamat datang di Clean&Click, layanan laundry profesional yang memastikan pakaian Anda selalu bersih dan rapi.</p>
@@ -115,7 +116,7 @@ export default function Page() {
                     </div>
                 </div>
 
-                <div className="w-full flex flex-col md:flex-row gap-4 px-2 mt-5 h-auto">
+                <div className="w-full flex flex-col md:flex-row gap-4 px-2 mt-5 h-auto pb-28">
                     <div className="w-full md:w-1/2 h-auto bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-4 rounded-2xl shadow-md">
                         <div className="h-full bg-white bg-opacity-70 rounded-lg p-4">
                             <h2 className="text-lg font-semibold text-gray-700 mb-2">Status Cuaca</h2>
@@ -129,9 +130,9 @@ export default function Page() {
                         </div>
                     </div>
 
-                    <div className="w-full flex justify-center flex-col h-full border border-gray-300 mx-2  mr-10 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
+                    <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                         <div className="flex items-center gap-4 pb-4">
-                            <h1 className='font-bold text-xl text-neutral-700'>Pesanan Diproses</h1>
+                            <h1 className='font-bold text-base text-neutral-700'>Pesanan Diproses</h1>
                             <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                         </div>
                         <div className="w-full space-y-4">

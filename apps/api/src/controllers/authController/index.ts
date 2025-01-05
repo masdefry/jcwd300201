@@ -32,20 +32,20 @@ export const userLogin = async (req: Request, res: Response, next: NextFunction)
     try {
         const { email, password } = req?.body
 
-        const dataLogin = await userLoginService({ email, password })
+        const { findUser, token } = await userLoginService({ email, password })
 
         res?.status(200).json({
             error: false,
             message: 'Berhasil, silahkan masuk!',
             data: {
-                token: dataLogin?.token,
+                token,
                 email,
-                role: dataLogin?.findUser?.role,
-                firstName: dataLogin?.findUser?.firstName,
-                lastName: dataLogin?.findUser?.lastName,
-                isVerify: dataLogin?.findUser?.isVerified,
-                profilePicture: dataLogin?.findUser?.profilePicture,
-                phoneNumber: dataLogin?.findUser?.phoneNumber
+                role: findUser?.role,
+                firstName: findUser?.firstName,
+                lastName: findUser?.lastName,
+                isVerify: findUser?.isVerified,
+                profilePicture: findUser?.profilePicture,
+                phoneNumber: findUser?.phoneNumber
             }
         })
     } catch (error) {
@@ -57,17 +57,18 @@ export const userLogout = async (req: Request, res: Response, next: NextFunction
     try {
         const { email } = req.body
         const { authorization } = req.headers
+        await prisma.$transaction(async (tx) => {
+            const findUser = await tx.user.findFirst({ where: { email } })
+            if (!findUser) throw { msg: 'Pengguna tidak tersedia', status: 404 }
+            let token = authorization?.split(' ')[1] as string
 
-        const findUser = await prisma.user.findFirst({ where: { email } })
-        if (!findUser) throw { msg: 'Pengguna tidak tersedia', status: 404 }
-        let token = authorization?.split(' ')[1] as string
+            jwt.verify(token, secret_key, (err) => {
+                if (err) throw { msg: 'Ada kesalahan saat mencoba logout', status: 401 }
 
-        jwt.verify(token, secret_key, (err) => {
-            if (err) throw { msg: 'Ada kesalahan saat mencoba logout', status: 401 }
-
-            req.app.locals.credentials = null
-        })
-
+                req.app.locals.credentials = null
+            })
+        }, { timeout: 30000 })
+        
         res.status(200).json({
             error: false,
             message: 'Logout Berhasil!',
@@ -267,20 +268,22 @@ export const workerRegisterByAdmin = async (req: Request, res: Response, next: N
 export const workerLogout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email } = req.body
-        const findAdmin = await prisma.worker.findFirst({
-            where: { email }
-        })
+        await prisma.$transaction(async (tx) => {
+            const findAdmin = await tx.worker.findFirst({
+                where: { email }
+            })
 
-        if (!findAdmin) throw { msg: 'Pengguna belom melakukan login', status: 400 }
+            if (!findAdmin) throw { msg: 'Pengguna belom melakukan login', status: 400 }
 
-        const { authorization } = req.headers
-        let token = authorization?.split(' ')[1] as string
+            const { authorization } = req.headers
+            let token = authorization?.split(' ')[1] as string
 
-        jwt.verify(token, secret_key, (err) => {
-            if (err) throw { msg: 'Ada kesalahan saat proses logout, silahkan coba lagi nanti', status: 401 }
+            jwt.verify(token, secret_key, (err) => {
+                if (err) throw { msg: 'Ada kesalahan saat proses logout, silahkan coba lagi nanti', status: 401 }
 
-            req.app.locals.credentials = null
-        })
+                req.app.locals.credentials = null
+            })
+        }, { timeout: 30000 })
 
         res.status(200).json({
             error: false,

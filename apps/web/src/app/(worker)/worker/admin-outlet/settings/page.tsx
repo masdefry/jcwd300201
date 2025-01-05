@@ -57,7 +57,7 @@ export default function Page() {
                     <Tabs defaultValue="1" className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="1" >Akun</TabsTrigger>
-                            <TabsTrigger value="2" >Change Password</TabsTrigger>
+                            <TabsTrigger value="2" >Ganti Password</TabsTrigger>
                         </TabsList>
                         <TabsContent value="1">
                             <Formik initialValues={{
@@ -107,7 +107,7 @@ export default function Page() {
                         </TabsContent>
                     </Tabs>
                     <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisableSucces}>
-                        <ButtonCustom width='w-full gap-2' rounded='rounded-full' btnColor='bg-orange-500 hover:bg-orange-500' disabled={isPending || isDisableSucces}><FaSignOutAlt /> Logout</ButtonCustom>
+                        <ButtonCustom width='w-full gap-2' rounded='rounded-full' btnColor='bg-red-500 hover:bg-red-500' disabled={isPending || isDisableSucces}><FaSignOutAlt /> Logout</ButtonCustom>
                     </ConfirmAlert>
                 </div>
             </ContentMobileLayout>

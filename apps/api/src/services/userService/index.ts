@@ -91,7 +91,6 @@ export const userEditAddressService = async ({ addressId, addressName, addressDe
         where: {
             userId,
             UserAddress: { id: Number(addressId), userId },
-            // isConfirm: false || null sementara gini dulu
         }
     })
 
@@ -195,7 +194,7 @@ export const updateProfileUserService = async ({ userId, email, phoneNumber, fir
     if (findEmail && findEmail?.email !== findUser?.email) throw { msg: 'Email sudah terpakai', status: 401 }
     if (!validateEmail(email)) throw { msg: 'Harap masukan email dengan format yang valid', status: 401 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan nomor telepon dengan format nomor', status: 401 }
-    // if (email === findUser?.email && firstName === findUser?.firstName && lastName === findUser?.lastName && phoneNumber === findUser?.phoneNumber && (imageUploaded?.images?.length === 0 || imageUploaded?.images?.length === undefined)) throw { msg: 'Data tidak ada yang diubah', status: 400 }
+    if (email === findUser?.email && firstName === findUser?.firstName && lastName === findUser?.lastName && phoneNumber === findUser?.phoneNumber && (imageUploaded?.images?.length === 0 || imageUploaded?.images?.length === undefined)) throw { msg: 'Data tidak ada yang diubah', status: 400 }
 
     const dataImage: string[] = imageUploaded?.images?.map((img: any) => {
         return img?.filename
@@ -206,8 +205,8 @@ export const updateProfileUserService = async ({ userId, email, phoneNumber, fir
         data: { firstName, lastName, email, phoneNumber, profilePicture: dataImage?.length > 0 ? dataImage[0] : findUser?.profilePicture }
     })
 
-    if (!findUser?.profilePicture.includes('https://') && newDataUser?.profilePicture !== findUser?.profilePicture) { /** ini bersikap sementara karna default value profilePict itu dari google / berupa https:// */
-        fs.rmSync(`src/public/images/${findUser?.profilePicture}`) /**sedangkan ini menghapus directory membaca folder public/images akan menyebabkan error */
+    if (!findUser?.profilePicture.includes('https://') && newDataUser?.profilePicture !== findUser?.profilePicture) {
+        fs.rmSync(`src/public/images/${findUser?.profilePicture}`)
     }
 }
 
@@ -248,27 +247,29 @@ export const changePasswordGoogleRegisterService = async ({ userId, password }: 
 }
 
 export const deleteUserAddressService = async ({ userId, addressId }: { userId: string, addressId: number }) => {
-    const findAddressById = await prisma.userAddress.findFirst({ where: { id: Number(addressId), userId } })
-    const findAllAddress = await prisma.userAddress.findMany({ where: { userId } })
-    const findOrderUser = await prisma.order.findFirst({
-        where: {
-            userId,
-            UserAddress: { id: addressId, userId },
-        }
-    })
-
-    if (findOrderUser) throw { msg: 'Kamu sedang melakukan pesanan, tidak dapat menghapus alamat', status: 400 }
-    if (!findAddressById) throw { msg: 'Alamat sudah tidak tersedia atau sudah terhapus', status: 404 }
-    if (findAllAddress?.length === 1 && findAddressById?.isMain == true) throw { msg: 'Alamat utama tidak dapat dihapus karena setidaknya satu alamat diperlukan sebagai alamat utama', status: 400 }
-    await prisma.userAddress.delete({ where: { id: Number(addressId), userId } })
-
-    const findAddressAfterDelete = await prisma.userAddress.findMany({ where: { userId } })
-    if (findAddressAfterDelete?.length > 0) {
-        await prisma.userAddress.update({
-            where: { id: Number(findAddressAfterDelete[0]?.id), userId },
-            data: { isMain: true }
+    await prisma.$transaction(async (tx) => {
+        const findAddressById = await tx.userAddress.findFirst({ where: { id: Number(addressId), userId } })
+        const findAllAddress = await tx.userAddress.findMany({ where: { userId } })
+        const findOrderUser = await tx.order.findFirst({
+            where: {
+                userId,
+                UserAddress: { id: addressId, userId },
+            }
         })
-    }
+
+        if (findOrderUser) throw { msg: 'Kamu sedang melakukan pesanan, tidak dapat menghapus alamat', status: 400 }
+        if (!findAddressById) throw { msg: 'Alamat sudah tidak tersedia atau sudah terhapus', status: 404 }
+        if (findAllAddress?.length === 1 && findAddressById?.isMain == true) throw { msg: 'Alamat utama tidak dapat dihapus karena setidaknya satu alamat diperlukan sebagai alamat utama', status: 400 }
+        await tx.userAddress.delete({ where: { id: Number(addressId), userId } })
+
+        const findAddressAfterDelete = await tx.userAddress.findMany({ where: { userId } })
+        if (findAddressAfterDelete?.length > 0) {
+            await tx.userAddress.update({
+                where: { id: Number(findAddressAfterDelete[0]?.id), userId },
+                data: { isMain: true }
+            })
+        }
+    }, { timeout: 30000 })
 }
 
 export const changeMainAddressUserServices = async ({ id, userId }: { id: number, userId: string }) => {
@@ -290,5 +291,5 @@ export const changeMainAddressUserServices = async ({ id, userId }: { id: number
                 data: { isMain: true }
             })
         }
-    })
+    }, { timeout: 30000 })
 }

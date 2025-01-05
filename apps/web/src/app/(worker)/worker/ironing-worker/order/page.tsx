@@ -162,7 +162,7 @@ export default function DriverPickUp() {
                             {!dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
                                 dataOrderIroningProcess?.orders?.map((order: any) => (
                                     <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' ? (
+                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' || ((order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' || order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS') && order?.OrderType?.type === 'Wash & Iron') ? (
                                             <div className="flex items-center">
                                                 <div className="px-2">
                                                     <h2 className="font-medium text-gray-900">{order?.id}</h2>
@@ -370,7 +370,7 @@ export default function DriverPickUp() {
                                                             }
                                                         }}
                                                     >
-                                                        <button disabled={order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
+                                                        <button disabled={order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' || ((order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' || order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS') && order?.OrderType?.type === 'Wash & Iron')} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
                                                             {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' ? 'Selesai' : 'Selesaikan'}
                                                         </button>
                                                     </ConfirmAlert>

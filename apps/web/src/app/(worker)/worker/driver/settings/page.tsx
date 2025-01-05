@@ -108,7 +108,7 @@ export default function Page() {
                         </TabsContent>
                     </Tabs>
                     <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisableSucces}>
-                        <ButtonCustom btnColor='bg-orange-500 hover:bg-orange-500' rounded='rounded-full gap-2' disabled={isPending || isDisableSucces} width='w-full'><FaSignOutAlt /> Logout</ButtonCustom>
+                        <ButtonCustom btnColor='bg-red-500 hover:bg-red-500' rounded='rounded-full gap-2' disabled={isPending || isDisableSucces} width='w-full'><FaSignOutAlt /> Logout</ButtonCustom>
                     </ConfirmAlert>
                 </div>
             </MobileSessionLayout>

@@ -84,7 +84,7 @@ export default function Page() {
                     ))}
                 </div>
                 <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
-                    <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-orange-500" disabled={isPending || isDisabledSucces}>Logout</ButtonCustom>
+                    <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-red-500 hover:bg-red-500" disabled={isPending || isDisabledSucces}>Logout</ButtonCustom>
                 </ConfirmAlert>
             </ContentMobileLayout>
 
@@ -100,7 +100,7 @@ export default function Page() {
                     </div>
                     <div className="w-full py-3">
                         <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
-                            <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-orange-500" disabled={isPending || isDisabledSucces}>Logout</ButtonCustom>
+                            <ButtonCustom rounded="rounded-2xl w-full" btnColor="bg-red-500 hover:bg-red-500" disabled={isPending || isDisabledSucces}>Logout</ButtonCustom>
                         </ConfirmAlert>
                     </div>
                 </section>

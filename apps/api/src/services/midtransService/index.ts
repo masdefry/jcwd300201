@@ -1,29 +1,15 @@
 import prisma from "@/connection"
-import { validateEmail } from "@/middlewares/validation/emailValidation"
-import { phoneNumberValidation } from "@/middlewares/validation/phoneNumberValidation"
-import { comparePassword, hashPassword } from "@/utils/passwordHash"
-import { encodeToken } from "@/utils/tokenValidation"
-import { transporter } from "@/utils/transporter"
-import fs from 'fs'
 import dotenv from 'dotenv'
-import { compile } from "handlebars"
 import { Status } from "@prisma/client"
 import { IHandleMidtransNotification } from "./type"
 
 dotenv.config()
-const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
-
-/* * User Service  */
-
-/* *register */
 export const handleMidtransNotificationService = async ({ orderId, transactionStatus }: IHandleMidtransNotification) => {
     const transactionRecord = await prisma.order.findUnique({
         where: { id: orderId },
     });
 
-    if (!transactionRecord) throw { msg: "Transaction not found" };
-
-
+    if (!transactionRecord) throw { msg: "Transaksi tidak tersedia", status: 404 };
     let updatedStatus: Status;
 
     if (transactionStatus === "settlement" || transactionStatus === "capture") {
@@ -36,7 +22,6 @@ export const handleMidtransNotificationService = async ({ orderId, transactionSt
             },
         });
 
-
         const order = await prisma.order.update({
             where: {
                 id: orderId
@@ -46,10 +31,10 @@ export const handleMidtransNotificationService = async ({ orderId, transactionSt
             }
         })
 
-        if (!order) throw { msg: 'order tidak ditemukan', status: 404 }
+        if (!order) throw { msg: 'Order tidak ditemukan', status: 404 }
 
     } else {
-        throw new Error(`Invalid transaction status: ${transactionStatus}`);
+        throw { msg: 'Transaksi Gagal!', status: 400 }
     }
 
 
