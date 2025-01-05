@@ -18,7 +18,7 @@ import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import Notification from "@/components/core/notification";
+import NotificationDriver from "@/features/driver/components/notification";
 
 const iconButtons = [
     { icon: BsPerson, label: "Admin Outlet" },
@@ -55,6 +55,7 @@ export default function Page() {
         queryKey: ['get-order-request'],
         queryFn: async () => {
             const res = await instance.get('/order/order', {
+                params: { tab: 'DRIVER_TO_OUTLET' },
                 headers: { Authorization: `Bearer ${token}` }
             });
             return res?.data?.data;
@@ -62,13 +63,24 @@ export default function Page() {
     });
 
     const { data: dataOrderDelivery, isPending: dataOrderDeliveryPending } = useQuery({
-        queryKey: ['get-order-delivery'],
+        queryKey: ['get-order-proses'],
         queryFn: async () => {
             const res = await instance.get(`/order/delivery`, {
-                params: { tab: 'all' },
+                params: { tab: 'proses' },
                 headers: { Authorization: `Bearer ${token}` }
             });
 
+            return res?.data?.data;
+        },
+    });
+    const { data: dataOrderNotif } = useQuery({
+        queryKey: ['get-order-notif'],
+        queryFn: async () => {
+            const res = await instance.get('/order/notification', {
+                params: { tab: 'driver' },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            console.log(res)
             return res?.data?.data;
         },
     });
@@ -118,7 +130,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification />}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<NotificationDriver dataOrderNotif={dataOrderNotif} />} >
                 <main className="pb-28">
                     <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                         <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
@@ -147,7 +159,7 @@ export default function Page() {
                         </div>
                         <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                             <div className="flex items-center gap-4 pb-4">
-                                <h1 className='font-bold text-base text-neutral-700'>Permintaan Pickup</h1>
+                                <h1 className='font-bold text-base text-neutral-700'>Proses Pickup</h1>
                                 <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                             </div>
                             <div className="w-full space-y-2 max-h-[calc(3*3rem)] overflow-y-auto">
@@ -286,9 +298,12 @@ export default function Page() {
                 </section>
                 <section className="w-full h-1/2 flex bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-5 gap-2">
                     <div className="w-full h-full overflow-y-auto bg-white bg-opacity-45 rounded-xl p-4">
-                        <div className="flex items-center gap-4 pb-4">
-                            <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Pickup</h1>
-                            <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                        <div className="flex justify-between">
+                            <div className="flex items-center gap-4 pb-4">
+                                <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Pickup</h1>
+                                <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                            </div>
+                            <NotificationDriver dataOrderNotif={dataOrderNotif} />
                         </div>
                         <div className="w-full space-y-4">
                             {dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => (
@@ -318,10 +333,15 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="w-full h-full overflow-y-auto bg-white bg-opacity-45 rounded-xl p-4">
-                        <div className="flex items-center gap-4 pb-4">
-                            <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Antar</h1>
-                            <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                        <div className="flex justify-between">
+
+                            <div className="flex items-center gap-4 pb-4">
+                                <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Antar</h1>
+                                <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                            </div>
+                            <NotificationDriver dataOrderNotif={dataOrderNotif} />
                         </div>
+
                         <div className="w-full space-y-4">
                             {dataOrderDelivery?.orders?.map((order: any, i: number) => (
                                 <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>

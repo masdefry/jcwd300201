@@ -1858,7 +1858,7 @@ export const getOrdersForDriverDeliveryService = async ({
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
   let statusFilter: any;
-  if (tab === "menungguDriver") {
+  if (tab === "waiting-driver") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "proses") {
     statusFilter = ['DRIVER_TO_CUSTOMER'];
@@ -1895,7 +1895,7 @@ export const getOrdersForDriverDeliveryService = async ({
           ],
         }
         : {},
-      ...(tab === 'menungguDriver' ? [{ isProcessed: false, isReqDelivery: true, isPaid: true, isDone: true }] : []),
+      ...(tab === 'waiting-driver' ? [{ isProcessed: false, isReqDelivery: true, isPaid: true, isDone: true }] : []),
       ...(tab === 'proses' ? [{ isProcessed: true }] : []),
       ...(tab === 'all' ? [{ isPaid: true }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
@@ -3204,5 +3204,94 @@ export const orderTrackingUserService = async ({ userId, period }: IOrderTrackin
     totalSpent: stats._sum.laundryPrice || 0,
     totalWeight: stats._sum.totalWeight || 0,
     totalPcs: totalPcs._sum.quantity || 0,
+  };
+};
+
+
+export const getOrdersForNotifService = async ({
+  authorizationRole,
+  storeId,
+  page = "1",
+  tab,
+}: {
+  userId: string;
+  authorizationRole: Role;
+  storeId: string;
+  page: string;
+  tab: string;
+}) => {
+  const limit = 5;
+
+  const pageNumber = isNaN(parseInt(page)) ? 1 : Math.max(parseInt(page), 1);
+
+  const offset = Math.max(limit * (pageNumber - 1), 0);
+
+  let statusFilter: any;
+  if (tab === "driver") {
+    statusFilter = ['AWAITING_DRIVER_PICKUP', 'PAYMENT_DONE'];
+  } else if (tab === "admin") {
+    statusFilter = ['AWAITING_DRIVER_PICKUP', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
+  } else if (tab === "user") {
+    statusFilter = ['AWAITING_DRIVER_PICKUP', 'AWAITING_PAYMENT', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
+  } else if (tab) {
+    statusFilter = [tab];
+  } else {
+    statusFilter = ['AWAITING_PAYMENT', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
+  }
+
+  const whereConditions: Prisma.OrderWhereInput = {
+    ...(authorizationRole === "SUPER_ADMIN" ? { storeId } : {}),
+    orderStatus: {
+      some: {
+        status: { in: statusFilter },
+      },
+    },
+  };
+
+  const orders = await prisma.order.findMany({
+    where: whereConditions,
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    skip: offset,
+    include: {
+      User: {
+        select: {
+          firstName: true,
+          lastName: true,
+          phoneNumber: true,
+        },
+      },
+      UserAddress: {
+        select: {
+          longitude: true,
+          latitude: true,
+        },
+      },
+      orderStatus: {
+        take: 1,
+        orderBy: {
+          createdAt: "desc",
+        },
+        where: {
+          status: { in: statusFilter },
+        },
+      },
+      OrderType: {
+        select: {
+          type: true,
+        },
+      },
+    },
+  });
+
+  const totalCount = await prisma.order.count({
+    where: whereConditions,
+  });
+
+  const totalPage = Math.ceil(totalCount / limit);
+
+  return {
+    totalPage,
+    orders,
   };
 };

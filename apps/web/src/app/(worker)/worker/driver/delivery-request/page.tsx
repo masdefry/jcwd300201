@@ -168,7 +168,7 @@ export default function DriverDelivery() {
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
                             <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
-                            <TabsTrigger value="menungguDriver" onClick={() => { setActiveTab("menungguDriver"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
+                            <TabsTrigger value="waiting-driver" onClick={() => { setActiveTab("waiting-driver"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
                             <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
                             <TabsTrigger value="terkirim" onClick={() => { setActiveTab("terkirim"); setPage(1) }} className='text-xs'>Terkirim</TabsTrigger>
                         </TabsList>

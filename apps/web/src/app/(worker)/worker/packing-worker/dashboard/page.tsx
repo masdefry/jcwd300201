@@ -15,6 +15,7 @@ import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuL
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
+import Notification from "@/components/core/notification";
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
@@ -40,12 +41,23 @@ export default function Page() {
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
-    
+
     const { data: dataOrderPacking, isPending: dataOrderPackingPending } = useQuery({
         queryKey: ['get-order-packing'],
         queryFn: async () => {
             const res = await instance.get(`/order/order-packing`, {
                 params: { tab: 'packing-process' },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+
+            return res?.data?.data;
+        },
+    });
+    const { data: dataOrderPackingNotif } = useQuery({
+        queryKey: ['get-order-packing'],
+        queryFn: async () => {
+            const res = await instance.get(`/order/order-packing`, {
+                params: { tab: 'not-packed-yet' },
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -84,7 +96,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification dataOrderNotif={dataOrderPackingNotif} />}>
                 <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                     <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
                     <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
@@ -223,10 +235,15 @@ export default function Page() {
                 </section>
                 <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
                     <div className="w-full h-full overflow-y-auto bg-white bg-opacity-45 rounded-xl p-4">
-                        <div className="flex items-center gap-4 pb-4">
-                            <h1 className='font-bold text-2xl text-neutral-700'>Proses Packing</h1>
-                            <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                        <div className="flex justify-between">
+
+                            <div className="flex items-center gap-4 pb-4">
+                                <h1 className='font-bold text-2xl text-neutral-700'>Proses Packing</h1>
+                                <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
+                            </div>
+                            <Notification dataOrderNotif={dataOrderPackingNotif} />
                         </div>
+
                         <div className="w-full space-y-4">
                             {dataOrderPacking?.orders?.map((order: any, i: number) => (
                                 <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>

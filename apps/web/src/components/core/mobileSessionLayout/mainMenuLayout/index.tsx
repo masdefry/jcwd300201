@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-export default function ContentMobileLayout({ children, title = 'Menu', icon, notification }: { notification?: ReactNode, children: ReactNode, icon?: ReactNode, title: string }) {
+export default function ContentMobileLayout({ children, title = 'Menu', icon, notification = null }: { notification?: ReactNode | null, children: ReactNode, icon?: ReactNode, title: string }) {
     return (
         <main className="w-full bg-orange-500 block md:hidden">
             <div className="w-full pt-10 h-fit bg-[url('/images/patts.png')]">
@@ -10,7 +10,7 @@ export default function ContentMobileLayout({ children, title = 'Menu', icon, no
                             {icon}
                             <h1 className="font-bold text-lg">{title}</h1>
                         </div>
-                        {notification}
+                        {notification && notification}
                     </div>
                     {children}
                 </section>

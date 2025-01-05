@@ -24,6 +24,8 @@ import { RiProfileFill } from "react-icons/ri";
 import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
 import Notification from "@/components/core/notification";
 import { useSearchParams } from "next/navigation";
+import NotificationOutletAdmin from "@/features/adminOutlet/components/notification";
+import NotificationSuperAdmin from "@/features/superAdmin/components/notification";
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
@@ -64,6 +66,17 @@ export default function Page() {
         },
     });
 
+    const { data: dataOrderNotif } = useQuery({
+        queryKey: ['get-order-notif'],
+        queryFn: async () => {
+            const res = await instance.get('/order/notification', {
+                params: { tab: 'admin' },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            console.log(res)
+            return res?.data?.data;
+        },
+    });
     useEffect(() => {
         if (lat && lng) {
             const handleCurrentWeither = async () => {
@@ -128,7 +141,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification />}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<NotificationOutletAdmin dataOrderNotif={dataOrderNotif} />}>
                 <main className="pb-24">
                     <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                         <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
@@ -200,6 +213,9 @@ export default function Page() {
                                 alt="logo"
                                 src={'/images/charr.png'}
                             />
+                        </div>
+                        <div className="flex h-full items-start">
+                            <NotificationSuperAdmin dataOrderNotif={dataOrderNotif} />
                         </div>
                     </div>
                     <div className="w-full rounded-xl h-full bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-2 gap-2 flex items-center">

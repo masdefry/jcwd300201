@@ -126,6 +126,9 @@ export default function Page() {
         } else {
             currentUrl.delete('page')
         }
+        if (totalPages === undefined || page > totalPages) {
+            setPage(1)
+        }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
     }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
@@ -216,6 +219,7 @@ export default function Page() {
                                             ) : (
                                                 <div className="flex items-center">
                                                     <div className="px-2">
+                                                        <h2 className="font-medium text-gray-900">{order?.id?.length > 15 ? <span>{order?.id?.slice(0, 15)}..</span> : order?.id}</h2>
                                                         <h2 className="font-medium text-gray-900">
                                                             {order?.User?.firstName} {order?.User?.lastName}
                                                         </h2>
@@ -286,7 +290,7 @@ export default function Page() {
                         <thead className="bg-gray-200">
                             <tr>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
+                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order Id / Nama</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe Order</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tanggal dibuat</th>
@@ -305,7 +309,9 @@ export default function Page() {
                                     dataOrderWashingProcess?.orders?.map((order: any, i: number) => (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">
+                                                <div>{order?.User?.firstName} {order?.User?.lastName}</div>
+                                            </td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                 {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
@@ -347,7 +353,9 @@ export default function Page() {
                                                         }
                                                     }}>
                                                     <button disabled={order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS'} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                        {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' : 'Selesaikan'}
+                                                        {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' ? 'Selesai' :
+                                                            order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' ? 'Proses' :
+                                                                'Selesaikan'}
                                                     </button>
                                                 </ConfirmAlert>
                                             </td>
