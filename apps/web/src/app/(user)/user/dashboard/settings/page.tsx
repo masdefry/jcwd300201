@@ -1,6 +1,6 @@
 'use client'
 
-import { FaUser, FaStore, FaRegFilePowerpoint, FaHome, FaSignOutAlt, FaQuestionCircle, FaShieldAlt, FaInfoCircle, FaConciergeBell, FaPhoneAlt } from 'react-icons/fa';
+import { FaUser, FaStore, FaHome, FaSignOutAlt, FaQuestionCircle, FaShieldAlt, FaInfoCircle, FaConciergeBell, FaPhoneAlt } from 'react-icons/fa';
 import ContentWebLayout from "@/components/core/webSessionContent";
 import ListCustom from "@/components/core/listSettings";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
@@ -26,7 +26,6 @@ const settingsItems = [
     { name: 'Kebijakan Privasi', description: 'Kebijakan privasi aplikasi', icon: FaShieldAlt, url: '/privacy-policy' },
     { name: 'Syarat dan Ketentuan', description: 'Syarat dan ketentuan penggunaan', icon: FaFileContract, url: '/terms-condition' },
 ];
-
 
 export default function Page() {
     const email = authStore((state) => state?.email)
@@ -76,7 +75,7 @@ export default function Page() {
                         </Link>
                     ))}
                     <ConfirmAlert caption="Apakah anda yakin ingin logout?" onClick={() => handleLogoutAdmin()} disabled={isPending || isDisabledSucces}>
-                        <ButtonCustom btnColor='bg-orange-500 hover:bg-orange-500' type='button' rounded='rounded-full' width='w-full gap-2'><FaSignOutAlt /> Logout</ButtonCustom>
+                        <ButtonCustom btnColor='bg-red-500 hover:bg-red-500' type='button' rounded='rounded-full' disabled={isPending || isDisabledSucces} width='w-full gap-2'><FaSignOutAlt /> Logout</ButtonCustom>
                     </ConfirmAlert>
                 </div>
             </ContentMobileLayout>

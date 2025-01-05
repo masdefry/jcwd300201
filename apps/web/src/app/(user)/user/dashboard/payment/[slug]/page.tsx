@@ -12,11 +12,9 @@ import { useToast } from "@/components/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import React, { useEffect } from 'react';
 import { useRouter } from "next/navigation";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
 import { useState } from "react";
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { values } from "cypress/types/lodash";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import NotaHeader from "@/components/core/createNotaHeaders";
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
@@ -68,6 +66,16 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const token = authStore((state) => state?.token);
     const email = authStore((state) => state?.email);
     const { toast } = useToast();
+    
+    const { data: dataOrderNote, refetch, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
+        queryKey: ['get-order-note'],
+        queryFn: async () => {
+            const res = await instance.get(`/order/orders-detail/${slug}`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return res?.data?.data;
+        },
+    });
 
     const { mutate: handlePaymmentOrder, isPending } = useMutation({
         mutationFn: async ({ email }: any) => {
@@ -82,6 +90,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
+
             setTimeout(() => {
                 router.push(res?.data?.OrderUrl?.paymentProof);
             }, 1000);
@@ -106,7 +115,9 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             toast({
                 description: res?.data?.message,
                 className: "bg-green-500 text-white p-4 rounded-lg shadow-lg",
-            });
+            })
+
+            refetch()
             setIsUploadDialogOpen(false);
         },
         onError: (error: any) => {
@@ -117,16 +128,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         },
     });
 
-    const { data: dataOrderNote, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
-        queryKey: ['get-order-note'],
-        queryFn: async () => {
-            const res = await instance.get(`/order/orders-detail/${slug}`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            return res?.data?.data;
-        },
-    });
-
     const isArrCardPayment = [
         { img: '/images/bca-card.png' },
         { img: '/images/bank-tf.png' },
@@ -134,150 +135,10 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         { img: '/images/e-wallet.png' },
     ]
 
-    // if (dataOrderNote == undefined) return <div></div>
-    // if (isFetching) return <div></div>
+    if (dataOrderNote == undefined) return <div></div>
+    if (isFetching) return <div></div>
     return (
         <>
-            {/* <main className="w-full h-fit md:hidden block">
-                <section className="w-full h-fit">
-                    <HeaderMobile />
-                    <main className="w-full">
-                        <section className="w-full fixed pt-16 text-lg pb-4 border-b-2 bg-white">
-                            <div className="mx-8 flex gap-2 items-center font-bold w-full">
-                                <Link href='/admin/settings'><FaArrowLeft /></Link> Payment
-                            </div>
-                        </section>
-                        <section className="py-28 px-10">
-                            <div className="grid grid-cols-2 gap-4">
-                                <div className="flex flex-col col-span-2">
-                                    <label className="text-sm">Order Id</label>
-                                    <input
-                                        type="text"
-                                        value={dataOrderNote?.order?.id || 'ORD2313123'}
-                                        disabled
-                                        className="border border-gray-500 rounded-md p-2 bg-gray-200"
-                                    />
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <label className="text-sm">Delivery Fee</label>
-                                    <input
-                                        type="text"
-                                        value={dataOrderNote?.order?.deliveryFee || '0'}
-                                        disabled
-                                        className="border border-gray-500 rounded-md p-2 bg-gray-200"
-                                    />
-                                </div>
-
-                                <div className="flex flex-col">
-                                    <label className="text-sm">Laundry Price</label>
-                                    <input
-                                        type="text"
-                                        value={dataOrderNote?.order?.laundryPrice || '0'}
-                                        disabled
-                                        className="border border-gray-500 rounded-md p-2 bg-gray-200"
-                                    />
-                                </div>
-                                <div className="flex flex-col col-span-2">
-                                    <label className="text-sm">Total Price</label>
-                                    <input
-                                        type="text"
-                                        value={dataOrderNote?.order?.totalPrice || '0'}
-                                        disabled
-                                        className="border border-gray-500 rounded-md p-2 bg-gray-200"
-                                    />
-                                </div>
-                            </div>
-
-                            {dataOrderNote?.order?.isPaid === false && !dataOrderNote?.order?.paymentProof || dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0 ? (
-                                <section className="flex justify-center mt-8 flex-col border- rounded-lg border border-gray-300 shadow-lg p-4">
-                                    <div className="text-lg font-bold text-center">Pilih Metode Pembayaran</div>
-                                    <ConfirmAlert
-                                        caption="Apakah anda yakin ingin melakukan pembayaran melalui VA/e-Wallet/Kartu Kredit?"
-                                        onClick={() => handlePaymmentOrder(dataOrderNote?.order?.id)}
-                                        description='Anda tidak bisa mengganti metode pembayaran setelah memilih'
-                                        disabled={dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0}
-                                        colorConfirmation="blue">
-                                        <button className="bg-blue-500 text-white rounded-md p-3 mt-4">
-                                            VA / e-Wallet / Kartu Kredit
-                                        </button>
-                                    </ConfirmAlert>
-                                    <div className="mt-4 text-center text-gray-700">atau</div>
-                                    <ConfirmAlert
-                                        disabled={dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0}
-                                        caption="Apakah anda yakin ingin melakukan pembayaran melalui transfer manual?"
-                                        onClick={() => setIsUploadDialogOpen(true)}
-                                        description='Anda tidak bisa mengganti metode pembayaran setelah memilih'
-                                        colorConfirmation="blue">
-                                        <button className="bg-blue-500 text-white rounded-md p-3 mt-4">
-                                            Transfer Manual
-                                        </button>
-                                    </ConfirmAlert>
-                                </section>
-                            ) : (
-                                <div className="flex text-center text-lg justify-center mt-8 flex-col border- rounded-lg border border-gray-300 shadow-lg p-4">
-                                    <div className="font-bold">
-                                        Terima kasih,
-                                    </div>
-                                    <div>
-                                        Anda Telah Melakukan Pembayaran!
-                                    </div>
-                                </div>
-                            )}
-
-                            <Dialog open={isUploadDialogOpen} onOpenChange={setIsUploadDialogOpen}>
-                                <DialogContent>
-                                    <DialogHeader>
-                                        <DialogTitle>Upload Bukti Pembayaran</DialogTitle>
-                                        <DialogDescription>
-                                            Silakan unggah bukti pembayaran Anda di bawah ini.
-                                        </DialogDescription>
-                                    </DialogHeader>
-                                    <Formik
-                                        initialValues={{ images: null }}
-                                        onSubmit={(values: any) => {
-                                            const fd = new FormData();
-                                            fd.append("images", values.images);
-                                            uploadPaymentProof(fd)
-                                        }}
-                                    >
-                                        {({ setFieldValue }) => (
-                                            <Form>
-                                                <div className="mt-4">
-                                                    <label className="block mb-2 text-sm font-medium text-gray-600">
-                                                        Upload File
-                                                    </label>
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        onChange={(event: any) => setFieldValue("images", event.currentTarget.files[0])}
-                                                        className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-                                                    />
-                                                </div>
-                                                <DialogFooter>
-                                                    <Button
-                                                        variant="secondary"
-                                                        type="button"
-                                                        onClick={() => setIsUploadDialogOpen(false)}
-                                                        disabled={isUploading}>
-                                                        Cancel
-                                                    </Button>
-                                                    <Button
-                                                        type="submit"
-                                                        className="bg-blue-600 hover:bg-blue-700"
-                                                        disabled={isUploading}>
-                                                        {isUploading ? "Uploading..." : "Upload"}
-                                                    </Button>
-                                                </DialogFooter>
-                                            </Form>
-                                        )}
-                                    </Formik>
-                                </DialogContent>
-                            </Dialog>
-                        </section>
-                    </main>
-                </section>
-            </main> */}
             <MobileSessionLayout title='Pembayaran'>
                 <NotaHeader />
                 <div className="w-full md:w-1/2 space-y-4">
@@ -288,7 +149,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         <InputDisplay caption="Biaya Laundry" value={dataOrderNote?.order?.laundryPrice || '0'} />
                     </div>
                 </div>
-                <div className="w-full md:w-1/2 space-y-4">
+                <div className="w-full md:w-1/2 space-y-4 pb-28">
                     <h1 className="font-bold text-2xl text-gray-800">Metode Pembayaran</h1>
                     <div className="w-full h-fit">
                         <div className="flex justify-start w-full h-fit">

@@ -1,80 +1,79 @@
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from "@/components/ui/tabs"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { useState } from "react";
 import { ITabTrackingProps } from "./type";
+import { FaListAlt } from "react-icons/fa";
+import { FaWeightHanging } from "react-icons/fa6";
 
-export default function TabTrackingUser({ selectedTab, setSelectedTab, dataOrder }: ITabTrackingProps) {
-
+export default function TabTracking({ selectedTab, setSelectedTab, dataOrder }: ITabTrackingProps) {
     return (
-        <div className="flex w-full lg:p-10  flex-col items-center pb-4">
-            <h1 className="font-bold lg:text-xl  text-neutral-700">
-                Laundry{' '}
-                <span className="font-normal text-sm">
-                    ({selectedTab === 'today' ? 'Hari Ini' : 'Bulan Ini'})
-                </span>
+        <div className="flex w-full flex-col items-center pb-4">
+            <h1 className="font-bold text-neutral-700 text-lg pb-2 sm:text-base">
+                Pesanan{' '}
+                <span className="font-normal text-sm">({selectedTab === 'today' ? 'Hari Ini' : 'Bulan Ini'})</span>
             </h1>
 
             <Tabs defaultValue="today" className="w-full">
-                <TabsList className="flex space-x-4 bg-orange-100">
-                    <TabsTrigger value="today" onClick={() => setSelectedTab('today')}>
+                <TabsList className="flex space-x-4 bg-orange-100 rounded-md">
+                    <TabsTrigger value="today" onClick={() => setSelectedTab('today')} className="w-full text-sm">
                         Hari Ini
                     </TabsTrigger>
-                    <TabsTrigger value="month" onClick={() => setSelectedTab('month')}>
+                    <TabsTrigger value="month" onClick={() => setSelectedTab('month')} className="w-full text-sm">
                         Bulan Ini
                     </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="today">
-                    <div className="grid grid-cols-2  gap-4 mt-4">
-                        <div className="p-2 border-r border-neutral-300 ">
-                            <h2 className="font-semibold text-gray-800">Pekerjaan</h2>
-                            <p className="text-sm text-gray-500 mt-2">
-                                <strong>Pengeluaran: </strong> {dataOrder?.totalSpent || 0}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                                <strong>Order: </strong> {dataOrder?.orderCount || 0}
-                            </p>
+                    <div className="grid grid-cols-1 gap-4 mt-4">
+                        <div className="p-4 border border-neutral-300 shadow-sm flex items-center gap-4 rounded-lg">
+                            <span className="text-orange-500"><FaListAlt className="text-3xl sm:text-2xl" /></span>
+                            <div className="w-full">
+                                <p className="text-sm sm:text-xs text-gray-500 mt-2">
+                                    <strong>Pengeluaran: </strong> Rp. {dataOrder?.totalSpent || 0}
+                                </p>
+                                <p className="text-sm sm:text-xs text-gray-500">
+                                    <strong>Order: </strong> {dataOrder?.orderCount || 0}
+                                </p>
+                            </div>
                         </div>
 
-                        <div className="p-2">
-                            <h2 className="font-semibold text-gray-800">Total Berat & Pcs</h2>
-                            <p className="text-sm text-gray-500 mt-2">
-                                <strong>Kg: </strong> {dataOrder?.totalKg || 0} kg
-                            </p>
-                            <p className="text-sm text-gray-500">
-                                <strong>Pcs: </strong> {dataOrder?.totalPcs || 0} pcs
-                            </p>
+                        <div className="p-4 border border-neutral-300 shadow-sm flex items-center gap-4 rounded-lg">
+                            <span className="text-blue-500">
+                                <FaWeightHanging className="text-3xl sm:text-2xl" />
+                            </span>
+                            <div className="w-full">
+                                <p className="text-sm sm:text-xs text-gray-500 mt-2"><strong>Kg: </strong> {dataOrder?.totalKg || 0} kg</p>
+                                <p className="text-sm sm:text-xs text-gray-500"><strong>Pcs: </strong> {dataOrder?.totalPcs || 0} pcs</p>
+                            </div>
                         </div>
                     </div>
                 </TabsContent>
+
                 <TabsContent value="month">
-                    <div className="grid grid-cols-2  gap-4 mt-4">
-                        <div className="p-2 border-r border-neutral-300 lg:border-0">
-                            <h2 className="font-semibold text-gray-800">Pendapatan</h2>
-                            <p className="text-sm text-gray-500 mt-2">
-                                <strong>Pengeluaran: </strong> {dataOrder?.totalSpent || 0}
-                            </p>
-                            <p className="text-sm text-gray-500">
-                                <strong>Order: </strong> {dataOrder?.orderCount || 0}
-                            </p>
+                    <div className="grid grid-cols-1 gap-4 mt-4">
+                        <div className="p-4 border border-neutral-300 shadow-sm flex items-center gap-4 rounded-lg">
+                            <span className="text-orange-500"><FaListAlt className="text-3xl" /></span>
+                            <div className="w-full">
+                                <p className="text-sm sm:text-xs text-gray-500 mt-2">
+                                    <strong>Pendapatan: </strong> Rp. {dataOrder?.totalSpent || 0}
+                                </p>
+                                <p className="text-sm sm:text-xs text-gray-500">
+                                    <strong>Order: </strong> {dataOrder?.orderCount || 0}
+                                </p>
+                            </div>
                         </div>
 
-                        <div className="p-2">
-                            <h2 className="font-semibold text-gray-800">Total Berat & Pcs</h2>
-                            <p className="text-sm text-gray-500 mt-2">
-                                <strong>Kg: </strong> {dataOrder?.totalKg || 0} kg
-                            </p>
-                            <p className="text-sm text-gray-500">
-                                <strong>Pcs: </strong> {dataOrder?.totalPcs || 0} pcs
-                            </p>
+                        <div className="p-4 border border-neutral-300 shadow-sm flex items-center gap-4 rounded-lg">
+                            <span className="text-blue-500">
+                                <FaWeightHanging className="text-3xl sm:text-2xl" />
+                            </span>
+                            <div className="w-full">
+                                <p className="text-sm sm:text-xs text-gray-500 mt-2"><strong>Kg: </strong> {dataOrder?.totalKg || 0} kg</p>
+                                <p className="text-sm sm:text-xs text-gray-500"><strong>Pcs: </strong> {dataOrder?.totalPcs || 0} pcs</p>
+                            </div>
                         </div>
                     </div>
                 </TabsContent>
             </Tabs>
         </div>
-    )
+    );
 }

@@ -7,14 +7,19 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import * as Yup from 'yup'
 import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
 import { useUserSettingsHooks } from '@/features/user/hooks/useUserSettingsHooks';
-import { FaEye, FaEyeSlash } from 'react-icons/fa6';
+import { FaEye, FaEyeSlash, FaGear } from 'react-icons/fa6';
 import ButtonCustom from '@/components/core/button';
-import { useMutation } from '@tanstack/react-query';
-import { instance } from '@/utils/axiosInstance';
+import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
+import { userAccountValidationMobileSchema } from '@/features/user/schemas/userAccountMobileSchema';
+import { userAccountValidationSchema } from '@/features/user/schemas/userAccountValidationSchema';
+import { userGoogleChangePasswordValidation } from '@/features/user/schemas/userGoogleChangePasswordSchema';
+import ContentWebLayout from '@/components/core/webSessionContent';
+import { userChangePasswordValidationSchema } from '@/features/user/schemas/userChangePasswordValidationSchema';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -45,111 +50,184 @@ export default function Page() {
 
     return (
         <>
+            <ContentMobileLayout icon={<FaGear className='text-lg' />} title="Pengaturan">
+                <div className="space-y-4 pb-24">
+                    <Tabs defaultValue="1" className="fit">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="1" >Akun</TabsTrigger>
+                            <TabsTrigger value="2" >Ganti Password</TabsTrigger>
+                        </TabsList>
+                        <TabsContent value="1">
+                            <Formik initialValues={{
+                                firstNames: getDataUser?.firstName || '',
+                                lastNames: getDataUser?.lastName || '',
+                                emails: getDataUser?.email || '',
+                                phoneNumbers: getDataUser?.phoneNumber || '',
+                                img: null
+                            }} validationSchema={userAccountValidationMobileSchema} onSubmit={(values) => {
+                                const fd = new FormData()
+                                fd.append('email', values?.emails)
+                                fd.append('firstName', values?.firstNames)
+                                fd.append('lastName', values?.lastNames)
+                                fd.append('phoneNumber', values?.phoneNumbers)
+                                if (values?.img) fd.append('images', values?.img)
 
-            {/* web sesi */}
-            <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
-                <section className="w-full flex flex-col p-4 rounded-xl h-full bg-white">
-                    <div className="flex flex-col w-full gap-5">
-                        <div className="w-full py-4 bg-orange-500 px-14 rounded-xl">
-                            <h1 className="font-bold text-white">Pengaturan</h1>
-                        </div>
-                        <TabContext value={value}>
-                            <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                                <TabList onChange={handleChange} aria-label="Pengaturan tabs">
-                                    <Tab label="Akun" value="1" />
-                                    <Tab label="Change Password" value="2" />
-                                </TabList>
-                            </Box>
-                            <TabPanel value="1" className="w-full p-6 bg-gray-50 rounded-xl">
-                                <Formik initialValues={{
-                                    firstName: getDataUser?.firstName || '',
-                                    lastName: getDataUser?.lastName || '',
-                                    email: getDataUser?.email || '',
-                                    phoneNumber: getDataUser?.phoneNumber || '',
-                                    images: null
-                                }}
-                                    onSubmit={(values) => {
-                                        const fd = new FormData()
-                                        fd.append('email', values?.email)
-                                        fd.append('firstName', values?.firstName)
-                                        fd.append('lastName', values?.lastName)
-                                        fd.append('phoneNumber', values?.phoneNumber)
-                                        if (values?.images) fd.append('images', values?.images)
-
-                                        handleUpdateProfile(fd)
-                                    }}>
-                                    {({ setFieldValue, values }) => (
-                                        <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
-                                            disabledSubmitButton={isPendingUpdate} getData={getDataUser}
-                                            handleDeleteProfilePicture={handleDeleteProfilePicture}
-                                            profilePict={profilePict} setFieldValue={setFieldValue}
-                                            setTempProfilePict={setTempProfilePict} tempProfilePict={tempProfilePict} />
-                                    )}
-                                </Formik>
-                            </TabPanel>
+                                handleUpdateProfile(fd)
+                            }}>
+                                {({ setFieldValue, values }) => (
+                                    <ProfileSettingsMobile disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
+                                        disabledSubmitButton={isPendingUpdate} getData={getDataUser}
+                                        handleDeleteProfilePicture={handleDeleteProfilePicture}
+                                        profilePict={profilePict} setFieldValue={setFieldValue}
+                                        setTempProfilePict={setTempProfilePict} tempProfilePict={tempProfilePict} />
+                                )}
+                            </Formik>
+                        </TabsContent>
+                        <TabsContent value="2">
                             {getDataUser?.isGooglePasswordChange ?
-                                <TabPanel value="2" className="w-full p-6 bg-gray-50 rounded-xl">
-                                    <Formik initialValues={{
-                                        password: '',
-                                        confirmPassword: ''
-                                    }}
-                                        validationSchema={Yup.object().shape({
-                                            password: Yup.string().required('Password baru harus diisi'),
-                                            confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
-                                        })}
-                                        onSubmit={(values) => handleChangePasswordGoogleRegister({ password: values?.password })}>
+                                <Formik initialValues={{
+                                    password: '',
+                                    confirmPassword: ''
+                                }} validationSchema={userGoogleChangePasswordValidation}
+                                    onSubmit={(values, { resetForm }) => handleChangePasswordGoogleRegister({ password: values?.password }, {
+                                        onSuccess: () => { resetForm() }
+                                    })}>
 
-                                        <Form className='w-full'>
-                                            <div className="w-full flex flex-col gap-2 py-2">
-                                                <label htmlFor="password" className="font-semibold">Password baru</label>
-                                                <div className='flex w-full relative'>
-                                                    <Field name='password' type={passwordVisible ? 'text' : 'password'} className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Masukan password baru..' />
-                                                    <span className="absolute right-3 top-3 flex items-center cursor-pointer text-gray-500" onClick={togglePasswordVisibility}>
-                                                        {passwordVisible ? <FaEye /> : <FaEyeSlash />}
-                                                    </span>
-                                                    <ErrorMessage component='div' className='text-red-600 absolute text-sm right-3 top-[-25px]' name='password' />
-                                                </div>
+                                    <Form className='w-full'>
+                                        <div className="w-full flex flex-col gap-2 py-2">
+                                            <label htmlFor="password" className="font-semibold">Password baru</label>
+                                            <div className='flex w-full relative'>
+                                                <Field name='password' type={passwordVisible ? 'text' : 'password'} className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Masukan password baru..' />
+                                                <span className="absolute right-3 top-3 flex items-center cursor-pointer text-gray-500" onClick={togglePasswordVisibility}>
+                                                    {passwordVisible ? <FaEye /> : <FaEyeSlash />}
+                                                </span>
+                                                <ErrorMessage component='div' className='text-red-600 absolute text-sm right-3 top-[-25px]' name='password' />
                                             </div>
-                                            <div className="w-full flex flex-col gap-2 py-2">
-                                                <label htmlFor="confirmPassword" className="font-semibold">Ulangi password baru</label>
-                                                <div className='flex w-full relative'>
-                                                    <Field name='confirmPassword' type={confirmPasswordVisible ? 'text' : 'password'} className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Masukan password baru..' />
-                                                    <span className="absolute right-3 top-3 flex items-center cursor-pointer text-gray-500" onClick={toggleConfirmPasswordVisibility}>
-                                                        {confirmPasswordVisible ? <FaEye /> : <FaEyeSlash />}
-                                                    </span>
-                                                    <ErrorMessage component='div' className='text-red-600 absolute text-sm right-3 top-[-25px]' name='confirmPassword' />
-                                                </div>
+                                        </div>
+                                        <div className="w-full flex flex-col gap-2 py-2">
+                                            <label htmlFor="confirmPassword" className="font-semibold">Ulangi password baru</label>
+                                            <div className='flex w-full relative'>
+                                                <Field name='confirmPassword' type={confirmPasswordVisible ? 'text' : 'password'} className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Masukan password baru..' />
+                                                <span className="absolute right-3 top-3 flex items-center cursor-pointer text-gray-500" onClick={toggleConfirmPasswordVisibility}>
+                                                    {confirmPasswordVisible ? <FaEye /> : <FaEyeSlash />}
+                                                </span>
+                                                <ErrorMessage component='div' className='text-red-600 absolute text-sm right-3 top-[-25px]' name='confirmPassword' />
                                             </div>
-                                            <div className='py-2'>
-                                                <ButtonCustom disabled={isPendingChangePasswordGoogleRegister || isDisableSucces} rounded='rounded-2xl' btnColor='bg-orange-500 hover:bg-orange-500' width='w-full' type='submit'>Ubah</ButtonCustom>
-                                            </div>
-                                        </Form>
-                                    </Formik>
-                                </TabPanel>
+                                        </div>
+                                        <div className='py-2'>
+                                            <ButtonCustom disabled={isPendingChangePasswordGoogleRegister || isDisableSucces} rounded='rounded-2xl' btnColor='bg-orange-500 hover:bg-orange-500' width='w-full' type='submit'>Ubah</ButtonCustom>
+                                        </div>
+                                    </Form>
+                                </Formik>
                                 :
-                                <TabPanel value="2" className="w-full p-6 bg-gray-50 rounded-xl">
-                                    <Formik initialValues={{
-                                        existingPassword: '',
-                                        password: '',
-                                        confirmPassword: ''
-                                    }}
-                                        validationSchema={Yup.object().shape({
-                                            existingPassword: Yup.string().required('Password lama harus diisi'),
-                                            password: Yup.string().required('Password baru harus diisi'),
-                                            confirmPassword: Yup.string().required('Konfirmasi password harus diisi').oneOf([Yup.ref('password')], 'Konfirmasi password tidak cocok')
-                                        })}
-                                        onSubmit={(values) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password })}>
-                                        <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
-                                            confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
-                                            isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
-                                            toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
-                                    </Formik>
-                                </TabPanel>
+                                <Formik initialValues={{
+                                    existingPassword: '',
+                                    password: '',
+                                    confirmPassword: ''
+                                }} validationSchema={userChangePasswordValidationSchema}
+                                    onSubmit={(values, { resetForm }) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                        onSuccess: () => { resetForm() }
+                                    })}>
+                                    <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
+                                        confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
+                                        isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
+                                        toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
+                                </Formik>
                             }
-                        </TabContext>
-                    </div>
-                </section>
-            </main>
+                        </TabsContent>
+                    </Tabs>
+                </div>
+            </ContentMobileLayout>
+
+            <ContentWebLayout caption='Pengaturan'>
+                <TabContext value={value}>
+                    <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+                        <TabList onChange={handleChange} aria-label="Pengaturan tabs">
+                            <Tab label="Akun" value="1" />
+                            <Tab label="Ganti Password" value="2" />
+                        </TabList>
+                    </Box>
+                    <TabPanel value="1" className="w-full p-6 bg-gray-50 rounded-xl">
+                        <Formik initialValues={{
+                            firstName: getDataUser?.firstName || '',
+                            lastName: getDataUser?.lastName || '',
+                            email: getDataUser?.email || '',
+                            phoneNumber: getDataUser?.phoneNumber || '',
+                            images: null
+                        }} validationSchema={userAccountValidationSchema} onSubmit={(values) => {
+                            const fd = new FormData()
+                            fd.append('email', values?.email)
+                            fd.append('firstName', values?.firstName)
+                            fd.append('lastName', values?.lastName)
+                            fd.append('phoneNumber', values?.phoneNumber)
+                            if (values?.images) fd.append('images', values?.images)
+
+                            handleUpdateProfile(fd)
+                        }}>
+                            {({ setFieldValue, values }) => (
+                                <ProfileSettings disabledProfilePhoto={isPendingDelete} isDisabledSucces={isDisableSucces}
+                                    disabledSubmitButton={isPendingUpdate} getData={getDataUser}
+                                    handleDeleteProfilePicture={handleDeleteProfilePicture}
+                                    profilePict={profilePict} setFieldValue={setFieldValue}
+                                    setTempProfilePict={setTempProfilePict} tempProfilePict={tempProfilePict} />
+                            )}
+                        </Formik>
+                    </TabPanel>
+                    {getDataUser?.isGooglePasswordChange ?
+                        <TabPanel value="2" className="w-full p-6 bg-gray-50 rounded-xl">
+                            <Formik initialValues={{
+                                password: '',
+                                confirmPassword: ''
+                            }} validationSchema={userGoogleChangePasswordValidation}
+                                onSubmit={(values, { resetForm }) => handleChangePasswordGoogleRegister({ password: values?.password }, {
+                                    onSuccess: () => { resetForm() }
+                                })}>
+                                <Form className='w-full'>
+                                    <div className="w-full flex flex-col gap-2 py-2">
+                                        <label htmlFor="password" className="font-semibold">Password baru</label>
+                                        <div className='flex w-full relative'>
+                                            <Field name='password' type={passwordVisible ? 'text' : 'password'} className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Masukan password baru..' />
+                                            <span className="absolute right-3 top-3 flex items-center cursor-pointer text-gray-500" onClick={togglePasswordVisibility}>
+                                                {passwordVisible ? <FaEye /> : <FaEyeSlash />}
+                                            </span>
+                                            <ErrorMessage component='div' className='text-red-600 absolute text-sm right-3 top-[-25px]' name='password' />
+                                        </div>
+                                    </div>
+                                    <div className="w-full flex flex-col gap-2 py-2">
+                                        <label htmlFor="confirmPassword" className="font-semibold">Ulangi password baru</label>
+                                        <div className='flex w-full relative'>
+                                            <Field name='confirmPassword' type={confirmPasswordVisible ? 'text' : 'password'} className='w-full border px-4 py-2 rounded-lg text-sm shadow-sm focus:outline-none focus:border-orange-500' placeholder='Masukan password baru..' />
+                                            <span className="absolute right-3 top-3 flex items-center cursor-pointer text-gray-500" onClick={toggleConfirmPasswordVisibility}>
+                                                {confirmPasswordVisible ? <FaEye /> : <FaEyeSlash />}
+                                            </span>
+                                            <ErrorMessage component='div' className='text-red-600 absolute text-sm right-3 top-[-25px]' name='confirmPassword' />
+                                        </div>
+                                    </div>
+                                    <div className='py-2'>
+                                        <ButtonCustom disabled={isPendingChangePasswordGoogleRegister || isDisableSucces} rounded='rounded-2xl' btnColor='bg-orange-500 hover:bg-orange-500' width='w-full' type='submit'>Ubah</ButtonCustom>
+                                    </div>
+                                </Form>
+                            </Formik>
+                        </TabPanel>
+                        :
+                        <TabPanel value="2" className="w-full p-6 bg-gray-50 rounded-xl">
+                            <Formik initialValues={{
+                                existingPassword: '',
+                                password: '',
+                                confirmPassword: ''
+                            }} validationSchema={userChangePasswordValidationSchema}
+                                onSubmit={(values, { resetForm }) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
+                                    onSuccess: () => { resetForm() }
+                                })}>
+                                <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
+                                    confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
+                                    isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
+                                    toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
+                            </Formik>
+                        </TabPanel>
+                    }
+                </TabContext>
+            </ContentWebLayout>
         </>
     );
 }

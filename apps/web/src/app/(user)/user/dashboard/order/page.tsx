@@ -162,11 +162,11 @@ export default function DeliveryRequest() {
     return (
         <>
             <ContentMobileLayout title='Pesanan Saya' icon={<GrNotes className='text-lg' />}>
-                <Tabs defaultValue={activeTab} className="fit">
+                <Tabs defaultValue={activeTab} className="pb-28">
                     <TabsList className="grid w-full grid-cols-3">
-                        <TabsTrigger value="waiting-payment" onClick={() => { setActiveTab("waiting-payment"); setPage(1) }} >Belum Bayar</TabsTrigger>
-                        <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
-                        <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
+                        <TabsTrigger value="waiting-payment" onClick={() => { setActiveTab("waiting-payment"); setPage(1) }} className='text-xs'>Belum Bayar</TabsTrigger>
+                        <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
+                        <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} className='text-xs'>Selesai</TabsTrigger>
                     </TabsList>
                     <TabsContent value={activeTab}>
                         <CardContent className="space-y-2 pt-2">
@@ -189,26 +189,15 @@ export default function DeliveryRequest() {
                             {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
                             {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
                                 dataOrderList?.orders?.map((order: any) => (
-                                    <section
-                                        key={order.id}
-                                        className="flex justify-between items-center border-b py-4"
-                                    >
-
-                                        <div
-                                            onClick={() => {
-                                                setOrderData(null);
-                                                handleOrderDetail(order?.id);
-                                                setOpenDialog(true)
-                                            }}
-
-                                            className="flex items-center">
-                                            <div className="ml-2">
-                                                <h2 className="font-medium text-gray-900">
-                                                    {order?.id}
-                                                </h2>
-                                                <h2 className="font-medium text-gray-900">
-                                                    {order?.User?.firstName} {order?.User?.lastName}
-                                                </h2>
+                                    <section key={order.id} className="flex justify-between items-center border-b py-4">
+                                        <div onClick={() => {
+                                            setOrderData(null);
+                                            handleOrderDetail(order?.id);
+                                            setOpenDialog(true)
+                                        }} className="flex items-center">
+                                            <div className="px-2">
+                                                <h2 className="font-medium text-gray-900">{order?.id.length > 15 ? <span>{order?.id?.slice(0, 15)}..</span> : order?.id}</h2>
+                                                <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
                                                 <div className="text-xs text-gray-500">
                                                     {order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP'
                                                         ? 'Menunggu Driver'
@@ -218,24 +207,19 @@ export default function DeliveryRequest() {
                                                                 ? 'Proses Laundry'
                                                                 : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
                                                                     ? 'Proses Delivery'
-                                                                    : 'Status tidak dikenal'}
-                                                </div>
-                                                <p className="text-xs text-gray-500">
-                                                    {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                </p>
+                                                                    : 'Status tidak dikenal'}</div>
+                                                <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                             </div>
                                         </div>
-                                        {
-                                            order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === false ?
-                                                <div className="border text-center w-fit text-sm px-1 rounded-md bg-yellow-200 border-yellow-600 text-yellow-600">
-                                                    Konfirmasi Order
+                                        {order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === false ?
+                                            <div className="border text-center w-fit text-sm px-1 rounded-md bg-yellow-200 border-yellow-600 text-yellow-600">
+                                                Konfirmasi Order
+                                            </div>
+                                            : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === true ?
+                                                <div className="border w-fit text-sm px-1 rounded-md bg-green-200 border-green-600 text-green-600">
+                                                    Terkonfirmasi
                                                 </div>
-                                                : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === true ?
-                                                    <div className="border w-fit text-sm px-1 rounded-md bg-green-200 border-green-600 text-green-600">
-                                                        Terkonfirmasi
-                                                    </div>
-                                                    : ''
-                                        }
+                                                : ''}
                                     </section>
                                 ))
                             ) : (

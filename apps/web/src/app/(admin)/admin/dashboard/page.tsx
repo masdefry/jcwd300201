@@ -23,39 +23,51 @@ import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuL
 import { RiProfileFill } from "react-icons/ri";
 import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
 import Notification from "@/components/core/notification";
-import { useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
     const lat = locationStore((state) => state?.latitude)
     const lng = locationStore((state) => state?.longitude)
     const token = authStore((state) => state?.token)
+
     const params = useSearchParams()
     const currentUrl = new URLSearchParams(params.toString())
+    const pathname = usePathname()
+    const router = useRouter()
+
     const [date, setDate] = useState<Date | undefined>(new Date())
     const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
     const [selectedTab, setSelectedTab] = useState<'today' | 'month'>('today');
+    const [isMonthlyStatistic, setIsMonthlyStatistic] = useState<string>(currentUrl.get('outlet') || '')
+    
 
     const { data: dataOrder } = useQuery({
         queryKey: ['get-order-status', selectedTab],
         queryFn: async () => {
             const res = await instance.get(`/order/tracking?period=${selectedTab}`, {
                 headers: { Authorization: `Bearer ${token}` }
-            });
-            console.log(res, '<<<<')
+            })
             return res?.data?.data
         },
     });
-    const [isMonthlyStatistic, setIsMonthlyStatistic] = useState<string>(currentUrl.get('outletId') || '')
+
+    const { data: getDataStore } = useQuery({
+        queryKey: ['get-data-store'],
+        queryFn: async () => {
+            const res = await instance.get('/store')
+            return res?.data?.data
+        }
+    })
 
     const { data: dataOrderList, refetch, isPending } = useQuery({
         queryKey: ['get-order'],
         queryFn: async () => {
             const res = await instance.get(`/order/orders`, {
                 params: {
-                    outletId: ''
+                    outletId: isMonthlyStatistic || ''
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
@@ -96,10 +108,23 @@ export default function Page() {
         const isMonth = date.getMonth()
         const isYear = date.getFullYear()
 
-        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        const newDateFormat = `${isDateNow}/${(isMonth + 1) <= 9 ? `0${isMonth + 1}` : (isMonth + 1)}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
+
+    useEffect(() => {
+        if (isMonthlyStatistic) {
+            currentUrl.set('outlet', isMonthlyStatistic)
+        } else {
+            currentUrl.delete('outlet')
+        }
+
+        router.push(`${pathname}?${currentUrl.toString()}`)
+        router.refresh()
+        refetch()
+
+    }, [refetch, pathname, router, isMonthlyStatistic, params])
 
     const completedOrders = dataOrderList?.trackingOrder?.filter((order: any) => order?.isConfirm);
     const pendingOrders = dataOrderList?.trackingOrder?.filter((order: any) => !order?.isDone);
@@ -129,7 +154,7 @@ export default function Page() {
     return (
         <>
             <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification />}>
-                <main className="pb-24">
+                <main className="pb-28">
                     <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                         <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
                         <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
@@ -253,7 +278,8 @@ export default function Page() {
                 </section>
                 <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
                     <div className="w-full px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
-                        <MonthlyCharts monthlyData={dataOrderList?.monthlyStatistic} />
+                        <MonthlyCharts monthlyData={dataOrderList?.monthlyStatistic}
+                            onChange={(e: any) => setIsMonthlyStatistic(e.target.value)} value={isMonthlyStatistic} />
                     </div>
                     <div className="w-fit px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
                         <TabTracking

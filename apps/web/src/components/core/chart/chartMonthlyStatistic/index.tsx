@@ -9,6 +9,8 @@ import {
     Legend,
     ChartOptions
 } from 'chart.js';
+import { useQuery } from '@tanstack/react-query';
+import { instance } from '@/utils/axiosInstance';
 
 ChartJS.register(
     CategoryScale,
@@ -19,7 +21,7 @@ ChartJS.register(
     Legend
 );
 
-export default function MonthlyCharts({ monthlyData }: any) {
+export default function MonthlyCharts({ monthlyData, onChange, value }: any) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -76,7 +78,24 @@ export default function MonthlyCharts({ monthlyData }: any) {
         }
     };
 
+    const { data: getDataStore } = useQuery({
+        queryKey: ['get-data-store'],
+        queryFn: async () => {
+            const res = await instance.get('/store')
+            return res?.data?.data
+        }
+    })
+
     return (
-        <Bar data={data} options={options} className='w-full' style={{ width: '100%' }} />
+        <div className='w-full relative'>
+            <select name="outletId" id="outletId" className='text-xs absolute bg-transparent border-b pb-2 focus:outline-none font-sans font-semibold' value={value} onChange={onChange}>
+                <option value="" disabled>Pilih opsi</option>
+                {getDataStore?.map((store: { storeId: string, storeName: string }, i: number) => (
+                    <option value={store?.storeId} key={i}>{store?.storeName}</option>
+                ))}
+                <option value="">Reset</option>
+            </select>
+            <Bar data={data} options={options} className='w-full' style={{ width: '100%' }} />
+        </div>
     );
 }
