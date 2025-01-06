@@ -1,4 +1,4 @@
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { FaSearch } from 'react-icons/fa';
 import { IoMdRefresh } from "react-icons/io";
 import { IFilterProps } from "./type";
@@ -49,12 +49,15 @@ export default function FilterWorker({ setIsSearchValues, isSearchValues, search
                                             <SelectValue placeholder="Sort By" />
                                         </SelectTrigger>
                                         <SelectContent>
-                                            <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
-                                            <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
-                                            <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
-                                            <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
-                                            <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
-                                            <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
+                                            <SelectGroup>
+                                                <SelectLabel>Sortir</SelectLabel>
+                                                <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
+                                                <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
+                                                <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
+                                                <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
+                                                <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
+                                                <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
+                                            </SelectGroup>
                                         </SelectContent>
                                     </Select>
                                     <div className='w-full h-fit'>

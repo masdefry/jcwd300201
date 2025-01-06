@@ -23,31 +23,37 @@ export default function FilterWeb({ showTabOption = true, borderReset = 'border 
             <div className="w-full h-fit flex flex-col items-center gap-2">
                 <div className="w-full h-fit flex  justify-between items-center ">
                     <div className="h-full flex items-end gap-2 text-sm  text-neutral-700">
-                        <Select value={sortOption} onValueChange={setSortOption}>
-                            <SelectTrigger className="w-[150px] focus:border-orange-500 border-gray-300 focus:ring-0 border text-sm text-neutral-700 rounded-2xl h-10 py-2 px-3">
-                                <SelectValue placeholder="Sort By" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
-                                <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
-                                <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
-                                <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
-                                <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
-                                <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
-                            </SelectContent>
-                        </Select>
+                        <div className="flex flex-col">
+                            <span className="text-xs text-neutral-700">Sortir</span>
+                            <Select value={sortOption} onValueChange={setSortOption}>
+                                <SelectTrigger className="w-[150px] focus:border-orange-500 border-gray-300 focus:ring-0 border text-sm text-neutral-700 rounded-2xl h-10 py-2 px-3">
+                                    <SelectValue placeholder="Sort By" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
+                                    <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
+                                    <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
+                                    <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
+                                    <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
+                                    <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                         {showTabOption && (
-                            <select name="searchOrder" value={activeTab} onChange={(e) => {
-                                setActiveTab(e.target.value)
-                                setPage(1)
-                            }} id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 focus:outline-none focus:border focus:border-orange-500 h-10 text-sm text-neutral-700">
-                                <option value="" disabled>-- Pilih Opsi --</option>
-                                {options?.map((option, index) => (
-                                    <option key={index} value={option.value}>
-                                        {option.label}
-                                    </option>
-                                ))}
-                            </select>
+                            <div className="flex flex-col">
+                                <span className="text-xs text-neutral-700">Status</span>
+                                <select name="searchOrder" value={activeTab} onChange={(e) => {
+                                    setActiveTab(e.target.value)
+                                    setPage(1)
+                                }} id="searchWorker" className="px-4 py-2 border rounded-2xl border-gray-300 focus:outline-none focus:border focus:border-orange-500 h-10 text-sm text-neutral-700">
+                                    <option value="" disabled>-- Pilih Opsi --</option>
+                                    {options?.map((option, index) => (
+                                        <option key={index} value={option.value}>
+                                            {option.label}
+                                        </option>
+                                    ))}
+                                </select>
+                            </div>
                         )}
                         <label className="flex flex-col ">
                             <span className="text-xs text-neutral-700">

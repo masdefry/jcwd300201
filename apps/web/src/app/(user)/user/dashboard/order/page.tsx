@@ -22,6 +22,9 @@ import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { GrNotes } from "react-icons/gr"
+import FilterWeb from "@/components/core/filterWeb"
+import Link from "next/link"
+import { FaWhatsapp } from "react-icons/fa6"
 
 export default function DeliveryRequest() {
     const params = useSearchParams();
@@ -151,6 +154,14 @@ export default function DeliveryRequest() {
         } else {
             currentUrl.delete(`date-until`)
         }
+        if (page) {
+            currentUrl.set(`page`, page?.toString())
+        } else {
+            currentUrl.delete(`page`)
+        }
+        if (totalPages === undefined || page > totalPages) {
+            setPage(1)
+        }
 
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
@@ -278,12 +289,14 @@ export default function DeliveryRequest() {
                                             <div>
                                                 {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
                                                     <>
-                                                        <div>
-                                                            {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
-                                                        </div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
-                                                        </div>
+                                                        <Link href={`https://wa.me/62${orderData?.orderStatus[1]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
+                                                            <div>
+                                                                {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
+                                                            </div>
+                                                            <div className="flex gap-1 items-center">
+                                                                <FaWhatsapp color="green" />{orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                            </div>
+                                                        </Link>
                                                     </>
                                                 ) : (
                                                     "Menunggu Driver"
@@ -293,30 +306,35 @@ export default function DeliveryRequest() {
                                         <div className="border rounded-lg border-gray-700 p-2 shadow-md">
                                             <div className="font-semibold">Delivery Driver:</div>
                                             <div>
-                                                {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERT" ? (
+                                                {orderData?.orderStatus[7]?.status === "DRIVER_TO_CUSTOMER" ? (
                                                     <>
-                                                        <div>
-                                                            {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
-                                                        </div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
-                                                        </div>
+                                                        <Link href={`https://wa.me/62${orderData?.orderStatus[7]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
+                                                            <div>
+                                                                {`${orderData?.orderStatus[7]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[7]?.Worker?.lastName ?? ''}`}
+                                                            </div>
+                                                            <div className="flex gap-1 items-center">
+                                                                <FaWhatsapp color="green" />{orderData?.orderStatus[7]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                            </div>
+                                                        </Link>
+                                                    </>
+
+                                                ) : orderData?.orderStatus[8]?.status === "DRIVER_TO_CUSTOMER" ? (
+                                                    <>
+                                                        <Link href={`https://wa.me/62${orderData?.orderStatus[8]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
+                                                            <div>
+                                                                {`${orderData?.orderStatus[8]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[8]?.Worker?.lastName ?? ''}`}
+                                                            </div>
+                                                            <div className="flex gap-1 items-center">
+                                                                <FaWhatsapp color="green" />{orderData?.orderStatus[8]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                            </div>
+                                                        </Link>
+
                                                     </>
                                                 ) : (
                                                     "Belum Ada Driver"
                                                 )}
                                             </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className="text-center">
-                                    <h3 className="font-medium">Order Items</h3>
-                                    <div className="grid grid-cols-2  justify-items-center overflow-y-auto max-h-20">
-                                        {orderData.orderDetail?.map((item: any, index: number) => (
-                                            <div key={index} className="border-b border-black py-1 flex items-center justify-center">
-                                                <span>{item?.quantity}x {item?.LaundryItem?.itemName}</span>
-                                            </div>
-                                        ))}
                                     </div>
                                 </div>
                                 <div className="flex justify-between">
@@ -335,7 +353,7 @@ export default function DeliveryRequest() {
                                 </div>
                             </>
                         ) : (
-                            <div>Loading order details...</div>
+                            <div><Loading /></div>
                         )}
                         {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true ?
                             <ConfirmAlert
@@ -350,7 +368,7 @@ export default function DeliveryRequest() {
                             </ConfirmAlert>
                             : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.laundryPrice > 1 ?
                                 <div className="flex justify-center">
-                                    <ButtonCustom btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`/user/dashboard/payment/${orderData?.order?.id}`)}
+                                    <ButtonCustom width="w-full" btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`/user/dashboard/payment/${orderData?.order?.id}`)}
                                         disabled={orderData?.order?.laundryPrice === null || orderData?.order?.laundryPrice === 0}>Bayar Sekarang</ButtonCustom>
                                 </div>
                                 : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof ?
@@ -362,26 +380,29 @@ export default function DeliveryRequest() {
                 </Dialog>
             </ContentMobileLayout>
             <ContentWebLayout caption="Pesanan">
-                <div className="w-full h-fit flex items-center">
-                    <div className="w-1/2 h-fit flex items-center">
-                        <Select value={sortOption} onValueChange={setSortOption}>
-                            <SelectTrigger className="w-[150px] border rounded-full py-2 px-3">
-                                <SelectValue placeholder="Sort By" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="date-asc">Tanggal Terlama</SelectItem>
-                                <SelectItem value="date-desc">Tanggal Terbaru</SelectItem>
-                                <SelectItem value="name-asc">Nama Cust. A-Z</SelectItem>
-                                <SelectItem value="name-desc">Nama Cust. Z-A</SelectItem>
-                                <SelectItem value="order-id-asc">Order Id A-Z</SelectItem>
-                                <SelectItem value="order-id-desc">Order Id Z-A</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                    <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                    </div>
-                </div>
+                <FilterWeb
+                    isSearchValues={isSearchValues}
+                    setIsSearchValues={setIsSearchValues}
+                    debounce={debounce}
+                    sortOption={sortOption}
+                    setSortOption={setSortOption}
+                    dateFrom={dateFrom}
+                    dateUntil={dateUntil}
+                    setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil}
+                    setActiveTab={setActiveTab}
+                    setSearchInput={setSearchInput}
+                    activeTab={activeTab}
+                    setPage={setPage}
+                    showStoreSelect={false}
+                    searchInput={searchInput}
+                    options={[
+                        { value: 'waiting-payment', label: 'Belum Bayar' },
+                        { value: 'proses', label: 'Dalam Proses' },
+                        { value: 'done', label: 'Selesai' },
+                    ]}
+                    borderReset="border rounded-full"
+                />
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
                         <thead className="bg-gray-200">
@@ -426,7 +447,7 @@ export default function DeliveryRequest() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center font-bold">{isFetching ? <Loading /> : <NoData />}</td>
+                                    <td colSpan={6} className="text-center font-bold">{dataOrderListLoading ? <Loading /> : <NoData />}</td>
                                 </tr>
                             )}
                         </tbody>

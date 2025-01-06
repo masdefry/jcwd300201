@@ -10,7 +10,6 @@ export const handleMidtransNotification = async (req: Request, res: Response, ne
 
         handleMidtransNotificationService({ orderId, transactionStatus })
 
-
         res.status(200).json({
             error: false,
             message: 'Transaksi Berhasil di update',

@@ -18,13 +18,9 @@ import ButtonCustom from '@/components/core/button';
 import Link from 'next/link'
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { MdSportsMotorsports } from 'react-icons/md';
+import { FaLocationDot } from "react-icons/fa6";
+import { pickupValidationSchema } from '@/features/user/schemas/pickupValidation';
 
-const validationSchema = Yup.object({
-    deliveryFee: Yup.number().required().positive().integer(),
-    outletId: Yup.string().required(),
-    orderTypeId: Yup.string().required('Silahkan pilih tipe laundry'),
-    userAddressId: Yup.string().required(),
-});
 
 export default function PickupLaundry() {
     const token = authStore((state) => state?.token);
@@ -140,7 +136,7 @@ export default function PickupLaundry() {
                         orderTypeId: '',
                         userAddressId: !selectedAddress ? dataMainAddress?.id : selectedAddress?.id,
                     }}
-                    validationSchema={validationSchema}
+                    validationSchema={pickupValidationSchema}
                     onSubmit={(values) => {
                         handlePickupRequest({
                             deliveryFee: values.deliveryFee,
@@ -153,15 +149,21 @@ export default function PickupLaundry() {
                         <Form className='w-full h-full flex gap-4'>
                             <div className='w-full h-full flex flex-col justify-center space-y-2'>
                                 <section className='w-full cursor-pointer'>
-                                    {dataMainAddressLoading ? (<span className="text-gray-500">Memuat alamat...</span>) : dataMainAddress && !selectedAddress ? (
+                                    {dataMainAddressLoading ? (
+                                        <div className="border border-gray-300 p-4 rounded-lg bg-gray-50">
+                                            <span className="text-gray-500">Memuat alamat...</span>
+                                        </div>
+                                    ) : dataMainAddress && !selectedAddress ? (
                                         <div onClick={() => setOpenDialog(true)} className='border border-gray-300 p-4 rounded-lg bg-gray-50'>
-                                            <p className="font-semibold text-gray-800">{dataMainAddress?.User?.firstName} {dataMainAddress?.User?.lastName}</p>
+                                            <div className="font-semibold text-gray-800 flex items-center gap-1"> <p className="text-orange-500"><FaLocationDot /></p>Alamat {dataMainAddress?.addressName} • {dataMainAddress?.User?.firstName} {dataMainAddress?.User?.lastName}</div>
                                             <p className="text-gray-600">{dataMainAddress?.addressDetail}</p>
                                             <p className="text-gray-600">{dataMainAddress?.city}, {dataMainAddress?.province}, {dataMainAddress?.zipCode}</p>
                                         </div>
                                     ) : !dataMainAddress ? (
                                         <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 justify-center'>
-                                            <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
+                                            <div className="border border-gray-300 p-4 rounded-lg bg-white">
+                                                <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
+                                            </div>
                                         </Link>
                                     ) : (
                                         <div onClick={() => setOpenDialog(true)} className='border border-gray-300 p-4 rounded-lg bg-gray-50'>
@@ -178,7 +180,7 @@ export default function PickupLaundry() {
                                             <span className="text-gray-500">Memuat store terdekat...</span>
                                         ) : dataNearestStore && dataNearestStore.length > 0 ? (
                                             <div>
-                                                <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
+                                                <div className="font-semibold text-gray-800 flex items-center gap-1"><p className="text-orange-500"><FaLocationDot /></p>Store Terdekat • {dataNearestStore[0]?.storeName}</div>
                                                 <p className="text-gray-600">{dataNearestStore[0]?.address} -{' '}
                                                     <span className='text-sm'>{(dataNearestStore[0]?.distance).toFixed(2)} km</span></p>
                                                 <p className="text-gray-600"></p>
@@ -198,7 +200,7 @@ export default function PickupLaundry() {
                                         ) : (
                                             dataOrderType?.filter((item) => item?.id && item?.type).map((item) => (
                                                 <option key={item.id} value={item.id}>
-                                                    {item?.type == 'Wash Only' ? 'Layanan Mencuci' : item?.type == 'Iron Only' ? 'Layanan Setrika' : 'Mencuci dan Setrika'}
+                                                    {item?.type == 'Wash Only' ? 'Layanan Mencuci (Rp 6.500/kg)' : item?.type == 'Iron Only' ? 'Layanan Setrika (Rp 6.000/kg)' : 'Mencuci dan Setrika (Rp 9.000/kg)'}
                                                 </option>
                                             ))
                                         )}
@@ -217,7 +219,7 @@ export default function PickupLaundry() {
                                         {dataNearestStore && dataNearestStore.length > 0 ? (
                                             <h1 className="text-lg font-semibold text-gray-800">
                                                 {values?.orderTypeId ?
-                                                    <span>Rp{(Math.ceil(dataNearestStore[0]?.distance / 1000) * 8000).toLocaleString('id-ID') || '0'}</span>
+                                                    <span>Rp{(Math.ceil(dataNearestStore[0]?.distance) * 8000).toLocaleString('id-ID') || '0'}</span>
                                                     : '0'
                                                 }
                                             </h1>
@@ -242,7 +244,9 @@ export default function PickupLaundry() {
                     </DialogHeader>
                     <div className="space-y-2">
                         {dataAllAddressLoading ? (
-                            <span>Memuat alamat...</span>
+                            <div className="border border-gray-300 p-4 rounded-lg bg-gray-50">
+                                <span className="text-gray-500">Memuat alamat...</span>
+                            </div>
                         ) : dataAllAddress && dataAllAddress.length > 0 ? (
                             dataAllAddress.map((address: IAddress) => (
                                 <div
@@ -250,9 +254,9 @@ export default function PickupLaundry() {
                                     className="border p-3 rounded-lg bg-gray-100 cursor-pointer hover:bg-gray-200"
                                     onClick={() => { handleAddressSelect(address), setUserAddress(address.id) }}
                                 >
-                                    <p className="font-semibold">{address.addressName}</p>
-                                    <p className="text-gray-600">{address.addressDetail}</p>
-                                    <p className="text-gray-600">{address.city} {address.province}</p>
+                                    <p className="font-semibold">{address?.addressName}</p>
+                                    <p className="text-gray-600">{address?.addressDetail}</p>
+                                    <p className="text-gray-600">{address?.city} {address?.province}</p>
                                 </div>
                             ))
                         ) : (
@@ -272,7 +276,7 @@ export default function PickupLaundry() {
                             orderTypeId: '',
                             userAddressId: !selectedAddress ? dataMainAddress?.id : selectedAddress?.id,
                         }}
-                        validationSchema={validationSchema}
+                        validationSchema={pickupValidationSchema}
                         onSubmit={(values) => {
                             handlePickupRequest({
                                 deliveryFee: values.deliveryFee,
@@ -283,21 +287,27 @@ export default function PickupLaundry() {
                         }}>
                         {({ isSubmitting, setFieldValue, values }) => (
                             <Form className='w-full h-full flex gap-4'>
-                                <div className='w-full h-full flex flex-col justify-center space-y-2'>
+                                <div className='w-full h-full bg-gray-200 rounded-2xl p-3 flex flex-col justify-center space-y-2'>
                                     <section className='w-full cursor-pointer'>
-                                        {dataMainAddressLoading ? (<span className="text-gray-500">Memuat alamat...</span>) : dataMainAddress && !selectedAddress ? (
-                                            <div onClick={() => setOpenDialog(true)} className='border border-gray-300 p-4 rounded-lg bg-gray-50'>
-                                                <p className="font-semibold text-gray-800">{dataMainAddress?.User?.firstName} {dataMainAddress?.User?.lastName}</p>
+                                        {dataMainAddressLoading ? (
+                                            <div className="border border-gray-300 p-4 rounded-lg bg-white">
+                                                <span className="text-gray-500">Memuat alamat...</span>
+                                            </div>
+                                        ) : dataMainAddress && !selectedAddress ? (
+                                            <div onClick={() => setOpenDialog(true)} className='border border-gray-300 p-4 rounded-lg bg-white'>
+                                                <div className="font-semibold text-gray-800 flex items-center gap-1"> <p className="text-orange-500"><FaLocationDot /></p>Alamat {dataMainAddress?.addressName} • {dataMainAddress?.User?.firstName} {dataMainAddress?.User?.lastName}</div>
                                                 <p className="text-gray-600">{dataMainAddress?.addressDetail}</p>
                                                 <p className="text-gray-600">{dataMainAddress?.city}, {dataMainAddress?.province}, {dataMainAddress?.zipCode}</p>
                                             </div>
                                         ) : !dataMainAddress ? (
                                             <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 justify-center'>
-                                                <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
+                                                <div className="border border-gray-300 p-4 rounded-lg bg-white">
+                                                    <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
+                                                </div>
                                             </Link>
                                         ) : (
-                                            <div onClick={() => setOpenDialog(true)} className='border border-gray-300 p-4 rounded-lg bg-gray-50'>
-                                                <p className="font-semibold text-gray-800">{selectedAddress?.User?.firstName} {selectedAddress?.User?.lastName}</p>
+                                            <div onClick={() => setOpenDialog(true)} className='border border-gray-300 p-4 rounded-lg bg-white'>
+                                                <p className="font-semibold text-gray-800 flex items-center gap-1"> <p className="text-orange-500"><FaLocationDot /></p>Alamat {dataMainAddress?.addressName} • {dataMainAddress?.User?.firstName} {dataMainAddress?.User?.lastName}</p>
                                                 <p className="text-gray-600">{selectedAddress?.addressDetail}</p>
                                                 <p className="text-gray-600">{selectedAddress?.city}, {selectedAddress?.province}, {selectedAddress?.zipCode}</p>
                                             </div>
@@ -305,14 +315,14 @@ export default function PickupLaundry() {
                                     </section>
 
                                     <section className="w-full">
-                                        <div className="border border-gray-300 p-4 rounded-lg bg-gray-50">
+                                        <div className="border border-gray-300 p-4 rounded-lg bg-white">
                                             {dataNearestStoreLoading ? (
                                                 <span className="text-gray-500">Memuat store terdekat...</span>
                                             ) : dataNearestStore && dataNearestStore.length > 0 ? (
                                                 <div>
-                                                    <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
+                                                    <div className="font-semibold text-gray-800 flex items-center gap-1"><p className="text-orange-500"><FaLocationDot /></p>Store Terdekat • {dataNearestStore[0]?.storeName}</div>
                                                     <p className="text-gray-600">{dataNearestStore[0]?.address} -{' '}
-                                                        <span className='text-sm'>{(dataNearestStore[0]?.distance / 1000).toFixed(2)} km</span></p>
+                                                        <span className='text-sm'>{(dataNearestStore[0]?.distance).toFixed(2)} km</span></p>
                                                     <p className="text-gray-600"></p>
                                                 </div>
                                             ) : (
@@ -330,7 +340,7 @@ export default function PickupLaundry() {
                                             ) : (
                                                 dataOrderType?.filter((item) => item?.id && item?.type).map((item) => (
                                                     <option key={item.id} value={item.id}>
-                                                        {item?.type == 'Wash Only' ? 'Layanan Mencuci' : item?.type == 'Iron Only' ? 'Layanan Setrika' : 'Mencuci dan Setrika'}
+                                                        {item?.type == 'Wash Only' ? 'Layanan Mencuci (Rp 6.500/kg)' : item?.type == 'Iron Only' ? 'Layanan Setrika (Rp 6.000/kg)' : 'Mencuci dan Setrika (Rp 9.000/kg)'}
                                                     </option>
                                                 ))
                                             )}
@@ -349,7 +359,7 @@ export default function PickupLaundry() {
                                             {dataNearestStore && dataNearestStore.length > 0 ? (
                                                 <h1 className="text-lg font-semibold text-gray-800">
                                                     {values?.orderTypeId ?
-                                                        <span>Rp{(Math.ceil(dataNearestStore[0]?.distance / 1000) * 8000).toLocaleString('id-ID') || '0'}</span>
+                                                        <span>Rp{(Math.ceil(dataNearestStore[0]?.distance) * 8000).toLocaleString('id-ID') || '0'}</span>
                                                         : '0'
                                                     }
                                                 </h1>

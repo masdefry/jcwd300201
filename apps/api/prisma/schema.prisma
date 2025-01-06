@@ -135,7 +135,9 @@ model Order {
   isReqDelivery Boolean?
   isConfirm     Boolean?
   isSolved      Boolean?
-  notes         String?
+  isComplain    Boolean?
+  complaintText String? @db.Text
+  notes         String? @db.Text
   storeId       String?
   userId        String?
   orderTypeId   Int?
