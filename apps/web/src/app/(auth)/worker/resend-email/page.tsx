@@ -51,30 +51,32 @@ export default function Page() {
                         initialValues={{ email: '' }}
                         validationSchema={resendEmailValidation}
                         onSubmit={(values, { resetForm }) => handleResendEmail({ email: values?.email }, { onSuccess: () => resetForm() })}>
-                        <Form className="flex flex-col z-20 justify-center items-center w-full space-y-4">
+                        {({ setFieldValue, values }) => (
+                            <Form className="flex flex-col z-20 justify-center items-center w-full space-y-4">
 
-                            <div id="emailOrganizer-input" className="w-full">
-                                <div className="flex gap-5 items-center">
-                                    <label className="text-sm lg:text-base">
-                                        Email <span className="text-red-500">*</span>
-                                    </label>
-                                    <ErrorMessage
+                                <div id="emailOrganizer-input" className="w-full">
+                                    <div className="flex gap-5 items-center">
+                                        <label className="text-sm lg:text-base">
+                                            Email <span className="text-red-500">*</span>
+                                        </label>
+                                        <ErrorMessage
+                                            name="email"
+                                            component="div"
+                                            className="text-red-500 text-[5px] md:text-xs lg:text-sm mt-1"
+                                        />
+                                    </div>
+                                    <Field
                                         name="email"
-                                        component="div"
-                                        className="text-red-500 text-[5px] md:text-xs lg:text-sm mt-1"
+                                        className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10"
+                                        placeholder="example@gmail.com"
+                                        type="email"
                                     />
                                 </div>
-                                <Field
-                                    name="email"
-                                    className="w-full mt-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm pr-10"
-                                    placeholder="example@gmail.com"
-                                    type="email"
-                                />
-                            </div>
-                            <ButtonCustom disabled={isPending} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
-                                Resend Email
-                            </ButtonCustom>
-                        </Form>
+                                <ButtonCustom disabled={isPending || !values?.email} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
+                                    Resend Email
+                                </ButtonCustom>
+                            </Form>
+                        )}
                     </Formik>
                     <div className="flex w-full my-2 z-20 justify-between items-center">
                         <div className="flex items-center gap-1 text-sm">

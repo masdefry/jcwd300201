@@ -5,7 +5,7 @@ import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
-import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaTruck, FaUserCheck } from "react-icons/fa6";
+import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaStore, FaTruck, FaUserCheck } from "react-icons/fa6";
 import { FaCloud, FaTemperatureHigh } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
@@ -26,6 +26,7 @@ export default function Page() {
     const lat = locationStore((state) => state?.latitude)
     const lng = locationStore((state) => state?.longitude)
     const token = authStore((state) => state?.token)
+    const storeName = authStore((state) => state?.store)
     const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
@@ -120,7 +121,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<NotificationOutletAdmin dataOrderNotif={dataOrderNotif}/>}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<NotificationOutletAdmin dataOrderNotif={dataOrderNotif} />}>
                 <main className="pb-28">
                     <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                         <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
@@ -176,6 +177,7 @@ export default function Page() {
                             <div className="w-full">
                                 <p className="text-white">Pantau data order, dan kelola outlet satu tempat.</p>
                                 <p className="text-white pt-2">{isDayArr[isDay]} {isDate || '00/00/0000'}</p>
+                                <p className="text-white pt-2 flex gap-2 items-center"><span><FaStore className='text-lg' /></span> {storeName || 'CNC - Example'}</p>
                             </div>
                         </div>
                         <div className="w-full h-full items-center flex justify-end">

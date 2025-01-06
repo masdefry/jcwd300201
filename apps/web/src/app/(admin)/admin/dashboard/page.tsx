@@ -32,6 +32,7 @@ export default function Page() {
     const lat = locationStore((state) => state?.latitude)
     const lng = locationStore((state) => state?.longitude)
     const token = authStore((state) => state?.token)
+    const storeName = authStore((state) => state?.store)
 
     const params = useSearchParams()
     const currentUrl = new URLSearchParams(params.toString())
@@ -44,7 +45,7 @@ export default function Page() {
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
     const [selectedTab, setSelectedTab] = useState<'today' | 'month'>('today');
     const [isMonthlyStatistic, setIsMonthlyStatistic] = useState<string>(currentUrl.get('outlet') || '')
-    
+
 
     const { data: dataOrder } = useQuery({
         queryKey: ['get-order-status', selectedTab],
@@ -227,6 +228,7 @@ export default function Page() {
                             <div className="w-full">
                                 <p className="text-white">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
                                 <p className="text-white pt-2">{isDayArr[isDay]} {isDate || '00/00/0000'}</p>
+                                <p className="text-white pt-2 flex gap-2 items-center"><span><FaStore className='text-lg' /></span> {storeName || 'CNC - Example'}</p>
                             </div>
                         </div>
                         <div className="w-full h-full items-center flex justify-end">

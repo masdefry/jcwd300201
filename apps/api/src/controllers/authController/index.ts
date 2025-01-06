@@ -338,7 +338,8 @@ export const userKeepAuth = async (req: Request, res: Response, next: NextFuncti
                 lastName: findAdmin?.lastName,
                 profilePicture: findAdmin?.profilePicture,
                 totalWorker: findWorker!.length,
-                orders: orderTrack!.length
+                orders: orderTrack!.length,
+                store: findAdmin?.Store?.storeName
             } : authorizationRole !== 'CUSTOMER' && authorizationRole !== 'SUPER_ADMIN' ? {
                 role: findAdmin?.workerRole,
                 firstName: findAdmin?.firstName,

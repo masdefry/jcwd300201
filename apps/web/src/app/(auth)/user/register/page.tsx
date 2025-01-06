@@ -53,7 +53,7 @@ export default function Page() {
                             }
                         })
                     }}>
-                    {({ setFieldValue }) => (
+                    {({ setFieldValue, values }) => (
                         <Form className='flex flex-col justify-center items-center w-full space-y-4'>
                             <div id="firstName-input" className="w-full">
                                 <div className="flex gap-5 items-center relative">
@@ -88,7 +88,7 @@ export default function Page() {
                                     }
                                 }} international value={isValuePhoneNumber} defaultCountry="ID" className=" w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm mt-1" placeholder='Masukan nomor telepon anda dengan diawali angka 8' />
                             </div>
-                            <ButtonCustom disabled={isPending} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
+                            <ButtonCustom disabled={isPending || !values?.email || !values?.firstName || !values?.lastName || !values?.phoneNumber} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
                                 Daftar
                             </ButtonCustom>
                         </Form>

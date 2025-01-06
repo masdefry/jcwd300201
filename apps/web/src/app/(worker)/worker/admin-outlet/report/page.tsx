@@ -22,6 +22,18 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
+import { Button } from "@/components/ui/button"
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
 import ContentWebLayout from "@/components/core/webSessionContent"
 import FilterWeb from "@/components/core/filterWeb"
 import ButtonCustom from "@/components/core/button"
@@ -42,7 +54,7 @@ export default function DriverPickUp() {
     const [activeTab, setActiveTab] = useState(params.get("tab") || "bermasalah");
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
-    const [selectedOrder, setSelectedOrder] = useState<any>(null);
+    const [isDisableSuccess, setIsDisableSuccess] = useState<boolean>(false);
     const [isSearchValues, setIsSearchValues] = useState<string>('')
     const limit = 5
 
@@ -81,6 +93,7 @@ export default function DriverPickUp() {
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
+            setIsDisableSuccess(true)
             refetch()
         },
         onError: (err: any) => {
@@ -141,7 +154,7 @@ export default function DriverPickUp() {
     return (
         <>
             <MobileSessionLayout title="Laporan Pesanan">
-                <div className="mx-4 space-y-4">
+                <div className="space-y-4">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="bermasalah" onClick={() => { setActiveTab("bermasalah"); setPage(1) }} >Bermasalah</TabsTrigger>
@@ -170,47 +183,52 @@ export default function DriverPickUp() {
                                 {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
                                     dataOrderPackingProcess?.orders?.map((order: any) => (
                                         <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <div className="flex items-center">
-                                                        <div className="px-2">
-                                                            <h2 className="font-medium text-gray-900">{order?.id}</h2>
-                                                            <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
-                                                            <div className="text-xs text-gray-500">{order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes ? 'Terjadi Masalah' : ''}</div>
-                                                            <div className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</div>
-                                                        </div>
+                                            {order?.notes && order?.isSolved === true ?
+                                                <div className="flex items-center">
+                                                    <div className="px-2">
+                                                        <h2 className="font-medium text-gray-900">{order?.id}</h2>
+                                                        <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
+                                                        <div className="text-xs text-gray-500">{order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes ? 'Terjadi Masalah' : ''}</div>
+                                                        <div className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</div>
                                                     </div>
-                                                </AlertDialogTrigger>
-
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>Terdapat perbedaan barang pada laundry berikut</AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            <Formik initialValues={{ notes: '' }} validationSchema={notesSchema} onSubmit={async (values) => {
-                                                                handleLaundryProblem({ notes: values.notes, orderId: order?.id })
-                                                            }}>
-                                                                <Form>
-                                                                    <div>
-                                                                        <Field
-                                                                            as="textarea"
-                                                                            name="notes"
-                                                                            rows={4}
-                                                                            placeholder="Enter your notes"
-                                                                            className="w-full p-2 border rounded"
-                                                                        />
-                                                                        <ErrorMessage name="notes" component="div" className="text-red-500 text-xs" />
-                                                                    </div>
-                                                                    <AlertDialogFooter>
-                                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                        <AlertDialogAction type="submit">Continue</AlertDialogAction>
-                                                                    </AlertDialogFooter>
-                                                                </Form>
-                                                            </Formik>
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
-
+                                                </div> :
+                                                <Dialog>
+                                                    <DialogTrigger asChild>
+                                                        <div className="flex items-center">
+                                                            <div className="px-2">
+                                                                <h2 className="font-medium text-gray-900">{order?.id}</h2>
+                                                                <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
+                                                                <div className="text-xs text-gray-500">{order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes ? 'Terjadi Masalah' : ''}</div>
+                                                                <div className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</div>
+                                                            </div>
+                                                        </div>
+                                                    </DialogTrigger>
+                                                    <DialogContent className="sm:max-w-[425px]">
+                                                        <DialogHeader>
+                                                            <DialogTitle>Buat Catatan</DialogTitle>
+                                                            <DialogDescription>
+                                                                Beri catatan untuk memproses data pesanan pengguna.
+                                                            </DialogDescription>
+                                                        </DialogHeader>
+                                                        <Formik initialValues={{ notes: '' }} validationSchema={notesSchema} onSubmit={(values) => {
+                                                            handleLaundryProblem({ notes: values.notes, orderId: order?.id })
+                                                        }}>
+                                                            <Form className='relative py-2 pt-5'>
+                                                                <Field
+                                                                    as="textarea"
+                                                                    name="notes"
+                                                                    rows={4}
+                                                                    placeholder="Enter your notes"
+                                                                    className="w-full p-2 border rounded"
+                                                                />
+                                                                <ErrorMessage name="notes" component="div" className="text-red-500 text-xs absolute top-[-2px]" />
+                                                                <DialogFooter>
+                                                                    <ButtonCustom disabled={isPending || isDisableSuccess} width="w-full" btnColor='bg-orange-500 hover:bg-orange-500' type="submit">Save changes</ButtonCustom>
+                                                                </DialogFooter>
+                                                            </Form>
+                                                        </Formik>
+                                                    </DialogContent>
+                                                </Dialog>}
                                             <div className="flex gap-1">
                                                 <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
                                                     <FaWhatsapp />
@@ -226,7 +244,8 @@ export default function DriverPickUp() {
                                 )}
                                 {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 && (
                                     <Pagination page={page} totalPages={totalPages} setPage={setPage} />
-                                )}                                    </CardContent>
+                                )}
+                            </CardContent>
                         </TabsContent>
                     </Tabs>
                 </div>
@@ -263,7 +282,6 @@ export default function DriverPickUp() {
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order ID</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Customer</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Store</th>
                                 <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
                             </tr>
                         </thead>
@@ -281,9 +299,41 @@ export default function DriverPickUp() {
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * page + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false && order?.notes ? 'Terjadi Masalah' : ''}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.Store?.storeName}</td>
-                                            <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">View</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.isSolved === true ? 'Terselesaikan' : 'Masih terjadi masalah'}</td>
+                                            <td className="py-4 px-6 text-sm hover:underline break-words">
+                                                {order?.notes && order?.isSolved === true ?
+                                                   <button disabled className="text-blue-700 hover:text-blue-500 disabled:text-neutral-400">View</button> :
+                                                    <Dialog>
+                                                        <DialogTrigger asChild>
+                                                          <button className='text-blue-700 hover:text-blue-500 disabled:text-neutral-400'>View</button>
+                                                        </DialogTrigger>
+                                                        <DialogContent className="sm:max-w-[425px]">
+                                                            <DialogHeader>
+                                                                <DialogTitle>Buat Catatan</DialogTitle>
+                                                                <DialogDescription>
+                                                                    Beri catatan untuk memproses data pesanan pengguna.
+                                                                </DialogDescription>
+                                                            </DialogHeader>
+                                                            <Formik initialValues={{ notes: '' }} validationSchema={notesSchema} onSubmit={(values) => {
+                                                                handleLaundryProblem({ notes: values.notes, orderId: order?.id })
+                                                            }}>
+                                                                <Form className='relative py-2 pt-5'>
+                                                                    <Field
+                                                                        as="textarea"
+                                                                        name="notes"
+                                                                        rows={4}
+                                                                        placeholder="Enter your notes"
+                                                                        className="w-full p-2 border rounded"
+                                                                    />
+                                                                    <ErrorMessage name="notes" component="div" className="text-red-500 text-xs absolute top-[-2px]" />
+                                                                    <DialogFooter>
+                                                                        <ButtonCustom disabled={isPending || isDisableSuccess} width="w-full" btnColor='bg-orange-500 hover:bg-orange-500' type="submit">Save changes</ButtonCustom>
+                                                                    </DialogFooter>
+                                                                </Form>
+                                                            </Formik>
+                                                        </DialogContent>
+                                                    </Dialog>}
+                                            </td>
                                         </tr>
                                     ))
                                 ) : (
