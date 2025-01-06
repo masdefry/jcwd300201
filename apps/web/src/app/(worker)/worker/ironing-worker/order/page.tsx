@@ -330,6 +330,7 @@ export default function DriverPickUp() {
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
                                                 <td className="py-4 px-6 hover:underline break-words">
                                                     <ConfirmAlert
+                                                        colorConfirmation="blue"
                                                         disabled={isPending}
                                                         caption={
                                                             order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
@@ -375,7 +376,7 @@ export default function DriverPickUp() {
                                                         }}
                                                     >
                                                         <button disabled={order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' || ((order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' || order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS') && order?.OrderType?.type === 'Wash & Iron')} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                            {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' ? 'Selesai' : 'Selesaikan'}
+                                                            {order?.orderStatus[0]?.status === "IN_IRONING_PROCESS" && order?.isProcessed === false ? 'Proses' : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true ? 'Selesaikan' : 'Selesai'}
                                                         </button>
                                                     </ConfirmAlert>
                                                 </td>

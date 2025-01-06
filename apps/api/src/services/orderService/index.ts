@@ -106,7 +106,6 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
     LIMIT 1;
   `;
 
-  // if (nearestStores.length === 0) throw { msg: 'Tidak ada toko laundry kami di dekat anda', status: 404 }
   return { nearestStores }
 }
 

@@ -6,6 +6,7 @@ import { addHours } from "date-fns"
 
 dotenv.config()
 export const handleMidtransNotificationService = async ({ orderId, transactionStatus }: IHandleMidtransNotification) => {
+
     const transactionRecord = await prisma.order.findUnique({
         where: { id: orderId },
     });
@@ -15,13 +16,14 @@ export const handleMidtransNotificationService = async ({ orderId, transactionSt
 
     if (transactionStatus === "settlement" || transactionStatus === "capture") {
         updatedStatus = "PAYMENT_DONE";
-        await prisma.orderStatus.create({
+        const create = await prisma.orderStatus.create({
             data: {
                 orderId: orderId,
                 status: updatedStatus,
                 createdAt: addHours(new Date(), 7)
             },
         });
+        if (!create) throw { msg: 'Order status gagal di-update, silahkan coba lagi' }
 
         const order = await prisma.order.update({
             where: {
@@ -33,10 +35,7 @@ export const handleMidtransNotificationService = async ({ orderId, transactionSt
         })
 
         if (!order) throw { msg: 'Order tidak ditemukan', status: 404 }
-
     } else {
         throw { msg: 'Transaksi Gagal!', status: 400 }
     }
-
-
 }
