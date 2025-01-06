@@ -74,6 +74,7 @@ export default function OrderList() {
                     Authorization: `Bearer ${token}`
                 }
             })
+            console.log(res, 'inires')
             return setOrderData(res?.data?.data);
         },
     })
@@ -250,32 +251,47 @@ export default function OrderList() {
                                     <div className="space-y-3">
                                         <div className="border rounded-lg border-gray-700 p-2 text-sm">
                                             <div className="font-semibold">Driver Pickup:</div>
-                                            <div>
-                                                {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
-                                                    <>
+                                            {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
+                                                <>
+                                                    <Link href={`https://wa.me/62${orderData?.orderStatus[1]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
                                                         <div>
                                                             {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
                                                         </div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                        <div className="flex gap-1 items-center">
+                                                            <FaWhatsapp color="green" />{orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
                                                         </div>
-                                                    </>
-                                                ) : (
-                                                    "Menunggu Driver"
-                                                )}
-                                            </div>
+                                                    </Link>
+                                                </>
+                                            ) : (
+                                                "Menunggu Driver"
+                                            )}
                                         </div>
                                         <div className="border rounded-lg border-gray-700 p-2 text-sm">
                                             <div className="font-semibold">Delivery Driver:</div>
                                             <div>
-                                                {orderData?.orderStatus[1]?.status === "DRIVER_TO_CUSTOMERTLET" ? (
+                                                {orderData?.orderStatus[7]?.status === "DRIVER_TO_CUSTOMER" ? (
                                                     <>
-                                                        <div>
-                                                            {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
-                                                        </div>
-                                                        <div>
-                                                            {orderData?.orderStatus[1]?.Worker?.phoneNumber ?? 'No phone number available'}
-                                                        </div>
+                                                        <Link href={`https://wa.me/62${orderData?.orderStatus[7]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
+                                                            <div>
+                                                                {`${orderData?.orderStatus[7]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[7]?.Worker?.lastName ?? ''}`}
+                                                            </div>
+                                                            <div className="flex gap-1 items-center">
+                                                                <FaWhatsapp color="green" />{orderData?.orderStatus[7]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                            </div>
+                                                        </Link>
+                                                    </>
+
+                                                ) : orderData?.orderStatus[8]?.status === "DRIVER_TO_CUSTOMER" ? (
+                                                    <>
+                                                        <Link href={`https://wa.me/62${orderData?.orderStatus[8]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
+                                                            <div>
+                                                                {`${orderData?.orderStatus[8]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[8]?.Worker?.lastName ?? ''}`}
+                                                            </div>
+                                                            <div className="flex gap-1 items-center">
+                                                                    <FaWhatsapp color="green" />{orderData?.orderStatus[8]?.Worker?.phoneNumber ?? 'No phone number available'}
+                                                            </div>
+                                                        </Link>
+
                                                     </>
                                                 ) : (
                                                     "Belum Ada Driver"
@@ -285,16 +301,6 @@ export default function OrderList() {
                                     </div>
                                 </div>
                                 <div className="w-full h-fit py-2 border-t space-y-1 border-neutral-400">
-                                    <div className="flex justify-between text-sm items-end">
-                                        <h1 className="font-medium">Produk:</h1>
-                                        <div className="h-4 overflow-y-auto">
-                                            {orderData.orderDetail?.map((item: any, index: number) => (
-                                                <div key={index} className="flex items-center justify-center">
-                                                    <p>{item?.quantity}x {item?.LaundryItem?.itemName}</p>
-                                                </div>
-                                            ))}
-                                        </div>
-                                    </div>
                                     <div className="flex justify-between text-sm">
                                         <h1 className="font-medium">Biaya Kirim:</h1>
                                         <p>Rp{orderData?.order?.deliveryFee?.toLocaleString("id-ID")}</p>
