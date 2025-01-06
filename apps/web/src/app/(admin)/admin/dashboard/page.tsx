@@ -33,7 +33,6 @@ export default function Page() {
     const lng = locationStore((state) => state?.longitude)
     const token = authStore((state) => state?.token)
     const storeName = authStore((state) => state?.store)
-
     const params = useSearchParams()
     const currentUrl = new URLSearchParams(params.toString())
     const pathname = usePathname()
