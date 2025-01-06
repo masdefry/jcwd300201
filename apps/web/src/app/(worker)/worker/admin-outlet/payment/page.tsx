@@ -180,7 +180,7 @@ export default function DeliveryRequest() {
                                 {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
                                     dataOrderList?.orders?.map((order: any) => (
                                         <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                            <ConfirmAlert caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?" description={
+                                            <ConfirmAlert colorConfirmation="blue" caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?" description={
                                                 <Image
                                                     src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
                                                     alt="payment proof"
