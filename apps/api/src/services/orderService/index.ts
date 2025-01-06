@@ -18,6 +18,7 @@ const excludedStatusesOrder = [Status.PAYMENT_DONE, Status.AWAITING_PAYMENT];
 export const requestPickUpService = async ({ userId, deliveryFee, outletId, orderTypeId, userAddressId }: IRequestPickup) => {
   const findUser = await prisma.user.findFirst({ where: { id: userId } })
 
+  if (!findUser) throw { msg: 'User tidak ditemukan', status: 404 }
   const { orderId } = formatOrder()
 
   const newOrder: any = await prisma.order.create({
@@ -92,7 +93,7 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
           cos(radians(longitude) - radians(${userLongitude})) + 
           sin(radians(${userLatitude})) * sin(radians(latitude))
         ) 
-      ) AS distance
+      )/1000 AS distance
     FROM public.stores
     WHERE ( 
       6371000 * acos( 
@@ -100,7 +101,7 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
         cos(radians(longitude) - radians(${userLongitude})) + 
         sin(radians(${userLatitude})) * sin(radians(latitude))
       ) 
-    ) <= 5000 -- within 5 km
+    )/1000 <= 5000 -- within 5 km
     ORDER BY distance ASC
     LIMIT 1;
   `;
@@ -118,10 +119,10 @@ export const getUserOrderService = async ({ userId, limit_data, page, search, da
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } }
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } }
           ]
         }
         : {},
@@ -234,10 +235,10 @@ export const getOrdersForDriverService = async ({ authorizationRole, tab, storeI
       search
         ? {
           OR: [
-            { id: { contains: search as string } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -509,10 +510,10 @@ export const getOrdersForWashingService = async ({
       search
         ? {
           OR: [
-            { id: { contains: search } },
-            { User: { firstName: { contains: search as string } } },
-            { User: { lastName: { contains: search as string } } },
-            { User: { phoneNumber: { contains: search as string } } },
+            { id: { contains: search, mode: 'insensitive' as Prisma.QueryMode } },
+            { User: { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { lastName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
+            { User: { phoneNumber: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } } },
           ],
         }
         : {},
@@ -807,7 +808,7 @@ export const createOrderService = async ({
   }));
 
   await prisma.orderDetail.createMany({
-    data: dataItems,
+    data: dataItems
   });
 
 

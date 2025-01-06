@@ -170,13 +170,15 @@ export default function DriverPickUp() {
                                                     <p className="text-xs text-gray-500">
                                                         {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false
                                                             ? 'Belum Disetrika'
-                                                            : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false
+                                                            : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false && order?.orderTypeId === 2
                                                                 ? 'Belum Disetrika'
                                                                 : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
                                                                     ? 'Proses Setrika'
                                                                     : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
                                                                         ? 'Selesai'
-                                                                        : order?.orderStatus[0]?.status}
+                                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.orderTypeId === 3
+                                                                            ? 'Menunggu Proses Cuci Selesai'
+                                                                            : order?.orderStatus[0]?.status}
                                                     </p>
                                                     <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                                 </div>
@@ -315,13 +317,15 @@ export default function DriverPickUp() {
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                     {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false
                                                         ? 'Belum Disetrika'
-                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false
+                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false && order?.orderTypeId === 2
                                                             ? 'Belum Disetrika'
                                                             : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
                                                                 ? 'Proses Setrika'
                                                                 : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
                                                                     ? 'Selesai'
-                                                                    : order?.orderStatus[0]?.status}
+                                                                    : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.orderTypeId === 3
+                                                                        ? 'Menunggu Proses Cuci Selesai'
+                                                                        : order?.orderStatus[0]?.status}
                                                 </td>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
                                                 <td className="py-4 px-6 hover:underline break-words">

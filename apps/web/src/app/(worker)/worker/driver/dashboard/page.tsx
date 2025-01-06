@@ -327,7 +327,7 @@ export default function Page() {
                                     </div>
                                 </div>
                             ))}
-                            <Link href='/worker/driver/pickup-request' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                            <Link href='/worker/driver/pickup-request?tab=process-pickup' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                                 Lihat Selengkapnya...
                             </Link>
                         </div>
@@ -364,7 +364,7 @@ export default function Page() {
                                     </div>
                                 </div>
                             ))}
-                            <Link href='/worker/driver/pickup-request' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                            <Link href='/worker/driver/pickup-request?tab=process-pickup' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                                 Lihat Selengkapnya...
                             </Link>
                         </div>

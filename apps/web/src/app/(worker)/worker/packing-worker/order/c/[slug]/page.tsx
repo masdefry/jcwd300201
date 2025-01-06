@@ -259,7 +259,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         </table>
                                     </div>
                                     <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isDisabledSucces || isPending} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
-                                        Buat Nota Order
+                                        Check Barang
                                     </ButtonCustom>
                                 </div>
                             </Form>
@@ -300,7 +300,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                 </Dialog>
             </MobileSessionLayout>
 
-            <ContentWebLayout caption='Buat Nota Order'>
+            <ContentWebLayout caption='Pengecekan'>
                 <div className="pb-10 min-h-full h-fit w-full">
                     <NotaHeader email={emails} />
                     <NotaCaptionContent />
@@ -443,7 +443,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                             </table>
                                         </div>
                                         <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isDisabledSucces || isPending} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
-                                            Buat Nota Order
+                                            Check Barang
                                         </ButtonCustom>
                                     </div>
                                 </Form>

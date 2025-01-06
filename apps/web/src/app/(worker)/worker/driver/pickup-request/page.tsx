@@ -167,12 +167,12 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout icon={<FaBoxOpen className='text-lg' />} title="Permintaan Pickup">
+            <ContentMobileLayout icon={<FaBoxOpen className='text-lg' />} title="Proses Delivery">
                 <div className="pb-28">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
                             <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
-                            <TabsTrigger value="waiting-pickup" onClick={() => { setActiveTab("waiting-pickup"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
+                            <TabsTrigger value="waiting-pickup" onClick={() => { setActiveTab("waiting-pickup"); setPage(1) }} className='text-xs'>Belum Pickup</TabsTrigger>
                             <TabsTrigger value="process-pickup" onClick={() => { setActiveTab("process-pickup"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
                             <TabsTrigger value="arrived" onClick={() => { setActiveTab("arrived"); setPage(1) }} className='text-xs'>Selesai</TabsTrigger>
                         </TabsList>
