@@ -21,7 +21,7 @@ export default function NotificationDriver({ dataOrderNotif }: INotificationProp
         <div className="relative">
             <button
                 onClick={() => setIsDialogOpen(!isDialogOpen)}
-                className=" text-2xl text-yellow-400 focus:outline-none rounded-full shadow-lg"
+                className=" text-2xl text-yellow-400 focus:outline-none"
             >
                 <IoIosNotifications />
             </button>

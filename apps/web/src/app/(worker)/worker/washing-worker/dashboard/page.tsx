@@ -1,7 +1,7 @@
 'use client'
 
 import Image from "next/image";
-import { FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying } from "react-icons/fa6";
+import { FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying, FaStore } from "react-icons/fa6";
 import { FaHistory, FaTint } from "react-icons/fa";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
@@ -23,6 +23,7 @@ export default function Page() {
     const lat = locationStore((state) => state?.latitude)
     const lng = locationStore((state) => state?.longitude)
     const token = authStore((state) => state?.token)
+    const storeName = authStore((state) => state?.store)
     const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
@@ -37,7 +38,7 @@ export default function Page() {
         const isMonth = date.getMonth()
         const isYear = date.getFullYear()
 
-        const newDateFormat = `${isDateNow}/${isMonth}/${isYear}`
+        const newDateFormat = `${isDateNow}/${(isMonth + 1) <= 9 ? `0${isMonth + 1}` : (isMonth + 1)}/${isYear}`
         setIsDate(newDateFormat)
         setIsDay(isDayNow)
     }, [])
@@ -168,6 +169,7 @@ export default function Page() {
                             <div className="w-full">
                                 <p className="text-white">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
                                 <p className="text-white pt-2">{isDayArr[isDay]} {isDate || '00/00/0000'}</p>
+                                <p className="text-white pt-2 flex gap-2 items-center"><span><FaStore className='text-lg' /></span> {storeName || 'CNC - Example'}</p>
                             </div>
                         </div>
                         <div className="w-full h-full items-center flex justify-end">

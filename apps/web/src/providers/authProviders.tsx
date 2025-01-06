@@ -48,7 +48,8 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
                     role: response?.data?.data?.role,
                     totalWorker: response?.data?.data?.totalWorker,
                     orders: response?.data?.data?.orders,
-                    email: response?.data?.data?.email
+                    email: response?.data?.data?.email,
+                    store: response?.data?.data?.store
                 })
             } else {
                 setKeepAuth({

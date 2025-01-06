@@ -7,7 +7,7 @@ import { LuPackageCheck } from "react-icons/lu";
 import { FaHome, FaTint, FaWhatsapp } from "react-icons/fa";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
-import { FaAddressCard, FaArrowRight, FaCartShopping, FaUserCheck } from "react-icons/fa6";
+import { FaAddressCard, FaArrowRight, FaBox, FaCartShopping, FaUserCheck } from "react-icons/fa6";
 import { FaCloud, FaTemperatureHigh, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
@@ -104,7 +104,7 @@ export default function Page() {
 
     const arrIcon = [
         { icon: <FaDashcube />, url: '/user/dashboard/home', name: 'Dashboard' },
-        { icon: <MdSportsMotorsports />, url: '/user/dashboard/user/dashboard/home', name: 'Permintaan Pickup' },
+        { icon: <FaBox />, url: '/user/dashboard/pickup', name: 'Permintaan Pickup' },
         { icon: <FaCartShopping />, url: '/user/dashboard/order', name: 'Pesanan' },
         { icon: <FaSpaghettiMonsterFlying />, url: '/user/dashboard/settings/', name: 'Pengaturan' },
     ]

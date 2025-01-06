@@ -4,7 +4,7 @@ import { FaHistory, FaTint } from "react-icons/fa";
 import Image from "next/image";
 import { MdOutlineIron } from "react-icons/md";
 import { CgSmartHomeWashMachine } from "react-icons/cg";
-import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaUserCheck, FaCloud, FaMotorcycle, FaTemperatureHigh, FaBoxOpen, FaTruck } from "react-icons/fa6";
+import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaUserCheck, FaCloud, FaMotorcycle, FaTemperatureHigh, FaBoxOpen, FaTruck, FaStore } from "react-icons/fa6";
 import { BsPerson } from "react-icons/bs";
 import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
 import authStore from "@/zustand/authstore";
@@ -32,6 +32,7 @@ export default function Page() {
     const lng = locationStore((state) => state?.longitude)
     const token = authStore((state) => state?.token)
     const name = authStore((state) => state?.firstName)
+    const storeName = authStore((state) => state?.store)
     const [date, setDate] = useState<Date | undefined>(new Date())
     const [isDate, setIsDate] = useState<string>('')
     const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
@@ -235,6 +236,7 @@ export default function Page() {
                             <div className="w-full">
                                 <p className="text-white">Pantau tugas harian dan status pengiriman Anda dengan mudah.</p>
                                 <p className="text-white pt-2">{isDayArr[isDay]} {isDate || '00/00/0000'}</p>
+                                <p className="text-white pt-2 flex gap-2 items-center"><span><FaStore className='text-lg' /></span> {storeName || 'CNC - Example'}</p>
                             </div>
                         </div>
                         <div className="w-full h-full items-center flex justify-end">
