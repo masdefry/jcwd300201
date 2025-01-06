@@ -2,6 +2,7 @@ import prisma from "@/connection"
 import dotenv from 'dotenv'
 import { Status } from "@prisma/client"
 import { IHandleMidtransNotification } from "./type"
+import { addHours } from "date-fns"
 
 dotenv.config()
 export const handleMidtransNotificationService = async ({ orderId, transactionStatus }: IHandleMidtransNotification) => {
@@ -18,7 +19,7 @@ export const handleMidtransNotificationService = async ({ orderId, transactionSt
             data: {
                 orderId: orderId,
                 status: updatedStatus,
-                createdAt: new Date(),
+                createdAt: addHours(new Date(), 7)
             },
         });
 

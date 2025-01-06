@@ -25,25 +25,6 @@ import Image from "next/image";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
 
-const validationSchema = Yup.object().shape({
-    customerName: Yup.string().required("Customer name is required"),
-    customerAddress: Yup.string().required("Customer address is required"),
-    orderTypeId: Yup.string().required("Order type is required"),
-    items: Yup.array()
-        .of(
-            Yup.object().shape({
-                itemName: Yup.string().required("Item name is required"),
-                quantity: Yup.number()
-                    .required("Quantity is required")
-                    .min(1, "Quantity must be at least 1"),
-                weight: Yup.number()
-                    .required("Weight is required")
-                    .min(0.1, "Weight must be at least 0.1 kg"),
-            })
-        )
-        .min(1, "At least one item is required"),
-});
-
 interface ICreateOrder {
     id: string,
     values: FormData
@@ -66,7 +47,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
     const token = authStore((state) => state?.token);
     const email = authStore((state) => state?.email);
     const { toast } = useToast();
-    
+
     const { data: dataOrderNote, refetch, isLoading: dataOrderNoteLoading, isFetching } = useQuery({
         queryKey: ['get-order-note'],
         queryFn: async () => {
@@ -145,8 +126,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     <h1 className="font-bold text-2xl text-gray-800 mb-4">Detail Pesanan</h1>
                     <div className="space-y-3">
                         <InputDisplay caption="Order ID" value={dataOrderNote?.order?.id || 'ORD123123'} />
-                        <InputDisplay caption="Ongkos Kirim" value={dataOrderNote?.order?.deliveryFee || '0'} />
-                        <InputDisplay caption="Biaya Laundry" value={dataOrderNote?.order?.laundryPrice || '0'} />
+                        <InputDisplay caption="Ongkos Kirim" value={`Rp${Number(dataOrderNote?.order?.deliveryFee || '0').toLocaleString("id-ID")}`} />
+                        <InputDisplay caption="Biaya Laundry" value={`Rp${Number(dataOrderNote?.order?.laundryPrice || '0').toLocaleString("id-ID")}`} />
                     </div>
                 </div>
                 <div className="w-full md:w-1/2 space-y-4 pb-28">
@@ -193,7 +174,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     ) : (
                         <div className="text-lg mt-8 border-gray-300 p-4">
                             <h1 className="font-bold">Terima kasih,</h1>
-                            <p>Anda Telah Melakukan Pembayaran!</p>
+                            <p>Anda Telah Melakukan Pembayaran, Menunggu Verifikasi Admin!</p>
                         </div>
                     )}
                 </div>
@@ -255,8 +236,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         <h1 className="font-bold text-2xl text-gray-800 mb-4">Detail Pesanan</h1>
                         <div className="space-y-3">
                             <InputDisplay caption="Order ID" value={dataOrderNote?.order?.id || 'ORD123123'} />
-                            <InputDisplay caption="Ongkos Kirim" value={dataOrderNote?.order?.deliveryFee || '0'} />
-                            <InputDisplay caption="Biaya Laundry" value={dataOrderNote?.order?.laundryPrice || '0'} />
+                            <InputDisplay caption="Ongkos Kirim" value={`Rp${Number(dataOrderNote?.order?.deliveryFee || '0').toLocaleString("id-ID")}`} />
+                            <InputDisplay caption="Biaya Laundry" value={`Rp${Number(dataOrderNote?.order?.laundryPrice || '0').toLocaleString("id-ID")}`} />
                         </div>
                     </div>
                     <div className="w-full md:w-1/2 space-y-4">

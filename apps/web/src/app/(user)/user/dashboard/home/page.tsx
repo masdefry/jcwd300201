@@ -59,6 +59,17 @@ export default function Page() {
         },
     });
 
+    const { data: dataOrderNotif } = useQuery({
+            queryKey: ['get-order-notif'],
+            queryFn: async () => {
+                const res = await instance.get('/order/notification', {
+                    params: { tab: 'user' },
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                console.log(res)
+                return res?.data?.data;
+            },
+        }); 
     const { data: dataOrder, isPending: dataOrderPending } = useQuery({
         queryKey: ['get-order-status', selectedTab],
         queryFn: async () => {
@@ -100,7 +111,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification />}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification dataOrderNotif={dataOrderNotif}/>}>
                 <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                     <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
                     <p className="text-neutral-200 text-sm mt-1">Selamat datang di Clean&Click, layanan laundry profesional yang memastikan pakaian Anda selalu bersih dan rapi.</p>

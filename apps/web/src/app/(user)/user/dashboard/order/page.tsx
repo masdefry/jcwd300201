@@ -185,7 +185,7 @@ export default function DeliveryRequest() {
                                 setIsSearchValues={setIsSearchValues}
                                 isSearchValues={isSearchValues}
                             />
-                            {dataOrderListLoading && <div>Loading...</div>}
+                            {dataOrderListLoading && <Loading />}
                             {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
                             {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
                                 dataOrderList?.orders?.map((order: any) => (
@@ -251,10 +251,11 @@ export default function DeliveryRequest() {
                                                 <div className="border w-fit px-1 mt-1 rounded-md bg-green-200 border-green-600 text-green-600">
                                                     Pembayaran Berhasil
                                                 </div>
-                                                :
-                                                <div className="border w-fit px-1 rounded-md bg-red-200 border-red-600 text-red-600">
-                                                    Menunggu Pembayaran
-                                                </div>
+                                                : !orderData?.order?.isPaid && orderData?.order?.laundryPrice ?
+                                                    <div className="border w-fit px-1 rounded-md bg-red-200 border-red-600 text-red-600">
+                                                        Menunggu Pembayaran
+                                                    </div>
+                                                    : ""
                                             }
                                         </div>
                                         <div className="flex flex-col w-2/6">
@@ -324,7 +325,9 @@ export default function DeliveryRequest() {
                                 </div>
                                 <div className="flex justify-between">
                                     <span>Harga Laundry:</span>
-                                    <span>Rp{orderData?.order?.laundryPrice?.toLocaleString("id-ID")}</span>
+                                    <span>{orderData?.order?.laundryPrice
+                                        ? `Rp${orderData.order.laundryPrice.toLocaleString("id-ID")}`
+                                        : "Menunggu Pembuatan Invoice"}</span>
                                 </div>
                                 <div className="flex justify-between font-semibold">
                                     <span>Total Harga:</span>

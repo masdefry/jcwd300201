@@ -65,7 +65,7 @@ export default function NotificationUser({ dataOrderNotif }: INotificationProps)
                             ))
                         ) : (
                             <li className="text-sm text-gray-400 font-bold">
-                                Tidak Ada Pekerjaan Baru
+                                Tidak Ada Notifikasi Baru
                             </li>
                         )}
                     </ul>

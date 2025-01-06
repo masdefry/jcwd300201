@@ -5,7 +5,7 @@ import Image from "next/image";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
-import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaUserCheck } from "react-icons/fa6";
+import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaTruck, FaUserCheck } from "react-icons/fa6";
 import { FaCloud, FaTemperatureHigh } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
@@ -110,6 +110,7 @@ export default function Page() {
     const arrIcon = [
         { icon: <FaDashcube />, url: '/worker/admin-outlet/dashboard', name: 'Dashboard' },
         { icon: <FaFileInvoice />, url: '/worker/admin-outlet/nota-order', name: 'Buat Nota' },
+        { icon: <FaTruck />, url: '/worker/admin-outlet/delivery', name: 'Penjemputan' },
         { icon: <FaMoneyBillWave />, url: '/worker/admin-outlet/order', name: 'Pesanan' },
         { icon: <FaRegCreditCard />, url: '/worker/admin-outlet/payment', name: 'Pembayaran' },
         { icon: <FaExclamationTriangle />, url: '/worker/admin-outlet/report', name: 'Laopran' },

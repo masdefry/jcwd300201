@@ -108,6 +108,7 @@ export default function PickupLaundry() {
                 },
                 headers: { Authorization: `Bearer ${token}` },
             });
+            console.log(dataNearestStore)
             return res?.data?.data;
         },
     });
@@ -179,7 +180,7 @@ export default function PickupLaundry() {
                                             <div>
                                                 <p className="font-semibold text-gray-800">{dataNearestStore[0]?.storeName}</p>
                                                 <p className="text-gray-600">{dataNearestStore[0]?.address} -{' '}
-                                                    <span className='text-sm'>{(dataNearestStore[0]?.distance / 1000).toFixed(2)} km</span></p>
+                                                    <span className='text-sm'>{(dataNearestStore[0]?.distance).toFixed(2)} km</span></p>
                                                 <p className="text-gray-600"></p>
                                             </div>
                                         ) : (
