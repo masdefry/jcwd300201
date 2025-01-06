@@ -18,5 +18,5 @@ interface IDataOrderNotif {
 }
 
 export interface INotificationProps {
-    dataOrderNotif: IDataOrderNotif;
+    dataOrderNotif?: IDataOrderNotif;
 }

@@ -166,8 +166,8 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<NotificationOutletAdmin dataOrderNotif={dataOrderNotif} />}>
-                <main className="pb-24">
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<NotificationSuperAdmin dataOrderNotif={dataOrderNotif} />}>
+                <main className="pb-28">
                     <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                         <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
                         <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
