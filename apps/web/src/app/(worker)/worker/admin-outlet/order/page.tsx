@@ -166,7 +166,7 @@ export default function DeliveryRequest() {
                                             handleOrderDetail(order?.id);
                                             setOpenDialog(true)
                                         }} className="flex items-center">
-                                            <div className="ml-2">
+                                            <div className="px-2">
                                                 <h2 className="font-medium text-gray-900">{order?.id.length > 15 ? <span>{order?.id.slice(0, 15)}..</span> : order?.id}</h2>
                                                 <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
                                                 <div className="text-xs text-gray-500">

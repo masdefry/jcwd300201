@@ -5,23 +5,22 @@ import ButtonCustom from "@/components/core/button";
 import SearchInputCustom from "@/components/core/searchBar";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { ChangeEvent, useEffect, useState } from "react";
 import { BsPencil, BsTrash } from "react-icons/bs";
 import { FaEllipsisVertical, FaPlus, FaStore } from "react-icons/fa6";
 import { useDebouncedCallback } from "use-debounce";
-import HeaderMobile from "@/components/core/headerMobile";
-import { FaEdit, FaTrashAlt, FaArrowLeft, FaSearch } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 import Image from "next/image";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import Link from "next/link";
 import Loading from "@/components/core/loading";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
 import Pagination from "@/components/core/pagination";
-import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
+import { toast } from "@/components/hooks/use-toast";
+
 export default function Page() {
     const token = authStore((state) => state?.token)
     const params = useSearchParams()
@@ -48,6 +47,29 @@ export default function Page() {
             })
 
             return response?.data?.data
+        }
+    })
+
+    const { mutate: deleteStoreById, isPending: isPendingDelete } = useMutation({
+        mutationFn: async (id) => {
+            return await instance.patch(`/store/delete/${id}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res) => {
+            refetch()
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
+            })
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
         }
     })
 
@@ -157,10 +179,10 @@ export default function Page() {
                                 </div>
 
                                 <div className='flex gap-2'>
-                                    <ConfirmAlert
+                                    <ConfirmAlert disabled={isPendingDelete}
                                         caption={`Hapus "${store?.storeName?.toUpperCase()}"?`}
                                         description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
-                                        onClick={() => { console.log('delete') }}>
+                                        onClick={() => deleteStoreById(store?.id)}>
                                         <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
                                     </ConfirmAlert>
                                     <Link href={`/admin/outlet/e/${store?.id}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </Link>
@@ -218,11 +240,11 @@ export default function Page() {
                                             <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{new Date(store?.createdAt).toLocaleDateString()}</td>
                                             <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
                                                 <div className='flex gap-2'>
-                                                    <ConfirmAlert
+                                                    <ConfirmAlert disabled={isPendingDelete}
                                                         caption={`Hapus "${store?.storeName?.toUpperCase()}"?`}
                                                         description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
-                                                        onClick={() => { console.log('delete') }}>
-                                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
+                                                        onClick={() => deleteStoreById(store?.id)}>
+                                                        <button disabled={isPendingDelete} className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
                                                     </ConfirmAlert>
                                                     <Link href={`/admin/outlet/e/${store?.id}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </Link>
                                                 </div>

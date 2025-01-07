@@ -2,7 +2,7 @@
 import { IoHomeSharp, IoSearchSharp } from "react-icons/io5";
 import { GrNotes } from "react-icons/gr";
 import Link from "next/link";
-import { FaGear, FaPhone, FaStore, FaVoicemail } from "react-icons/fa6";
+import { FaGear, FaPhone, FaStore, FaTruck, FaVoicemail } from "react-icons/fa6";
 
 import { useState } from "react";
 import { usePathname } from "next/navigation";
@@ -63,7 +63,7 @@ export default function Footer() {
     DRIVER: [
       { icon: <IoHomeSharp className="text-xl" />, label: "Beranda", path: '/worker/driver/dashboard' },
       { icon: <GrNotes className="text-xl" />, label: "Pesanan", path: '/worker/driver/pickup-request' },
-      { icon: <MdSportsMotorsports className="text-xl" />, label: "Antar", path: '/worker/driver/delivery-request' },
+      { icon: <FaTruck className="text-xl" />, label: "Antar", path: '/worker/driver/delivery-request' },
       { icon: <FaGear className="text-xl" />, label: "Pengaturan", path: '/worker/driver/settings' },
     ],
     PACKING_WORKER: [
@@ -75,7 +75,7 @@ export default function Footer() {
     CUSTOMER: [
       { icon: <IoHomeSharp className="text-xl" />, label: "Dashboard", path: '/user/dashboard/home' },
       { icon: <GrNotes className="text-xl" />, label: "Pesanan", path: '/user/dashboard/order' },
-      { icon: <MdSportsMotorsports className="text-xl" />, label: "Pickup", path: '/user/dashboard/pickup' },
+      { icon: <FaTruck className="text-xl" />, label: "Pickup", path: '/user/dashboard/pickup' },
       { icon: <FaGear className="text-xl" />, label: "Pengaturan", path: '/user/dashboard/settings' },
     ]
   }

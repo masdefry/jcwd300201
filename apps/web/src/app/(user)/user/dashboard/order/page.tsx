@@ -5,7 +5,7 @@ import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
 import authStore from "@/zustand/authstore"
-import { useState, useEffect, ChangeEvent } from "react"
+import { useState, useEffect } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
 import { useToast } from "@/components/hooks/use-toast"
@@ -14,8 +14,6 @@ import Pagination from "@/components/core/pagination"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import ContentWebLayout from "@/components/core/webSessionContent";
 import ButtonCustom from "@/components/core/button";
-import SearchInputCustom from "@/components/core/searchBar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import HorizontalTimeline from "@/components/core/timelineUser"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import NoData from "@/components/core/noData"
@@ -26,7 +24,7 @@ import FilterWeb from "@/components/core/filterWeb"
 import Link from "next/link"
 import { FaWhatsapp } from "react-icons/fa6"
 
-export default function DeliveryRequest() {
+export default function Page() {
     const params = useSearchParams();
     const router = useRouter();
     const pathname = usePathname();
@@ -41,12 +39,10 @@ export default function DeliveryRequest() {
     const [activeTab, setActiveTab] = useState(params.get("tab") || "waiting-payment");
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
-    const [selectedOrder, setSelectedOrder] = useState<any>(null);
-    const [outletId, setOutletId] = useState<any>(null);
     const [isSearchValues, setIsSearchValues] = useState<string>('')
-
-
-    const limit = 5;
+    const [openDialog, setOpenDialog] = useState(false);
+    const [orderData, setOrderData] = useState<any>(null);
+    const [limit, setLimit] = useState<number>(5)
 
     const { data: dataOrderList, refetch, isLoading: dataOrderListLoading, isError: dataOrderListError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
@@ -65,8 +61,7 @@ export default function DeliveryRequest() {
             });
             return res?.data?.data;
         },
-    });
-
+    })
 
     const { mutate: handleOrderConfirmation, isPending } = useMutation({
         mutationFn: async (id: any) => {
@@ -92,9 +87,6 @@ export default function DeliveryRequest() {
         }
     })
 
-    const [openDialog, setOpenDialog] = useState(false);
-    const [orderData, setOrderData] = useState<any>(null);
-
     const { mutate: handleOrderDetail } = useMutation({
         mutationFn: async (id: any) => {
             const res = await instance.get(`/order/orders-detail/${id}`, {
@@ -106,27 +98,16 @@ export default function DeliveryRequest() {
         },
     })
 
-    const { data: getDataStore, isFetching, isLoading: isStoreLoading, isError: isStoreError } = useQuery({
-        queryKey: ['get-data-store'],
-        queryFn: async () => {
-            const res = await instance.get('/store')
-            console.log(res)
-            return res?.data?.data
-        }
-    })
-
-    const getDataItem = dataOrderList?.dataOrder
-
     const handlePageChange = (page: any) => {
-        setPage(page)
+        setPage(parseInt(page))
     }
-
 
     const debounce = useDebouncedCallback(values => {
         setSearchInput(values)
         setPage(1)
-    }, 500);
+    }, 500)
 
+    const totalPages = dataOrderList?.totalPage || 1
     useEffect(() => {
         const currentUrl = new URLSearchParams(params.toString());
         if (searchInput) {
@@ -159,16 +140,11 @@ export default function DeliveryRequest() {
         } else {
             currentUrl.delete(`page`)
         }
-        if (totalPages === undefined || page > totalPages) {
-            setPage(1)
-        }
 
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
 
-
-    const totalPages = dataOrderList?.totalPage || 1;
+    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil])
 
     return (
         <>

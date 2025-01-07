@@ -18,7 +18,7 @@ import ButtonCustom from '@/components/core/button';
 import Link from 'next/link'
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { MdSportsMotorsports } from 'react-icons/md';
-import { FaLocationDot } from "react-icons/fa6";
+import { FaLocationDot, FaPlus, FaTruck } from "react-icons/fa6";
 import { pickupValidationSchema } from '@/features/user/schemas/pickupValidation';
 
 
@@ -46,21 +46,13 @@ export default function PickupLaundry() {
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            });
-
-            setIsDisabledSucces(true)
-
-            setTimeout(() => {
-                setIsDisabledSucces(false)
-            }, 2000)
-            console.log(res);
+            })
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
-            });
-            console.log(err);
+            })
         }
     });
 
@@ -104,7 +96,6 @@ export default function PickupLaundry() {
                 },
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log(dataNearestStore)
             return res?.data?.data;
         },
     });
@@ -127,7 +118,7 @@ export default function PickupLaundry() {
 
     return (
         <>
-            <ContentMobileLayout title='Permintaan Pickup' icon={<MdSportsMotorsports className='text-lg' />}>
+            <ContentMobileLayout title='Permintaan Pickup' icon={<FaTruck className='text-lg' />}>
                 <Formik
                     enableReinitialize
                     initialValues={{
@@ -137,13 +128,13 @@ export default function PickupLaundry() {
                         userAddressId: !selectedAddress ? dataMainAddress?.id : selectedAddress?.id,
                     }}
                     validationSchema={pickupValidationSchema}
-                    onSubmit={(values) => {
+                    onSubmit={(values, { resetForm }) => {
                         handlePickupRequest({
                             deliveryFee: values.deliveryFee,
                             outletId: values.outletId,
                             orderTypeId: values.orderTypeId,
                             userAddressId: values.userAddressId,
-                        });
+                        }, { onSuccess: () => { resetForm() } })
                     }}>
                     {({ isSubmitting, setFieldValue, values }) => (
                         <Form className='w-full h-full flex gap-4'>
@@ -277,13 +268,13 @@ export default function PickupLaundry() {
                             userAddressId: !selectedAddress ? dataMainAddress?.id : selectedAddress?.id,
                         }}
                         validationSchema={pickupValidationSchema}
-                        onSubmit={(values) => {
+                        onSubmit={(values, { resetForm }) => {
                             handlePickupRequest({
                                 deliveryFee: values.deliveryFee,
                                 outletId: values.outletId,
                                 orderTypeId: values.orderTypeId,
                                 userAddressId: values.userAddressId,
-                            });
+                            }, { onSuccess: () => { resetForm() } })
                         }}>
                         {({ isSubmitting, setFieldValue, values }) => (
                             <Form className='w-full h-full flex gap-4'>
@@ -300,10 +291,8 @@ export default function PickupLaundry() {
                                                 <p className="text-gray-600">{dataMainAddress?.city}, {dataMainAddress?.province}, {dataMainAddress?.zipCode}</p>
                                             </div>
                                         ) : !dataMainAddress ? (
-                                            <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 justify-center'>
-                                                <div className="border border-gray-300 p-4 rounded-lg bg-white">
-                                                    <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
-                                                </div>
+                                            <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 text-2xl justify-center border py-10 border-gray-300 text-neutral-500 p-4 rounded-lg bg-white w-full'>
+                                                <span><FaPlus className='font-sans font-semibold' /></span><h1>Buat Alamat Baru</h1>
                                             </Link>
                                         ) : (
                                             <div onClick={() => setOpenDialog(true)} className='border border-gray-300 p-4 rounded-lg bg-white'>
@@ -332,7 +321,7 @@ export default function PickupLaundry() {
                                     </section>
 
                                     <section className="w-full pb-4">
-                                        <Field as="select" name="orderTypeId" className="w-full border border-gray-300 rounded-md p-2 bg-gray-50 hover:bg-gray-100"
+                                        <Field as="select" disabled={!dataMainAddress} name="orderTypeId" className="w-full border border-gray-300 rounded-md p-2 bg-gray-50 hover:bg-gray-100"
                                             onChange={(e: any) => setFieldValue('orderTypeId', e.target.value)}>
                                             <option value="" disabled>-- Pilih Tipe Laundry --</option>
                                             {dataOrderTypeLoading ? (

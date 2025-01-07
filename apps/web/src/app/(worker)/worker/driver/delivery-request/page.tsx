@@ -229,7 +229,7 @@ export default function DriverDelivery() {
                                                     }
                                                 >
                                                     <div className="flex items-center">
-                                                        <div className="ml-2">
+                                                        <div className="px-2">
                                                             <h2 className="font-medium text-gray-900">
                                                                 {order?.id}
                                                             </h2>
@@ -254,7 +254,7 @@ export default function DriverDelivery() {
                                             ) : (
 
                                                 <div className="flex items-center">
-                                                    <div className="ml-2">
+                                                    <div className="px-2">
                                                         <h2 className="font-medium text-gray-900">
                                                             {order?.id}
                                                         </h2>

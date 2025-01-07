@@ -24,7 +24,7 @@ export default function HeroSection() {
     return (
         <Carousel
             plugins={[plugin.current]}
-            className="w-full mt-2"
+            className="w-full mt-2 md:block hidden"
             onMouseEnter={plugin.current.stop}
             onMouseLeave={plugin.current.reset}>
             <CarouselContent>

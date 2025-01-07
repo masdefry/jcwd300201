@@ -147,7 +147,7 @@ export default function DeliveryRequest() {
     return (
         <>
             <MobileSessionLayout title="Pengantaran">
-                <Tabs defaultValue={activeTab} className="fit">
+                <Tabs defaultValue={activeTab} className="pb-28">
                     <TabsList className="hidden w-full">
                         <TabsTrigger value="ready-to-deliver" onClick={() => { setActiveTab("ready-to-deliver"); setPage(1) }} >Siap Kirim</TabsTrigger>
                     </TabsList>
@@ -299,7 +299,7 @@ export default function DeliveryRequest() {
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">Data tidak tersedia</td>
+                                    <td colSpan={6} className="text-center font-bold"><NoData /></td>
                                 </tr>
                             )}
                         </tbody>

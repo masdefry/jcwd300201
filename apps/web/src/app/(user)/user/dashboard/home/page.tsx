@@ -288,7 +288,7 @@ export default function Page() {
                             </Link>
                         </div>
                     </div>
-                    <div className="w-full h-full flex justify-center bg-white bg-opacity-45 rounded-2xl ">
+                    <div className="w-full h-full flex justify-center p-5 bg-white bg-opacity-45 rounded-2xl ">
                         <TabTrackingUser
                             selectedTab={selectedTab}
                             setSelectedTab={setSelectedTab}

@@ -89,7 +89,7 @@ export default function Page() {
                                 }} international value={isValuePhoneNumber} defaultCountry="ID" className=" w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:border focus:border-orange-500 text-sm mt-1" placeholder='Masukan nomor telepon anda dengan diawali angka 8' />
                             </div>
                             <ButtonCustom disabled={isPending || !values?.email || !values?.firstName || !values?.lastName || !values?.phoneNumber} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
-                                Daftar
+                                {isPending ? 'Memproses..' : 'Daftar'}
                             </ButtonCustom>
                         </Form>
                     )}
@@ -98,7 +98,7 @@ export default function Page() {
                     <div className="flex w-full justify-between items-center">
                         <div className="flex items-center gap-1 text-sm">
                             <h1 className="">Sudah memiliki akun?</h1>
-                            <Link href='/user/login' className='text-blue-500 hover:text-blue-700'>Login</Link>
+                            <Link href='/user/login' className='text-blue-500 hover:text-blue-700 hover:underline'>Login</Link>
                         </div>
                         <Link href={'/user/resend-email'} className="text-sm text-blue-500 hover:underline">
                             Atur ulang kata sandi?

@@ -63,7 +63,6 @@ export default function DriverPickUp() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });
@@ -144,7 +143,7 @@ export default function DriverPickUp() {
     return (
         <>
             <ContentMobileLayout title="Pesanan" icon={<FaFileInvoice className='text-lg' />}>
-                <Tabs defaultValue={activeTab} className="fit">
+                <Tabs defaultValue={activeTab} className="fit pb-28">
                     <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className="text-xs">Semua</TabsTrigger>
                         <TabsTrigger value="belum-disetrika" onClick={() => { setActiveTab("belum-disetrika"); setPage(1) }} className="text-xs">Belum ..</TabsTrigger>

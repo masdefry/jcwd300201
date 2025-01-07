@@ -12,9 +12,9 @@ import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
 import { FaCreditCard, FaFileInvoice, FaTruck } from "react-icons/fa6";
+import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
-
 export default function Layout({ children }: { children: ReactNode }) {
     const [isClose, setIsClose] = useState<boolean>(false)
     const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
@@ -77,7 +77,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="h-fit py-10 gap-5 flex justify-start px-5 items-center w-full">
                     <div className="w-12 h-12 rounded-full">
                         <Image
-                            src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
+                            src={profilePicture?.includes('https://') ? profilePicture : profilePicture?.startsWith('images-') ? `http://localhost:5000/api/src/public/images/${profilePicture}` : profilePict}
                             width={600}
                             height={600}
                             alt="user-profile"
@@ -86,7 +86,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     </div>
                     <div className="flex flex-col text-base text-neutral-700">
                         <h1 className="font-bold">{name?.length > 10 ? name?.slice(0, 10) : name || 'Admin'}</h1>
-                        <h1 className="italic text-[11px]">{role || 'SUPER_ADMIN'}</h1>
+                        <h1 className="italic text-[11px]">{role || 'OUTLET_ADMIN'}</h1>
                     </div>
                 </div>
                 <h1 className="px-4 text-sm text-neutral-600 py-2">Menu</h1>
@@ -117,7 +117,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             </section>
             <section className="w-full h-fit md:h-screen md:bg-white md:px-1 md:py-1 relative">
                 <span onClick={handleCloseSideBar} className="absolute cursor-pointer hover:shadow-xl top-14 left-14 z-20 text-white">
-                    {isClose ? <FaArrowRight /> : <FaArrowLeft />}
+                    {isClose ? <GoSidebarCollapse /> : <GoSidebarExpand />}
                 </span>
                 {children}
             </section>
