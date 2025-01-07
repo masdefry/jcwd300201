@@ -10,7 +10,7 @@ import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
 import { locationStore } from "@/zustand/locationStore";
 import { useRouter } from "next/navigation";
-import { updateOutletValidation } from "@/features/superAdmin/schemas/updateOutletValidation";
+import { updateOutletValidationSchema } from "@/features/superAdmin/schemas/updateOutletValidationSchema";
 import { toast } from "@/components/hooks/use-toast";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
@@ -75,15 +75,12 @@ export default function Page({ params }: { params: Promise<{ detail: string }> }
 
             setIsPositionCheck(false)
             setIsDisabledSucces(true)
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
             })
-
-            console.log(err)
         }
     })
     if (isFetching) return <div></div>
@@ -102,7 +99,7 @@ export default function Page({ params }: { params: Promise<{ detail: string }> }
                             latitude: isPositionCheck ? Number(isPosition?.lat) : dataOutlet?.latitude || null,
                             longitude: isPositionCheck ? Number(isPosition?.lng) : dataOutlet?.longitude || null,
                         }}
-                        validationSchema={updateOutletValidation}
+                        validationSchema={updateOutletValidationSchema}
                         onSubmit={(values) => {
                             handleUpdateOutlet({
                                 storeName: values?.storeName,
@@ -198,7 +195,7 @@ export default function Page({ params }: { params: Promise<{ detail: string }> }
                             latitude: isPositionCheck ? Number(isPosition?.lat) : dataOutlet?.latitude || null,
                             longitude: isPositionCheck ? Number(isPosition?.lng) : dataOutlet?.longitude || null,
                         }}
-                        validationSchema={updateOutletValidation}
+                        validationSchema={updateOutletValidationSchema}
                         onSubmit={(values) => {
                             handleUpdateOutlet({
                                 storeName: values?.storeName,

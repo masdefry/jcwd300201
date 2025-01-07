@@ -63,7 +63,6 @@ export default function DriverPickUp() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });
@@ -147,7 +146,7 @@ export default function DriverPickUp() {
                 <Tabs defaultValue={activeTab} className="fit">
                     <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className="text-xs">Semua</TabsTrigger>
-                        <TabsTrigger value="belum-disetrika" onClick={() => { setActiveTab("belum-disetrika"); setPage(1) }} className="text-xs">Belum ..</TabsTrigger>
+                        <TabsTrigger value="belum-disetrika" onClick={() => { setActiveTab("belum-disetrika"); setPage(1) }} className="text-xs">Belum Setrika</TabsTrigger>
                         <TabsTrigger value="proses-setrika" onClick={() => { setActiveTab("proses-setrika"); setPage(1) }} className="text-xs">Proses</TabsTrigger>
                         <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} className="text-xs">Selesai</TabsTrigger>
                     </TabsList>

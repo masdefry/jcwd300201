@@ -16,8 +16,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CardContent } from '@/components/ui/card';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 import { adminAccountValidationSchema } from '@/features/superAdmin/schemas/adminAccountValidationSchema';
-import { adminAccountMobileValidationSchema } from '@/features/superAdmin/schemas/adminAccountMobileValidation';
-import { adminChangePasswordValidationSchema } from '@/features/superAdmin/schemas/adminChangePasswordSchema';
+import { adminAccountMobileValidationSchema } from '@/features/superAdmin/schemas/adminAccountMobileValidationSchema';
+import { adminChangePasswordValidationSchema } from '@/features/superAdmin/schemas/adminChangePasswordValidationSchema';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {

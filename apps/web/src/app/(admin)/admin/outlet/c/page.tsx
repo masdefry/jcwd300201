@@ -14,7 +14,7 @@ import L from 'leaflet'
 import ButtonCustom from "@/components/core/button";
 import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
-import { createOutletValidation } from "@/features/superAdmin/schemas/createOutletValidation";
+import { createOutletValidationSchema } from "@/features/superAdmin/schemas/createOutletValidationSchema";
 import HeaderMobile from "@/components/core/headerMobile";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa6";
@@ -52,7 +52,7 @@ export default function Page() {
             setDataUser(response?.data)
 
         } catch (error) {
-            console.log(error)
+            console.log('error')
         }
     }
 
@@ -68,15 +68,12 @@ export default function Page() {
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
             })
-
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
             })
-            console.log(err)
         }
     })
 
@@ -135,7 +132,7 @@ export default function Page() {
                             })
 
                         }}
-                        validationSchema={createOutletValidation}
+                        validationSchema={createOutletValidationSchema}
                         initialValues={{
                             storeName: "",
                             address: "",
@@ -251,7 +248,7 @@ export default function Page() {
                             })
 
                         }}
-                        validationSchema={createOutletValidation}
+                        validationSchema={createOutletValidationSchema}
                         initialValues={{
                             storeName: "",
                             address: "",

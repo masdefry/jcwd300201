@@ -1448,7 +1448,6 @@ export const orderTrackingUser = async (req: Request, res: Response, next: NextF
 
     const { totalOrders, totalSpent, totalWeight, totalPcs } = await orderTrackingUserService({ userId, period: periodTypes })
 
-
     res.status(200).json({
       error: false,
       message: "Order berhasil diupdate!",

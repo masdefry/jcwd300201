@@ -51,14 +51,12 @@ export const useLoginUserHooks = () => {
 
             setIsDisabledSucces(true)
             window.location.href = '/'
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
             })
-            console.log(err)
         }
     })
 
@@ -92,10 +90,9 @@ export const useLoginUserHooks = () => {
 
             setIsDisabledSucces(true)
             window.location.href = '/'
-            console.log(res)
         },
         onError: (err) => {
-            console.log(err)
+            console.log('err')
         }
     })
 
@@ -110,10 +107,8 @@ export const useLoginUserHooks = () => {
                 email: res?.user?.email as string,
                 profilePicture: res?.user?.photoURL as string
             })
-            console.log(res)
         },
         onError: (err) => {
-            console.log(err)
         }
     })
 

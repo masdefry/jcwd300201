@@ -57,7 +57,6 @@ export default function HistoryOrderWashing() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });

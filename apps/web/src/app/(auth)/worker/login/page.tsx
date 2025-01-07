@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
-import { loginAdminValidation } from "@/features/adminLogin/schemas/loginWorkerValidation";
+import { loginAdminValidationSchema } from "@/features/adminLogin/schemas/loginWorkerValidationSchema";
 import { useWorkerLoginHooks } from "@/features/adminLogin/hooks/useWorkerLoginHooks";
 
 export default function Page() {
@@ -50,19 +50,19 @@ export default function Page() {
                             email: '',
                             password: '',
                         }}
-                        validationSchema={loginAdminValidation}
+                        validationSchema={loginAdminValidationSchema}
                         onSubmit={(values) => handleLoginAdmin({ email: values.email, password: values.password })}>
                         {({ setFieldValue, values }) => (
                             <Form className="flex z-20 flex-col justify-center items-center w-full space-y-4">
                                 <div id="emailOrganizer-input" className="w-full">
-                                    <div className="flex gap-5 items-center">
+                                    <div className="flex gap-2 lg:gap-5 items-center">
                                         <label className="text-sm lg:text-base">
                                             Email <span className="text-red-500">*</span>
                                         </label>
                                         <ErrorMessage
                                             name="email"
                                             component="div"
-                                            className="text-red-500 text-[5px] md:text-xs lg:text-sm mt-1"
+                                            className="text-red-500 text-xs lg:text-sm mt-1"
                                         />
                                     </div>
                                     <Field
@@ -73,14 +73,14 @@ export default function Page() {
                                     />
                                 </div>
                                 <div id="password-input" className="relative w-full">
-                                    <div className="flex gap-5 items-center">
+                                    <div className="flex gap-2 lg:gap-5 items-center">
                                         <label className="text-sm lg:text-base">
                                             Password <span className="text-red-500">*</span>
                                         </label>
                                         <ErrorMessage
                                             name="password"
                                             component="div"
-                                            className="text-red-500 text-[5px] md:text-xs lg:text-sm mt-1"
+                                            className="text-red-500 text-xs lg:text-sm mt-1"
                                         />
                                     </div>
                                     <Field

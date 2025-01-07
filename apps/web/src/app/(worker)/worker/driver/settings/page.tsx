@@ -14,13 +14,13 @@ import { useDriverSettingsHooks } from '@/features/driver/hooks/useDriverSetting
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { driverChangePasswordValidation } from '@/features/driver/schemas/driverChangePasswordValidationSchema';
+import { driverChangePasswordValidationSchema } from '@/features/driver/schemas/driverChangePasswordValidationSchema';
 import { driverAccountValidationSchema } from '@/features/driver/schemas/driverAccountValidationSchema';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 import ButtonCustom from '@/components/core/button';
 import { ConfirmAlert } from '@/components/core/confirmAlert';
 import { FaSignOutAlt } from 'react-icons/fa';
-import { driverAccountMobileSchema } from '@/features/driver/schemas/driverAccountMobileSchema';
+import { driverAccountMobileValidationSchema } from '@/features/driver/schemas/driverAccountMobileValidationSchema';
 
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
@@ -66,7 +66,7 @@ export default function Page() {
                                 phoneNumbers: getDataWorker?.phoneNumber || '',
                                 img: null
                             }}
-                                validationSchema={driverAccountMobileSchema}
+                                validationSchema={driverAccountMobileValidationSchema}
                                 onSubmit={(values) => {
                                     const fd = new FormData()
                                     fd.append('email', values?.emails)
@@ -92,7 +92,7 @@ export default function Page() {
                                 password: '',
                                 confirmPassword: ''
                             }}
-                                validationSchema={driverChangePasswordValidation}
+                                validationSchema={driverChangePasswordValidationSchema}
                                 onSubmit={(values, { resetForm }) => {
                                     handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                         onSuccess: () => {
@@ -155,7 +155,7 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={driverChangePasswordValidation}
+                            validationSchema={driverChangePasswordValidationSchema}
                             onSubmit={(values, { resetForm }) => {
                                 handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                     onSuccess: () => {

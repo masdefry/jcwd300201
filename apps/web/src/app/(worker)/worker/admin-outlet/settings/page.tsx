@@ -14,15 +14,15 @@ import { useAdminOutletSettingsHooks } from '@/features/adminOutlet/hooks/useAdm
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { oAdminChangePasswordValidation } from '@/features/adminOutlet/schemas/oAdminChangePasswordValidationSchema';
+import { oAdminChangePasswordValidationSchema } from '@/features/adminOutlet/schemas/oAdminChangePasswordValidationSchema';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 import { ConfirmAlert } from '@/components/core/confirmAlert';
 import { FaSignOutAlt } from 'react-icons/fa';
 import ButtonCustom from '@/components/core/button';
-import { oAdminAccountMobileSchema } from '@/features/adminOutlet/schemas/oAdminAccountMobileSchema';
+import { oAdminAccountMobileValidationSchema } from '@/features/adminOutlet/schemas/oAdminAccountMobileValidationSchema';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { FaGear } from 'react-icons/fa6';
-import { oAdminAccountValidation } from '@/features/adminOutlet/schemas/oAdminAccountValidationSchema';
+import { oAdminAccountValidationSchema } from '@/features/adminOutlet/schemas/oAdminAccountValidationSchema';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {
@@ -67,7 +67,7 @@ export default function Page() {
                                 phoneNumbers: getDataWorker?.phoneNumber || '',
                                 img: null
                             }}
-                                validationSchema={oAdminAccountMobileSchema}
+                                validationSchema={oAdminAccountMobileValidationSchema}
                                 onSubmit={(values) => {
                                     const fd = new FormData()
                                     fd.append('email', values?.emails)
@@ -93,7 +93,7 @@ export default function Page() {
                                 password: '',
                                 confirmPassword: ''
                             }}
-                                validationSchema={oAdminChangePasswordValidation}
+                                validationSchema={oAdminChangePasswordValidationSchema}
                                 onSubmit={(values, { resetForm }) => {
                                     handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                         onSuccess: () => resetForm()
@@ -127,7 +127,7 @@ export default function Page() {
                             phoneNumber: getDataWorker?.phoneNumber || '',
                             images: null
                         }}
-                            validationSchema={oAdminAccountValidation}
+                            validationSchema={oAdminAccountValidationSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.email)
@@ -153,7 +153,7 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={oAdminChangePasswordValidation}
+                            validationSchema={oAdminChangePasswordValidationSchema}
                             onSubmit={(values, { resetForm }) => {
                                 handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                     onSuccess: () => resetForm()

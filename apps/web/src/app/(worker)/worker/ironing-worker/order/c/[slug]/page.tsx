@@ -17,7 +17,7 @@ import ContentWebLayout from "@/components/core/webSessionContent";
 import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionContent";
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
 import ButtonCustom from "@/components/core/button";
-import { ironingItemValidation } from "@/features/ironingWorker/schemas/ironingItemValidation";
+import { ironingItemValidationSchema } from "@/features/ironingWorker/schemas/ironingItemValidationSchema";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
 
@@ -70,7 +70,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
             const res = await instance.get(`/order/detail-order-note/${slug}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(dataOrderNote)
             return res?.data?.data;
         },
     });
@@ -319,7 +318,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         itemName: '',
                         quantity: 1,
                         notes: '',
-                    }} validationSchema={ironingItemValidation}
+                    }} validationSchema={ironingItemValidationSchema}
                         onSubmit={(values: any) => {
                             handleStatusOrder({
                                 email: emails,

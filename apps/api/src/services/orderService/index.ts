@@ -3230,13 +3230,13 @@ export const getOrdersForNotifService = async ({
   if (tab === "driver") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'PAYMENT_DONE'];
   } else if (tab === "admin") {
-    statusFilter = ['AWAITING_DRIVER_PICKUP', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
+    statusFilter = ['AWAITING_DRIVER_PICKUP','DRIVER_ARRIVED_AT_OUTLET', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab === "user") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'AWAITING_PAYMENT', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
     statusFilter = [tab];
   } else {
-    statusFilter = ['AWAITING_PAYMENT', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
+    statusFilter = ['AWAITING_PAYMENT', 'DRIVER_ARRIVED_AT_OUTLET','PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
   }
 
   const whereConditions: Prisma.OrderWhereInput = {

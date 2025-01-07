@@ -18,7 +18,7 @@ import Pagination from "@/components/core/pagination";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { createProductLaundryValidation } from "@/features/superAdmin/schemas/createProductLaundryValidation";
+import { createProductLaundryValidationSchema } from "@/features/superAdmin/schemas/createProductLaundryValidationSchema";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 
 export default function Page() {
@@ -57,7 +57,7 @@ export default function Page() {
                                 <div className="w-full">
                                     <Formik
                                         initialValues={{ itemName: '' }}
-                                        validationSchema={createProductLaundryValidation}
+                                        validationSchema={createProductLaundryValidationSchema}
                                         onSubmit={(values, { resetForm }) => createProductItem({ itemName: values?.itemName }, {
                                             onSuccess: () => {
                                                 resetForm()

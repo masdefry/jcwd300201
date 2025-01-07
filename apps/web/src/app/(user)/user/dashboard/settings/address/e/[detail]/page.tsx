@@ -57,7 +57,7 @@ export default function Page({ params }: { params: Promise<any> }) {
             setDataUser(response?.data)
 
         } catch (error) {
-            console.log(error)
+            console.log('error')
         }
     }
 
@@ -73,15 +73,12 @@ export default function Page({ params }: { params: Promise<any> }) {
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
             })
-
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
             })
-            console.log(err)
         }
     })
 

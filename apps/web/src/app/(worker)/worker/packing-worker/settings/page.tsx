@@ -14,12 +14,12 @@ import { usePackingWorkerSettingsHooks } from '@/features/packingWorker/hooks/us
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { packingChangePasswordValidation } from '@/features/packingWorker/schemas/packingChangePasswordValidationSchema';
+import { packingChangePasswordValidationSchema } from '@/features/packingWorker/schemas/packingChangePasswordValidationSchema';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 import { FaGear } from 'react-icons/fa6';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { packingAccountValidationSchema } from '@/features/packingWorker/schemas/packingAccountValidationSchema';
-import { packingAccountMobileSchema } from '@/features/packingWorker/schemas/packingAccountMobileSchema';
+import { packingAccountMobileValidationSchema } from '@/features/packingWorker/schemas/packingAccountMobileValidationSchema';
 import { ConfirmAlert } from '@/components/core/confirmAlert';
 import ButtonCustom from '@/components/core/button';
 import { FaSignOutAlt } from 'react-icons/fa';
@@ -65,7 +65,7 @@ export default function Page() {
                             emails: getDataWorker?.email || '',
                             phoneNumbers: getDataWorker?.phoneNumber || '',
                             img: null
-                        }} validationSchema={packingAccountMobileSchema}
+                        }} validationSchema={packingAccountMobileValidationSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.emails)
@@ -90,7 +90,7 @@ export default function Page() {
                             existingPassword: '',
                             password: '',
                             confirmPassword: ''
-                        }} validationSchema={packingChangePasswordValidation}
+                        }} validationSchema={packingChangePasswordValidationSchema}
                             onSubmit={(values, { resetForm }) => {
                                 handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                     onSuccess: () => {
@@ -151,7 +151,7 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={packingChangePasswordValidation}
+                            validationSchema={packingChangePasswordValidationSchema}
                             onSubmit={(values, { resetForm }) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                 onSuccess: () => {
                                     resetForm()

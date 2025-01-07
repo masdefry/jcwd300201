@@ -17,7 +17,7 @@ import ContentWebLayout from "@/components/core/webSessionContent";
 import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionContent";
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
 import NotaHeader from "@/components/core/createNotaHeaders";
-import { washingItemValidation } from "@/features/washingWorker/schemas/washingItemValidation";
+import { washingItemValidationSchema } from "@/features/washingWorker/schemas/washingItemValidationSchema";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
 type Iitem = {
@@ -129,12 +129,12 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     itemName: '',
                     quantity: 1,
                     notes: '',
-                }} validationSchema={washingItemValidation} onSubmit={(values: any) => {
-                        handleStatusOrder({
-                            email: emails,
-                            notes: values.notes,
-                        })
-                    }}>
+                }} validationSchema={washingItemValidationSchema} onSubmit={(values: any) => {
+                    handleStatusOrder({
+                        email: emails,
+                        notes: values.notes,
+                    })
+                }}>
                     {({ values, setFieldValue, submitForm }) => {
                         const handleCustomSubmit = () => {
                             const itemOrder = values.items.map((item: any) => ({
@@ -312,7 +312,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         quantity: 1,
                         notes: '',
                     }}
-                        validationSchema={washingItemValidation}
+                        validationSchema={washingItemValidationSchema}
                         onSubmit={(values: any) => {
                             handleStatusOrder({
                                 email: emails,

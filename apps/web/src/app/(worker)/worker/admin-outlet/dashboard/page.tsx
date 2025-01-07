@@ -53,7 +53,6 @@ export default function Page() {
             const res = await instance.get(`/order/tracking?period=${selectedTab}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res, '<<<<')
             return res?.data?.data
         },
     });
@@ -75,7 +74,6 @@ export default function Page() {
                 params: { tab: 'admin' },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });
@@ -89,7 +87,7 @@ export default function Page() {
 
                     setIsCurrentWeither(res?.data)
                 } catch (error) {
-                    console.log(error)
+                    console.log('error')
                 }
             }
 

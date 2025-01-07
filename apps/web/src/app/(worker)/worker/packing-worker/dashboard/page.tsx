@@ -74,7 +74,7 @@ export default function Page() {
 
                     setIsCurrentWeither(res?.data)
                 } catch (error) {
-                    console.log(error)
+                    console.log('error')
                 }
             }
 

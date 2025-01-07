@@ -3,7 +3,7 @@
 import ButtonCustom from "@/components/core/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { createProductLaundryValidation } from "@/features/superAdmin/schemas/createProductLaundryValidation";
+import { createProductLaundryValidationSchema } from "@/features/superAdmin/schemas/createProductLaundryValidationSchema";
 import { BsPencil } from "react-icons/bs";
 
 export default function DialogUpdateProduct({ product, handleUpdateItem, isPendingUpdate }: { product: any, handleUpdateItem: any, isPendingUpdate: boolean }) {
@@ -22,7 +22,7 @@ export default function DialogUpdateProduct({ product, handleUpdateItem, isPendi
                 <div className="w-full">
                     <Formik
                         initialValues={{ itemName: product?.itemName || '' }}
-                        validationSchema={createProductLaundryValidation}
+                        validationSchema={createProductLaundryValidationSchema}
                         onSubmit={(values, { resetForm }) => handleUpdateItem({ id: product?.id, itemName: values?.itemName }, {
                             onSuccess: () => {
                                 resetForm()

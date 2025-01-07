@@ -19,7 +19,7 @@ import Link from 'next/link'
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { MdSportsMotorsports } from 'react-icons/md';
 import { FaLocationDot } from "react-icons/fa6";
-import { pickupValidationSchema } from '@/features/user/schemas/pickupValidation';
+import { pickupValidationSchema } from '@/features/user/schemas/pickupValidationSchema';
 
 
 export default function PickupLaundry() {
@@ -53,14 +53,12 @@ export default function PickupLaundry() {
             setTimeout(() => {
                 setIsDisabledSucces(false)
             }, 2000)
-            console.log(res);
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
             });
-            console.log(err);
         }
     });
 
@@ -104,7 +102,6 @@ export default function PickupLaundry() {
                 },
                 headers: { Authorization: `Bearer ${token}` },
             });
-            console.log(dataNearestStore)
             return res?.data?.data;
         },
     });
@@ -161,7 +158,7 @@ export default function PickupLaundry() {
                                         </div>
                                     ) : !dataMainAddress ? (
                                         <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 justify-center'>
-                                            <div className="border border-gray-300 p-4 rounded-lg bg-white">
+                                                    <div className="flex w-full border items-center gap-1 border-gray-300 p-4 rounded-lg bg-gray-50">
                                                 <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
                                             </div>
                                         </Link>
@@ -301,7 +298,7 @@ export default function PickupLaundry() {
                                             </div>
                                         ) : !dataMainAddress ? (
                                             <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 justify-center'>
-                                                <div className="border border-gray-300 p-4 rounded-lg bg-white">
+                                                <div className="flex w-full items-center gap-1 border border-gray-300 p-4 rounded-lg bg-white">
                                                     <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
                                                 </div>
                                             </Link>

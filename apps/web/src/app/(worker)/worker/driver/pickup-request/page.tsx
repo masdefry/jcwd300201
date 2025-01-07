@@ -69,7 +69,6 @@ export default function Page() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });
@@ -342,7 +341,7 @@ export default function Page() {
                                                         : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? () => {
                                                             handleProcessOrderOutlet(order?.id)
                                                             refetch()
-                                                        } : () => console.log('trigger')
+                                                        } : () => { }
                                                     }
                                                     description={order?.orderStatus[0]?.status === 'AWAITING_DRIVER_PICKUP' ? 'Konfirmasi bahwa Anda akan mengambil laundry untuk order ini'
                                                         : order?.orderStatus[0]?.status === 'DRIVER_TO_OUTLET' ? 'Konfirmasi bahwa barang untuk order ini telah berhasil diantar ke laundry'

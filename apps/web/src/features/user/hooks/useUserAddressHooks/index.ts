@@ -53,15 +53,12 @@ const useUserAddressHooks = () => {
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
             })
-
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
             })
-            console.log(err)
         }
     })
 
@@ -78,11 +75,9 @@ const useUserAddressHooks = () => {
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
             })
-            console.log(res)
             refetch()
         },
         onError: (err: any) => {
-            console.log(err)
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"

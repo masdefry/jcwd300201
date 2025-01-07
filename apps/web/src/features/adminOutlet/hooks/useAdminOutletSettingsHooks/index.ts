@@ -53,14 +53,12 @@ export const useAdminOutletSettingsHooks = () => {
       setIsDisableSucces(true)
 
       window.location.reload()
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
 
@@ -80,14 +78,12 @@ export const useAdminOutletSettingsHooks = () => {
       setIsDisableSucces(true)
 
       window.location.reload()
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
 
@@ -108,14 +104,12 @@ export const useAdminOutletSettingsHooks = () => {
       })
       setIsChangePassword(true)
 
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
   const { mutate: handleLogoutAdmin, isPending } = useMutation({
@@ -136,7 +130,6 @@ export const useAdminOutletSettingsHooks = () => {
         setIsDisableSucces(true)
 
         window.location.href = '/worker/login'
-        console.log(res)
       }
     },
     onError: (err: any) => {
@@ -144,7 +137,6 @@ export const useAdminOutletSettingsHooks = () => {
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
   return {

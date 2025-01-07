@@ -66,10 +66,10 @@ export default function Page() {
                     params: { tab: 'user' },
                     headers: { Authorization: `Bearer ${token}` }
                 });
-                console.log(res)
                 return res?.data?.data;
             },
-        }); 
+    }); 
+    
     const { data: dataOrder, isPending: dataOrderPending } = useQuery({
         queryKey: ['get-order-status', selectedTab],
         queryFn: async () => {
@@ -88,7 +88,7 @@ export default function Page() {
 
                     setIsCurrentWeither(res?.data)
                 } catch (error) {
-                    console.log(error)
+                    console.log('error')
                 }
             }
 

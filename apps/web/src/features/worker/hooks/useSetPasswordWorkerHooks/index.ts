@@ -50,7 +50,6 @@ export const useSetPasswordWorkerHooks = (params: Promise<IParamsType>) => {
                     className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
                 })
             }
-            console.log(err)
         }
     })
 

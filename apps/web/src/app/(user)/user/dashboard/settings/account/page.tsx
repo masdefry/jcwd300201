@@ -15,9 +15,9 @@ import ButtonCustom from '@/components/core/button';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
-import { userAccountValidationMobileSchema } from '@/features/user/schemas/userAccountMobileSchema';
+import { userAccountValidationMobileSchema } from '@/features/user/schemas/userAccountMobileValidationSchema';
 import { userAccountValidationSchema } from '@/features/user/schemas/userAccountValidationSchema';
-import { userGoogleChangePasswordValidation } from '@/features/user/schemas/userGoogleChangePasswordSchema';
+import { userGoogleChangePasswordValidation } from '@/features/user/schemas/userGoogleChangePasswordValidationSchema';
 import ContentWebLayout from '@/components/core/webSessionContent';
 import { userChangePasswordValidationSchema } from '@/features/user/schemas/userChangePasswordValidationSchema';
 

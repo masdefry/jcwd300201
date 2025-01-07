@@ -13,10 +13,10 @@ import { useIroningWorkerSettingsHooks } from '@/features/ironingWorker/hooks/us
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { ironingChangePasswordValidation } from '@/features/ironingWorker/schemas/ironingChangePasswordValidationSchema';
+import { ironingChangePasswordValidationSchema } from '@/features/ironingWorker/schemas/ironingChangePasswordValidationSchema';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
-import { ironingAccountValidation } from '@/features/ironingWorker/schemas/ironingAccountValidationSchema';
-import { ironingAccountMobileValidation } from '@/features/ironingWorker/schemas/ironingAccountMobileSchema';
+import { ironingAccountValidationSchema } from '@/features/ironingWorker/schemas/ironingAccountValidationSchema';
+import { ironingAccountMobileValidationSchema } from '@/features/ironingWorker/schemas/ironingAccountMobileValidationSchema';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { FaGear } from 'react-icons/fa6';
 import ButtonCustom from '@/components/core/button';
@@ -64,7 +64,7 @@ export default function Page() {
                             emails: getDataWorker?.email || '',
                             phoneNumbers: getDataWorker?.phoneNumber || '',
                             img: null
-                        }} validationSchema={ironingAccountMobileValidation}
+                        }} validationSchema={ironingAccountMobileValidationSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.emails)
@@ -90,7 +90,7 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={ironingChangePasswordValidation}
+                            validationSchema={ironingChangePasswordValidationSchema}
                             onSubmit={(values, { resetForm }) => {
                                 handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                     onSuccess: () => {
@@ -126,7 +126,7 @@ export default function Page() {
                             phoneNumber: getDataWorker?.phoneNumber || '',
                             images: null
                         }}
-                            validationSchema={ironingAccountValidation}
+                            validationSchema={ironingAccountValidationSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.email)
@@ -152,7 +152,7 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={ironingChangePasswordValidation}
+                            validationSchema={ironingChangePasswordValidationSchema}
                             onSubmit={(values, { resetForm }) => {
                                 handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                     onSuccess: () => {

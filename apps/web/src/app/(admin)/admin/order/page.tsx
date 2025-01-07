@@ -74,7 +74,6 @@ export default function OrderList() {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(res, 'inires')
             return setOrderData(res?.data?.data);
         },
     })

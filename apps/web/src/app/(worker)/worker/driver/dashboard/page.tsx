@@ -81,7 +81,6 @@ export default function Page() {
                 params: { tab: 'driver' },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });
@@ -94,7 +93,7 @@ export default function Page() {
 
                     setIsCurrentWeither(res?.data)
                 } catch (error) {
-                    console.log(error)
+                    console.log('error')
                 }
             }
 

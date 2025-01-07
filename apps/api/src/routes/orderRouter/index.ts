@@ -15,9 +15,9 @@ orderRouter.get('/province', getProvince)
 orderRouter.get('/city', getCity)
 orderRouter.get('/nearest-store', tokenValidation, findNearestStore)
 
-orderRouter.get('/order-washing', tokenValidation, getOrdersForWashing)
-orderRouter.get('/order-ironing', tokenValidation, getOrdersForIroning)
-orderRouter.get('/order-packing', tokenValidation, getOrdersForPacking)
+orderRouter.get('/order-washing', tokenValidation, roleCheckWashingWorker, getOrdersForWashing)
+orderRouter.get('/order-ironing', tokenValidation, roleCheckIroningWorker, getOrdersForIroning)
+orderRouter.get('/order-packing', tokenValidation, roleCheckPackingWorker, getOrdersForPacking)
 
 orderRouter.post('/washing-process/:orderId', tokenValidation, roleCheckWashingWorker, washingProcess)
 orderRouter.post('/washing-done/:orderId', tokenValidation, roleCheckWashingWorker, washingProcessDone)
@@ -42,34 +42,32 @@ orderRouter.get('/history-packing/', tokenValidation, getPackingHistory)
 orderRouter.get('/history-driver/', tokenValidation, getDriverHistory)
 orderRouter.get('/history-user/', tokenValidation, getAllOrderForUser)
 
-orderRouter.get('/order-notes', tokenValidation, getNotes)
-orderRouter.patch('/order-notes/:orderId', tokenValidation, solveNotes)
+orderRouter.get('/order-notes', tokenValidation, roleCheckAdmin, getNotes)
+orderRouter.patch('/order-notes/:orderId', tokenValidation, roleCheckAdmin, solveNotes)
 
-orderRouter.get('/nota-order', tokenValidation, getCreateNotaOrder)
+orderRouter.get('/nota-order', tokenValidation,roleCheckAdmin, getCreateNotaOrder)
 
 orderRouter.get('/order-delivery', tokenValidation, getOrdersForDelivery)
-orderRouter.patch('/order-delivery/:orderId', tokenValidation, requestDeliveryDone)
+orderRouter.patch('/order-delivery/:orderId', tokenValidation, roleCheckAdmin, requestDeliveryDone)
 
 orderRouter.get('/delivery', tokenValidation, getOrdersForDriverDelivery)
-orderRouter.post('/delivery-process/:orderId', tokenValidation, processOrderDelivery)
-orderRouter.post('/delivery-accept/:orderId', tokenValidation, acceptOrderDelivery)
+orderRouter.post('/delivery-process/:orderId', tokenValidation, roleCheckDriver, processOrderDelivery)
+orderRouter.post('/delivery-accept/:orderId', tokenValidation, roleCheckDriver, acceptOrderDelivery)
 
 orderRouter.get('/orders', tokenValidation, getAllOrderForAdmin)
 orderRouter.get('/orders-detail/:orderId', tokenValidation, orderStatus)
-orderRouter.get('/payment/:orderId', tokenValidation,)
-orderRouter.post('/confirm/:orderId', tokenValidation,)
 
-orderRouter.post('/payment/:orderId', tokenValidation, paymentOrderVA)
-orderRouter.post('/payment-tf/:orderId', tokenValidation, uploader, paymentOrderTf)
+orderRouter.post('/payment/:orderId', tokenValidation, roleCheckCustomer, paymentOrderVA)
+orderRouter.post('/payment-tf/:orderId', tokenValidation, roleCheckCustomer, uploader, paymentOrderTf)
 orderRouter.get('/payment/', tokenValidation, getPaymentOrderForAdmin)
-orderRouter.post('/payment-done/:orderId', tokenValidation, paymentDone)
+orderRouter.post('/payment-done/:orderId', tokenValidation, roleCheckAdmin, paymentDone)
 
 orderRouter.post('/confirm/:orderId', tokenValidation, userConfirmOrder)
 
 orderRouter.get('/tracking', tokenValidation, orderTrackingAdmin)
-orderRouter.get('/tracking-driver', tokenValidation, orderTrackingDriver)
+orderRouter.get('/tracking-driver', tokenValidation,roleCheckDriver, orderTrackingDriver)
 orderRouter.get('/tracking-worker', tokenValidation, orderTrackingWorker)
-orderRouter.get('/tracking-user', tokenValidation, orderTrackingUser)
+orderRouter.get('/tracking-user', tokenValidation,roleCheckCustomer, orderTrackingUser)
 
 orderRouter.get('/notification', tokenValidation, getOrdersForNotif)
 

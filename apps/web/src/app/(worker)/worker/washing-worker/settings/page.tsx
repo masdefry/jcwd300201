@@ -14,11 +14,11 @@ import { useWashingWorkerSettingsHooks } from '@/features/washingWorker/hooks/us
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { washingChangePasswordValidation } from '@/features/washingWorker/schemas/washingChangePasswordValidationSchema';
+import { washingChangePasswordValidationSchema } from '@/features/washingWorker/schemas/washingChangePasswordValidationSchema';
 import { ConfirmAlert } from '@/components/core/confirmAlert';
 import ButtonCustom from '@/components/core/button';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
-import { washingAccountMobileValidation } from '@/features/washingWorker/schemas/washingAccountMobileSchema';
+import { washingAccountMobileValidationSchema } from '@/features/washingWorker/schemas/washingAccountMobileValidationSchema';
 import { washingAccountValidationSchema } from '@/features/washingWorker/schemas/washingAccountValidationSchema';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
@@ -62,7 +62,7 @@ export default function Page() {
                             emails: getDataWorker?.email || '',
                             phoneNumbers: getDataWorker?.phoneNumber || '',
                             img: null
-                        }} validationSchema={washingAccountMobileValidation}
+                        }} validationSchema={washingAccountMobileValidationSchema}
                             onSubmit={(values) => {
                                 const fd = new FormData()
                                 fd.append('email', values?.emails)
@@ -88,7 +88,7 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={washingChangePasswordValidation}
+                            validationSchema={washingChangePasswordValidationSchema}
                             onSubmit={(values, { resetForm }) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                 onSuccess: () => {
                                     resetForm()
@@ -147,7 +147,7 @@ export default function Page() {
                             password: '',
                             confirmPassword: ''
                         }}
-                            validationSchema={washingChangePasswordValidation}
+                            validationSchema={washingChangePasswordValidationSchema}
                             onSubmit={(values, { resetForm }) => handleChangePassword({ existingPassword: values?.existingPassword, password: values?.password }, {
                                 onSuccess: () => {
                                     resetForm()

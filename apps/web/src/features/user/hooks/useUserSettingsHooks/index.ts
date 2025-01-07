@@ -50,14 +50,12 @@ export const useUserSettingsHooks = () => {
       setIsDisableSucces(true)
 
       window.location.reload()
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
 
@@ -77,14 +75,12 @@ export const useUserSettingsHooks = () => {
       setIsDisableSucces(true)
 
       window.location.reload()
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
 
@@ -104,15 +100,12 @@ export const useUserSettingsHooks = () => {
         className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
       setIsChangePassword(true)
-
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
 
@@ -133,14 +126,12 @@ export const useUserSettingsHooks = () => {
       setIsChangePassword(true)
 
       window.location.reload()
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
   return {

@@ -110,7 +110,6 @@ export default function DeliveryRequest() {
         queryKey: ['get-data-store'],
         queryFn: async () => {
             const res = await instance.get('/store')
-            console.log(res)
             return res?.data?.data
         }
     })
@@ -252,7 +251,7 @@ export default function DeliveryRequest() {
                         </DialogHeader>
                         {orderData ? (
                             <>
-                                <div className="grid gap-4 py-4">
+                                <div className="grid gap-4 py-2 border-b border-neutral-400">
                                     <div className="flex justify-between items-center">
                                         <div className="flex flex-col">
                                             <h2 className="text-base font-semibold">{orderData?.order?.id}</h2>

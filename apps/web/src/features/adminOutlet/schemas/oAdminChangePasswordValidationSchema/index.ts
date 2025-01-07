@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 
 
-export const oAdminChangePasswordValidation =
+export const oAdminChangePasswordValidationSchema =
     Yup.object().shape({
         existingPassword: Yup.string().required('Password harus diisi'),
         password: Yup.string().min(8, 'Password minimal 8 huruf').required('Password harap diisi!')

@@ -3,7 +3,7 @@ import ButtonCustom from "@/components/core/button";
 import { FaPlus } from "react-icons/fa6";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { createProductLaundryValidation } from "@/features/superAdmin/schemas/createProductLaundryValidation";
+import { createProductLaundryValidationSchema } from "@/features/superAdmin/schemas/createProductLaundryValidationSchema";
 
 
 export default function DialogCreateProduct({ createProductItem, isPending }: { createProductItem: any, isPending: boolean }) {
@@ -22,7 +22,7 @@ export default function DialogCreateProduct({ createProductItem, isPending }: { 
                 <div className="w-full">
                     <Formik
                         initialValues={{ itemName: '' }}
-                        validationSchema={createProductLaundryValidation}
+                        validationSchema={createProductLaundryValidationSchema}
                         onSubmit={(values, { resetForm }) => createProductItem({ itemName: values?.itemName }, {
                             onSuccess: () => {
                                 resetForm()
