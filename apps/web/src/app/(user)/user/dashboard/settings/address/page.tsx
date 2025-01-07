@@ -67,7 +67,7 @@ export default function Page() {
                                     </div>
                                 </div>
                                 <div className='flex gap-2'>
-                                    <ConfirmAlert disabled={isPendingDelete} caption="Apakah anda yakin ingin menghapus alamat anda?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={()=> handleDeleteItem(address?.id)}>
+                                    <ConfirmAlert disabled={isPendingDelete} caption="Apakah anda yakin ingin menghapus alamat anda?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => handleDeleteItem(address?.id)}>
                                         <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /></button>
                                     </ConfirmAlert>
                                     <Link href={`/user/dashboard/settings/address/e/${address?.id}CNC${Date.now()}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /></Link>
@@ -101,7 +101,9 @@ export default function Page() {
                                     )
                                 })
                             ) : (
-                                <TableNotFoundComponent isFetching={isFetching} />
+                                <tr>
+                                    <td colSpan={6} className="py-5 font-bold text-center text-lg text-gray-600 break-words"><NoData /></td>
+                                </tr>
                             )}
                         </tbody>
                     </table>

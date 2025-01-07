@@ -1,9 +1,6 @@
 'use client'
 
-import HeaderMobile from "@/components/core/headerMobile"
-import Link from "next/link"
-import { FaArrowLeft, FaHistory, FaRegEye } from "react-icons/fa"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { FaHistory } from "react-icons/fa"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
@@ -113,7 +110,7 @@ export default function HistoryOrderPacking() {
                         dataOrderPackingProcess?.orders?.map((order: any) => (
                             <section key={order.id} className="flex justify-between items-center border-b py-4">
                                 <div className="flex items-center">
-                                    <div className="ml-2">
+                                    <div className="px-2">
                                         <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
                                         <p className="text-xs text-gray-500">
                                             {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :

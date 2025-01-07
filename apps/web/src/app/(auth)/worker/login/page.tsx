@@ -93,7 +93,9 @@ export default function Page() {
                                         {passwordVisible ? <FaEye /> : <FaEyeSlash />}
                                     </span>
                                 </div>
-                                <ButtonCustom disabled={isPending || isDisabledSucces || !values?.email || !values?.password} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">Masuk</ButtonCustom>
+                                <ButtonCustom disabled={isPending || isDisabledSucces || !values?.email || !values?.password} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
+                                    {isPending ? 'Memproses..' : 'Masuk'}
+                                </ButtonCustom>
                             </Form>
                         )}
                     </Formik>

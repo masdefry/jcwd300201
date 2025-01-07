@@ -71,14 +71,16 @@ export default function Page() {
                                         type="email"
                                     />
                                 </div>
-                                <ButtonCustom disabled={isPending || !values?.email} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">Kirim Email</ButtonCustom>
+                                <ButtonCustom disabled={isPending || !values?.email} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
+                                    {isPending ? 'Mohon Tunggu..' : 'Kirim Email'}
+                                </ButtonCustom>
                             </Form>
                         )}
                     </Formik>
                     <div className="flex w-full my-2 z-20 justify-between items-center">
                         <div className="flex items-center gap-1 text-sm">
                             <h1 className="">Kembali ke</h1>
-                            <Link href='/user/login' className="text-blue-500 hover:text-blue-700">Login</Link>
+                            <Link href='/user/login' className="text-blue-500 hover:text-blue-700 hover:underline">Login</Link>
                         </div>
                     </div>
                 </div>

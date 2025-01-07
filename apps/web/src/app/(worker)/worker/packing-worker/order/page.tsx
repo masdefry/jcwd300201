@@ -68,11 +68,11 @@ export default function DriverPickUp() {
             })
         },
         onSuccess: (res: any) => {
+            refetch()
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
-            refetch()
         },
         onError: (err: any) => {
             toast({

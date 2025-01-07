@@ -1,4 +1,4 @@
-import { createStoreByAdmin, getAllStore, getSingleStore, getStore, updateStore } from "@/controllers/storeController";
+import { createStoreByAdmin, deleteStore, getAllStore, getSingleStore, getStore, updateStore } from "@/controllers/storeController";
 import { limiter } from "@/middlewares/rateLimit";
 import { roleCheckSuperAdmin } from "@/middlewares/roleCheck";
 import { createOutletValidationSchema } from "@/middlewares/validation";
@@ -13,5 +13,6 @@ storeRouter.post('/', tokenValidation, roleCheckSuperAdmin, limiter, createOutle
 storeRouter.get('/stores', tokenValidation, roleCheckSuperAdmin, getAllStore)
 storeRouter.get('/detail/:outletId', tokenValidation, roleCheckSuperAdmin, getSingleStore)
 storeRouter.patch('/detail/:outletId', tokenValidation, roleCheckSuperAdmin, limiter, updateStore)
+storeRouter.patch('/delete/:outletId', tokenValidation, roleCheckSuperAdmin, limiter, deleteStore)
 
 export default storeRouter

@@ -12,7 +12,7 @@ export default function Page() {
     const { handleSendMessage, isPendingSendMessage, isValuePhoneNumber, setIsValuePhoneNumber } = useContactHooks();
 
     return (
-        <main className="flex w-full bg-white pt-[90px] py-10">
+        <main className="flex w-full bg-white md:pt-[90px] pt-0 py-0 md:pb-0 pb-20 md:py-10">
             <section className="flex w-full items-center px-10 py-3 gap-2">
                 <div className="flex w-full flex-col justify-center pr-5">
                     <h1 className="mb-6 text-2xl font-bold text-gray-800">Formulir Kontak</h1>
@@ -74,7 +74,7 @@ export default function Page() {
                         )}
                     </Formik>
                 </div>
-                <div className="relative h-full w-8/12 min-h-screen rounded-2xl bg-blue-700 p-10">
+                <div className="relative h-full md:w-8/12 md:block hidden min-h-screen rounded-2xl bg-blue-700 p-10">
                     <div className="absolute inset-0 flex flex-col justify-center p-10">
                         <h1 className="text-xl font-semibold text-white md:text-2xl lg:text-4xl">Hubungi Kami</h1>
                         <p className="mt-4 text-neutral-200">

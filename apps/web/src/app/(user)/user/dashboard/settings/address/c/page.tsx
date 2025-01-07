@@ -17,6 +17,7 @@ import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
 import { IAddressDetail } from "./types";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
+import { createAddressValidationSchema } from "@/features/user/schemas/createAddressValidationSchema";
 
 export default function Page() {
     const latitudeGlobal = locationStore((state) => state?.latitude);
@@ -128,13 +129,7 @@ export default function Page() {
                         })
 
                     }}
-                    validationSchema={Yup.object({
-                        addressName: Yup.string().required("Nama Alamat harap diisi!"),
-                        addressDetail: Yup.string().required("Alamat harap diisi!"),
-                        province: Yup.string().required("Provinsi harap diisi!"),
-                        city: Yup.string().required("Kota harap diisi!"),
-                        zipCode: Yup.string().required("Kode Pos harap diisi!"),
-                    })}
+                    validationSchema={createAddressValidationSchema}
                     initialValues={{
                         addressName: "",
                         addressDetail: dataUser?.display_name || "",
@@ -218,8 +213,8 @@ export default function Page() {
                                     <Field type='text' name='zipCode' placeholder='Masukan kode pos anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                     <ErrorMessage component='div' name="zipCode" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                 </div>
-                                <ButtonCustom disabled={isPending} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
-                                    Tambah Alamat
+                                <ButtonCustom disabled={isPending || !values?.addressDetail || !values?.addressName || !values?.city || !values?.province || !values?.zipCode} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
+                                    {isPending ? 'Memproses..' : 'Tambah Alamat'}
                                 </ButtonCustom>
                             </div>
                         </Form>
@@ -250,13 +245,7 @@ export default function Page() {
                             })
 
                         }}
-                        validationSchema={Yup.object({
-                            addressName: Yup.string().required("Nama Alamat harap diisi!"),
-                            addressDetail: Yup.string().required("Alamat harap diisi!"),
-                            province: Yup.string().required("Provinsi harap diisi!"),
-                            city: Yup.string().required("Kota harap diisi!"),
-                            zipCode: Yup.string().required("Kode Pos harap diisi!"),
-                        })}
+                        validationSchema={createAddressValidationSchema}
                         initialValues={{
                             addressName: "",
                             addressDetail: dataUser?.display_name || "",
@@ -341,8 +330,8 @@ export default function Page() {
                                         <Field type='text' name='zipCode' placeholder='Masukan kode pos anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                         <ErrorMessage component='div' name="zipCode" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                     </div>
-                                    <ButtonCustom disabled={isPending} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
-                                        Tambah Alamat
+                                    <ButtonCustom disabled={isPending || !values?.addressDetail || !values?.addressName || !values?.city || !values?.province || !values?.zipCode} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
+                                        {isPending ? 'Memproses..' : 'Tambah Alamat'}
                                     </ButtonCustom>
                                 </div>
                             </Form>

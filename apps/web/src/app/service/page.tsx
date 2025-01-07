@@ -35,12 +35,11 @@ export default function Page() {
     ]
 
     return (
-        <main className='w-full h-fit flex flex-col pt-[90px]'>
-
-            <section className="w-full h-fit pt-10 pb-5 mt-6 bg-gradient-to-t from-sky-100 via-orange-100 to-white px-10 rounded-tl-full">
+        <main className='w-full h-fit flex flex-col md:pt-[90px] pt-0 md:pb-0 pb-28'>
+            <section className="w-full h-fit pb-0 pt-3 mt-0 md:pt-10 md:pb-5 md:mt-6 bg-gradient-to-t from-sky-100 via-orange-100 to-white px-2 md:px-10 rounded-tl-full">
                 <div className="flex flex-wrap justify-between items-start w-full">
                     <div className="text-left space-y-4">
-                        <h1 className="text-5xl font-bold text-neutral-700">Layanan <span className="text-orange-500">Laundry Kami</span></h1>
+                        <h1 className="text-2xl md:text-5xl font-bold text-neutral-700">Layanan <span className="text-orange-500">Laundry Kami</span></h1>
                         <p className="text-lg">Cepat, Terpercaya, dan Terjangkau untuk Kebutuhan Laundry Anda</p>
                     </div>
                 </div>
@@ -64,7 +63,7 @@ export default function Page() {
                     </div>
                 </div>
             </section>
-            <section className="w-full h-fit px-10 pb-10 bg-gradient-to-b from-sky-100 via-orange-100 to-white">
+            <section className="w-full h-fit px-2 md:px-10 pb-10 bg-gradient-to-b from-sky-100 via-orange-100 to-white">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-8 mb-16">
                     <div className="w-full md:w-1/2 h-72">
                         <Image src="/images/wash.jpg" width={500} height={400}
@@ -118,10 +117,10 @@ export default function Page() {
             </section>
 
 
-            <section className="w-full px-10 h-fit pb-5 bg-opacity-80 flex flex-col justify-center items-center">
+            <section className="w-full px-2 md:px-10 h-fit pb-5 bg-opacity-80 flex flex-col justify-center items-center">
                 <div className="w-full rounded-2xl bg-blue-600 flex py-20 justify-center items-center flex-col">
                     <div className="text-center pb-5">
-                        <h1 className="text-white text-3xl font-bold mb-2">Solusi Terbaik untuk <span className="text-white">Kebutuhan Laundry Anda</span></h1>
+                        <h1 className="text-white text-xl md:text-3xl font-bold mb-2">Solusi Terbaik untuk <span className="text-white">Kebutuhan Laundry Anda</span></h1>
                         <p className="text-neutral-300 text-lg">Kami menghadirkan layanan laundry berkualitas tinggi, cepat, dan terpercaya.</p>
                     </div>
                     <ButtonCustom onClick={() => router.push('/user/dashboard/pickup')} rounded="rounded-full" btnColor="bg-orange-500 hover:bg-orange-500 font-bold" type="button">Pesan Sekarang</ButtonCustom>

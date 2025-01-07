@@ -54,7 +54,11 @@ export default function TabTracking({ selectedTab, setSelectedTab, dataOrder }: 
                             <span className="text-orange-500"><FaListAlt className="text-3xl sm:text-2xl" /></span>
                             <div className="w-full">
                                 <p className="text-sm sm:text-xs text-gray-500 mt-2">
+<<<<<<< HEAD
                                     <strong>Pendapatan: </strong> Rp. {(dataOrder?.totalSpent || 0).toLocaleString('id-ID')}
+=======
+                                    <strong>Pengeluaran: </strong> Rp. {dataOrder?.totalSpent || 0}
+>>>>>>> 62a52d4e710a4d8fc1ecdb55f01ac91b8b193978
                                 </p>
                                 <p className="text-sm sm:text-xs text-gray-500">
                                     <strong>Order: </strong> {dataOrder?.totalOrders || 0}

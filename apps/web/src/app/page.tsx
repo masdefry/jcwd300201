@@ -10,6 +10,7 @@ import { GrDeliver } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import HeroSection from "@/components/core/heroSection";
 import ButtonCustom from "@/components/core/button";
+import HeroSectionMobile from "../components/core/heroSectionMobile";
 
 export default function Home() {
   const [currentIndex, setCurrentIndex] = useState<number>(0)
@@ -101,14 +102,14 @@ export default function Home() {
   const processSteps = [{ icon: <FaCalendar />, title: "Proses Pemesanan", description: "Ajukan permintaan layanan dan jadwalkan waktu pengambilan." },
   { icon: <FaTshirt />, title: "Pengambilan", description: "Kami mengambil barang Anda di lokasi yang telah ditentukan." },
   { icon: <FaHandsWash />, title: "Proses Pembersihan", description: "Barang Anda dicuci dengan teknologi modern dan higienis." },
-  { icon: <GrDeliver />, title: "Proses Antar", description: "Barang bersih diantarkan kembali ke lokasi Anda tepat waktu." }]
+  { icon: <GrDeliver />, title: "Proses Antar", description: "Barang bersih diantarkan kembali ke lokasi Anda tepat waktu." }] 
 
   return (
-    <main className="w-full h-fit pt-0 md:pt-[62px]">
-      <section className="w-full h-fit pt-5 md:flex flex-col">
+    <main className="w-full h-fit pt-0 pb-28 md:pb-0 md:pt-[62px]">
+      <section className="w-full h-fit pt-0 md:pt-5 md:flex flex-col">
         <HeroSection />
-
-        <div className="w-full h-fit py-10 mt-6 bg-gradient-to-t from-sky-100 via-orange-100 to-white px-10 rounded-tl-full">
+        <HeroSectionMobile />
+        <div className="w-full h-fit py-5 md:py-10 mt-2 md:mt-6 bg-gradient-to-t from-sky-100 via-orange-100 to-white px-4 md:px-10 rounded-tl-full">
           <div className="flex flex-wrap justify-between items-start w-full">
             <div className="text-left space-y-4">
               <h1 className="text-orange-500 font-bold text-3xl md:text-4xl lg:text-5xl leading-tight">Layanan Kami</h1>
@@ -142,7 +143,7 @@ export default function Home() {
         </div>
 
 
-        <div className='w-full h-fit flex bg-gradient-to-b from-sky-100 via-sky-50 to-white px-10 pb-5'>
+        <div className='w-full h-fit flex bg-gradient-to-b from-sky-100 via-sky-50 to-white px-4 md:px-10 pb-5'>
           <div className='w-full h-fit text-black flex flex-col items-center text-center'>
             <h1 className="text-3xl lg:text-5xl font-extrabold text-orange-500 mb-4">Pelanggan Kami</h1>
             <p className="lg:text-lg text-gray-600 mb-14 max-w-3xl">Kami bangga memiliki berbagai pelanggan yang puas dengan layanan kami. Berikut adalah beberapa testimoni dari mereka yang telah merasakan kualitas terbaik dari produk dan layanan kami.</p>
@@ -167,7 +168,7 @@ export default function Home() {
           </div>
         </div>
 
-        <div className="flex md:flex-row flex-col w-full px-10 gap-2 h-fit bg-gradient-to-b from-white via-white rounded-br-full pb-10 to-orange-100">
+        <div className="flex md:flex-row flex-col w-full px-4 md:px-10 gap-2 h-fit bg-gradient-to-b from-white via-white rounded-br-full pb-10 to-orange-100">
           <section className="w-full h-fit py-10 flex flex-col text-right">
             <div className="w-full p-5">
               <h1 className="font-bold text-orange-500 text-3xl lg:text-5xl">Mengapa Kami?</h1>
@@ -216,7 +217,7 @@ export default function Home() {
           </section>
         </div>
 
-        <div className="flex md:flex-row flex-col w-full px-10 gap-2 h-fit bg-white">
+        <div className="flex md:flex-row flex-col w-full px-4 md:px-10 gap-2 h-fit bg-white">
           <section className="w-full h-fit py-10 flex flex-col">
             <div className="w-full p-5">
               <h1 className="text-3xl md:text-5xl font-bold text-orange-500">Tim Profesional</h1>
@@ -241,7 +242,7 @@ export default function Home() {
           </section>
         </div>
 
-        <div className="w-full px-10 h-fit pb-5 bg-opacity-80 flex flex-col justify-center items-center">
+        <div className="w-full px-4 md:px-10 h-fit pb-5 bg-opacity-80 flex flex-col justify-center items-center">
           <div className="w-full rounded-2xl bg-blue-600 flex py-20 justify-center items-center flex-col">
             <div className="text-center pb-5">
               <h1 className="text-white text-3xl font-bold mb-2">Solusi Terbaik untuk <span className="text-white">Kebutuhan Laundry Anda</span></h1>

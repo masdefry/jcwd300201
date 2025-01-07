@@ -99,17 +99,14 @@ export default function Page({ params }: { params: Promise<IParamsType> }) {
                                         {confirmPasswordVisible ? <FaEye /> : <FaEyeSlash />}
                                     </span>
                                 </div>
-                                <ButtonCustom
-                                    disabled={isPending || isDisabledSucces || !values?.confirmPassword || !values?.password}
-                                    type="submit"
-                                    btnColor="bg-blue-600 hover:bg-blue-500"
-                                    width="w-full"
-                                >Ubah Password</ButtonCustom>
+                                <ButtonCustom disabled={isPending || isDisabledSucces || !values?.confirmPassword || !values?.password} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
+                                    {isPending ? 'Memproses..' : 'Ubah Password'}
+                                </ButtonCustom>
                             </Form>
                         )}
                     </Formik>
                 </div>
             </section>
         </main>
-    );
+    )
 }

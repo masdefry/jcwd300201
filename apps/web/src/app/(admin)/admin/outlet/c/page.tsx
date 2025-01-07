@@ -15,10 +15,6 @@ import ButtonCustom from "@/components/core/button";
 import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
 import { createOutletValidationSchema } from "@/features/superAdmin/schemas/createOutletValidationSchema";
-import HeaderMobile from "@/components/core/headerMobile";
-import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa6";
-import { CardContent } from "@/components/ui/card";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
 export default function Page() {
@@ -215,7 +211,7 @@ export default function Page() {
                                         <Field type='text' name='zipCode' placeholder='Masukan kode pos anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                         <ErrorMessage component='div' name="zipCode" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                     </div>
-                                    <ButtonCustom disabled={isPending} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
+                                    <ButtonCustom disabled={isPending || !values?.address || !values?.city || !values?.zipCode || !values?.province || !values?.storeName} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
                                         Tambah Alamat
                                     </ButtonCustom>
                                 </div>
@@ -332,8 +328,8 @@ export default function Page() {
                                         <Field type='text' name='zipCode' placeholder='Masukan kode pos anda' className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500' />
                                         <ErrorMessage component='div' name="zipCode" className="bg-white text-red-600 absolute right-2 top-1 text-sm" />
                                     </div>
-                                    <ButtonCustom disabled={isPending} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
-                                        Tambah Alamat
+                                    <ButtonCustom disabled={isPending || !values?.address || !values?.city || !values?.zipCode || !values?.province || !values?.storeName} width="w-full" btnColor="bg-orange-500 hover:bg-orange-600" txtColor="text-white" type="submit">
+                                        {isPending ? 'Memproses..' : 'Tambah Alamat'}
                                     </ButtonCustom>
                                 </div>
                             </Form>

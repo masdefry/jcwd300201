@@ -153,7 +153,7 @@ export default function DriverPickUp() {
     return (
         <>
             <MobileSessionLayout title="Laporan Pesanan">
-                <div className="space-y-4">
+                <div className="space-y-4 pb-28">
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-2">
                             <TabsTrigger value="bermasalah" onClick={() => { setActiveTab("bermasalah"); setPage(1) }} >Bermasalah</TabsTrigger>
