@@ -78,7 +78,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="h-fit py-10 gap-5 flex justify-start px-5 items-center w-full">
                     <div className="w-12 h-12 rounded-full">
                         <Image
-                            src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
+                            src={profilePicture?.includes('https://') ? profilePicture : profilePicture?.startsWith('images-') ? `http://localhost:5000/api/src/public/images/${profilePicture}` : profilePict}
                             width={600}
                             height={600}
                             alt="user-profile"

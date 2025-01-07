@@ -17,6 +17,7 @@ export const createOutletValidation = Yup.object().shape({
     city: Yup.string().required("Kota harap diisi!"),
     zipCode: Yup.string()
         .matches(/^[0-9]+$/, "Kode Pos hanya berisi angka")
+        .max(5, 'Maximal 5 angka')
         .required("Kode Pos harap diisi!")
         .test("not-only-spaces", "Kode pos tidak boleh kosong",
             (value: any) => value && value.trim() !== ""

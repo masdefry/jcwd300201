@@ -12,7 +12,7 @@ import { FaDashcube, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { toast } from "@/components/hooks/use-toast";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
-import { FaAddressCard, FaBuysellads, FaCartShopping } from "react-icons/fa6";
+import { FaAddressCard, FaBuysellads, FaCartShopping, FaTruck } from "react-icons/fa6";
 import { MdSportsMotorsports } from "react-icons/md";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
@@ -65,7 +65,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <div className="h-fit py-10 gap-5 flex justify-start px-5 items-center w-full">
                     <div className="w-12 h-12 rounded-full">
                         <Image
-                            src={profilePicture?.includes('https://') ? profilePicture : `http://localhost:5000/api/src/public/images/${profilePicture}` || profilePict}
+                            src={profilePicture?.includes('https://') ? profilePicture : profilePicture?.startsWith('images-') ? `http://localhost:5000/api/src/public/images/${profilePicture}` : profilePict}
                             width={600}
                             height={600}
                             alt="user-profile"
@@ -82,7 +82,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <Link href='/user/dashboard/home' className={`w-full flex ${pathname.startsWith('/user/dashboard/home') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaDashcube /> Dashboard</Link>
                     <Link href='/user/dashboard/pickup' className={`w-full flex ${pathname.startsWith('/user/dashboard/pickup') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <MdSportsMotorsports /> Permintaan Pickup</Link>
+                        <FaTruck /> Permintaan Pickup</Link>
                     <Link href='/user/dashboard/order' className={`w-full flex ${pathname.startsWith('/user/dashboard/order') || pathname.startsWith('/user/dashboard/payment') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaCartShopping /> Pesanan</Link>
                     <Link href='/user/dashboard/settings/address' className={`w-full flex ${pathname.startsWith('/user/dashboard/settings/address') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>

@@ -53,7 +53,6 @@ export default function Page() {
             const res = await instance.get(`/order/tracking?period=${selectedTab}`, {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res, '<<<<')
             return res?.data?.data
         },
     });
@@ -75,11 +74,9 @@ export default function Page() {
                 params: { tab: 'admin' },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });
-
 
     useEffect(() => {
         if (lat && lng) {
@@ -115,7 +112,6 @@ export default function Page() {
         { icon: <FaMoneyBillWave />, url: '/worker/admin-outlet/order', name: 'Pesanan' },
         { icon: <FaRegCreditCard />, url: '/worker/admin-outlet/payment', name: 'Pembayaran' },
         { icon: <FaExclamationTriangle />, url: '/worker/admin-outlet/report', name: 'Laopran' },
-        { icon: <FaUserCheck />, url: '/worker/admin-outlet/settings', name: 'Pengaturan' },
     ]
 
 
@@ -128,7 +124,7 @@ export default function Page() {
                         <p className="text-neutral-200 text-sm mt-1">Pantau data pekerja dan kelola produk laundry di satu tempat.</p>
                     </div>
                     <div className="flex justify-center h-fit w-full p-2 mt-5 bg-gradient-to-tr from-white via-sky-50 to-sky-100 rounded-2xl">
-                        <div className="grid grid-cols-2 gap-2 w-full">
+                        <div className="grid grid-cols-3 gap-2 w-full">
                             {arrIcon?.map((item: any, i: number) => (
                                 <Link href={item?.url} className="w-full p-3 flex flex-col items-center justify-center gap-2 bg-white shadow-sm border rounded-2xl hover:shadow-md transition-all" key={i}>
                                     <span className="text-2xl text-orange-500">{item?.icon}</span>

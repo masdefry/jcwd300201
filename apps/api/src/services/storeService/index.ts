@@ -17,9 +17,12 @@ export const getStoreService = async () => {
 }
 
 export const getAllStoreService = async ({ search, sort, take, skip, limit }: IGetAllStore) => {
-    let whereClause;
+    let whereClause: Prisma.StoreWhereInput = {
+        deletedAt: null
+    }
     if (search) {
         whereClause = {
+            ...whereClause,
             OR: [
                 { storeName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
                 { city: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
@@ -120,5 +123,17 @@ export const updateStoreService = async ({ storeName, address, city, province, z
             latitude: parseFloat(latitude),
             longitude: parseFloat(longitude)
         }
+    })
+}
+
+export const deleteStoreService = async ({ outletId }: { outletId: string }) => {
+    const findStore = await prisma.store.findFirst({
+        where: { id: outletId }
+    })
+
+    if (!findStore) throw { msg: 'Data outlet sudah tidak tersedia atau sudah terhapus', status: 404 }
+    await prisma.store.update({
+        where: { id: outletId },
+        data: { deletedAt: new Date() }
     })
 }

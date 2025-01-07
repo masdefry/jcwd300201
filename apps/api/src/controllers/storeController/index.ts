@@ -1,5 +1,5 @@
 import prisma from '@/connection';
-import { createStoreByAdminService, getAllStoreService, getStoreService, updateStoreService } from '@/services/storeService';
+import { createStoreByAdminService, deleteStoreService, getAllStoreService, getStoreService, updateStoreService } from '@/services/storeService';
 import axios from 'axios';
 import { Request, Response, NextFunction } from 'express'
 
@@ -83,6 +83,21 @@ export const updateStore = async (req: Request, res: Response, next: NextFunctio
         res.status(200).json({
             error: false,
             message: 'Berhasil mengubah data outlet',
+            data: {}
+        })
+    } catch (error) {
+        next(error)
+    }
+}
+
+export const deleteStore = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { outletId } = req.params
+        await deleteStoreService({ outletId })
+
+        res.status(200).json({
+            error: false,
+            message: 'Berhasil menghapus data outlet',
             data: {}
         })
     } catch (error) {

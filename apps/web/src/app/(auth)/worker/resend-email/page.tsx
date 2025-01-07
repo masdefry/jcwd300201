@@ -73,7 +73,7 @@ export default function Page() {
                                     />
                                 </div>
                                 <ButtonCustom disabled={isPending || !values?.email} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
-                                    Resend Email
+                                    {isPending ? 'Mohon Tunggu..' : 'Kirim Email'}
                                 </ButtonCustom>
                             </Form>
                         )}

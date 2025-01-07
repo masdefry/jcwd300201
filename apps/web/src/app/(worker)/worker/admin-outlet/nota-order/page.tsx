@@ -1,19 +1,14 @@
 'use client'
 
-import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import { CardContent } from "@/components/ui/card"
-import { ChangeEvent } from "react"
 import { FaWhatsapp } from "react-icons/fa";
 import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 import ContentWebLayout from "@/components/core/webSessionContent"
 import ButtonCustom from "@/components/core/button"
-import SearchInputCustom from "@/components/core/searchBar"
 import TableHeadNotaOrder from "@/features/adminOutlet/components/tableHeadNotaOrder"
 import TableHeadLayout from "@/features/adminOutlet/components/tableHeadLayout"
-import TableBodyNotFound from "@/features/adminOutlet/components/tableBodyDataNotFound"
 import TableBodyContent from "@/features/adminOutlet/components/tableBodyContent"
 import { useNotaOrderHooks } from "@/features/adminOutlet/hooks/useNotaOrderHooks"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
@@ -55,7 +50,7 @@ export default function HistoryOrderWashing() {
                                 <section key={order.id} className="flex justify-between items-center border-b py-4">
                                     <Link href={`/worker/admin-outlet/nota-order/c/${order?.id}`}>
                                         <div className="flex items-center">
-                                            <div className="ml-2">
+                                            <div className="px-2">
                                                 <h2 className="font-medium text-gray-900">
                                                     {order?.id}
                                                 </h2>

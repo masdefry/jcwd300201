@@ -103,33 +103,25 @@ export default function Page() {
                                     </span>
                                 </div>
 
-                                <ButtonCustom
-                                    disabled={isPending || isDisabledSucces || !values?.email || !values?.password}
-                                    type="submit"
-                                    btnColor="bg-blue-600 hover:bg-blue-500"
-                                    width="w-full"
-                                >Masuk</ButtonCustom>
+                                <ButtonCustom disabled={isPending || isDisabledSucces || !values?.email || !values?.password} type="submit" btnColor="bg-blue-600 hover:bg-blue-500" width="w-full">
+                                    {isPending ? 'Memproses..' : 'Masuk'}
+                                </ButtonCustom>
                             </Form>
                         )}
                     </Formik>
 
                     <div className="flex w-full flex-col gap-2 py-3 z-20">
-                        <ButtonCustom
-                            onClick={loginWithGoogle}
-                            disabled={isPending || isDisabledSucces}
-                            type="submit"
-                            btnColor="bg-black hover:bg-black"
-                            width="w-full flex gap-3 items-center"
-                        ><FaGoogle /> Masuk dengan Google</ButtonCustom>
+                        <ButtonCustom onClick={loginWithGoogle} disabled={isPending || isDisabledSucces}
+                            type="submit" btnColor="bg-black hover:bg-black" width="w-full flex gap-3 items-center">
+                            <FaGoogle /> {isPending ? 'Memproses..' : 'Masuk dengan Google'}
+                        </ButtonCustom>
 
                         <div className="md:flex w-full md:justify-between items-center">
                             <div className="flex items-center gap-1 text-sm">
                                 <h1 className="">Belum memiliki akun?</h1>
-                                <Link href='/user/register' className="text-blue-500 hover:text-blue-700">Register</Link>
+                                <Link href='/user/register' className="text-blue-500 hover:text-blue-700 hover:underline">Register</Link>
                             </div>
-                            <Link
-                                href={'/user/resend-email'}
-                                className="text-sm text-blue-500 hover:underline">
+                            <Link href={'/user/resend-email'} className="text-sm text-blue-500 hover:underline">
                                 Atur ulang kata sandi?
                             </Link>
                         </div>
