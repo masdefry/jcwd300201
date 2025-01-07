@@ -50,7 +50,7 @@ export default function Page() {
             setDataUser(response?.data)
 
         } catch (error) {
-            console.log(error)
+            console.log('error')
         }
     }
 
@@ -66,15 +66,12 @@ export default function Page() {
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
             })
-
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
             })
-            console.log(err)
         }
     })
 
@@ -143,7 +140,7 @@ export default function Page() {
                         longitude: isPosition?.lng,
                     }}>
                     {({ setFieldValue, values, handleChange }) => (
-                        <Form className="flex flex-col gap-5 h-full w-full justify-center">
+                        <Form className="flex flex-col gap-5 h-full w-full justify-center pb-28">
                             <div className="h-96 w-full relative">
                                 <MapContainer id="map-container-mobile" key={time} center={isPosition} zoom={13} className="w-full h-full rounded-2xl">
                                     <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />

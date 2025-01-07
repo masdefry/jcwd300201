@@ -2,8 +2,8 @@ export type SelectedTab = 'today' | 'month';
 
 export interface IDataOrderDriver {
     laundryPrice: number;
-    orderCount: number;
-    totalKg: number;
+    totalOrders: number;
+    totalWeight: number;
     totalPcs: number;
     totalSpent:number
 }

@@ -46,20 +46,17 @@ const useProductLaundryHooks = () => {
             })
         },
         onSuccess: (res) => {
-
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
             refetch()
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
-            console.log(err)
         }
     })
 
@@ -78,14 +75,12 @@ const useProductLaundryHooks = () => {
             })
 
             refetch()
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
-            console.log(err)
         }
     })
 
@@ -105,14 +100,12 @@ const useProductLaundryHooks = () => {
             })
 
             refetch()
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
-            console.log(err)
         }
     })
 

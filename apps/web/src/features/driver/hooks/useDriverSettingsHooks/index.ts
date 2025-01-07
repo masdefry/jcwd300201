@@ -52,14 +52,12 @@ export const useDriverSettingsHooks = () => {
       setIsDisableSucces(true)
 
       window.location.reload()
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
 
@@ -79,14 +77,12 @@ export const useDriverSettingsHooks = () => {
       setIsDisableSucces(true)
 
       window.location.reload()
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
 
@@ -106,15 +102,12 @@ export const useDriverSettingsHooks = () => {
         className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
       setIsChangePassword(true)
-
-      console.log(res)
     },
     onError: (err: any) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
 
@@ -136,7 +129,6 @@ export const useDriverSettingsHooks = () => {
         setIsDisableSucces(true)
 
         window.location.href = '/worker/login'
-        console.log(res)
       }
     },
     onError: (err: any) => {
@@ -144,7 +136,6 @@ export const useDriverSettingsHooks = () => {
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
       })
-      console.log(err)
     }
   })
   return {

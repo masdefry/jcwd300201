@@ -19,7 +19,7 @@ import TotalWeightComponent from "@/features/adminOutlet/components/totalWeightC
 import TableWeightComponent from "@/features/adminOutlet/components/tableWeightNotaOrder";
 import { useCreateNotaOrderHooks } from "@/features/adminOutlet/hooks/useCreateNotaOrderHooks";
 import NotaHeader from "@/components/core/createNotaHeaders";
-import { notaOrderValidation } from "@/features/adminOutlet/schemas/notaOrderValidation";
+import { notaOrderValidationSchema } from "@/features/adminOutlet/schemas/notaOrderValidationSchema";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
 interface ICreateOrder {
@@ -54,9 +54,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     laundryPrice: 0,
                     totalWeight: 0
                 }}
-                    validationSchema={notaOrderValidation}
+                    validationSchema={notaOrderValidationSchema}
                     onSubmit={(values: any) => {
-                        console.log(values)
                         const itemOrder = values.items.map((item: any) => ({
                             laundryItemId: item.itemName,
                             quantity: item.quantity,
@@ -94,9 +93,9 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                                 <div className='w-full'>
                                                     <label className="font-semibold">Produk <span className="text-red-600">*</span></label>
                                                     <Field as="select" name="itemName" onChange={(e: any) => {
-                                                            setIsCheckedItem(false)
-                                                            setFieldValue('itemName', e.target.value)
-                                                        }} className="w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500 rounded-md">
+                                                        setIsCheckedItem(false)
+                                                        setFieldValue('itemName', e.target.value)
+                                                    }} className="w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500 rounded-md">
                                                         <option value="" disabled>Select Item</option>
                                                         {dataItemName?.map((item: Iitem, index: number) => (
                                                             <option key={index} value={item?.id}>{item?.itemName}</option>
@@ -181,9 +180,8 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         laundryPrice: 0,
                         totalWeight: 0
                     }}
-                        validationSchema={notaOrderValidation}
+                        validationSchema={notaOrderValidationSchema}
                         onSubmit={(values: any) => {
-                            console.log(values)
                             const itemOrder = values.items.map((item: any) => ({
                                 laundryItemId: item.itemName,
                                 quantity: item.quantity,

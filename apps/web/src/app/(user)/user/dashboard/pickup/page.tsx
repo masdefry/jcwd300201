@@ -19,7 +19,7 @@ import Link from 'next/link'
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { MdSportsMotorsports } from 'react-icons/md';
 import { FaLocationDot, FaPlus, FaTruck } from "react-icons/fa6";
-import { pickupValidationSchema } from '@/features/user/schemas/pickupValidation';
+import { pickupValidationSchema } from '@/features/user/schemas/pickupValidationSchema';
 
 
 export default function PickupLaundry() {
@@ -152,7 +152,7 @@ export default function PickupLaundry() {
                                         </div>
                                     ) : !dataMainAddress ? (
                                         <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 justify-center'>
-                                            <div className="border border-gray-300 p-4 rounded-lg bg-white">
+                                                    <div className="flex w-full border items-center gap-1 border-gray-300 p-4 rounded-lg bg-gray-50">
                                                 <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
                                             </div>
                                         </Link>
@@ -291,8 +291,10 @@ export default function PickupLaundry() {
                                                 <p className="text-gray-600">{dataMainAddress?.city}, {dataMainAddress?.province}, {dataMainAddress?.zipCode}</p>
                                             </div>
                                         ) : !dataMainAddress ? (
-                                            <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 text-2xl justify-center border py-10 border-gray-300 text-neutral-500 p-4 rounded-lg bg-white w-full'>
-                                                <span><FaPlus className='font-sans font-semibold' /></span><h1>Buat Alamat Baru</h1>
+                                            <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 justify-center'>
+                                                <div className="flex w-full items-center gap-1 border border-gray-300 p-4 rounded-lg bg-white">
+                                                    <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
+                                                </div>
                                             </Link>
                                         ) : (
                                             <div onClick={() => setOpenDialog(true)} className='border border-gray-300 p-4 rounded-lg bg-white'>

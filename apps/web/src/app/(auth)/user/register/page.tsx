@@ -5,7 +5,7 @@ import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
 import Link from "next/link";
 import { useRegisterHooks } from "@/features/user/hooks/useRegisterHooks";
-import { registerUserValidation } from "@/features/user/schemas/registerUserValidation";
+import { registerUserValidationSchema } from "@/features/user/schemas/registerUserValidationSchema";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 
@@ -39,7 +39,7 @@ export default function Page() {
                         phoneNumber: '',
                     }}
 
-                    validationSchema={registerUserValidation}
+                    validationSchema={registerUserValidationSchema}
                     onSubmit={(values, { resetForm }) => {
                         handleRegister({
                             email: values.email,

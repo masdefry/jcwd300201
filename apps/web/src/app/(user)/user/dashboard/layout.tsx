@@ -47,7 +47,6 @@ export default function Layout({ children }: { children: ReactNode }) {
                 setIsDisabledSucces(true)
 
                 window.location.href = '/user/login'
-                console.log(res)
             }
         },
         onError: (err: any) => {
@@ -55,7 +54,6 @@ export default function Layout({ children }: { children: ReactNode }) {
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
-            console.log(err)
         }
     })
 

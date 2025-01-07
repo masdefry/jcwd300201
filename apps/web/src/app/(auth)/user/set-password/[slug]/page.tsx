@@ -6,9 +6,10 @@ import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
 import { useSetPasswordHooks } from "@/features/user/hooks/useSetPasswordHooks";
 import { IParamsType } from "@/features/user/hooks/useSetPasswordHooks/types";
-import { setPasswordValidation } from "@/features/user/schemas/setPasswordValidation";
+import { setPasswordValidationSchema } from "@/features/user/schemas/setPasswordValidationSchema";
 
 export default function Page({ params }: { params: Promise<IParamsType> }) {
+
     const { passwordVisible,
         confirmPasswordVisible,
         isDisabledSucces,
@@ -19,7 +20,7 @@ export default function Page({ params }: { params: Promise<IParamsType> }) {
 
     return (
         <main className='w-full h-screen flex'>
-            <section className='w-3/5 h-full py-2 pl-2'>
+            <section className='hidden lg:block w-3/5 h-full py-2 pl-2'>
                 <div className='bg-blue-700 rounded-2xl p-10 h-full w-full relative'>
                     <div className="flex flex-col h-full w-full">
                         <div className="w-full flex items-center">
@@ -49,20 +50,20 @@ export default function Page({ params }: { params: Promise<IParamsType> }) {
                     </div>
                     <Formik
                         initialValues={{ password: '', confirmPassword: '' }}
-                        validationSchema={setPasswordValidation}
+                        validationSchema={setPasswordValidationSchema}
                         onSubmit={(values, { resetForm }) => handleSetPassword({ password: values?.password },
                             { onSuccess: () => resetForm() })}>
                         {({ setFieldValue, values }) => (
                             <Form className="flex flex-col justify-center items-center w-full space-y-4">
                                 <div id="password-input" className="relative w-full">
-                                    <div className="flex gap-5 items-center">
+                                    <div className="flex gap-2 lg:gap-5 items-center">
                                         <label className="text-sm lg:text-base">
                                             Password <span className="text-red-500">*</span>
                                         </label>
                                         <ErrorMessage
                                             name="password"
                                             component="div"
-                                            className="text-red-500 text-[5px] md:text-xs lg:text-sm mt-1"
+                                            className="text-red-500 text-xs  lg:text-sm mt-1"
                                         />
                                     </div>
                                     <Field
@@ -78,14 +79,14 @@ export default function Page({ params }: { params: Promise<IParamsType> }) {
                                 </div>
 
                                 <div id="confirm-password-input" className="relative w-full">
-                                    <div className="flex gap-5 items-center">
+                                    <div className="flex gap-2 lg:gap-5 items-center">
                                         <label className="text-sm lg:text-base">
                                             Konfirmasi Password <span className="text-red-500">*</span>
                                         </label>
                                         <ErrorMessage
                                             name="confirmPassword"
                                             component="div"
-                                            className="text-red-500 text-[5px] md:text-xs lg:text-sm mt-1"
+                                            className="text-red-500 text-xs lg:text-sm mt-1"
                                         />
                                     </div>
                                     <Field

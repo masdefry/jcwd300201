@@ -14,7 +14,7 @@ import L from 'leaflet'
 import ButtonCustom from "@/components/core/button";
 import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
-import { createOutletValidation } from "@/features/superAdmin/schemas/createOutletValidationSchema";
+import { createOutletValidationSchema } from "@/features/superAdmin/schemas/createOutletValidationSchema";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 
 export default function Page() {
@@ -48,7 +48,7 @@ export default function Page() {
             setDataUser(response?.data)
 
         } catch (error) {
-            console.log(error)
+            console.log('error')
         }
     }
 
@@ -128,7 +128,7 @@ export default function Page() {
                             })
 
                         }}
-                        validationSchema={createOutletValidation}
+                        validationSchema={createOutletValidationSchema}
                         initialValues={{
                             storeName: "",
                             address: "",
@@ -244,7 +244,7 @@ export default function Page() {
                             })
 
                         }}
-                        validationSchema={createOutletValidation}
+                        validationSchema={createOutletValidationSchema}
                         initialValues={{
                             storeName: "",
                             address: "",

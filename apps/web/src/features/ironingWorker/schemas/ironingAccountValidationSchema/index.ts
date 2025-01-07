@@ -1,7 +1,7 @@
 import * as Yup from 'yup'
 
 
-export const ironingAccountValidation = Yup.object().shape({
+export const ironingAccountValidationSchema = Yup.object().shape({
     firstName: Yup.string()
         .matches(/^[a-zA-Z\s]+$/, 'Nama hanya boleh mengandung huruf dan spasi')
         .required('Nama wajib diisi')

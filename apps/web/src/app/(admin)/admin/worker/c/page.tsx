@@ -4,7 +4,7 @@ import ButtonCustom from "@/components/core/button";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import { useCreateWorkerHooks } from "@/features/superAdmin/hooks/useCreateWorkerHooks";
-import { createUserValidation } from "@/features/superAdmin/schemas/createUserValidation";
+import { createUserValidationSchema } from "@/features/superAdmin/schemas/createUserValidationSchema";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
@@ -29,7 +29,7 @@ export default function Page() {
                             plateNumber: '',
                             shiftId: ''
                         }}
-                        validationSchema={createUserValidation}
+                        validationSchema={createUserValidationSchema}
                         onSubmit={(values, { resetForm }) => {
                             handleCreateUser({
                                 email: values?.email,
@@ -145,7 +145,7 @@ export default function Page() {
                             plateNumber: '',
                             shiftId: ''
                         }}
-                        validationSchema={createUserValidation}
+                        validationSchema={createUserValidationSchema}
                         onSubmit={(values, { resetForm }) => {
                             handleCreateUser({
                                 email: values?.email,

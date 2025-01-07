@@ -6,7 +6,7 @@ import ButtonCustom from "@/components/core/button";
 import Link from "next/link";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa6";
 import { useResendEmailUserHooks } from "@/features/user/hooks/useResendEmailHooks";
-import { resendEmailValidation } from "@/features/user/schemas/resendEmailValidation";
+import { resendEmailValidationSchema } from "@/features/user/schemas/resendEmailValidationSchema";
 
 export default function Page() {
     const { handleResendEmail, isPending } = useResendEmailUserHooks()
@@ -49,19 +49,19 @@ export default function Page() {
                     </div>
                     <Formik
                         initialValues={{ email: '' }}
-                        validationSchema={resendEmailValidation}
+                        validationSchema={resendEmailValidationSchema}
                         onSubmit={(values, { resetForm }) => handleResendEmail({ email: values?.email }, { onSuccess: () => resetForm() })}>
                         {({ setFieldValue, values }) => (
                             <Form className="flex flex-col z-20 justify-center items-center w-full space-y-4">
                                 <div id="emailOrganizer-input" className="w-full">
-                                    <div className="flex gap-5 items-center">
+                                    <div className="flex gap-2 lg:gap-5 items-center">
                                         <label className="text-sm lg:text-base">
                                             Email <span className="text-red-500">*</span>
                                         </label>
                                         <ErrorMessage
                                             name="email"
                                             component="div"
-                                            className="text-red-500 text-[5px] md:text-xs lg:text-sm mt-1"
+                                            className="text-red-500 text-xs lg:text-sm mt-1"
                                         />
                                     </div>
                                     <Field

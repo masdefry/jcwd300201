@@ -51,6 +51,10 @@ export default function NotificationOutletAdmin({ dataOrderNotif }: INotificatio
                                         <>
                                             Pembayaran untuk <b>#{order?.id}</b> sudah diterima. Laundry siap dikirim ke konsumen.
                                         </>
+                                        ) : order?.orderStatus[0]?.status === "DRIVER_ARRIVED_AT_OUTLET" ? (
+                                        <>
+                                            Order <b>#{order?.id}</b> sudah sampai. Segera buat nota order.
+                                        </>
                                     ) : order?.orderStatus[0]?.status === "DRIVER_DELIVERED_LAUNDRY" ? (
                                         <>
                                             Pesanan <b>#{order?.id}</b> sudah sampai di tempat konsumen.

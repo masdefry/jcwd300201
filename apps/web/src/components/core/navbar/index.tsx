@@ -68,12 +68,10 @@ export default function Header() {
         resetAuth()
 
         setIsDisabledSucces(true)
-
-        console.log(res)
       }
     },
     onError: (err) => {
-      console.log(err)
+      console.log('err')
     }
   })
 

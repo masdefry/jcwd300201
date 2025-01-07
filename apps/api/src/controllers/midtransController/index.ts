@@ -8,7 +8,7 @@ export const handleMidtransNotification = async (req: Request, res: Response, ne
         const transactionStatus = notification.transaction_status;
         const orderId = notification.order_id;
 
-        handleMidtransNotificationService({ orderId, transactionStatus })
+        await handleMidtransNotificationService({ orderId, transactionStatus })
 
         res.status(200).json({
             error: false,

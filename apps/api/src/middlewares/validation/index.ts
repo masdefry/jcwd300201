@@ -65,7 +65,7 @@ export const createWorkerValidation = [
         .escape()
 ]
 
-export const resendSetPasswordValidation = [
+export const resendsetPasswordValidationSchema = [
     body(['email']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('email').isString().escape(),
 ]
@@ -75,7 +75,7 @@ export const forgotPasswordUserValidation = [
     body('email').isString().escape(),
 ]
 
-export const setPasswordValidation = [
+export const setPasswordValidationSchema = [
     body(['password']).notEmpty().withMessage('Harap diisi terlebih dahulu!'),
     body('password').isString().escape(),
 ]
@@ -141,7 +141,7 @@ export const requestPickUpValidation = [
     body('userAddressId').isString().escape(),
 ]
 
-export const createOutletValidation = [
+export const createOutletValidationSchema = [
     body(["storeName", 'address', 'city', 'province', 'latitude', 'longitude', 'zipCode']).notEmpty().withMessage('Harap diisi terlebih dahulu'),
     body("storeName").trim().isString().matches(/^[A-Za-z0-9\s\-]+$/).withMessage("Nama Outlet hanya berisi huruf").escape(),
     body("address").trim().isString().matches(/^[A-Za-z0-9\s.,-]+$/).withMessage("Format alamat tidak valid").escape(),

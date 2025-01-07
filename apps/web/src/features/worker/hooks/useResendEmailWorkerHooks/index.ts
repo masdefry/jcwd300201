@@ -21,14 +21,12 @@ export const useResendEmailWorkerHooks = () => {
             })
 
             setIsDisabledSucces(true)
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
-            console.log(err)
         }
     })
 

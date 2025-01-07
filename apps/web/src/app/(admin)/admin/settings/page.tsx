@@ -57,7 +57,6 @@ export default function Page() {
                 setIsDisabledSucces(true)
 
                 window.location.href = '/worker/login'
-                console.log(res)
             }
         },
         onError: (err: any) => {
@@ -65,7 +64,6 @@ export default function Page() {
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
-            console.log(err)
         }
     })
 

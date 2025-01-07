@@ -228,7 +228,7 @@ export default function Page() {
                         </DialogHeader>
                         {orderData ? (
                             <>
-                                <div className="grid gap-4 py-4">
+                                <div className="grid gap-4 py-2 border-b border-neutral-400">
                                     <div className="flex justify-between items-center">
                                         <div className="flex flex-col">
                                             <h2 className="text-base font-semibold">{orderData?.order?.id}</h2>

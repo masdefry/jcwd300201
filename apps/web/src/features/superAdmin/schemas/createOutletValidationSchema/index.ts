@@ -1,6 +1,6 @@
 import * as Yup from 'yup'
 
-export const createOutletValidation = Yup.object().shape({
+export const createOutletValidationSchema = Yup.object().shape({
     storeName: Yup.string()
         .matches(/^[A-Za-z0-9\s\-]+$/, "Format nama tidak valid")
         .required("Nama outlet harap diisi!")

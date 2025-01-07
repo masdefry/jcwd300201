@@ -26,7 +26,6 @@ export const useContactHooks = ()=> {
             })
 
             setIsDisabledSuccess(true)
-            console.log(res)
         },
         onError: (err: any) => {
             toast({
@@ -35,7 +34,6 @@ export const useContactHooks = ()=> {
             })
 
             if (err?.response?.data?.message === 'Harap login terlebih dahulu') router.push('/user/login')
-            console.log(err)
         }
     })
 

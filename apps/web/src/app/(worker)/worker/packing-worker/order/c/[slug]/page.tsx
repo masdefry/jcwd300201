@@ -18,7 +18,7 @@ import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionCon
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
 import ButtonCustom from "@/components/core/button";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
-import { packingItemValidation } from "@/features/packingWorker/schemas/packingItemValidation";
+import { packingItemValidation } from "@/features/packingWorker/schemas/packingItemValidationSchema";
 
 
 type Iitem = {

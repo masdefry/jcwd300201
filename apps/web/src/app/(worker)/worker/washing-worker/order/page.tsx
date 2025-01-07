@@ -143,7 +143,7 @@ export default function Page() {
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
                             <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
-                            <TabsTrigger value="not-washed" onClick={() => { setActiveTab("not-washed"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
+                            <TabsTrigger value="not-washed" onClick={() => { setActiveTab("not-washed"); setPage(1) }} className='text-xs'>Belum Cuci</TabsTrigger>
                             <TabsTrigger value="in-washing" onClick={() => { setActiveTab("in-washing"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
                             <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} className='text-xs'>Selesai</TabsTrigger>
                         </TabsList>

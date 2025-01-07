@@ -28,10 +28,10 @@ export default function TabTracking({ selectedTab, setSelectedTab, dataOrder }: 
                             <span className="text-orange-500"><FaListAlt className="text-3xl sm:text-2xl" /></span>
                             <div className="w-full">
                                 <p className="text-sm sm:text-xs text-gray-500 mt-2">
-                                    <strong>Pengeluaran: </strong> Rp. {dataOrder?.totalSpent || 0}
+                                    <strong>Pengeluaran: </strong> Rp. {(dataOrder?.totalSpent || 0).toLocaleString('id-ID')}
                                 </p>
                                 <p className="text-sm sm:text-xs text-gray-500">
-                                    <strong>Order: </strong> {dataOrder?.orderCount || 0}
+                                    <strong>Order: </strong> {dataOrder?.totalOrders || 0}
                                 </p>
                             </div>
                         </div>
@@ -41,7 +41,7 @@ export default function TabTracking({ selectedTab, setSelectedTab, dataOrder }: 
                                 <FaWeightHanging className="text-3xl sm:text-2xl" />
                             </span>
                             <div className="w-full">
-                                <p className="text-sm sm:text-xs text-gray-500 mt-2"><strong>Kg: </strong> {dataOrder?.totalKg || 0} kg</p>
+                                <p className="text-sm sm:text-xs text-gray-500 mt-2"><strong>Kg: </strong> {dataOrder?.totalWeight || 0} kg</p>
                                 <p className="text-sm sm:text-xs text-gray-500"><strong>Pcs: </strong> {dataOrder?.totalPcs || 0} pcs</p>
                             </div>
                         </div>
@@ -51,13 +51,17 @@ export default function TabTracking({ selectedTab, setSelectedTab, dataOrder }: 
                 <TabsContent value="month">
                     <div className="grid grid-cols-1 gap-4 mt-4">
                         <div className="p-4 border border-neutral-300 shadow-sm flex items-center gap-4 rounded-lg">
-                            <span className="text-orange-500"><FaListAlt className="text-3xl" /></span>
+                            <span className="text-orange-500"><FaListAlt className="text-3xl sm:text-2xl" /></span>
                             <div className="w-full">
                                 <p className="text-sm sm:text-xs text-gray-500 mt-2">
+<<<<<<< HEAD
+                                    <strong>Pendapatan: </strong> Rp. {(dataOrder?.totalSpent || 0).toLocaleString('id-ID')}
+=======
                                     <strong>Pengeluaran: </strong> Rp. {dataOrder?.totalSpent || 0}
+>>>>>>> 62a52d4e710a4d8fc1ecdb55f01ac91b8b193978
                                 </p>
                                 <p className="text-sm sm:text-xs text-gray-500">
-                                    <strong>Order: </strong> {dataOrder?.orderCount || 0}
+                                    <strong>Order: </strong> {dataOrder?.totalOrders || 0}
                                 </p>
                             </div>
                         </div>
@@ -67,7 +71,7 @@ export default function TabTracking({ selectedTab, setSelectedTab, dataOrder }: 
                                 <FaWeightHanging className="text-3xl sm:text-2xl" />
                             </span>
                             <div className="w-full">
-                                <p className="text-sm sm:text-xs text-gray-500 mt-2"><strong>Kg: </strong> {dataOrder?.totalKg || 0} kg</p>
+                                <p className="text-sm sm:text-xs text-gray-500 mt-2"><strong>Kg: </strong> {dataOrder?.totalWeight || 0} kg</p>
                                 <p className="text-sm sm:text-xs text-gray-500"><strong>Pcs: </strong> {dataOrder?.totalPcs || 0} pcs</p>
                             </div>
                         </div>

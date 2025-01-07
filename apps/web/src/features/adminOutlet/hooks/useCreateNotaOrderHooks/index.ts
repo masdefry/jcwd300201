@@ -37,7 +37,6 @@ const useCreateNotaOrderHooks = ({ params }: { params: Promise<{ slug: string }>
             }, 1000);
         },
         onError: (err: any) => {
-            console.log(err)
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"

@@ -75,7 +75,6 @@ export default function DeliveryRequest() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
-            console.log(res)
             return res?.data?.data;
         },
     });

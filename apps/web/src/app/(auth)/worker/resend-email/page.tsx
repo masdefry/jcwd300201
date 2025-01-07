@@ -6,7 +6,7 @@ import ButtonCustom from "@/components/core/button";
 import Link from "next/link";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa6";
 import { useResendEmailWorkerHooks } from "@/features/worker/hooks/useResendEmailWorkerHooks";
-import { resendEmailValidation } from "@/features/worker/schemas/resendEmailValidation";
+import { resendEmailValidationSchema } from "@/features/worker/schemas/resendEmailValidationSchema";
 
 export default function Page() {
     const { handleResendEmail, isPending, router } = useResendEmailWorkerHooks()
@@ -49,7 +49,7 @@ export default function Page() {
                     </div>
                     <Formik
                         initialValues={{ email: '' }}
-                        validationSchema={resendEmailValidation}
+                        validationSchema={resendEmailValidationSchema}
                         onSubmit={(values, { resetForm }) => handleResendEmail({ email: values?.email }, { onSuccess: () => resetForm() })}>
                         {({ setFieldValue, values }) => (
                             <Form className="flex flex-col z-20 justify-center items-center w-full space-y-4">

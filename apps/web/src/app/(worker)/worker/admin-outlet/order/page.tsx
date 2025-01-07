@@ -67,7 +67,6 @@ export default function DeliveryRequest() {
     });
     const [openDialog, setOpenDialog] = useState(false);
     const [orderData, setOrderData] = useState<any>(null);
-    console.log(orderData)
 
     const { mutate: handleOrderDetail } = useMutation({
         mutationFn: async (id: any) => {
@@ -84,7 +83,6 @@ export default function DeliveryRequest() {
         queryKey: ['get-data-store'],
         queryFn: async () => {
             const res = await instance.get('/store')
-            console.log(res)
             return res?.data?.data
         }
     })

@@ -97,8 +97,6 @@ export default function DeliveryRequest() {
         }
     })
     const getDataItem = dataOrderList?.orders
-    console.log(getDataItem)
-    console.log(dataOrderList)
 
     const handlePageChange = (page: any) => {
         setPage(page)
