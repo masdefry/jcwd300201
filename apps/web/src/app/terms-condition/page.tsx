@@ -2,10 +2,10 @@ import Link from "next/link";
 
 export default function Page() {
     return (
-        <main className='w-full pt-[90px] h-fit flex justify-center'>
-            <div className="h-fit w-full max-w-[70vw] py-10">
+        <main className='w-full md:pt-[90px] pt-5 md:pb-0 pb-28 h-fit flex justify-center'>
+            <div className="h-fit w-full px-3 md:px-0 md:max-w-[70vw] py-10">
                 <div className='flex flex-col justify-center w-full items-center mb-10'>
-                    <h1 className="text-3xl font-bold text-center">Syarat dan Ketentuan - Clean&Click</h1>
+                    <h1 className="text-3xl font-bold text-center flex">Syarat dan Ketentuan <span className="ml-1 md:block hidden">- Clean&Click</span></h1>
                     <div className="flex gap-2 text-center w-full justify-center items-center">
                         <Link href='/privacy-policy' className="hover:underline hover:text-neutral-400 text-neutral-500">Kebijakan Privasi</Link>
                         <div className="w-1 h-1 bg-black rounded-full"></div>
