@@ -1,14 +1,11 @@
 'use client'
 
-import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
-import { FiPlus } from "react-icons/fi";
-import { LuPackageCheck } from "react-icons/lu";
-import { FaHome, FaTint, FaWhatsapp } from "react-icons/fa";
+import { FaTint } from "react-icons/fa";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
-import { FaAddressCard, FaArrowRight, FaBox, FaCartShopping, FaUserCheck } from "react-icons/fa6";
-import { FaCloud, FaTemperatureHigh, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying } from "react-icons/fa6";
+import { FaBox, FaCartShopping } from "react-icons/fa6";
+import { FaCloud, FaTemperatureHigh, FaDashcube, FaSpaghettiMonsterFlying } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import axios from "axios";
@@ -17,8 +14,7 @@ import Link from "next/link";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import { MdSportsMotorsports } from "react-icons/md";
-import TabTrackingUser from "@/features/user/components/tabUserTracking";
+import TabTracking from "@/features/user/components/tabUserTracking";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import Notification from "@/components/core/notification";
 
@@ -60,16 +56,16 @@ export default function Page() {
     });
 
     const { data: dataOrderNotif } = useQuery({
-            queryKey: ['get-order-notif'],
-            queryFn: async () => {
-                const res = await instance.get('/order/notification', {
-                    params: { tab: 'user' },
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                return res?.data?.data;
-            },
-    }); 
-    
+        queryKey: ['get-order-notif'],
+        queryFn: async () => {
+            const res = await instance.get('/order/notification', {
+                params: { tab: 'user' },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return res?.data?.data;
+        },
+    });
+
     const { data: dataOrder, isPending: dataOrderPending } = useQuery({
         queryKey: ['get-order-status', selectedTab],
         queryFn: async () => {
@@ -111,7 +107,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification dataOrderNotif={dataOrderNotif}/>}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification dataOrderNotif={dataOrderNotif} />}>
                 <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                     <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
                     <p className="text-neutral-200 text-sm mt-1">Selamat datang di Clean&Click, layanan laundry profesional yang memastikan pakaian Anda selalu bersih dan rapi.</p>
@@ -174,7 +170,7 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="w-full flex gap-3 justify-center items-center py-3 px-4 bg-white border rounded-lg shadow-sm transition-all">
-                        <TabTrackingUser
+                        <TabTracking
                             selectedTab={selectedTab}
                             setSelectedTab={setSelectedTab}
                             dataOrder={dataOrder}
@@ -289,7 +285,7 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="w-full h-full flex justify-center p-5 bg-white bg-opacity-45 rounded-2xl ">
-                        <TabTrackingUser
+                        <TabTracking
                             selectedTab={selectedTab}
                             setSelectedTab={setSelectedTab}
                             dataOrder={dataOrder}

@@ -73,7 +73,8 @@ const useWorkerHooks = () => {
         getDataWorker, refetch, isFetching,
         dataWorker, totalPages,
         handlePageChange, debounce, isLoading,
-        isValueSearch, setIsValueSearch
+        isValueSearch, setIsValueSearch,
+        router
     }
 }
 
