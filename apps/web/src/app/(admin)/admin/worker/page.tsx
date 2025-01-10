@@ -29,12 +29,12 @@ import { MdWorkHistory } from "react-icons/md";
 
 export default function Page() {
     const { currentPage, entriesPerPage, sortWorker, setSortWorker, isFetching,
-        dataWorker, totalPages, handlePageChange, debounce, searchWorker, setCurrentPage, isValueSearch, isLoading, setIsValueSearch } = useWorkerHooks()
+        dataWorker, totalPages, handlePageChange, debounce, searchWorker, setCurrentPage, isValueSearch, isLoading, setIsValueSearch, router } = useWorkerHooks()
 
     return (
         <>
             <ContentMobileLayout title='Data Pekerja' icon={<MdWorkHistory className="text-lg" />}>
-                <div className="w-full flex gap-2 items-center">
+                <div className="w-full flex gap-2 items-center pb-28">
                     <div className="flex w-full items-center justify-center">
                         <div className="relative w-full">
                             <input
@@ -50,7 +50,7 @@ export default function Page() {
                             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                         </div>
                     </div>
-                    <ButtonCustom py='py-3' rounded="rounded-xl flex items-center" btnColor="bg-orange-500" width="w-fit"><FaPlus className="text-sm" /></ButtonCustom>
+                    <ButtonCustom onClick={()=> router.push('/admin/worker/c')} py='py-3' rounded="rounded-xl flex items-center" btnColor="bg-orange-500" width="w-fit"><FaPlus className="text-sm" /></ButtonCustom>
                     <div className="w-fit py-2 flex items-center">
                         <Dialog>
                             <DialogTrigger asChild>

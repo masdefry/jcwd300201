@@ -16,6 +16,6 @@ workerRouter.delete('/', tokenValidation, deleteProfilePictureWorker)
 
 workerRouter.get('/all-workers', getAllWorker)
 workerRouter.get('/detail/:id', getSingleWorkerById)
-workerRouter.delete('/detail/:id', tokenValidation, roleCheckSuperAdmin, limiter, deleteDataWorkerById)
+workerRouter.patch('/detail/:id', tokenValidation, roleCheckSuperAdmin, limiter, deleteDataWorkerById)
 
 export default workerRouter

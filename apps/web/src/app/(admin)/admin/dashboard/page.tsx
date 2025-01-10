@@ -294,7 +294,7 @@ export default function Page() {
                 </section>
                 <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
                     <div className="w-full px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
-                        <MonthlyCharts monthlyData={dataOrderList?.monthlyStatistic} showDropdown={true}
+                        <MonthlyCharts monthlyData={dataOrderList?.monthlyStatistic} showDropdown={true} isPending={isPending}
                             onChange={(e: any) => setIsMonthlyStatistic(e.target.value)} value={isMonthlyStatistic} />
                     </div>
                     <div className="w-fit px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">

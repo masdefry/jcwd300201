@@ -1,8 +1,6 @@
 'use client'
 
-import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
@@ -14,7 +12,6 @@ import { useDebouncedCallback } from "use-debounce"
 import { FaWhatsapp } from "react-icons/fa";
 import { useToast } from "@/components/hooks/use-toast"
 import { ConfirmAlert } from "@/components/core/confirmAlert"
-import { IoLocationSharp } from "react-icons/io5";
 import ButtonCustom from "@/components/core/button"
 import SearchInputCustom from "@/components/core/searchBar"
 import { FaPlus, FaTruck } from "react-icons/fa6"
@@ -24,7 +21,6 @@ import FilterWorker from "@/components/core/filter"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import FilterWeb from "@/components/core/filterWeb"
 
@@ -38,14 +34,12 @@ export default function DriverDelivery() {
     const token = authStore((state) => state?.token);
     const email = authStore((state) => state?.email);
 
-
     const [page, setPage] = useState(Number(params.get("page")) || 1);
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
-    const [selectedOrder, setSelectedOrder] = useState<any>(null);
     const [isSearchValues, setIsSearchValues] = useState<string>('')
 
 

@@ -142,7 +142,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
 
 
 
-            <ContentWebLayout caption='Detail Pembayaran'>
+            <ContentWebLayout caption='Komplain'>
                 <NotaHeader />
                 <div className="w-full flex gap-4 p-6">
                     <div className="w-full md:w-1/2 space-y-4">
@@ -155,46 +155,54 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     </div>
                     <div className="w-full md:w-1/2 space-y-4">
                         <h1 className="font-bold text-2xl text-gray-800">Komplain</h1>
-                        <Formik
-                            initialValues={{
-                                complaintText: '',
-                            }}
-                            validationSchema={userComplaintValidationSchema}
-                            onSubmit={(values) => {
-                                handleComplaint({
-                                    complaintText: values.complaintText
-                                })
-                            }}
-                        >
-                            {({ setFieldValue }) => (
-                                <Form className="space-y-4">
-                                    <div>
 
-                                        <Field
-                                            as="textarea"
-                                            id="complaintText"
-                                            name="complaintText"
-                                            placeholder="Tuliskan komplain Anda"
-                                            className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-                                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
-                                                setFieldValue('complaintText', e.target.value);
-                                            }}
-                                        />
-                                        <ErrorMessage
-                                            name="complaintText"
-                                            component="div"
-                                            className="text-red-500 text-sm mt-1"
-                                        />
-                                    </div>
-                                    <ButtonCustom
-                                        disabled={isPending}
-                                        btnColor="bg-blue-500 hover:bg-blue-600" type="submit" width="w-full"
-                                    >
-                                        Kirim Komplain
-                                    </ButtonCustom>
-                                </Form>
-                            )}
-                        </Formik>
+                        {!dataOrderNote?.order?.complaintText ?
+                            <Formik
+                                initialValues={{
+                                    complaintText: '',
+                                }}
+                                validationSchema={userComplaintValidationSchema}
+                                onSubmit={(values) => {
+                                    handleComplaint({
+                                        complaintText: values.complaintText
+                                    })
+                                }}
+                            >
+                                {({ setFieldValue, values }) => (
+                                    <Form className="space-y-4">
+                                        <div>
+
+                                            <Field
+                                                as="textarea"
+                                                id="complaintText"
+                                                name="complaintText"
+                                                placeholder="Tuliskan komplain Anda"
+                                                className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
+                                                onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                                                    setFieldValue('complaintText', e.target.value);
+                                                }}
+                                            />
+                                            <ErrorMessage
+                                                name="complaintText"
+                                                component="div"
+                                                className="text-red-500 text-sm mt-1"
+                                            />
+                                        </div>
+                                        <ButtonCustom
+                                            disabled={isPending || !values.complaintText}
+                                            btnColor="bg-blue-500 hover:bg-blue-600" type="submit" width="w-full"
+                                        >
+                                            {isPending ? 'Memproses Komplain..' : 'Kirim Komplain'}
+                                        </ButtonCustom>
+                                    </Form>
+                                )}
+                            </Formik>
+                            :
+                            <>
+                                <div className="border p-2 bg-gray-100 border-gray-600 w-full rounded-xl">{dataOrderNote?.order?.complaintText}</div>
+                                <div>Laporan anda sudah kami proses, mohon menunggu. Terima kasih.</div>
+                            </>}
+
                     </div>
                 </div>
             </ContentWebLayout >

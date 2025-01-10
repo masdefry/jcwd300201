@@ -37,6 +37,7 @@ export default function Page() {
     const [searchInput, setSearchInput] = useState(params.get("search") || "");
     const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
     const [activeTab, setActiveTab] = useState(params.get("tab") || "waiting-payment");
+    console.log(activeTab)
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const [isSearchValues, setIsSearchValues] = useState<string>('')
@@ -64,8 +65,30 @@ export default function Page() {
     })
 
     const { mutate: handleOrderConfirmation, isPending: handleOrderConfirmationPending } = useMutation({
-        mutationFn: async (id: any) => {
+        mutationFn: async (id: string) => {
             return await instance.post(`/order/confirm/${id}`, { email }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res: any) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            refetch()
+        },
+        onError: (err: any) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
+            })
+        }
+    })
+    const { mutate: handleSolveComplaint, isPending: handleSolveComplaintPending } = useMutation({
+        mutationFn: async (id: string) => {
+            return await instance.patch(`/order/solve/${id}`, { email }, {
 
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -338,17 +361,23 @@ export default function Page() {
                         {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true && orderData?.order?.isComplain === false ?
                             <div className="flex w-full justify-center gap-2">
                                 <ConfirmAlert
+                                    colorConfirmation="blue"
                                     caption="Konfirmasi Komplain"
                                     description="Apakah Anda yakin ingin mengajukan komplain? Tindakan ini tidak dapat dibatalkan dan akan diteruskan untuk ditindaklanjuti oleh tim kami."
-                                    onClick={() => router.push(`/user/dashboard/order/complaint/${orderData?.order?.id}`)}>
+                                    onClick={() => {
+                                        router.push(`/user/dashboard/order/complaint/${orderData?.order?.id}`)
+                                        setOpenDialog(false)
+                                    }}>
                                     <ButtonCustom btnColor="bg-red-500" txtColor="text-white">Laporkan Masalah</ButtonCustom>
                                 </ConfirmAlert>
                                 <ConfirmAlert
+                                    colorConfirmation="blue"
                                     disabled={handleOrderConfirmationPending}
                                     caption="Apakah anda yakin ingin mengkonfirmasi order laundry berikut?"
                                     description="Pastikan laundry telah sampai di lokasi anda"
-                                    onClick={() => { handleOrderConfirmation(orderData?.order?.id) }}>
-
+                                    onClick={() => {
+                                        handleOrderConfirmation(orderData?.order?.id)
+                                    }}>
                                     <div className="flex">
                                         <ButtonCustom disabled={handleOrderConfirmationPending} btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
                                     </div>
@@ -357,9 +386,14 @@ export default function Page() {
                             : orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true && orderData?.order?.isComplain === true ?
                                 <div className="flex w-full justify-center gap-2">
                                     <ConfirmAlert
+                                        colorConfirmation="blue"
+                                        disabled={handleSolveComplaintPending}
                                         caption="Selesaikan Masalah & Konfirmasi Laundry"
                                         description="Apakah Anda yakin masalah ini telah diselesaikan? Tindakan ini akan menutup keluhan Anda secara permanen serta mengkonfirmasi bahwa laundry anda telah sampai."
-                                        onClick={() => (console.log('ewe'))}>
+                                        onClick={() => {
+                                            handleSolveComplaint(orderData?.order?.id)
+                                            setOpenDialog(false);
+                                        }}>
                                         <ButtonCustom btnColor="bg-blue-500" width="w-full" txtColor="text-white">Masalah Teratasi & Konfirmasi Laundry</ButtonCustom>
                                     </ConfirmAlert>
                                 </div>

@@ -40,7 +40,7 @@ export default function Page() {
                                 }
                             );
                         }}>
-                        {({ setFieldValue }) => (
+                        {({ setFieldValue, values }) => (
                             <Form className="space-y-4">
                                 <div className="relative flex flex-col">
                                     <label htmlFor="name" className="mb-2 font-semibold text-gray-700">Nama Lengkap</label>
@@ -67,7 +67,7 @@ export default function Page() {
                                     <Field as="textarea" id="textHelp" name="textHelp" placeholder="Tulis pesan Anda di sini" className="z-10 w-full text-sm rounded-lg border border-gray-300 px-4 py-2 focus:outline-none focus:border-orange-500" />
                                     <ErrorMessage name="textHelp" component="div" className="absolute inset-0 flex w-full justify-end px-3 text-sm text-red-500" />
                                 </div>
-                                <ButtonCustom type="submit" disabled={isPendingSendMessage} width="w-full" btnColor="bg-blue-600 hover:bg-blue-600">
+                                <ButtonCustom type="submit" disabled={isPendingSendMessage || !values?.email || !values?.name || !values?.phoneNumber || !values?.textHelp} width="w-full" btnColor="bg-blue-600 hover:bg-blue-600">
                                     Kirim Pesan
                                 </ButtonCustom>
                             </Form>

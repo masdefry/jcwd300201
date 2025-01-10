@@ -15,7 +15,7 @@ export default function Page() {
     return (
         <>
             <MobileSessionLayout title='Buat Data Pekerja'>
-                <div className="w-full h-fit pb-10">
+                <div className="w-full h-fit pb-28">
                     <Formik
                         initialValues={{
                             email: '',
@@ -121,7 +121,7 @@ export default function Page() {
                                             </div>
                                         </> : ''}
                                     <div className="flex w-full gap-2">
-                                        <ButtonCustom type="submit" disabled={isPending} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Buat akun</ButtonCustom>
+                                        <ButtonCustom type="submit" disabled={isPending || !values?.email || !values?.firstName || !values?.identityNumber || !values?.lastName || !values?.outletId || !values?.phoneNumber || !values?.shiftId || !values?.workerRole} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Buat akun</ButtonCustom>
                                     </div>
                                 </div>
                             </Form>
@@ -244,7 +244,7 @@ export default function Page() {
                                             </div>
                                         </div> : ''}
                                     <div className="flex w-full gap-2">
-                                        <ButtonCustom type="submit" disabled={isPending} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Buat akun</ButtonCustom>
+                                        <ButtonCustom type="submit" disabled={isPending || !values?.email || !values?.firstName || !values?.identityNumber || !values?.lastName || !values?.outletId || !values?.phoneNumber || !values?.shiftId || !values?.workerRole} rounded="rounded-2xl w-full" btnColor="bg-orange-500">Buat akun</ButtonCustom>
                                     </div>
                                 </div>
                             </Form>

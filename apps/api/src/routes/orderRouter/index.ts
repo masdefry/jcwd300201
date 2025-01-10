@@ -1,4 +1,4 @@
-import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory, getAllOrderForUser, paymentOrderVA, paymentOrderTf, getPaymentOrderForAdmin, paymentDone, userConfirmOrder, orderTrackingAdmin, orderTrackingDriver, orderTrackingWorker, orderTrackingUser, getOrdersForNotif, customerComplaint } from "@/controllers/orderController";
+import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory, getAllOrderForUser, paymentOrderVA, paymentOrderTf, getPaymentOrderForAdmin, paymentDone, userConfirmOrder, orderTrackingAdmin, orderTrackingDriver, orderTrackingWorker, orderTrackingUser, getOrdersForNotif, customerComplaint, solveComplaint } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
 import { limiter } from "@/middlewares/rateLimit";
 import { roleCheckAdmin, roleCheckCustomer, roleCheckDriver, roleCheckIroningWorker, roleCheckPackingWorker, roleCheckSuperAdmin, roleCheckWashingWorker } from "@/middlewares/roleCheck";
@@ -72,4 +72,5 @@ orderRouter.get('/tracking-user', tokenValidation, roleCheckCustomer, orderTrack
 orderRouter.get('/notification', tokenValidation, getOrdersForNotif)
 
 orderRouter.patch('/complaint/:orderId', tokenValidation, customerComplaint)
+orderRouter.patch('/solve/:orderId', tokenValidation, solveComplaint)
 export default orderRouter

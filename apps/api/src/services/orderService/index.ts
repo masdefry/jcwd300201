@@ -2158,6 +2158,8 @@ export const getAllOrderForAdminService = async ({
   let statusFilter: any;
   if (tab === "proses") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
+  } else if (tab === "complaint") {
+    statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab === "done") {
     statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
@@ -2186,7 +2188,8 @@ export const getAllOrderForAdminService = async ({
           ],
         }
         : {},
-      ...(tab === 'proses' ? [{ isConfirm: false }] : []),
+      ...(tab === 'proses' ? [{ isConfirm: false, isComplain: false }] : []),
+      ...(tab === 'complaint' ? [{ isConfirm: false, isComplain: true }] : []),
       ...(tab === 'done' ? [{ isConfirm: true }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
@@ -2320,7 +2323,12 @@ export const orderStatusService = async ({ orderId, email, userId }: IWashingPro
       id: String(orderId),
     },
     include: {
-      OrderType: true
+      OrderType: true,
+      User: {
+        select: {
+          phoneNumber: true
+        }
+      }
     }
   });
 
@@ -2523,9 +2531,9 @@ export const getAllOrderForUserService = async ({
         }
         : {},
       ...(tab === 'waiting-payment' ? [{ isPaid: false }] : []),
-      ...(tab === 'complaint' ? [{ isComplain: true }] : []),
+      ...(tab === 'complaint' ? [{ isPaid: true, isComplain: true }] : []),
       ...(tab === 'proses' ? [{ isConfirm: false, isPaid: true, isComplain: false }] : []),
-      ...(tab === 'done' ? [{ isConfirm: true }] : []),
+      ...(tab === 'done' ? [{ isConfirm: true, isPaid: true, isComplain: false }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
     ].filter((condition) => Object.keys(condition).length > 0),
@@ -2971,21 +2979,29 @@ export const orderTrackingAdminService = async ({ userId, authorizationRole, per
     where: whereFilter,
   });
 
+  const totalPcsWhere: any = {
+    Order: {
+      createdAt: {
+        gte: startDate,
+        lte: endDate,
+      },
+    },
+  };
+
+  if (authorizationRole !== 'SUPER_ADMIN' && storeId) {
+    totalPcsWhere.Order.storeId = storeId;
+  }
+
   const totalPcs = await prisma.orderDetail.aggregate({
     _count: {
       id: true,
     },
-    where: {
-      Order: {
-        createdAt: {
-          gte: startDate,
-          lte: endDate,
-        },
-        storeId: storeId,
-      },
-    },
+    where: totalPcsWhere,
   });
-  return { totalPcs, stats }
+
+  console.log(totalPcs);
+  return { totalPcs, stats };
+
 }
 
 export const orderTrackingDriverService = async ({ userId, authorizationRole, period }: IOrderTrackingAdminParams) => {
@@ -3608,8 +3624,8 @@ export const createComplaintService = async ({ orderId, complaintText, userId }:
     delete cronTasks[orderId];
   }
 
-  return await prisma.$transaction(async (prisma) => {
-    const findUser = await prisma.user.findFirst({
+  return await prisma.$transaction(async (tx) => {
+    const findUser = await tx.user.findFirst({
       where: { id: userId },
     });
 
@@ -3617,7 +3633,7 @@ export const createComplaintService = async ({ orderId, complaintText, userId }:
       throw { msg: "User tidak ditemukan", status: 404 };
     }
 
-    const complaint = await prisma.order.update({
+    const complaint = await tx.order.update({
       where: { id: orderId },
       data: {
         isComplain: true,
@@ -3630,5 +3646,34 @@ export const createComplaintService = async ({ orderId, complaintText, userId }:
     }
 
     return complaint;
+  });
+};
+export const solveComplaintService = async ({ orderId, email, userId }: { orderId: string, email: string, userId: string }) => {
+
+  return await prisma.$transaction(async (tx) => {
+    const findUser = await tx.user.findFirst({
+      where: {
+        id: userId,
+        email
+      },
+    });
+
+    if (!findUser) {
+      throw { msg: "User tidak ditemukan", status: 404 };
+    }
+
+    const solveComplaint = await tx.order.update({
+      where: { id: orderId },
+      data: {
+        isComplain: false,
+        isConfirm: true
+      },
+    });
+
+    if (!solveComplaint) {
+      throw { msg: "Order & Komplain tidak ditemukan", status: 404 };
+    }
+
+    return solveComplaint;
   });
 };

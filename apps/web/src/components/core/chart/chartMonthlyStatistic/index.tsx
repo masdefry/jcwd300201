@@ -12,6 +12,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { instance } from '@/utils/axiosInstance';
 import { IMonthlyChartsProps } from './type';
+import Loading from '../../loading';
 
 ChartJS.register(
     CategoryScale,
@@ -22,7 +23,7 @@ ChartJS.register(
     Legend
 );
 
-export default function MonthlyCharts({ monthlyData, onChange, value, showDropdown }: IMonthlyChartsProps) {
+export default function MonthlyCharts({ monthlyData, onChange, value, showDropdown, isPending }: IMonthlyChartsProps) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -98,7 +99,10 @@ export default function MonthlyCharts({ monthlyData, onChange, value, showDropdo
                     <option value="">Reset</option>
                 </select>
             )}
-            <Bar data={data} options={options} className='w-full' style={{ width: '100%' }} />
+            {isPending ?
+                <Loading />
+                : <Bar data={data} options={options} className='w-full' style={{ width: '100%' }} />
+            }
         </div>
     );
 }

@@ -4,9 +4,8 @@ import { FaHistory, FaTint } from "react-icons/fa";
 import Image from "next/image";
 import { MdOutlineIron } from "react-icons/md";
 import { CgSmartHomeWashMachine } from "react-icons/cg";
-import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaUserCheck, FaCloud, FaMotorcycle, FaTemperatureHigh, FaBoxOpen, FaTruck, FaStore } from "react-icons/fa6";
+import { FaDashcube, FaCloud, FaMotorcycle, FaTemperatureHigh, FaBoxOpen, FaTruck, FaStore } from "react-icons/fa6";
 import { BsPerson } from "react-icons/bs";
-import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import * as React from "react"
@@ -56,7 +55,7 @@ export default function Page() {
         queryKey: ['get-order-request'],
         queryFn: async () => {
             const res = await instance.get('/order/order', {
-                params: { tab: 'DRIVER_TO_OUTLET' },
+                params: { tab: 'AWAITING_DRIVER_PICKUP' },
                 headers: { Authorization: `Bearer ${token}` }
             });
             return res?.data?.data;

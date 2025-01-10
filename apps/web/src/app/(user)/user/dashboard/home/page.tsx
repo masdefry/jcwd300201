@@ -1,14 +1,11 @@
 'use client'
 
-import { IoSearchSharp } from "react-icons/io5";
 import Image from "next/image";
-import { FiPlus } from "react-icons/fi";
-import { LuPackageCheck } from "react-icons/lu";
-import { FaHome, FaTint, FaWhatsapp } from "react-icons/fa";
+import { FaTint } from "react-icons/fa";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
-import { FaAddressCard, FaArrowRight, FaBox, FaCartShopping, FaUserCheck } from "react-icons/fa6";
-import { FaCloud, FaTemperatureHigh, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying } from "react-icons/fa6";
+import { FaBox, FaCartShopping } from "react-icons/fa6";
+import { FaCloud, FaTemperatureHigh, FaDashcube, FaSpaghettiMonsterFlying } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import axios from "axios";
