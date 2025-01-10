@@ -1,6 +1,5 @@
 import * as Yup from 'yup'
 
-
 export const driverAccountValidationSchema = Yup.object().shape({
     firstName: Yup.string()
         .matches(/^[a-zA-Z\s]+$/, 'Nama hanya boleh mengandung huruf dan spasi')

@@ -22,6 +22,7 @@ import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
+import FilterWeb from "@/components/core/filterWeb"
 
 export default function DriverDelivery() {
     const params = useSearchParams();
@@ -44,7 +45,7 @@ export default function DriverDelivery() {
 
     const limit = 5;
 
-    const { data: dataOrderDelivery, refetch, isLoading: dataOrderDeliveryLoading, isError: dataOrderDeliveryError } = useQuery({
+    const { data: dataOrderDelivery, isFetching, refetch, isLoading: dataOrderDeliveryLoading, isError: dataOrderDeliveryError } = useQuery({
         queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
         queryFn: async () => {
             const res = await instance.get(`/order/delivery`, {
@@ -59,6 +60,7 @@ export default function DriverDelivery() {
                 },
                 headers: { Authorization: `Bearer ${token}` }
             });
+            console.log(res)
             return res?.data?.data;
         },
     });
@@ -161,7 +163,7 @@ export default function DriverDelivery() {
                     <Tabs defaultValue={activeTab} className="fit">
                         <TabsList className="grid w-full grid-cols-4">
                             <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
-                            <TabsTrigger value="waiting-driver" onClick={() => { setActiveTab("waiting-driver"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
+                            <TabsTrigger value="waiting-driver" onClick={() => { setActiveTab("waiting-driver"); setPage(1) }} className='text-xs'>Belum Dijemput</TabsTrigger>
                             <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
                             <TabsTrigger value="terkirim" onClick={() => { setActiveTab("terkirim"); setPage(1) }} className='text-xs'>Terkirim</TabsTrigger>
                         </TabsList>
@@ -232,11 +234,13 @@ export default function DriverDelivery() {
                                                             <div className="text-xs text-gray-500">
                                                                 {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
                                                                     ? 'Menunggu Pembayaran' :
-                                                                    order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' && order?.isPaid === true
-                                                                        ? 'Siap untuk dikirim' :
-                                                                        order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true
-                                                                            ? 'Laundry berhasil diantar'
-                                                                            : ''}
+                                                                    order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
+                                                                        ? 'Siap untuk diantar' :
+                                                                        order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' && order?.isPaid === true
+                                                                            ? 'Proses Pengantaran' :
+                                                                            order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true
+                                                                                ? 'Laundry berhasil diantar'
+                                                                                : ''}
                                                             </div>
                                                             <p className="text-xs text-gray-500">
                                                                 {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
@@ -257,11 +261,13 @@ export default function DriverDelivery() {
                                                         <div className="text-xs text-gray-500">
                                                             {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
                                                                 ? 'Menunggu Pembayaran' :
-                                                                order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' && order?.isPaid === true
+                                                                order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
                                                                     ? 'Siap untuk dikirim' :
-                                                                    order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true
-                                                                        ? 'Laundry berhasil diantar'
-                                                                        : ''
+                                                                    order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' && order?.isPaid === true
+                                                                        ? 'Proses Pengiriman' :
+                                                                        order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true
+                                                                            ? 'Laundry berhasil diantar'
+                                                                            : ''
                                                             }
                                                         </div>
                                                         <div className="text-xs text-gray-500">
@@ -294,39 +300,30 @@ export default function DriverDelivery() {
             </ContentMobileLayout>
 
             <ContentWebLayout caption='Pengiriman'>
-                <div className="w-full h-fit flex">
-                    <div className="w-1/2 gap-2 h-fit flex items-center">
-                        <select name="searchWorker" value={activeTab} onChange={(e) => {
-                            setActiveTab(e.target.value)
-                            setPage(1)
-                        }} id="searchWorker" className="px-4 py-2 border rounded-2xl focus:outline-none focus:border-orange-500
-                        border-gray-300 text-sm text-neutral-600">
-                            <option value="" disabled>-- Pilih Opsi --</option>
-                            <option value="all">Semua Pesanan</option>
-                            <option value="waiting-pickup">Belum pickup</option>
-                            <option value="process-pickup">Dalam perjalanan</option>
-                            <option value="arrived">Selesai</option>
-                            <option value="all">Reset</option>
-                        </select>
-                        <select name="sort" value={sortOption} onChange={(e) => {
-                            setSortOption(e.target.value)
-                            setPage(1)
-                        }} id="sort" className="px-4 py-2 border rounded-2xl border-gray-300 text-sm 
-                        focus:outline-none focus:border-orange-500 text-neutral-600">
-                            <option value="" disabled>-- Pilih Opsi --</option>
-                            <option value="date-asc">Tanggal Terlama</option>
-                            <option value="date-desc">Tanggal Terbaru</option>
-                            <option value="name-asc">Urutkan nama A - Z</option>
-                            <option value="name-desc">Urutkan nama Z - A</option>
-                        </select>
-                    </div>
-                    <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
-                        <Link href='/admin/worker/c'>
-                            <ButtonCustom rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Buat Data Pekerja</ButtonCustom>
-                        </Link>
-                    </div>
-                </div>
+                <FilterWeb
+                    isSearchValues={isSearchValues}
+                    setIsSearchValues={setIsSearchValues}
+                    debounce={debounce}
+                    sortOption={sortOption}
+                    setSortOption={setSortOption}
+                    dateFrom={dateFrom}
+                    dateUntil={dateUntil}
+                    setDateFrom={setDateFrom}
+                    setDateUntil={setDateUntil}
+                    setActiveTab={setActiveTab}
+                    setSearchInput={setSearchInput}
+                    activeTab={activeTab}
+                    setPage={setPage}
+                    showStoreSelect={false}
+                    searchInput={searchInput}
+                    options={[
+                        { value: 'all', label: 'Semua' },
+                        { value: 'waiting-driver', label: 'Belum Dijemput' },
+                        { value: 'proses', label: 'Proses' },
+                        { value: 'terkirim', label: 'Terkirim' },
+                    ]}
+                    borderReset="border rounded-full"
+                />
 
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
@@ -341,21 +338,29 @@ export default function DriverDelivery() {
                             </tr>
                         </thead>
                         <tbody>
-                            {dataOrderDelivery?.orders?.length > 0 ? (
-                                dataOrderDelivery?.orders?.map((order: any, i: number) => {
-                                    return (
+                            {isFetching ? (
+                                <tr>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
+                                </tr>
+                            ) : (
+                                !dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 ? (
+                                    dataOrderDelivery?.orders?.map((order: any, i: number) => (
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' : 'Layanan Laundry'}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : 'Layanan Laundry'}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                 {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
                                                     ? 'Menunggu Pembayaran' :
-                                                    order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' && order?.isPaid === true
+                                                    order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
                                                         ? 'Siap untuk dikirim' :
-                                                        order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true
-                                                            ? 'Laundry berhasil diantar'
-                                                            : 'Menunggu Pembayaran'
+                                                        order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER' && order?.isPaid === true
+                                                            ? 'Proses Pengiriman' :
+                                                            order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true
+                                                                ? 'Laundry berhasil diantar'
+                                                                : 'Menunggu Pembayaran'
                                                 }
                                             </td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]}</td>
@@ -383,16 +388,19 @@ export default function DriverDelivery() {
                                                                 : () => console.log('')
                                                     }>
                                                     <button disabled={order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                        {order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true ? 'Selesai' : 'Selesaikan'}</button>
+                                                        {order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isPaid === true ? 'Selesai' : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true ? 'Proses' : 'Selesaikan'}</button>
                                                 </ConfirmAlert>
                                             </td>
                                         </tr>
-                                    )
-                                })
-                            ) : (
-                                <tr>
-                                    <td colSpan={6} className="text-center font-bold text-3xl text-neutral-300"><NoData /> </td>
-                                </tr>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {dataOrderDeliveryLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                )
+
                             )}
                         </tbody>
                     </table>

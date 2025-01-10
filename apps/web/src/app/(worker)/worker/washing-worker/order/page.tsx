@@ -312,7 +312,7 @@ export default function Page() {
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                 <div>{order?.User?.firstName} {order?.User?.lastName}</div>
                                             </td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                 {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false
                                                     ? 'Menunggu Persetujuan Admin'

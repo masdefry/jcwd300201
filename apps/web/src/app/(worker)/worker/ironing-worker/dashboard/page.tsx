@@ -154,8 +154,8 @@ export default function Page() {
                                             <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
                                             <p className="text-gray-500 text-sm">
                                                 {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
-                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' :
                                                             'Layanan Laundry'}
                                             </p>
                                         </div>
@@ -265,8 +265,8 @@ export default function Page() {
                                             <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
                                             <p className="text-gray-500 text-sm">
                                                 {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
-                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' :
                                                             'Layanan Laundry'}
                                             </p>
                                         </div>

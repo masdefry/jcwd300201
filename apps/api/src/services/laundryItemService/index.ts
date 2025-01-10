@@ -31,14 +31,17 @@ export const createLaundryItemsService = async ({ itemName }: { itemName: string
 export const getLaundryItemsService = async ({ limit, page, search, sort }: IGetLaundryItems) => {
     const take = parseInt(limit as string)
     const skip = (parseInt(page as string) - 1) * take
-    let whereClause;
+    let whereClause: any = {
+        deletedAt: null,
+    };
 
     if (search) {
         whereClause = {
+            ...whereClause,
             OR: [
                 { itemName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
-            ]
-        }
+            ],
+        };
     }
     let findItem: any
 
@@ -79,7 +82,12 @@ export const getLaundryItemsService = async ({ limit, page, search, sort }: IGet
 export const deleteLaundryItemsService = async ({ id }: { id: string }) => {
     const findItem = await prisma.laundryItem.findFirst({ where: { id: Number(id) } })
     if (!findItem) throw { msg: 'Data sudah tidak tersedia atau sudah terhapus', status: 404 }
-    await prisma.laundryItem.delete({ where: { id: Number(id) } })
+    await prisma.laundryItem.update({
+        where: { id: Number(id) },
+        data: {
+            deletedAt: new Date(),
+        },
+    });
 }
 
 export const updateLaundryItemsService = async ({ id, itemName }: { id: string, itemName: string }) => {

@@ -23,6 +23,7 @@ import { RiBankCardFill } from "react-icons/ri";
 import ButtonCustom from "@/components/core/button";
 import Image from "next/image";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
+import { paymentValidationSchema } from "@/features/user/schemas/paymentValidationSchema";
 
 
 interface ICreateOrder {
@@ -38,6 +39,7 @@ type Iitem = {
 };
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
+
     const [isUploadDialogOpen, setIsUploadDialogOpen] = useState<boolean>(false)
     const [isPaymentMethod, setIsPaymentMethod] = useState<string>('')
 
@@ -155,14 +157,14 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                 <label htmlFor="midtrans-mobile" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
                                     <div className='flex gap-2 items-center'>
                                         <FaWallet className="text-lg" />
-                                        <span className="text-gray-700 flex">Pembayaran Online</span>
+                                        <span className="text-gray-700 flex">Pembayaran Online <span className="text-xs mt-1 text-gray-500">(Verifikasi Otomatis)</span></span>
                                     </div>
                                     <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='midtrans-mobile' type="radio" name="paymentMethod" id="midtrans-mobile" className="w-4 h-4 text-blue-600" />
                                 </label>
                                 <label htmlFor="manualTransfer-mobile" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
                                     <div className='flex gap-2 items-center'>
                                         <RiBankCardFill className="text-lg" />
-                                        <span className="text-gray-700 flex">Transfer Bank</span>
+                                        <span className="text-gray-700 flex">Transfer Bank <span className="text-xs mt-1 text-gray-500">(Verifikasi Manual Admin)</span></span>
                                     </div>
                                     <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='manualTransfer-mobile' type="radio" name="paymentMethod" id="manualTransfer-mobile" className="w-4 h-4 text-blue-600" />
                                 </label>
@@ -190,6 +192,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     </DialogHeader>
                     <Formik
                         initialValues={{ images: null }}
+                        validationSchema={paymentValidationSchema}
                         onSubmit={(values: any) => {
                             const fd = new FormData();
                             fd.append("images", values.images);
@@ -206,6 +209,11 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         accept="image/*"
                                         onChange={(event: any) => setFieldValue("images", event.currentTarget.files[0])}
                                         className="block w-full text-sm text-gray-600 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
+                                    />
+                                    <ErrorMessage
+                                        name="images"
+                                        component="div"
+                                        className="text-red-600 text-sm mt-1"
                                     />
                                 </div>
                                 <DialogFooter>
@@ -265,14 +273,14 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                     <label htmlFor="midtrans" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
                                         <div className='flex gap-2 items-center'>
                                             <FaWallet className="text-lg" />
-                                            <span className="text-gray-700 flex">Pembayaran Online</span>
+                                            <span className="text-gray-700 flex">Pembayaran Online <span className="text-sm mt-1 text-gray-500">(Verifikasi Otomatis)</span></span>
                                         </div>
                                         <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='midtrans' type="radio" name="paymentMethod" id="midtrans" className="w-4 h-4 text-blue-600" />
                                     </label>
                                     <label htmlFor="manualTransfer" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
                                         <div className='flex gap-2 items-center'>
                                             <RiBankCardFill className="text-lg" />
-                                            <span className="text-gray-700 flex">Transfer Bank</span>
+                                            <span className="text-gray-700 flex">Transfer Bank <span className="text-sm mt-1 text-gray-500">(Verifikasi Manual Admin)</span></span>
                                         </div>
                                         <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='manualTransfer' type="radio" name="paymentMethod" id="manualTransfer" className="w-4 h-4 text-blue-600" />
                                     </label>
@@ -285,6 +293,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                             <div className="text-lg mt-8 border-gray-300 p-4">
                                 <h1 className="font-bold">Terima kasih,</h1>
                                 <p>Anda Telah Melakukan Pembayaran!</p>
+                                    <p>Menunggu Verifikasi Admin!</p>
                             </div>
                         )}
                     </div>

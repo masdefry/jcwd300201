@@ -1,7 +1,7 @@
 import prisma from "@/connection"
 import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService, orderTrackingAdminService, orderTrackingDriverService, orderTrackingWorkerService, orderTrackingUserService, getOrdersForNotifService } from "@/services/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService, orderTrackingAdminService, orderTrackingDriverService, orderTrackingWorkerService, orderTrackingUserService, getOrdersForNotifService, washingProcessService, ironingProcessService, createComplaintService, solveComplaintService } from "@/services/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/services/orderService/types";
 import dotenv from 'dotenv'
 import { addHours } from "date-fns";
@@ -425,100 +425,33 @@ export const createOrder = async (req: Request, res: Response, next: NextFunctio
 
 export const washingProcess = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { orderId } = req.params
-    const { email, userId, notes } = req.body
+    const { orderId } = req.params;
+    const { email, userId, notes } = req.body;
 
-    const findWorker = await prisma.worker.findFirst({
-      where: { email }
-    })
-
-    if (!findWorker) throw { msg: "Pengguna tidak tersedia", status: 404 }
-
-    const order = await prisma.order.findUnique({
-      where: { id: String(orderId) },
-      select: { orderTypeId: true },
+    const result = await washingProcessService({
+      orderId,
+      email,
+      userId,
+      notes,
     });
 
-    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
-    if (order.orderTypeId === 2) throw { msg: "Pesanan bertipe layanan strika tidak dapat diproses", status: 400 }
-
-    let updatedOrder = null;
-    if (notes) {
-      const updatedOrder = await prisma.order.update({
-        where: {
-          id: String(orderId),
-        },
-        data: {
-          notes,
-          isSolved: false,
-          isProcessed: false,
-          updatedAt: addHours(new Date(), 7)
-        },
-      });
-
-      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 }
-      return res.status(201).json({
-        error: false,
-        message: "Approval request terhadap admin telah diajukan!",
-        data: {
-          order: updatedOrder,
-        },
-      });
-
-
-    } else {
-      const updatedOrder = await prisma.order.update({
-        where: {
-          id: String(orderId),
-        },
-        data: {
-          isProcessed: true,
-          updatedAt: addHours(new Date(), 7)
-        },
-      });
-
-      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 }
-      if (updatedOrder.isSolved === false) throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 }
-
-      const existingStatus = await prisma.orderStatus.findFirst({
-        where: {
-          orderId: String(orderId),
-          status: 'AWAITING_PAYMENT',
-        },
-      })
-
-      if (!existingStatus) throw { msg: "Order tidak dapat diproses karena belum dibuat nota order oleh oulet admin", status: 400 }
-
-      const orderStatus = await prisma.orderStatus.create({
-        data: {
-          status: 'IN_WASHING_PROCESS',
-          orderId: String(orderId),
-          workerId: userId,
-          createdAt: addHours(new Date(), 7)
-        },
-      })
-
-      if (!orderStatus) throw { msg: "data order status gagal dibuat", status: 404 }
-
-      res.status(200).json({
-        error: false,
-        message: "Order berhasil diupdate!",
-        data: {
-          orderStatus,
-        },
-      });
-    }
+    res.status(200).json({
+      error: false,
+      message: result.message,
+      data: result.order || result.orderStatus,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
+
 
 export const washingProcessDone = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { orderId } = req.params
     const { email, userId } = req.body
 
-    const { orderStatus } = await washingProcessDoneService({ orderId, email, userId })
+    const { orderStatus } = await washingProcessDoneService({ orderId, email, userId });
 
 
     res.status(200).json({
@@ -534,112 +467,25 @@ export const washingProcessDone = async (req: Request, res: Response, next: Next
 
 export const ironingProcess = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { orderId } = req.params
-    const { email, userId, notes } = req.body
+    const { orderId } = req.params;
+    const { email, userId, notes } = req.body;
 
-    await prisma.$transaction(async (tx) => {
-      const findWorker = await prisma.worker.findFirst({
-        where: { email }
-      })
+    const result = await ironingProcessService({
+      orderId,
+      email,
+      userId,
+      notes,
+    });
 
-      if (!findWorker) throw { msg: "Pengguna tidak tersedia", status: 404 }
-      const order = await tx.order.findUnique({
-        where: { id: String(orderId) },
-        select: { orderTypeId: true },
-      });
-
-      if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
-      if (order.orderTypeId === 1) throw { msg: "Pesanan dengan tipe tersebut tidak dapat diproses", status: 400 };
-      if (order.orderTypeId === 2) {
-        const createOrderStatus = await tx.orderStatus.create({
-          data: {
-            status: 'IN_IRONING_PROCESS',
-            orderId: String(orderId),
-            createdAt: addHours(new Date(), 7),
-          },
-        })
-
-        if (!createOrderStatus) throw { msg: 'order status gagal dibuat,silahkan coba lagi', status: 400 }
-      }
-
-      const orderStatuses = await tx.orderStatus.findFirst({
-        where: {
-          orderId,
-          status: 'IN_IRONING_PROCESS'
-        },
-      });
-
-      if (!orderStatuses) throw { msg: "tidak ada order dengan status 'IN_IRONING_PROCESS'" };
-
-      await tx.orderStatus.update({
-        where: { id: orderStatuses.id },
-        data: {
-          workerId: userId,
-        },
-      });
-    })
-
-    if (notes) {
-      const updatedOrder = await prisma.order.update({
-        where: {
-          id: String(orderId),
-        },
-        data: {
-          notes,
-          isSolved: false,
-          isProcessed: false,
-          updatedAt: addHours(new Date(), 7)
-
-        },
-      });
-
-      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 }
-
-      return res.status(201).json({
-        error: false,
-        message: "Approval request terhadap admin telah diajukan!",
-        data: {
-          order: updatedOrder,
-        },
-      });
-
-
-    } else {
-      const updatedOrder = await prisma.order.update({
-        where: {
-          id: String(orderId),
-        },
-        data: {
-          isProcessed: true,
-        },
-      });
-
-      if (!updatedOrder) {
-        throw { msg: "Order gagal diupdate", status: 404 };
-      }
-
-      if (updatedOrder.isSolved === false) {
-        throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
-      }
-
-      const existingStatus = await prisma.orderStatus.findFirst({
-        where: {
-          orderId: String(orderId),
-          status: 'IN_IRONING_PROCESS',
-        },
-      });
-
-      if (!existingStatus) throw { msg: "Order tidak dapat diproses karena belum dicuci", status: 400 }
-
-      res.status(200).json({
-        error: false,
-        message: "Order berhasil diupdate!",
-      });
-    }
+    res.status(200).json({
+      error: false,
+      message: result.message,
+      data: result.order || null,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 
 export const ironingProcessDone = async (req: Request, res: Response, next: NextFunction) => {
@@ -663,66 +509,25 @@ export const ironingProcessDone = async (req: Request, res: Response, next: Next
 
 export const packingProcess = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { orderId } = req.params
-    const { email, userId, notes } = req.body
+    const { orderId } = req.params;
+    const { email, userId, notes } = req.body;
 
-    await packingProcessService({ email, userId, orderId })
+    const result = await packingProcessService({
+      email,
+      userId,
+      orderId,
+      notes,
+    });
 
-    if (notes) {
-      const updatedOrder = await prisma.order.update({
-        where: {
-          id: String(orderId),
-        },
-        data: {
-          notes,
-          isSolved: false,
-          isProcessed: false
-        },
-      });
-
-      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 }
-
-      return res.status(201).json({
-        error: false,
-        message: "Permintaan persetujuan kepada admin telah diajukan.!",
-        data: {
-          order: updatedOrder,
-        },
-      });
-
-
-    } else {
-      const updatedOrder = await prisma.order.update({
-        where: {
-          id: String(orderId),
-        },
-        data: {
-          isProcessed: true,
-        },
-      })
-
-      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 };
-      if (updatedOrder.isSolved === false) throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
-
-      const existingStatus = await prisma.orderStatus.findFirst({
-        where: {
-          orderId: String(orderId),
-          status: 'IN_PACKING_PROCESS',
-        },
-      });
-
-      if (!existingStatus) throw { msg: "Order tidak dapat diproses karena belum disetrika", status: 400 };
-
-      res.status(200).json({
-        error: false,
-        message: "Order berhasil diupdate!",
-        data: {}
-      })
-    }
+    res.status(200).json({
+      error: false,
+      message: result.message,
+      data: result.order || null,
+    });
   } catch (error) {
-    next(error)
+    next(error);
   }
-}
+};
 
 export const packingProcessDone = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -782,6 +587,14 @@ export const solveNotes = async (req: Request, res: Response, next: NextFunction
     const { orderId } = req.params
     const { notes, userId } = req.body
 
+    const findWorker = await prisma.user.findFirst({
+      where: {
+        id: userId
+      }
+    })
+
+    if (!findWorker) throw { msg: "Worker tidak ditemukan", status: 404 }
+
     const solvedProblem = await prisma.order.update({
       where: {
         id: orderId,
@@ -791,6 +604,8 @@ export const solveNotes = async (req: Request, res: Response, next: NextFunction
         notes
       }
     })
+
+    if (!solvedProblem) throw { msg: "Masalah pada order harus dijelaskan", status: 404 }
 
     res.status(200).json({
       error: false,
@@ -1494,3 +1309,38 @@ export const getOrdersForNotif = async (req: Request, res: Response, next: NextF
     next(error);
   }
 };
+
+
+export const customerComplaint = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { complaintText, userId } = req.body
+
+    const complaint = await createComplaintService({ orderId, complaintText, userId })
+
+    res.status(200).json({
+      error: false,
+      message: "Komplain anda masuk!, akan ditindaklanjuti oleh tim kami",
+      data: complaint
+    });
+  } catch (error) {
+    next(error)
+  }
+}
+
+export const solveComplaint = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { orderId } = req.params
+    const { email, userId } = req.body
+
+    const solveComplaint = await solveComplaintService({ orderId, email, userId })
+
+    res.status(200).json({
+      error: false,
+      message: "Komplain anda telah selesai dan order anda sudah selesai.",
+      data: solveComplaint
+    });
+  } catch (error) {
+    next(error)
+  }
+}

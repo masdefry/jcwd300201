@@ -96,10 +96,13 @@ export const getAllWorker = async (req: Request, res: Response, next: NextFuncti
     const take = parseInt(limit as string)
     const skip = (parseInt(page as string) - 1) * take
 
-    let whereClause: any = {}
+    let whereClause: any = {
+      deletedAt: null,
+    };
 
     if (search) {
       whereClause = {
+        ...whereClause,
         OR: [
           { id: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },
           { firstName: { contains: search as string, mode: 'insensitive' as Prisma.QueryMode } },

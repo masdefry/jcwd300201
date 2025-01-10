@@ -110,5 +110,10 @@ export const deleteDataWorkerByIdService = async ({ id }: { id: string }) => {
     if (!findWorker) throw { msg: 'User tidak tersedia atau sudah terhapus', status: 404 }
     if (findWorker?.workerRole === 'SUPER_ADMIN') throw { msg: 'Gagal menghapus, silahkan pilih pekerja yang lain', status: 401 }
 
-    await prisma.worker.delete({ where: { id } })
+    await prisma.worker.update({
+        where: { id },
+        data: {
+            deletedAt : new Date()
+        }
+    })
 }

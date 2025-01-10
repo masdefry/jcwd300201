@@ -158,7 +158,7 @@ export default function Page() {
                         </div>
                         <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                             <div className="flex items-center gap-4 pb-4">
-                                <h1 className='font-bold text-base text-neutral-700'>Proses Pickup</h1>
+                                <h1 className='font-bold text-base text-neutral-700'>Proses Jemput</h1>
                                 <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                             </div>
                             <div className="w-full space-y-2 max-h-[calc(3*3rem)] overflow-y-auto">
@@ -170,8 +170,8 @@ export default function Page() {
                                                 <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
                                                 <p className="text-gray-500 text-sm">
                                                     {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                        order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
-                                                            order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                        order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' :
+                                                            order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' :
                                                                 'Layanan Laundry'}
                                                 </p>
                                             </div>
@@ -190,7 +190,7 @@ export default function Page() {
                         </div>
                         <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
                             <div className="flex items-center gap-4 pb-4">
-                                <h1 className='font-bold text-base text-neutral-700'>Permintaan Antar</h1>
+                                <h1 className='font-bold text-base text-neutral-700'>Proses Antar</h1>
                                 <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                             </div>
                             <div className="w-full space-y-4">
@@ -202,8 +202,8 @@ export default function Page() {
                                                 <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
                                                 <p className="text-gray-500 text-sm">
                                                     {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                        order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
-                                                            order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                        order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' :
+                                                            order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' :
                                                                 'Layanan Laundry'}
                                                 </p>
                                             </div>
@@ -300,7 +300,7 @@ export default function Page() {
                     <div className="w-full h-full overflow-y-auto bg-white bg-opacity-45 rounded-xl p-4">
                         <div className="flex justify-between">
                             <div className="flex items-center gap-4 pb-4">
-                                <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Pickup</h1>
+                                <h1 className='font-bold text-2xl text-neutral-700'>Proses Jemput</h1>
                                 <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                             </div>
                             <NotificationDriver dataOrderNotif={dataOrderNotif} />
@@ -314,8 +314,8 @@ export default function Page() {
                                             <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
                                             <p className="text-gray-500 text-sm">
                                                 {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
-                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' :
                                                             'Layanan Laundry'}
                                             </p>
                                         </div>
@@ -336,7 +336,7 @@ export default function Page() {
                         <div className="flex justify-between">
 
                             <div className="flex items-center gap-4 pb-4">
-                                <h1 className='font-bold text-2xl text-neutral-700'>Permintaan Antar</h1>
+                                <h1 className='font-bold text-2xl text-neutral-700'>Proses Antar</h1>
                                 <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
                             </div>
                             <NotificationDriver dataOrderNotif={dataOrderNotif} />
@@ -351,8 +351,8 @@ export default function Page() {
                                             <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
                                             <p className="text-gray-500 text-sm">
                                                 {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
-                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' :
                                                             'Layanan Laundry'}
                                             </p>
                                         </div>

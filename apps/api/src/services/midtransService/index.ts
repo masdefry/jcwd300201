@@ -20,7 +20,7 @@ export const handleMidtransNotificationService = async ({ orderId, transactionSt
             data: {
                 orderId: orderId,
                 status: updatedStatus,
-                createdAt: addHours(new Date(), 7)
+                createdAt: new Date()
             },
         });
         if (!create) throw { msg: 'Order status gagal di-update, silahkan coba lagi' }

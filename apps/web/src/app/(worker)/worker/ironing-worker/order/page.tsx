@@ -312,7 +312,7 @@ export default function DriverPickUp() {
                                             <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
+                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                     {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false
                                                         ? 'Belum Disetrika'
@@ -375,7 +375,7 @@ export default function DriverPickUp() {
                                                         }}
                                                     >
                                                         <button disabled={order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' || ((order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' || order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS') && order?.OrderType?.type === 'Wash & Iron')} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                            {order?.orderStatus[0]?.status === "IN_IRONING_PROCESS" && order?.isProcessed === false ? 'Proses' : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true ? 'Selesaikan' : 'Selesai'}
+                                                            {order?.orderStatus[0]?.status === "IN_IRONING_PROCESS" && order?.isProcessed === false ? 'Proses' : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true ? 'Selesaikan' : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.orderTypeId === 3 ? "Proses" : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.orderTypeId === 2 ? "Proses" :'Selesai'}
                                                         </button>
                                                     </ConfirmAlert>
                                                 </td>

@@ -108,7 +108,7 @@ export default function Page() {
     const arrIcon = [
         { icon: <FaDashcube />, url: '/worker/admin-outlet/dashboard', name: 'Dashboard' },
         { icon: <FaFileInvoice />, url: '/worker/admin-outlet/nota-order', name: 'Buat Nota' },
-        { icon: <FaTruck />, url: '/worker/admin-outlet/delivery', name: 'Penjemputan' },
+        { icon: <FaTruck />, url: '/worker/admin-outlet/delivery', name: 'Pengantaran' },
         { icon: <FaMoneyBillWave />, url: '/worker/admin-outlet/order', name: 'Pesanan' },
         { icon: <FaRegCreditCard />, url: '/worker/admin-outlet/payment', name: 'Pembayaran' },
         { icon: <FaExclamationTriangle />, url: '/worker/admin-outlet/report', name: 'Laopran' },

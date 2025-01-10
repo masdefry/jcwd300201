@@ -11,6 +11,8 @@ import {
 } from 'chart.js';
 import { useQuery } from '@tanstack/react-query';
 import { instance } from '@/utils/axiosInstance';
+import { IMonthlyChartsProps } from './type';
+import Loading from '../../loading';
 
 ChartJS.register(
     CategoryScale,
@@ -21,7 +23,7 @@ ChartJS.register(
     Legend
 );
 
-export default function MonthlyCharts({ monthlyData, onChange, value }: any) {
+export default function MonthlyCharts({ monthlyData, onChange, value, showDropdown, isPending }: IMonthlyChartsProps) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -88,14 +90,19 @@ export default function MonthlyCharts({ monthlyData, onChange, value }: any) {
 
     return (
         <div className='w-full relative'>
-            <select name="outletId" id="outletId" className='text-xs absolute bg-transparent border-b pb-2 focus:outline-none font-sans font-semibold' value={value} onChange={onChange}>
-                <option value="" disabled>Pilih opsi</option>
-                {getDataStore?.map((store: { storeId: string, storeName: string }, i: number) => (
-                    <option value={store?.storeId} key={i}>{store?.storeName}</option>
-                ))}
-                <option value="">Reset</option>
-            </select>
-            <Bar data={data} options={options} className='w-full' style={{ width: '100%' }} />
+            {showDropdown && (
+                <select name="outletId" id="outletId" className='text-xs absolute bg-transparent border-b pb-2 focus:outline-none font-sans font-semibold' value={value} onChange={onChange}>
+                    <option value="" disabled>Pilih opsi</option>
+                    {getDataStore?.map((store: { storeId: string, storeName: string }, i: number) => (
+                        <option value={store?.storeId} key={i}>{store?.storeName}</option>
+                    ))}
+                    <option value="">Reset</option>
+                </select>
+            )}
+            {isPending ?
+                <Loading />
+                : <Bar data={data} options={options} className='w-full' style={{ width: '100%' }} />
+            }
         </div>
     );
 }

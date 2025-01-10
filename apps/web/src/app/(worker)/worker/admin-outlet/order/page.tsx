@@ -15,9 +15,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import Timeline from "@/components/core/timeline"
 import ContentWebLayout from "@/components/core/webSessionContent";
 import ButtonCustom from "@/components/core/button";
-import SearchInputCustom from "@/components/core/searchBar";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { FaPlus, FaWhatsapp } from "react-icons/fa6";
+import { FaWhatsapp } from "react-icons/fa6";
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
 import FilterWeb from "@/components/core/filterWeb"
@@ -75,6 +73,7 @@ export default function DeliveryRequest() {
                     Authorization: `Bearer ${token}`
                 }
             })
+            console.log(res)
             return setOrderData(res?.data?.data);
         },
     })
@@ -143,7 +142,8 @@ export default function DeliveryRequest() {
         <>
             <MobileSessionLayout title="Pesanan">
                 <Tabs defaultValue={activeTab} className="fit pb-28">
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="complaint" onClick={() => { setActiveTab("complaint"); setPage(1) }} >Komplain</TabsTrigger>
                         <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} >Proses</TabsTrigger>
                         <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} >Selesai</TabsTrigger>
                     </TabsList>
@@ -215,13 +215,28 @@ export default function DeliveryRequest() {
                                         <div className="w-2/3 flex flex-col">
                                             <h2 className="text-sm font-semibold">{orderData?.order?.id?.length > 15 ? <span>{orderData?.order?.id.slice(0, 15)}..</span> : orderData?.order?.id}</h2>
                                             <h2 className="text-sm">{orderData?.order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                orderData?.order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Setrika'}</h2>
+                                                orderData?.order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : 'Mencuci dan Setrika'}</h2>
+
                                         </div>
                                         <div className="w-1/3 flex flex-col items-end">
                                             <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
                                             <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
                                         </div>
                                     </div>
+                                    {orderData?.order?.complaintText ?
+                                        <div className=" flex flex-col w-full justify-center border border-red-600 bg-red-100 text-red-500 p-1 rounded-md text-sm">
+                                            <div className="font-bold">Dikomplain:</div>
+                                            {orderData?.order?.complaintText}
+                                        </div>
+                                        : ""}
+                                    {orderData?.order?.complaintText && orderData?.order?.isComplain === true ?
+                                        <Link href={`https://wa.me/62${orderData?.order?.User?.phoneNumber?.substring(1)}`} >
+                                            <div className=" flex gap-1 items-center w-full justify-center border border-green-600 bg-green-600 text-white p-1 rounded-md text-sm">
+                                                <FaWhatsapp color="white" /> Kontak Customer
+                                            </div>
+                                        </Link>
+                                        : ''}
+
                                 </div>
 
                                 <span className='font-semibold'>Proses Laundry:</span>
@@ -312,6 +327,7 @@ export default function DeliveryRequest() {
                     outletId={outletId} setOutletId={setOutletId} getDataStore={getDataStore} isStoreLoading={isStoreLoading}
                     isStoreError={isStoreError} setPage={setPage} showStoreSelect={false} searchInput={searchInput}
                     options={[
+                        { value: 'complaint', label: 'Komplain' },
                         { value: 'proses', label: 'Dalam Proses' },
                         { value: 'done', label: 'Selesai' },
                     ]} borderReset="border rounded-full" />
