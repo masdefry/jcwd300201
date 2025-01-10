@@ -14,6 +14,7 @@ import Link from "next/link";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
+
 import TabTrackingUser from "@/features/user/components/tabUserTracking";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import Notification from "@/components/core/notification";
@@ -170,7 +171,7 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="w-full flex gap-3 justify-center items-center py-3 px-4 bg-white border rounded-lg shadow-sm transition-all">
-                        <TabTrackingUser
+                        <TabTracking
                             selectedTab={selectedTab}
                             setSelectedTab={setSelectedTab}
                             dataOrder={dataOrder}
@@ -285,7 +286,7 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="w-full h-full flex justify-center p-5 bg-white bg-opacity-45 rounded-2xl ">
-                        <TabTrackingUser
+                        <TabTracking
                             selectedTab={selectedTab}
                             setSelectedTab={setSelectedTab}
                             dataOrder={dataOrder}

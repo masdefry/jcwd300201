@@ -2,6 +2,7 @@ import Link from "next/link";
 
 export default function Page() {
     return (
+
         <main className='w-full md:lg:pt-[90px] pt-5 md:pb-0  pb-28 h-fit flex justify-center'>
             <div className="h-fit w-full px-3 md:px-0 md:max-w-[70vw] py-10">
                 <div className='flex flex-col justify-center w-full items-center mb-10'>
