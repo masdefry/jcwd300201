@@ -51,6 +51,7 @@ export default function DeliveryRequest() {
     const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
     const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
     const [isSearchValues, setIsSearchValues] = useState<string>('')
+    const [imageLoading, setImageLoading] = useState(true);
 
     const limit = 5;
 
@@ -179,13 +180,19 @@ export default function DeliveryRequest() {
                                     dataOrderList?.orders?.map((order: any) => (
                                         <section key={order.id} className="flex justify-between items-center border-b py-4">
                                             <ConfirmAlert colorConfirmation="blue" caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?" description={
-                                                <Image
-                                                    src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
-                                                    alt="payment proof"
-                                                    width={500}
-                                                    height={200}
-
-                                                />
+                                                <>
+                                                    {imageLoading && 'Memuat Gambar...'}
+                                                    <Image
+                                                        src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
+                                                        alt="payment proof"
+                                                        width={500}
+                                                        height={200}
+                                                        onLoadingComplete={() => setImageLoading(false)}
+                                                        onError={() => setImageLoading(false)}
+                                                        className={`transition-opacity duration-300 ${imageLoading ? "opacity-0" : "opacity-100"
+                                                            }`}
+                                                    />
+                                                </>
                                             }
                                                 disabled={handlConfirmPaymentPending}
                                                 onClick={() => handleConfirmPayment(order?.id)}
@@ -231,7 +238,7 @@ export default function DeliveryRequest() {
                     </Tabs>
 
                 </div>
-            </MobileSessionLayout>
+            </MobileSessionLayout >
 
             <ContentWebLayout caption="Pembayaran">
                 <FilterWeb
@@ -286,7 +293,7 @@ export default function DeliveryRequest() {
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">Rp. {order?.totalPrice?.toLocaleString('id-ID')}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Strika'}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : 'Mencuci dan Setrika'}</td>
                                             <td className="py-4 px-6 text-sm text-center">
                                                 <div className="flex gap-4 items-center">
                                                     <Link href={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
@@ -297,7 +304,7 @@ export default function DeliveryRequest() {
                                                         </span>
                                                     </Link>
 
-                                                    <ConfirmAlert caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?"
+                                                    <ConfirmAlert colorConfirmation="blue" caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?"
                                                         description="Mohon periksa kembali bukti pembayaran, hati-hati terhadap penipuan"
                                                         onClick={() => handleConfirmPayment(order?.id)}>
                                                         <button className="text-green-600 hover:text-green-400 relative group">

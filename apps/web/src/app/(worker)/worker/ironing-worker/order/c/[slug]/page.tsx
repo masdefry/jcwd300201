@@ -268,7 +268,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         </table>
                                     </div>
                                     <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isPending || isDisabledSucces} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
-                                        Check Barang
+                                        {isPending ? 'Proses Check Barang..' : 'Check Barang'}
                                     </ButtonCustom>
                                 </div>
                             </Form>
@@ -445,7 +445,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                             </table>
                                         </div>
                                         <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isPending || isDisabledSucces} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
-                                            Check Barang
+                                            {isPending ? 'Proses Check Barang..' : 'Check Barang'}
                                         </ButtonCustom>
                                     </div>
                                 </Form>

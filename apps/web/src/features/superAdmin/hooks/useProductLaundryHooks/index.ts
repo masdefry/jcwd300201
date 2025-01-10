@@ -109,8 +109,6 @@ const useProductLaundryHooks = () => {
         }
     })
 
-
-
     const getDataItem = dataItem?.findItem
     const totalPages = dataItem?.totalPage
 

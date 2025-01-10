@@ -17,10 +17,10 @@ import ContentWebLayout from '@/components/core/webSessionContent';
 import ButtonCustom from '@/components/core/button';
 import Link from 'next/link'
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
-import { MdSportsMotorsports } from 'react-icons/md';
-import { FaLocationDot, FaPlus, FaTruck } from "react-icons/fa6";
+import { MdInfoOutline } from "react-icons/md";
+import { FaLocationDot, FaTruck } from "react-icons/fa6";
 import { pickupValidationSchema } from '@/features/user/schemas/pickupValidationSchema';
-
+import { Tooltip } from 'react-tooltip'
 
 export default function PickupLaundry() {
     const token = authStore((state) => state?.token);
@@ -152,7 +152,7 @@ export default function PickupLaundry() {
                                         </div>
                                     ) : !dataMainAddress ? (
                                         <Link href='/user/dashboard/settings/address/c' className='flex items-center gap-2 justify-center'>
-                                                    <div className="flex w-full border items-center gap-1 border-gray-300 p-4 rounded-lg bg-gray-50">
+                                            <div className="flex w-full border items-center gap-1 border-gray-300 p-4 rounded-lg bg-gray-50">
                                                 <span><CiSquarePlus /></span><h1>Buat Alamat Baru</h1>
                                             </div>
                                         </Link>
@@ -203,10 +203,18 @@ export default function PickupLaundry() {
                                     <h1 className='font-bold'>Detail Pemesanan:</h1>
                                     <div className='flex justify-between items-center pt-2 pb-1'>
                                         <h1>Tipe layanan</h1>
-                                        <h1 className="text-lg font-semibold text-gray-800">{values?.orderTypeId == '1' ? 'Layanan Mencuci' : values?.orderTypeId == '2' ? 'Layanan Strika' : values?.orderTypeId == '3' ? 'Mencuci & Strika' : 'Belum dipilih'}</h1>
+                                        <h1 className="text-lg font-semibold text-gray-800">{values?.orderTypeId == '1' ? 'Layanan Mencuci' : values?.orderTypeId == '2' ? 'Layanan Setrika' : values?.orderTypeId == '3' ? 'Mencuci & Setrika' : 'Belum dipilih'}</h1>
                                     </div>
                                     <div className='flex justify-between items-center'>
-                                        <h1>Ongkos pengiriman</h1>
+                                        <div className='flex items-center gap-1'>
+                                            <h1>Ongkos pengiriman</h1>
+                                            <div
+                                                className='text-gray-600'
+                                                data-tooltip-id="info-multiline"
+                                                data-tooltip-html="Ongkos kirim sebesar Rp8.000 per kilometer,<br /> dengan pembulatan ke atas.!"
+                                            ><MdInfoOutline /></div>
+                                            <Tooltip id="info-multiline" />
+                                        </div>
                                         {dataNearestStore && dataNearestStore.length > 0 ? (
                                             <h1 className="text-lg font-semibold text-gray-800">
                                                 {values?.orderTypeId ?
@@ -343,7 +351,7 @@ export default function PickupLaundry() {
                                         <h1 className='font-bold'>Detail Pemesanan:</h1>
                                         <div className='flex justify-between items-center pt-2 pb-1'>
                                             <h1>Tipe layanan</h1>
-                                            <h1 className="text-lg font-semibold text-gray-800">{values?.orderTypeId == '1' ? 'Layanan Mencuci' : values?.orderTypeId == '2' ? 'Layanan Strika' : values?.orderTypeId == '3' ? 'Mencuci & Strika' : 'Belum dipilih'}</h1>
+                                            <h1 className="text-lg font-semibold text-gray-800">{values?.orderTypeId == '1' ? 'Layanan Mencuci' : values?.orderTypeId == '2' ? 'Layanan Setrika' : values?.orderTypeId == '3' ? 'Mencuci & Setrika' : 'Belum dipilih'}</h1>
                                         </div>
                                         <div className='flex justify-between items-center'>
                                             <h1>Ongkos pengiriman</h1>

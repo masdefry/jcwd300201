@@ -245,7 +245,7 @@ export default function DeliveryRequest() {
                     setIsSearchValues={setIsSearchValues}
                     isSearchValues={isSearchValues}
                     activeTab={activeTab}
-                    options={[{ label: 'Semua', value: 'All' }]}
+                    options={[{ label: 'Siap Kirim', value: 'ready-to-deliver' }]}
                     borderReset="border rounded-full"
                 />
 
@@ -275,7 +275,7 @@ export default function DeliveryRequest() {
                                                     order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
                                                         ? 'Siap untuk dikirim'
                                                         : 'tes'}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Strika'}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : 'Mencuci dan Setrika'}</td>
                                             <td className="py-4 px-6 text-sm text-blue-600 break-words">
                                                 <ConfirmAlert colorConfirmation="blue"
                                                     caption={
@@ -289,7 +289,7 @@ export default function DeliveryRequest() {
                                                             : ''
                                                     } onClick={() => handleRequestDelivery(order?.id)}>
                                                     <button className="text-blue-600 hover:text-blue-400 relative group">
-                                                        Selesaikan
+                                                        Kirim Laundry
                                                     </button>
                                                 </ConfirmAlert>
                                             </td>
@@ -309,10 +309,10 @@ export default function DeliveryRequest() {
                         </div>
                         <div className="flex gap-2">
                             <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
-                            // disabled={page == 1} onClick={() => handlePageChange(page - 1)}
+                                disabled={page == 1} onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
                             >Sebelumnya</ButtonCustom>
                             <ButtonCustom rounded="rounded-2xl" btnColor="bg-orange-500"
-                            // disabled={page == totalPages || page > totalPages} onClick={() => handlePageChange(page + 1)}
+                                disabled={page == totalPages || page > totalPages} onClick={() => { setPage((prev) => Math.min(prev + 1, totalPages)) }}
                             >Selanjutnya</ButtonCustom>
                         </div>
                     </div>

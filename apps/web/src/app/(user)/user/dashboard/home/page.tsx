@@ -17,7 +17,6 @@ import Link from "next/link";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import { MdSportsMotorsports } from "react-icons/md";
 import TabTrackingUser from "@/features/user/components/tabUserTracking";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import Notification from "@/components/core/notification";
@@ -60,16 +59,16 @@ export default function Page() {
     });
 
     const { data: dataOrderNotif } = useQuery({
-            queryKey: ['get-order-notif'],
-            queryFn: async () => {
-                const res = await instance.get('/order/notification', {
-                    params: { tab: 'user' },
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-                return res?.data?.data;
-            },
-    }); 
-    
+        queryKey: ['get-order-notif'],
+        queryFn: async () => {
+            const res = await instance.get('/order/notification', {
+                params: { tab: 'user' },
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            return res?.data?.data;
+        },
+    });
+
     const { data: dataOrder, isPending: dataOrderPending } = useQuery({
         queryKey: ['get-order-status', selectedTab],
         queryFn: async () => {
@@ -111,7 +110,7 @@ export default function Page() {
 
     return (
         <>
-            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification dataOrderNotif={dataOrderNotif}/>}>
+            <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<Notification dataOrderNotif={dataOrderNotif} />}>
                 <div className="w-full h-fit py-5 flex flex-col px-5 bg-orange-500 rounded-3xl shadow-md">
                     <h1 className="text-white font-bold text-xl">Hello, {name && name?.length > 10 ? name?.slice(0, 10) : name || "Admin"}!</h1>
                     <p className="text-neutral-200 text-sm mt-1">Selamat datang di Clean&Click, layanan laundry profesional yang memastikan pakaian Anda selalu bersih dan rapi.</p>
@@ -155,8 +154,8 @@ export default function Page() {
                                             <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
                                             <p className="text-gray-500 text-sm">
                                                 {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
-                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' :
                                                             'Layanan Laundry'}
                                             </p>
                                         </div>
@@ -270,8 +269,8 @@ export default function Page() {
                                             <h1 className="font-semibold text-gray-700">{order?.User?.firstName} {order?.User?.lastName}</h1>
                                             <p className="text-gray-500 text-sm">
                                                 {order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' :
-                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Strika' :
+                                                    order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' :
+                                                        order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' :
                                                             'Layanan Laundry'}
                                             </p>
                                         </div>

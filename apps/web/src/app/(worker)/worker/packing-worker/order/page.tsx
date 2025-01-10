@@ -68,11 +68,11 @@ export default function DriverPickUp() {
             })
         },
         onSuccess: (res: any) => {
-            refetch()
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
+            refetch()
         },
         onError: (err: any) => {
             toast({
@@ -120,9 +120,7 @@ export default function DriverPickUp() {
         } else {
             currentUrl.delete('page')
         }
-        if (totalPages === undefined || page > totalPages) {
-            setPage(1)
-        }
+
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
     }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
@@ -136,7 +134,7 @@ export default function DriverPickUp() {
                 <Tabs defaultValue={activeTab} className="fit">
                     <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="all" onClick={() => { setActiveTab("all"); setPage(1) }} className='text-xs'>Semua</TabsTrigger>
-                        <TabsTrigger value="not-packed-yet" onClick={() => { setActiveTab("not-packed-yet"); setPage(1) }} className='text-xs'>Belum ..</TabsTrigger>
+                        <TabsTrigger value="not-packed-yet" onClick={() => { setActiveTab("not-packed-yet"); setPage(1) }} className='text-xs'>Belum Packing</TabsTrigger>
                         <TabsTrigger value="packing-process" onClick={() => { setActiveTab("packing-process"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
                         <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} className='text-xs'>Selesai</TabsTrigger>
                     </TabsList>
@@ -276,7 +274,7 @@ export default function DriverPickUp() {
                                         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencucci dan Strika' : ''}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                 {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false
                                                     ? 'Belum Packing'
@@ -319,7 +317,7 @@ export default function DriverPickUp() {
                                                     }}
                                                 >
                                                     <button disabled={order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isDone === true} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false ? 'Proses' : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true ? 'Selesaikan' : 'Selesai'}
+                                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false? 'Proses' : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true ? 'Selesaikan' : 'Selesai'}
                                                     </button>
                                                 </ConfirmAlert>
                                             </td>

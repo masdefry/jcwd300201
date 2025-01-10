@@ -18,7 +18,7 @@ import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionCon
 import InputDisplay from "@/features/adminOutlet/components/inputDisplay";
 import ButtonCustom from "@/components/core/button";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
-import { packingItemValidation } from "@/features/packingWorker/schemas/packingItemValidationSchema";
+import { packingItemValidationSchema } from "@/features/packingWorker/schemas/packingItemValidationSchema";
 
 
 type Iitem = {
@@ -127,7 +127,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     itemName: '',
                     quantity: 1,
                     notes: '',
-                }} validationSchema={packingItemValidation}
+                }} validationSchema={packingItemValidationSchema}
                     onSubmit={(values: any) => {
                         handleStatusOrder({
                             email: emails,
@@ -259,7 +259,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                         </table>
                                     </div>
                                     <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isDisabledSucces || isPending} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
-                                        Check Barang
+                                        {isPending ? 'Proses Check Barang..' : 'Check Barang'}
                                     </ButtonCustom>
                                 </div>
                             </Form>
@@ -310,7 +310,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                         quantity: 1,
                         notes: '',
                     }}
-                        validationSchema={packingItemValidation}
+                        validationSchema={packingItemValidationSchema}
                         onSubmit={(values: any) => {
                             handleStatusOrder({
                                 email: emails,
@@ -443,7 +443,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                                             </table>
                                         </div>
                                         <ButtonCustom width="w-full" disabled={values?.items?.length === 0 || isDisabledSucces || isPending} onClick={handleCustomSubmit} btnColor="bg-orange-600 hover:bg-orange-600" type='button'>
-                                            Check Barang
+                                            {isPending ? 'Proses Check Barang..' : 'Check Barang'}
                                         </ButtonCustom>
                                     </div>
                                 </Form>

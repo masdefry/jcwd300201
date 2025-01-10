@@ -1,4 +1,4 @@
-import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory, getAllOrderForUser, paymentOrderVA, paymentOrderTf, getPaymentOrderForAdmin, paymentDone, userConfirmOrder, orderTrackingAdmin, orderTrackingDriver, orderTrackingWorker, orderTrackingUser, getOrdersForNotif } from "@/controllers/orderController";
+import { requestPickUp, getCity, getOrderType, getProvince, findNearestStore, getUserOrder, acceptOrderOutlet, getCreateNotaOrder, solveNotes, getOrdersForDelivery, requestDeliveryDone, getOrdersForDriverDelivery, acceptOrderDelivery, processOrderDelivery, getAllOrderForAdmin, orderStatus, getDriverHistory, getAllOrderForUser, paymentOrderVA, paymentOrderTf, getPaymentOrderForAdmin, paymentDone, userConfirmOrder, orderTrackingAdmin, orderTrackingDriver, orderTrackingWorker, orderTrackingUser, getOrdersForNotif, customerComplaint } from "@/controllers/orderController";
 import { acceptOrder, createOrder, getOrderItemDetail, getOrderNoteDetail, getOrdersForDriver, getOrdersForWashing, washingProcess, washingProcessDone, getOrdersForIroning, ironingProcess, ironingProcessDone, packingProcess, packingProcessDone, getOrdersForPacking, getWashingHistory, getIroningHistory, getPackingHistory, getNotes } from '@/controllers/orderController'
 import { limiter } from "@/middlewares/rateLimit";
 import { roleCheckAdmin, roleCheckCustomer, roleCheckDriver, roleCheckIroningWorker, roleCheckPackingWorker, roleCheckSuperAdmin, roleCheckWashingWorker } from "@/middlewares/roleCheck";
@@ -45,7 +45,7 @@ orderRouter.get('/history-user/', tokenValidation, getAllOrderForUser)
 orderRouter.get('/order-notes', tokenValidation, roleCheckAdmin, getNotes)
 orderRouter.patch('/order-notes/:orderId', tokenValidation, roleCheckAdmin, solveNotes)
 
-orderRouter.get('/nota-order', tokenValidation,roleCheckAdmin, getCreateNotaOrder)
+orderRouter.get('/nota-order', tokenValidation, roleCheckAdmin, getCreateNotaOrder)
 
 orderRouter.get('/order-delivery', tokenValidation, getOrdersForDelivery)
 orderRouter.patch('/order-delivery/:orderId', tokenValidation, roleCheckAdmin, requestDeliveryDone)
@@ -65,10 +65,11 @@ orderRouter.post('/payment-done/:orderId', tokenValidation, roleCheckAdmin, paym
 orderRouter.post('/confirm/:orderId', tokenValidation, userConfirmOrder)
 
 orderRouter.get('/tracking', tokenValidation, orderTrackingAdmin)
-orderRouter.get('/tracking-driver', tokenValidation,roleCheckDriver, orderTrackingDriver)
+orderRouter.get('/tracking-driver', tokenValidation, roleCheckDriver, orderTrackingDriver)
 orderRouter.get('/tracking-worker', tokenValidation, orderTrackingWorker)
-orderRouter.get('/tracking-user', tokenValidation,roleCheckCustomer, orderTrackingUser)
+orderRouter.get('/tracking-user', tokenValidation, roleCheckCustomer, orderTrackingUser)
 
 orderRouter.get('/notification', tokenValidation, getOrdersForNotif)
 
+orderRouter.patch('/complaint/:orderId', tokenValidation, customerComplaint)
 export default orderRouter

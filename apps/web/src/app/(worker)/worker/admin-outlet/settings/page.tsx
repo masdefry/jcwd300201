@@ -161,7 +161,7 @@ export default function Page() {
                             }}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
-                                isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
+                                isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible} 
                                 toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
                         </Formik>
                     </TabPanel>

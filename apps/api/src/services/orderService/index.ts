@@ -4,9 +4,9 @@ import { phoneNumberValidation } from "@/middlewares/validation/phoneNumberValid
 import fs, { rmSync } from 'fs'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
-import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory, IPaymentOrder, IPaymentOrderTf, IOrderTrackingAdminParams, IOrderTrackingUser } from "./types"
+import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory, IPaymentOrder, IPaymentOrderTf, IOrderTrackingAdminParams, IOrderTrackingUser, ISolveNotesInput } from "./types"
 import { Prisma, Role, Status, Payment } from "@prisma/client"
-import { addHours, isBefore } from "date-fns"
+import { addHours, addMinutes, isBefore } from "date-fns"
 import { formatOrder } from "@/utils/formatOrder"
 import snap from "@/utils/midtrans"
 
@@ -338,7 +338,7 @@ export const acceptOrderService = async ({ email, orderId, userId }: IAcceptOrde
       data: {
         orderId: order.id,
         status: "DRIVER_TO_OUTLET",
-        createdAt: addHours(new Date(), 7),
+        createdAt: new Date(),
         workerId: userId,
       },
     });
@@ -346,7 +346,7 @@ export const acceptOrderService = async ({ email, orderId, userId }: IAcceptOrde
     await prisma.order.update({
       where: { id: order.id },
       data: {
-        updatedAt: addHours(new Date(), 7)
+        updatedAt: new Date()
       },
     });
     return newStatus
@@ -378,14 +378,14 @@ export const acceptOrderOutletService = async ({ email, orderId, userId }: IAcce
       data: {
         orderId: order.id,
         status: "DRIVER_ARRIVED_AT_OUTLET",
-        createdAt: addHours(new Date(), 7),
+        createdAt: new Date(),
         workerId: userId
       },
     });
 
     await prisma.order.update({
       where: { id: order.id },
-      data: { updatedAt: addHours(new Date(), 7) }
+      data: { updatedAt: new Date() }
     });
 
     return newStatus;
@@ -759,177 +759,181 @@ export const createOrderService = async ({
   userId,
   totalWeight,
   laundryPrice,
-  items
+  items,
 }: ICreateOrder) => {
-  const findWorker = await prisma.worker.findFirst({
-    where: { email }
-  });
-  if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 };
+  const result = await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.worker.findFirst({
+      where: { email },
+    });
+    if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 };
 
-  const existingOrder = await prisma.order.findFirst({
-    where: { id: String(orderId) },
-    include: {
-      orderStatus: true,
-      User: {
-        select: {
-          firstName: true,
-          email: true,
-          phoneNumber: true
-        }
-      }
-    }
-  })
-  if (!existingOrder) throw { msg: "Order tidak ditemukan", status: 404 };
+    const existingOrder = await tx.order.findFirst({
+      where: { id: String(orderId) },
+      include: {
+        orderStatus: true,
+        User: {
+          select: {
+            firstName: true,
+            email: true,
+            phoneNumber: true,
+          },
+        },
+      },
+    });
+    if (!existingOrder) throw { msg: "Order tidak ditemukan", status: 404 };
 
-  const totalPrice = (laundryPrice || 0) + (existingOrder.deliveryFee || 0);
+    const totalPrice = (laundryPrice || 0) + (existingOrder.deliveryFee || 0);
 
-  const updatedOrder = await prisma.order.update({
-    where: { id: String(orderId) },
-    data: {
-      totalWeight,
-      laundryPrice,
-      totalPrice,
-      isProcessed: false,
-      isSolved: true,
-      isDone: false,
-      isReqDelivery: false,
-      isConfirm: false,
-      updatedAt: addHours(new Date(), 7)
-    },
-  });
+    const updatedOrder = await tx.order.update({
+      where: { id: String(orderId) },
+      data: {
+        totalWeight,
+        laundryPrice,
+        totalPrice,
+        isProcessed: false,
+        isSolved: true,
+        isDone: false,
+        isReqDelivery: false,
+        isConfirm: false,
+        isComplain: false,
+        updatedAt: new Date(),
+      },
+    });
 
-  if (items.length === 0) throw { msg: 'Item wajib diisi', status: 400 };
+    if (items.length === 0) throw { msg: "Item wajib diisi", status: 400 };
 
-  const dataItems = items.map((item: any) => ({
-    orderId: String(orderId),
-    laundryItemId: Number(item.itemName),
-    quantity: item.quantity,
-  }));
-
-  await prisma.orderDetail.createMany({
-    data: dataItems
-  });
-
-
-  const existingStatus = existingOrder.orderStatus.find((status) => status.status === "AWAITING_PAYMENT");
-  if (existingStatus) throw { msg: "Order sudah diproses oleh outlet admin lain", status: 404 };
-
-
-  const orderStatus = await prisma.orderStatus.create({
-    data: {
-      status: 'AWAITING_PAYMENT',
+    const dataItems = items.map((item: any) => ({
       orderId: String(orderId),
-      workerId: userId,
-      createdAt: addHours(new Date(), 7),
-    },
+      laundryItemId: Number(item.itemName),
+      quantity: item.quantity,
+    }));
+
+    await tx.orderDetail.createMany({
+      data: dataItems,
+    });
+
+    const existingStatus = existingOrder.orderStatus.find(
+      (status) => status.status === "AWAITING_PAYMENT"
+    );
+    if (existingStatus)
+      throw { msg: "Order sudah diproses oleh outlet admin lain", status: 404 };
+
+    const orderStatus = await tx.orderStatus.create({
+      data: {
+        status: "AWAITING_PAYMENT",
+        orderId: String(orderId),
+        workerId: userId,
+        createdAt: new Date(),
+      },
+    });
+
+    return { updatedOrder, dataItems, orderStatus };
   });
 
-
-  return { updatedOrder, dataItems, orderStatus };
+  return result;
 };
 
 export const washingProcessDoneService = async ({ orderId, email, userId }: IWashingProcessDone) => {
+  const result = await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.worker.findFirst({
+      where: { email },
+    });
 
-  const findWorker = await prisma.worker.findFirst({
-    where: { email }
-  })
+    if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 };
 
-  if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 }
+    const order = await tx.order.findUnique({
+      where: { id: String(orderId) },
+      select: { orderTypeId: true },
+    });
 
-  const order = await prisma.order.findUnique({
-    where: { id: String(orderId) },
-    select: { orderTypeId: true },
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+    if (order.orderTypeId === 2) {
+      throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
+    } else if (order.orderTypeId === 1) {
+      await tx.order.update({
+        where: { id: String(orderId) },
+        data: { isProcessed: false, updatedAt: addHours(new Date(), 7) },
+      });
+
+      const orderStatus = await tx.orderStatus.create({
+        data: {
+          status: 'IN_PACKING_PROCESS',
+          orderId: String(orderId),
+          createdAt: new Date(),
+        },
+      });
+
+      if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
+
+      return { orderStatus };
+
+    } else if (order.orderTypeId === 3) {
+      await tx.order.update({
+        where: { id: String(orderId) },
+        data: { isProcessed: false, updatedAt: new Date() },
+      });
+
+      const orderStatus = await tx.orderStatus.create({
+        data: {
+          status: 'IN_IRONING_PROCESS',
+          orderId: String(orderId),
+          createdAt: new Date(),
+        },
+      });
+
+      if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
+
+      return { orderStatus };
+    } else {
+      throw { msg: "Tipe order tidak dikenal", status: 400 };
+    }
   });
 
-  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
-
-  if (order.orderTypeId === 2) {
-    throw { msg: "Order dengan tipe ini tidak dapat diproses di washing process", status: 400 };
-
-  } else if (order.orderTypeId === 1) {
-    await prisma.order.update({
-      where: { id: String(orderId) },
-      data: { isProcessed: false, updatedAt: addHours(new Date(), 7) },
-    });
-
-    const orderStatus = await prisma.orderStatus.create({
-      data: {
-        status: 'IN_PACKING_PROCESS',
-        orderId: String(orderId),
-        createdAt: addHours(new Date(), 7),
-
-      },
-    });
-
-    if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
-
-    return { orderStatus };
-
-  } else if (order.orderTypeId === 3) {
-    await prisma.order.update({
-      where: { id: String(orderId) },
-      data: { isProcessed: false, updatedAt: addHours(new Date(), 7) },
-    });
-
-    const orderStatus = await prisma.orderStatus.create({
-      data: {
-        status: 'IN_IRONING_PROCESS',
-        orderId: String(orderId),
-        createdAt: addHours(new Date(), 7),
-
-      },
-    });
-
-    if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
-
-    return { orderStatus };
-  } else {
-    throw { msg: "Tipe order tidak dikenal", status: 400 };
-  }
+  return result;
 };
 
 export const ironingProcessDoneService = async ({ orderId, email, userId }: IIroningProcessDone) => {
-  const findWorker = await prisma.worker.findFirst({
-    where: { email }
-  })
+  const result = await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.worker.findFirst({
+      where: { email },
+    });
 
-  if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 }
+    if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 };
 
-  const order = await prisma.order.findUnique({
-    where: { id: String(orderId) },
-    select: { orderTypeId: true },
+    const order = await tx.order.findUnique({
+      where: { id: String(orderId) },
+      select: { orderTypeId: true },
+    });
+
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+    if (order.orderTypeId === 1) {
+      throw { msg: "Order dengan tipe ini tidak dapat diproses di ironing process", status: 400 };
+    } else if (order.orderTypeId === 2 || order.orderTypeId === 3) {
+      await tx.order.update({
+        where: { id: String(orderId) },
+        data: { isProcessed: false },
+      });
+
+      const orderStatus = await tx.orderStatus.create({
+        data: {
+          status: 'IN_PACKING_PROCESS',
+          orderId: String(orderId),
+          createdAt: new Date(),
+        },
+      });
+
+      if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
+
+      return { orderStatus };
+    } else {
+      throw { msg: "Tipe order tidak dikenal", status: 400 };
+    }
   });
 
-  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
-
-  if (order.orderTypeId === 1) {
-    throw { msg: "Order dengan tipe ini tidak dapat diproses di ironing process", status: 400 };
-
-  } else if (order.orderTypeId === 2 || order.orderTypeId === 3) {
-    await prisma.order.update({
-      where: { id: String(orderId) },
-      data: { isProcessed: false },
-    });
-
-    const orderStatus = await prisma.orderStatus.create({
-      data: {
-        status: 'IN_PACKING_PROCESS',
-        orderId: String(orderId),
-        createdAt: addHours(new Date(), 7),
-
-      },
-    });
-
-    if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
-
-    return { orderStatus };
-
-  } else {
-    throw { msg: "Tipe order tidak dikenal", status: 400 };
-  }
+  return result;
 };
-
-
 
 export const getOrdersForPackingService = async ({
   userId,
@@ -1498,43 +1502,50 @@ export const getNotesService = async ({ userId, authorizationRole, tab, limit_da
   return { totalPage, orders }
 }
 
-export const packingProcessDoneService = async ({ email, orderId }: { email: string, orderId: string }) => {
-  const findWorker = await prisma.worker.findFirst({ where: { email } })
-  if (!findWorker) throw { msg: "worker tidak tersedia", status: 404 }
+export const packingProcessDoneService = async ({ email, orderId }: { email: string; orderId: string }) => {
+  const result = await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.worker.findFirst({
+      where: { email },
+    });
 
-  const order = await prisma.order.update({
-    where: {
-      id: String(orderId),
-    },
-    data: {
-      isProcessed: false,
-      isDone: true
-    },
-  })
+    if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 };
 
-  return { order }
-}
+    const order = await tx.order.update({
+      where: {
+        id: String(orderId),
+      },
+      data: {
+        isProcessed: false,
+        isDone: true,
+      },
+    });
 
-export const packingProcessService = async ({ email, orderId, userId }: { email: string, orderId: string, userId: string }) => {
-  const findWorker = await prisma.worker.findFirst({ where: { email } })
-  if (!findWorker) throw { msg: "Pekerja tidak tersedia", status: 404 }
-
-  const orderStatuses = await prisma.orderStatus.findFirst({
-    where: {
-      orderId,
-      status: 'IN_PACKING_PROCESS'
-    },
+    return { order };
   });
 
-  if (!orderStatuses) throw { msg: "Tidak ada order dengan status 'IN_IRONING_PROCESS'", status: 404 };
+  return result;
+};
 
-  await prisma.orderStatus.update({
-    where: { id: orderStatuses.id },
-    data: {
-      workerId: userId,
-    },
-  })
-}
+// export const packingProcessService = async ({ email, orderId, userId }: { email: string, orderId: string, userId: string }) => {
+//   const findWorker = await prisma.worker.findFirst({ where: { email } })
+//   if (!findWorker) throw { msg: "Pekerja tidak tersedia", status: 404 }
+
+//   const orderStatuses = await prisma.orderStatus.findFirst({
+//     where: {
+//       orderId,
+//       status: 'IN_PACKING_PROCESS'
+//     },
+//   });
+
+//   if (!orderStatuses) throw { msg: "Tidak ada order dengan status 'IN_IRONING_PROCESS'", status: 404 };
+
+//   await prisma.orderStatus.update({
+//     where: { id: orderStatuses.id },
+//     data: {
+//       workerId: userId,
+//     },
+//   })
+// }
 
 export const getCreateNoteOrderService = async ({
   userId,
@@ -1693,6 +1704,8 @@ export const getOrdersForDeliveryService = async ({
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "ready-to-deliver") {
     statusFilter = ['IN_PACKING_PROCESS'];
+    // } else if (tab === "proses") {
+    //   statusFilter = ['DRIVER_TO_CUSTOMER'];
   } else {
     statusFilter = ['IN_PACKING_PROCESS'];
   }
@@ -1718,7 +1731,7 @@ export const getOrdersForDeliveryService = async ({
           ],
         }
         : {},
-      ...(tab === 'waiting-payment' ? [{ isPaid: false, isProcessed: false, isDone: true }] : []),
+      // ...(tab === 'waiting-payment' ? [{ isPaid: false, isProcessed: false, isDone: true }] : []),
       ...(tab === 'ready-to-deliver' ? [{ isPaid: true, isProcessed: false, isDone: true, isReqDelivery: false }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
@@ -1980,70 +1993,84 @@ export const getOrdersForDriverDeliveryService = async ({
 
 
 export const processOrderDeliveryService = async ({ email, orderId, userId }: IAcceptOrder) => {
-  const findWorker = await prisma.worker.findFirst({
-    where: { email }
-  })
-  if (!findWorker) throw { msg: "driver tidak tersedia", status: 404 }
+  const result = await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.worker.findFirst({
+      where: { email },
+    });
+    if (!findWorker) throw { msg: "Driver tidak tersedia", status: 404 };
 
-  const order = await prisma.order.findFirst({
-    where: { id: orderId },
-    include: { orderStatus: true },
+    const order = await tx.order.findFirst({
+      where: { id: orderId },
+      include: { orderStatus: true },
+    });
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+    const existingStatus = order.orderStatus.find((status) => status.status === "DRIVER_TO_CUSTOMER");
+    if (existingStatus) throw { msg: "Order sudah diproses oleh driver lain", status: 404 };
+
+    const newStatus = await tx.orderStatus.create({
+      data: {
+        orderId: order.id,
+        status: "DRIVER_TO_CUSTOMER",
+        createdAt: new Date(),
+        workerId: userId,
+      },
+    });
+    if (!newStatus) throw { msg: "Gagal membuat status order", status: 404 };
+
+    const updatedOrder = await tx.order.update({
+      where: { id: order.id },
+      data: {
+        updatedAt: new Date(),
+        isProcessed: true,
+      },
+    });
+    if (!updatedOrder) throw { msg: "Gagal memperbarui order", status: 404 };
+
+    return { newStatus };
   });
 
-  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+  return result;
+};
 
-
-  const existingStatus = order.orderStatus.find((status) => status.status === "DRIVER_TO_CUSTOMER");
-  if (existingStatus) throw { msg: "Order sudah diproses oleh driver lain aaaaaa", status: 404 };
-
-
-  const newStatus: any = await prisma.orderStatus.create({
-    data: {
-      orderId: order.id,
-      status: "DRIVER_TO_CUSTOMER",
-      createdAt: addHours(new Date(), 7),
-      workerId: userId,
-    },
-  });
-
-  await prisma.order.update({
-    where: { id: order.id },
-    data: {
-      updatedAt: addHours(new Date(), 7),
-      isProcessed: true
-    },
-  });
-  return { newStatus }
-}
+const cronTasks: { [orderId: string]: any } = {};
 
 export const schedulePaymentCheck = async (orderId: string, checkTime: Date) => {
+  if (cronTasks[orderId]) {
+    cronTasks[orderId].stop();
+    delete cronTasks[orderId];
+  }
+
   const task = cron.schedule(`*/1 * * * *`, async () => {
-    try {
-      const now = new Date();
+    console.log(`Test cron job running at ${new Date()}`);
 
-      if (isBefore(now, checkTime)) return;
+    const now = new Date();
 
-      const order = await prisma.order.findFirst({
-        where: { id: orderId },
-      });
+    if (now >= checkTime) {
+      console.log(`Check time ${checkTime} reached. Stopping cron.`);
 
-      if (order && order.isPaid === false) {
-        await prisma.order.update({
-          where: { id: order.id },
-          data: {
-            isPaid: true,
-            updatedAt: addHours(new Date(), 7),
-          },
-        });
+      try {
+        const order = await prisma.order.findFirst({ where: { id: orderId } });
 
-        console.log(`Order ${orderId} has been marked as paid after 48 hours.`);
+        if (order && order.isPaid === true) {
+          await prisma.order.update({
+            where: { id: order.id },
+            data: {
+              isConfirm: true,
+              updatedAt: new Date(),
+            },
+          });
+        }
+      } catch (error) {
+        console.error(`Error during payment check for order ${orderId}:`, error);
       }
 
       task.stop();
-    } catch (error) {
-      task.stop();
+      delete cronTasks[orderId];
+      return;
     }
   });
+  cronTasks[orderId] = task;
 };
 
 
@@ -2070,7 +2097,7 @@ export const acceptOrderDeliveryService = async ({ email, orderId, userId }: IAc
     data: {
       orderId: order.id,
       status: "DRIVER_DELIVERED_LAUNDRY",
-      createdAt: addHours(new Date(), 7),
+      createdAt: new Date(),
       workerId: userId
     },
   });
@@ -2078,18 +2105,18 @@ export const acceptOrderDeliveryService = async ({ email, orderId, userId }: IAc
   await prisma.order.update({
     where: { id: order.id },
     data: {
-      updatedAt: addHours(new Date(), 7),
+      updatedAt: new Date(),
       isProcessed: false
     }
   });
   const deliveredAt = newStatus.createdAt;
   const twoDaysLater = addHours(deliveredAt, 48);
+  // const twoDaysLater = addMinutes(deliveredAt, 3);
 
   schedulePaymentCheck(order.id, twoDaysLater);
 
   return { newStatus };
 }
-
 
 export const getAllOrderForAdminService = async ({
   userId,
@@ -2281,7 +2308,6 @@ export const getAllOrderForAdminService = async ({
   };
 }
 
-
 export const orderStatusService = async ({ orderId, email, userId }: IWashingProcessDone) => {
   const findWorker = await prisma.worker.findFirst({
     where: { email }
@@ -2300,8 +2326,6 @@ export const orderStatusService = async ({ orderId, email, userId }: IWashingPro
 
   if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
 
-
-
   const orderStatus = await prisma.orderStatus.findMany({
     where: {
       orderId: order.id
@@ -2318,11 +2342,7 @@ export const orderStatusService = async ({ orderId, email, userId }: IWashingPro
       LaundryItem: true
     }
   })
-
-
   return { orderDetail, order, orderStatus };
-
-
 };
 
 export const getDriverHistoryService = async ({ tab, userId, authorizationRole, storeId, limit_data, page, search, dateFrom, dateUntil, sort }: IGeDriverHistory) => {
@@ -2438,7 +2458,6 @@ export const getDriverHistoryService = async ({ tab, userId, authorizationRole, 
   return { totalPage, orders }
 }
 
-
 export const getAllOrderForUserService = async ({
   userId,
   page,
@@ -2471,6 +2490,8 @@ export const getAllOrderForUserService = async ({
   let statusFilter: any;
   if (tab === "waiting-payment") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
+  } else if (tab === "complaint") {
+    statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab === "proses") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab === "done") {
@@ -2502,7 +2523,8 @@ export const getAllOrderForUserService = async ({
         }
         : {},
       ...(tab === 'waiting-payment' ? [{ isPaid: false }] : []),
-      ...(tab === 'proses' ? [{ isConfirm: false }] : []),
+      ...(tab === 'complaint' ? [{ isComplain: true }] : []),
+      ...(tab === 'proses' ? [{ isConfirm: false, isPaid: true, isComplain: false }] : []),
       ...(tab === 'done' ? [{ isConfirm: true }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
@@ -2587,98 +2609,94 @@ export const getAllOrderForUserService = async ({
   };
 }
 
+export const paymentOrderVAService = async ({ orderId, email, userId }: IPaymentOrder) => {
+  const result = await prisma.$transaction(async (tx) => {
+    const findUser = await tx.user.findFirst({
+      where: { id: userId, email },
+    });
+    if (!findUser) throw { msg: "User tidak tersedia", status: 404 };
 
-export const paymentOrderVAService = async ({
-  orderId,
-  email,
-  userId,
-}: IPaymentOrder) => {
-  const findUser = await prisma.user.findFirst({
-    where: { id: userId, email }
-  });
-  if (!findUser) throw { msg: "User tidak tersedia", status: 404 };
+    const existingOrder = await tx.order.findUnique({
+      where: { id: String(orderId) },
+      include: {
+        User: {
+          select: {
+            firstName: true,
+            email: true,
+            phoneNumber: true,
+          },
+        },
+      },
+    });
+    if (!existingOrder) throw { msg: "Order tidak ditemukan", status: 404 };
 
-  const existingOrder = await prisma.order.findUnique({
-    where: { id: String(orderId) },
-    include: {
-      User: {
-        select: {
-          firstName: true,
-          email: true,
-          phoneNumber: true
-        }
-      }
-    }
-  });
-  if (!existingOrder) throw { msg: "Order tidak ditemukan", status: 404 };
+    const paymentToken = await snap.createTransaction({
+      payment_type: 'bank_transfer',
+      transaction_details: {
+        order_id: String(orderId),
+        gross_amount: existingOrder.totalPrice,
+      },
+      customer_details: {
+        first_name: existingOrder?.User?.firstName,
+        email: existingOrder?.User?.email,
+        phone: existingOrder?.User?.phoneNumber,
+      },
+    });
 
+    const paymentUrl = paymentToken.redirect_url;
 
-  const paymentToken = await snap.createTransaction({
-    payment_type: 'bank_transfer',
+    const updatedOrderWithPaymentUrl = await tx.order.update({
+      where: { id: String(orderId) },
+      data: {
+        paymentProof: paymentUrl,
+        paymentMethod: 'MIDTRANS',
+      },
+    });
 
-    transaction_details: {
-      order_id: String(orderId),
-      gross_amount: existingOrder.totalPrice,
-    },
-    customer_details: {
-      first_name: existingOrder?.User?.firstName,
-      email: existingOrder?.User?.email,
-      phone: existingOrder?.User?.phoneNumber,
-    }
-  });
-
-  const paymentUrl = paymentToken.redirect_url;
-
-  const updatedOrderWithPaymentUrl = await prisma.order.update({
-    where: { id: String(orderId) },
-    data: {
-      paymentProof: paymentUrl,
-      paymentMethod: 'MIDTRANS'
-    },
+    return { paymentToken, updatedOrderWithPaymentUrl };
   });
 
-  return { paymentToken, updatedOrderWithPaymentUrl };
+  return result;
 };
 
 
-export const paymentOrderTfService = async ({
-  orderId,
-  email,
-  userId,
-  paymentProof
-}: IPaymentOrderTf) => {
+export const paymentOrderTfService = async ({ orderId, email, userId, paymentProof }: IPaymentOrderTf) => {
+  const result = await prisma.$transaction(async (tx) => {
+    const findUser = await tx.user.findFirst({
+      where: { id: userId, email },
+    });
+    if (!findUser) throw { msg: "User tidak tersedia", status: 404 };
 
-  const findUser = await prisma.user.findFirst({
-    where: { id: userId, email }
-  });
-  if (!findUser) throw { msg: "User tidak tersedia", status: 404 };
+    const existingOrder = await tx.order.findUnique({
+      where: { id: String(orderId) },
+      include: {
+        User: {
+          select: {
+            firstName: true,
+            email: true,
+            phoneNumber: true,
+          },
+        },
+      },
+    });
+    if (!existingOrder) throw { msg: "Order tidak ditemukan", status: 404 };
 
-  const existingOrder = await prisma.order.findUnique({
-    where: { id: String(orderId) },
-    include: {
-      User: {
-        select: {
-          firstName: true,
-          email: true,
-          phoneNumber: true
-        }
-      }
+    const updatedOrder = await tx.order.update({
+      where: { id: String(orderId) },
+      data: {
+        paymentProof,
+        paymentMethod: 'TF_MANUAL',
+      },
+    });
+
+    if (!updatedOrder) {
+      fs.rmSync(`src/public/images/${paymentProof}`);
     }
-  });
-  if (!existingOrder) throw { msg: "Order tidak ditemukan", status: 404 };
 
-  const updatedOrder = await prisma.order.update({
-    where: { id: String(orderId) },
-    data: {
-      paymentProof,
-      paymentMethod: 'TF_MANUAL'
-    }
+    return { updatedOrder };
   });
-  if (!updatedOrder) {
-    fs.rmSync(`src/public/images/${paymentProof}`)
-  }
 
-  return { updatedOrder };
+  return result;
 };
 
 
@@ -2827,80 +2845,84 @@ export const getPaymentOrderForAdminService = async ({
 }
 
 export const PaymentDoneService = async ({ orderId, email, userId }: IIroningProcessDone) => {
-  const findWorker = await prisma.worker.findFirst({
-    where: { email }
-  })
+  const result = await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.worker.findFirst({
+      where: { email },
+    });
 
-  if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 }
+    if (!findWorker) throw { msg: "Worker tidak tersedia", status: 404 };
 
-  const order = await prisma.order.findUnique({
-    where: { id: String(orderId) },
+    const order = await tx.order.findUnique({
+      where: { id: String(orderId) },
+    });
+
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+    const orderStatus = await tx.orderStatus.create({
+      data: {
+        status: 'PAYMENT_DONE',
+        orderId: order.id,
+        createdAt: new Date(),
+        workerId: userId,
+      },
+    });
+
+    if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
+
+    const orderUpdate = await tx.order.update({
+      where: { id: String(orderId) },
+      data: {
+        isPaid: true,
+      },
+    });
+
+    if (!orderUpdate) throw { msg: "Data order update gagal dibuat", status: 404 };
+
+    return { orderStatus };
   });
 
-  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
-
-
-  const orderStatus = await prisma.orderStatus.create({
-    data: {
-      status: 'PAYMENT_DONE',
-      orderId: order.id,
-      createdAt: addHours(new Date(), 7),
-      workerId: userId
-    },
-  });
-
-  if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
-
-  const orderUpdate = await prisma.order.update({
-    where: { id: String(orderId) },
-    data: {
-      isPaid: true
-    }
-  })
-
-  if (!orderUpdate) throw { msg: "Data order update gagal dibuat", status: 404 };
-
-  return { orderStatus };
+  return result;
 };
-
 
 export const userConfirmOrderService = async ({ orderId, email, userId }: IIroningProcessDone) => {
-  const findUser = await prisma.user.findFirst({
-    where: { email }
-  })
+  const result = await prisma.$transaction(async (tx) => {
+    const findUser = await tx.user.findFirst({
+      where: { email },
+    });
 
-  if (!findUser) throw { msg: "Worker tidak tersedia", status: 404 }
+    if (!findUser) throw { msg: "User tidak tersedia", status: 404 };
 
-  const order = await prisma.order.findUnique({
-    where: {
-      id: String(orderId)
-    },
+    const order = await tx.order.findUnique({
+      where: {
+        id: String(orderId),
+      },
+    });
+
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+
+    const orderPayment = await tx.order.findUnique({
+      where: {
+        id: order.id,
+        isPaid: true,
+      },
+    });
+
+    if (!orderPayment) throw { msg: "Order belum dibayar", status: 404 };
+
+    const orderUpdate = await tx.order.update({
+      where: { id: order.id },
+      data: {
+        isConfirm: true,
+      },
+    });
+
+    if (!orderUpdate) throw { msg: "Data konfirmasi order gagal dibuat", status: 404 };
+
+    return { orderUpdate };
   });
 
-  if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
-
-  const orderPayment = await prisma.order.findUnique({
-    where: {
-      id: order.id,
-      isPaid: true
-    },
-  });
-
-  if (!orderPayment) throw { msg: "Order belum dibayar", status: 404 };
-
-
-  const orderUpdate = await prisma.order.update({
-    where: { id: order.id },
-    data: {
-      isConfirm: true
-    }
-  })
-
-  if (!orderUpdate) throw { msg: "Data konfirmasi order gagal dibuat", status: 404 };
-
-  return { orderUpdate };
+  return result;
 };
-
 
 export const orderTrackingAdminService = async ({ userId, authorizationRole, period, storeId }: IOrderTrackingAdminParams) => {
   const worker = await prisma.worker.findUnique({
@@ -3037,7 +3059,6 @@ export const orderTrackingDriverService = async ({ userId, authorizationRole, pe
     totalPcs: totalPcs,
   };
 };
-
 
 export const orderTrackingWorkerService = async ({
   userId,
@@ -3207,7 +3228,6 @@ export const orderTrackingUserService = async ({ userId, period }: IOrderTrackin
   };
 };
 
-
 export const getOrdersForNotifService = async ({
   authorizationRole,
   storeId,
@@ -3230,13 +3250,13 @@ export const getOrdersForNotifService = async ({
   if (tab === "driver") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'PAYMENT_DONE'];
   } else if (tab === "admin") {
-    statusFilter = ['AWAITING_DRIVER_PICKUP','DRIVER_ARRIVED_AT_OUTLET', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
+    statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_ARRIVED_AT_OUTLET', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab === "user") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'AWAITING_PAYMENT', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
     statusFilter = [tab];
   } else {
-    statusFilter = ['AWAITING_PAYMENT', 'DRIVER_ARRIVED_AT_OUTLET','PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
+    statusFilter = ['AWAITING_PAYMENT', 'DRIVER_ARRIVED_AT_OUTLET', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
   }
 
   const whereConditions: Prisma.OrderWhereInput = {
@@ -3294,4 +3314,321 @@ export const getOrdersForNotifService = async ({
     totalPage,
     orders,
   };
+};
+
+export const washingProcessService = async ({
+  orderId,
+  email,
+  userId,
+  notes,
+}: {
+  orderId: string;
+  email: string;
+  userId: string;
+  notes?: string;
+}) => {
+  const result = await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.worker.findFirst({
+      where: { email },
+    });
+    if (!findWorker) throw { msg: "Pengguna tidak tersedia", status: 404 };
+
+    const order = await tx.order.findUnique({
+      where: { id: String(orderId) },
+      select: { orderTypeId: true },
+    });
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+    if (order.orderTypeId === 2)
+      throw { msg: "Pesanan bertipe layanan setrika tidak dapat diproses", status: 400 };
+
+    if (notes) {
+      const updatedOrder = await tx.order.update({
+        where: { id: String(orderId) },
+        data: {
+          notes,
+          isSolved: false,
+          isProcessed: false,
+          updatedAt: new Date(),
+        },
+      });
+      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 };
+
+      return {
+        message: "Approval request terhadap admin telah diajukan!",
+        order: updatedOrder,
+      };
+    } else {
+      const updatedOrder = await tx.order.update({
+        where: { id: String(orderId) },
+        data: {
+          isProcessed: true,
+          updatedAt: new Date(),
+        },
+      });
+      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 };
+      if (updatedOrder.isSolved === false)
+        throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
+
+      const existingStatus = await tx.orderStatus.findFirst({
+        where: {
+          orderId: String(orderId),
+          status: "AWAITING_PAYMENT",
+        },
+      });
+      if (!existingStatus)
+        throw { msg: "Order tidak dapat diproses karena belum dibuat nota order oleh outlet admin", status: 400 };
+
+      const orderStatus = await tx.orderStatus.create({
+        data: {
+          status: "IN_WASHING_PROCESS",
+          orderId: String(orderId),
+          workerId: userId,
+          createdAt: new Date(),
+        },
+      });
+      if (!orderStatus) throw { msg: "Data order status gagal dibuat", status: 404 };
+
+      return {
+        message: "Order berhasil diupdate!",
+        orderStatus,
+      };
+    }
+  });
+  return result;
+};
+
+export const ironingProcessService = async ({
+  orderId,
+  email,
+  userId,
+  notes,
+}: {
+  orderId: string;
+  email: string;
+  userId: string;
+  notes?: string;
+}) => {
+  await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.worker.findFirst({
+      where: { email },
+    });
+    if (!findWorker) throw { msg: "Pengguna tidak tersedia", status: 404 };
+
+    const order = await tx.order.findUnique({
+      where: { id: String(orderId) },
+      select: { orderTypeId: true },
+    });
+    if (!order) throw { msg: "Order tidak ditemukan", status: 404 };
+    if (order.orderTypeId === 1)
+      throw { msg: "Pesanan dengan tipe tersebut tidak dapat diproses", status: 400 };
+
+    if (order.orderTypeId === 2) {
+      const createOrderStatus = await tx.orderStatus.create({
+        data: {
+          status: "IN_IRONING_PROCESS",
+          orderId: String(orderId),
+          createdAt: new Date(),
+        },
+      });
+      if (!createOrderStatus)
+        throw { msg: "Order status gagal dibuat, silahkan coba lagi", status: 400 };
+    }
+
+    const orderStatuses = await tx.orderStatus.findFirst({
+      where: {
+        orderId,
+        status: "IN_IRONING_PROCESS",
+      },
+    });
+    if (!orderStatuses)
+      throw { msg: "Tidak ada order dengan status 'IN_IRONING_PROCESS'", status: 404 };
+
+    await tx.orderStatus.update({
+      where: { id: orderStatuses.id },
+      data: {
+        workerId: userId,
+      },
+    });
+  });
+
+  if (notes) {
+    const updatedOrder = await prisma.order.update({
+      where: {
+        id: String(orderId),
+      },
+      data: {
+        notes,
+        isSolved: false,
+        isProcessed: false,
+        updatedAt: new Date(),
+      },
+    });
+    if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 };
+
+    return {
+      message: "Approval request terhadap admin telah diajukan!",
+      order: updatedOrder,
+    };
+  } else {
+    const updatedOrder = await prisma.order.update({
+      where: {
+        id: String(orderId),
+      },
+      data: {
+        isProcessed: true,
+      },
+    });
+    if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 };
+
+    if (updatedOrder.isSolved === false)
+      throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
+
+    const existingStatus = await prisma.orderStatus.findFirst({
+      where: {
+        orderId: String(orderId),
+        status: "IN_IRONING_PROCESS",
+      },
+    });
+    if (!existingStatus)
+      throw { msg: "Order tidak dapat diproses karena belum dicuci", status: 400 };
+
+    return {
+      message: "Order berhasil diupdate!",
+    };
+  }
+};
+
+export const packingProcessService = async ({
+  email,
+  userId,
+  orderId,
+  notes,
+}: {
+  email: string;
+  userId: string;
+  orderId: string;
+  notes?: string;
+}) => {
+  const result = await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.worker.findFirst({
+      where: { email },
+    });
+    if (!findWorker) throw { msg: "Pengguna tidak tersedia", status: 404 };
+
+    if (notes) {
+      const updatedOrder = await tx.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          notes,
+          isSolved: false,
+          isProcessed: false,
+          updatedAt: new Date(),
+        },
+      });
+
+      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 };
+
+      return {
+        message: "Permintaan persetujuan kepada admin telah diajukan!",
+        order: updatedOrder,
+      };
+    } else {
+      const updatedOrder = await tx.order.update({
+        where: {
+          id: String(orderId),
+        },
+        data: {
+          isProcessed: true,
+          updatedAt: new Date(),
+        },
+      });
+
+      if (!updatedOrder) throw { msg: "Order gagal diupdate", status: 404 };
+      if (updatedOrder.isSolved === false)
+        throw { msg: "Masalah belum terselesaikan, tidak dapat diproses", status: 400 };
+
+      const existingStatus = await tx.orderStatus.findFirst({
+        where: {
+          orderId: String(orderId),
+          status: "IN_PACKING_PROCESS",
+        },
+      });
+
+      if (!existingStatus)
+        throw {
+          msg: "Order tidak dapat diproses karena belum disetrika",
+          status: 400,
+        };
+
+      return {
+        message: "Order berhasil diupdate!",
+        order: updatedOrder,
+      };
+    }
+  });
+  return result;
+};
+
+
+export const solveNotesService = async ({ orderId, userId, notes }: ISolveNotesInput) => {
+  return await prisma.$transaction(async (tx) => {
+    const findWorker = await tx.user.findFirst({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!findWorker) {
+      throw { msg: "Worker tidak ditemukan", status: 404 };
+    }
+
+    const solvedProblem = await tx.order.update({
+      where: {
+        id: orderId,
+      },
+      data: {
+        isSolved: true,
+        notes,
+      },
+    });
+
+    if (!solvedProblem) {
+      throw { msg: "Masalah pada order harus dijelaskan", status: 404 };
+    }
+
+    return solvedProblem;
+  });
+};
+
+export const createComplaintService = async ({ orderId, complaintText, userId }: { orderId: string, complaintText: string, userId: string }) => {
+  if (cronTasks[orderId]) {
+    cronTasks[orderId].stop();
+    delete cronTasks[orderId];
+  }
+
+  return await prisma.$transaction(async (prisma) => {
+    const findUser = await prisma.user.findFirst({
+      where: { id: userId },
+    });
+
+    if (!findUser) {
+      throw { msg: "User tidak ditemukan", status: 404 };
+    }
+
+    const complaint = await prisma.order.update({
+      where: { id: orderId },
+      data: {
+        isComplain: true,
+        complaintText,
+      },
+    });
+
+    if (!complaint) {
+      throw { msg: "Komplain harus disebutkan", status: 404 };
+    }
+
+    return complaint;
+  });
 };

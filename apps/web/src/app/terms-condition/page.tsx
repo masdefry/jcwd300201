@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Page() {
     return (
-        <main className='w-full pt-[90px] h-fit flex justify-center'>
+        <main className='w-full lg:pt-[90px]  pb-28 h-fit flex justify-center'>
             <div className="h-fit w-full max-w-[70vw] py-10">
                 <div className='flex flex-col justify-center w-full items-center mb-10'>
                     <h1 className="text-3xl font-bold text-center">Syarat dan Ketentuan - Clean&Click</h1>
@@ -17,8 +17,8 @@ export default function Page() {
                 <div className="text-neutral-500">
                     <h2 className="text-2xl font-semibold mb-5">Penerimaan Syarat dan Ketentuan</h2>
                     <p className="mb-4">
-                        Dengan mengakses atau menggunakan layanan Clean&Click, Anda setuju untuk mematuhi dan terikat oleh 
-                        syarat dan ketentuan yang tercantum dalam halaman ini. Jika Anda tidak setuju dengan ketentuan ini, 
+                        Dengan mengakses atau menggunakan layanan Clean&Click, Anda setuju untuk mematuhi dan terikat oleh
+                        syarat dan ketentuan yang tercantum dalam halaman ini. Jika Anda tidak setuju dengan ketentuan ini,
                         Anda tidak diperkenankan untuk menggunakan layanan kami.
                     </p>
                     <h2 className="text-2xl font-semibold mb-5">Layanan Kami</h2>
@@ -29,7 +29,7 @@ export default function Page() {
                     </p>
                     <h2 className="text-2xl font-semibold mb-5">Penggunaan Layanan</h2>
                     <p className="mb-4">
-                        Anda bertanggung jawab untuk memastikan informasi yang diberikan kepada kami adalah akurat dan lengkap. 
+                        Anda bertanggung jawab untuk memastikan informasi yang diberikan kepada kami adalah akurat dan lengkap.
                         Anda setuju untuk tidak menggunakan layanan Clean&Click untuk tujuan ilegal atau yang melanggar hukum.
                     </p>
                     <h2 className="text-2xl font-semibold mb-5">Pembayaran</h2>
@@ -44,18 +44,18 @@ export default function Page() {
                     </p>
                     <h2 className="text-2xl font-semibold mb-5">Kebijakan Privasi</h2>
                     <p className="mb-4">
-                        Kami menghargai privasi Anda. Semua informasi pribadi yang kami kumpulkan akan digunakan sesuai dengan Kebijakan 
+                        Kami menghargai privasi Anda. Semua informasi pribadi yang kami kumpulkan akan digunakan sesuai dengan Kebijakan
                         Privasi Clean&Click yang terpisah, yang dapat Anda baca lebih lanjut di halaman tersebut.
                     </p>
                     <h2 className="text-2xl font-semibold mb-5">Penyelesaian Sengketa</h2>
                     <p className="mb-4">
-                        Jika terjadi sengketa atau masalah terkait layanan, kami akan berusaha untuk menyelesaikan masalah tersebut melalui 
-                        mediasi terlebih dahulu. Jika tidak dapat diselesaikan, masalah tersebut akan diselesaikan sesuai dengan hukum yang 
+                        Jika terjadi sengketa atau masalah terkait layanan, kami akan berusaha untuk menyelesaikan masalah tersebut melalui
+                        mediasi terlebih dahulu. Jika tidak dapat diselesaikan, masalah tersebut akan diselesaikan sesuai dengan hukum yang
                         berlaku di wilayah hukum yang relevan.
                     </p>
                     <h2 className="text-2xl font-semibold mb-5">Perubahan pada Syarat dan Ketentuan</h2>
                     <p className="mb-4">
-                        Kami berhak untuk memperbarui atau mengubah syarat dan ketentuan ini kapan saja tanpa pemberitahuan sebelumnya. 
+                        Kami berhak untuk memperbarui atau mengubah syarat dan ketentuan ini kapan saja tanpa pemberitahuan sebelumnya.
                         Anda disarankan untuk memeriksa halaman ini secara berkala untuk mengetahui pembaruan atau perubahan.
                     </p>
                 </div>

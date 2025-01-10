@@ -184,7 +184,7 @@ export default function HistoryOrderIroning() {
                                             <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderTypeId === 1 ? 'Layanan Mencuci' : order?.orderTypeId === 2 ? 'Layanan Strika' : order?.orderTypeId === 3 ? 'Mencuci dan Setrika' : ''}</td>
+                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.orderTypeId === 1 ? 'Layanan Mencuci' : order?.orderTypeId === 2 ? 'Layanan Setrika' : order?.orderTypeId === 3 ? 'Mencuci dan Setrika' : ''}</td>
                                                 <td className="py-4 px-6 text-sm text-gray-600 break-words">
                                                     {order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isSolved === false ? 'Menunggu Persetujuan Admin' :
                                                         order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order.isSolved === true ? 'Belum Dicuci' :

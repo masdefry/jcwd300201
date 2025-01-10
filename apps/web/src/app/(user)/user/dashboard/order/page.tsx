@@ -63,7 +63,7 @@ export default function Page() {
         },
     })
 
-    const { mutate: handleOrderConfirmation, isPending } = useMutation({
+    const { mutate: handleOrderConfirmation, isPending: handleOrderConfirmationPending } = useMutation({
         mutationFn: async (id: any) => {
             return await instance.post(`/order/confirm/${id}`, { email }, {
 
@@ -94,6 +94,7 @@ export default function Page() {
                     Authorization: `Bearer ${token}`
                 }
             })
+            console.log(res)
             return setOrderData(res?.data?.data);
         },
     })
@@ -150,8 +151,9 @@ export default function Page() {
         <>
             <ContentMobileLayout title='Pesanan Saya' icon={<GrNotes className='text-lg' />}>
                 <Tabs defaultValue={activeTab} className="pb-28">
-                    <TabsList className="grid w-full grid-cols-3">
+                    <TabsList className="grid w-full grid-cols-4">
                         <TabsTrigger value="waiting-payment" onClick={() => { setActiveTab("waiting-payment"); setPage(1) }} className='text-xs'>Belum Bayar</TabsTrigger>
+                        <TabsTrigger value="complaint" onClick={() => { setActiveTab("complaint"); setPage(1) }} className='text-xs'>Komplain</TabsTrigger>
                         <TabsTrigger value="proses" onClick={() => { setActiveTab("proses"); setPage(1) }} className='text-xs'>Proses</TabsTrigger>
                         <TabsTrigger value="done" onClick={() => { setActiveTab("done"); setPage(1) }} className='text-xs'>Selesai</TabsTrigger>
                     </TabsList>
@@ -194,7 +196,9 @@ export default function Page() {
                                                                 ? 'Proses Laundry'
                                                                 : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
                                                                     ? 'Proses Delivery'
-                                                                    : 'Status tidak dikenal'}</div>
+                                                                    : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
+                                                                        ? 'Laundry Sudah Sampai'
+                                                                        : 'Status tidak dikenal'}</div>
                                                 <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
                                             </div>
                                         </div>
@@ -230,7 +234,7 @@ export default function Page() {
                             <>
                                 <div className="grid gap-4 py-2 border-b border-neutral-400">
                                     <div className="flex justify-between items-center">
-                                        <div className="flex flex-col">
+                                        <div className="w-2/3 flex flex-col">
                                             <h2 className="text-base font-semibold">{orderData?.order?.id}</h2>
                                             <h2 className="text-base">{orderData?.order?.OrderType?.type}</h2>
 
@@ -245,7 +249,7 @@ export default function Page() {
                                                     : ""
                                             }
                                         </div>
-                                        <div className="flex flex-col w-2/6">
+                                        <div className="w-1/3 flex flex-col items-end">
                                             <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
                                             <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[1].slice(0, 5)} </p>
                                         </div>
@@ -331,27 +335,49 @@ export default function Page() {
                         ) : (
                             <div><Loading /></div>
                         )}
-                        {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true ?
-                            <ConfirmAlert
-                                disabled={isPending}
-                                caption="Apakah anda yakin ingin mengkonfirmasi order laundry berikut?"
-                                description="Pastikan laundry telah sampai di lokasi anda"
-                                onClick={() => { handleOrderConfirmation(orderData?.order?.id) }}>
+                        {orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true && orderData?.order?.isComplain === false ?
+                            <div className="flex w-full justify-center gap-2">
+                                <ConfirmAlert
+                                    caption="Konfirmasi Komplain"
+                                    description="Apakah Anda yakin ingin mengajukan komplain? Tindakan ini tidak dapat dibatalkan dan akan diteruskan untuk ditindaklanjuti oleh tim kami."
+                                    onClick={() => router.push(`/user/dashboard/order/complaint/${orderData?.order?.id}`)}>
+                                    <ButtonCustom btnColor="bg-red-500" txtColor="text-white">Laporkan Masalah</ButtonCustom>
+                                </ConfirmAlert>
+                                <ConfirmAlert
+                                    disabled={handleOrderConfirmationPending}
+                                    caption="Apakah anda yakin ingin mengkonfirmasi order laundry berikut?"
+                                    description="Pastikan laundry telah sampai di lokasi anda"
+                                    onClick={() => { handleOrderConfirmation(orderData?.order?.id) }}>
 
-                                <div className="flex justify-center">
-                                    <ButtonCustom disabled={isPending} btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
-                                </div>
-                            </ConfirmAlert>
-                            : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.laundryPrice > 1 ?
-                                <div className="flex justify-center">
-                                    <ButtonCustom width="w-full" btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`/user/dashboard/payment/${orderData?.order?.id}`)}
-                                        disabled={orderData?.order?.laundryPrice === null || orderData?.order?.laundryPrice === 0}>Bayar Sekarang</ButtonCustom>
-                                </div>
-                                : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof ?
-                                    <div className="flex justify-center">
-                                        <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Menunggu Verivikasi Admin</ButtonCustom>
+                                    <div className="flex">
+                                        <ButtonCustom disabled={handleOrderConfirmationPending} btnColor="bg-blue-500" txtColor="text-white">Konfirmasi Laundry</ButtonCustom>
                                     </div>
-                                    : ''}
+                                </ConfirmAlert>
+                            </div>
+                            : orderData?.order?.isPaid === true && orderData?.order?.isConfirm === false && orderData?.order?.isDone === true && orderData?.order?.isReqDelivery === true && orderData?.order?.isComplain === true ?
+                                <div className="flex w-full justify-center gap-2">
+                                    <ConfirmAlert
+                                        caption="Selesaikan Masalah & Konfirmasi Laundry"
+                                        description="Apakah Anda yakin masalah ini telah diselesaikan? Tindakan ini akan menutup keluhan Anda secara permanen serta mengkonfirmasi bahwa laundry anda telah sampai."
+                                        onClick={() => (console.log('ewe'))}>
+                                        <ButtonCustom btnColor="bg-blue-500" width="w-full" txtColor="text-white">Masalah Teratasi & Konfirmasi Laundry</ButtonCustom>
+                                    </ConfirmAlert>
+                                </div>
+                                : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.laundryPrice > 1 && !orderData?.order?.paymentProof ?
+                                    <div className="flex justify-center">
+                                        <ButtonCustom width="w-full" btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`/user/dashboard/payment/${orderData?.order?.id}`)}
+                                            disabled={orderData?.order?.laundryPrice === null || orderData?.order?.laundryPrice === 0}>Bayar Sekarang
+                                        </ButtonCustom>
+                                    </div>
+                                    : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof && orderData?.order?.paymentMethod === "TF_MANUAL" ?
+                                        <div className="flex justify-center">
+                                            <ButtonCustom btnColor="bg-blue-500" txtColor="text-white">Menunggu Verivikasi Admin</ButtonCustom>
+                                        </div>
+                                        : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof && orderData?.order?.paymentMethod === "MIDTRANS" ?
+                                            <div className="flex justify-center">
+                                                <ButtonCustom btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`${orderData?.order?.paymentProof}`)}>Lanjutkan Pembayaran</ButtonCustom>
+                                            </div>
+                                            : ''}
                     </DialogContent>
                 </Dialog>
             </ContentMobileLayout>
@@ -374,6 +400,7 @@ export default function Page() {
                     searchInput={searchInput}
                     options={[
                         { value: 'waiting-payment', label: 'Belum Bayar' },
+                        { value: 'complaint', label: 'Komplain' },
                         { value: 'proses', label: 'Dalam Proses' },
                         { value: 'done', label: 'Selesai' },
                     ]}
@@ -408,15 +435,27 @@ export default function Page() {
                                                             ? 'Proses Laundry'
                                                             : order?.orderStatus[0]?.status === 'DRIVER_TO_CUSTOMER'
                                                                 ? 'Proses Delivery'
-                                                                : 'Status tidak dikenal'}
+                                                                : order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY'
+                                                                    ? 'Laundry Sampai'
+                                                                    : 'Status tidak dikenal'}
                                             </td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : order?.OrderType?.type === 'Wash Only' ? 'Mencuci dan Strika' : 'Mencuci dan Setrika'}</td>
+                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : order?.OrderType?.type === 'Wash Only' ? 'Mencuci dan Setrika' : 'Mencuci dan Setrika'}</td>
                                             <td className="py-4 px-6 text-sm hover:underline break-words">
-                                                <button className="text-blue-700 disabled:text-neutral-600 hover:text-blue-500" disabled={order?.laundryPrice === null || order?.laundryPrice === 0} onClick={() => {
-                                                    setOrderData(null)
-                                                    handleOrderDetail(order?.id)
-                                                    setOpenDialog(true)
-                                                }}>Lihat</button>
+                                                {order?.orderStatus[0]?.status === 'DRIVER_DELIVERED_LAUNDRY' && order?.isConfirm === false ?
+
+                                                    <button className="text-blue-700 disabled:text-neutral-600 hover:text-blue-500" disabled={order?.laundryPrice === null || order?.laundryPrice === 0} onClick={() => {
+                                                        setOrderData(null)
+                                                        handleOrderDetail(order?.id)
+                                                        setOpenDialog(true)
+                                                    }}>Konfirmasi / Komplain</button>
+
+                                                    :
+                                                    <button className="text-blue-700 disabled:text-neutral-600 hover:text-blue-500" disabled={order?.laundryPrice === null || order?.laundryPrice === 0} onClick={() => {
+                                                        setOrderData(null)
+                                                        handleOrderDetail(order?.id)
+                                                        setOpenDialog(true)
+                                                    }}>Lihat</button>
+                                                }
                                             </td>
                                         </tr>
                                     )

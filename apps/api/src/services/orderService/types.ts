@@ -196,3 +196,9 @@ export interface IOrderTrackingUser {
     userId: string;
     period: string | undefined;
 }
+
+export interface ISolveNotesInput {
+    orderId: string;
+    userId: string;
+    notes: string;
+}

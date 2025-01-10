@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export default function Page() {
     return (
-        <main className='w-full pt-[90px] h-fit flex justify-center'>
+        <main className='w-full lg:pt-[90px] pb-28 h-fit flex justify-center'>
             <div className="h-fit w-full max-w-[70vw] py-10">
                 <div className='flex flex-col justify-center w-full items-center mb-10'>
                     <h1 className="text-3xl font-bold text-center">FAQ - Clean&Click</h1>

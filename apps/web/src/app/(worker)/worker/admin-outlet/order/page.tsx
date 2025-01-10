@@ -215,7 +215,7 @@ export default function DeliveryRequest() {
                                         <div className="w-2/3 flex flex-col">
                                             <h2 className="text-sm font-semibold">{orderData?.order?.id?.length > 15 ? <span>{orderData?.order?.id.slice(0, 15)}..</span> : orderData?.order?.id}</h2>
                                             <h2 className="text-sm">{orderData?.order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' :
-                                                orderData?.order?.OrderType?.type === 'Iron Only' ? 'Layanan Strika' : 'Mencuci dan Setrika'}</h2>
+                                                orderData?.order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : 'Mencuci dan Setrika'}</h2>
                                         </div>
                                         <div className="w-1/3 flex flex-col items-end">
                                             <p className="text-sm text-gray-500">{orderData?.order?.createdAt.split('T')[0]} </p>
