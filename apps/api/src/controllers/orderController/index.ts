@@ -1,7 +1,7 @@
 import prisma from "@/connection"
 import { NextFunction, Request, Response } from "express";
 const axios = require('axios');
-import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService, orderTrackingAdminService, orderTrackingDriverService, orderTrackingWorkerService, orderTrackingUserService, getOrdersForNotifService, washingProcessService, ironingProcessService, createComplaintService, solveComplaintService } from "@/services/orderService";
+import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPackingService, getOrdersForIroningService, getOrdersForWashingService, getOrderNoteDetailService, getOrderItemDetailService, acceptOrderOutletService, getOrdersForDriverService, acceptOrderService, findNearestStoreService, requestPickUpService, getUserOrderService, getPackingHistoryService, getIroningHistoryService, getWashingHistoryService, getNotesService, packingProcessDoneService, packingProcessService, createOrderService, washingProcessDoneService, getOrdersForDeliveryService, requestDeliveryDoneService, getOrdersForDriverDeliveryService, acceptOrderDeliveryService, processOrderDeliveryService, getAllOrderForAdminService, orderStatusService, getDriverHistoryService, getAllOrderForUserService, paymentOrderVAService, paymentOrderTfService, getPaymentOrderForAdminService, PaymentDoneService, userConfirmOrderService, orderTrackingAdminService, orderTrackingDriverService, orderTrackingWorkerService, orderTrackingUserService, getOrdersForNotifService, washingProcessService, ironingProcessService, createComplaintService, solveComplaintService, solveNotesService } from "@/services/orderService";
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/services/orderService/types";
 import dotenv from 'dotenv'
 import { addHours } from "date-fns";
@@ -587,25 +587,7 @@ export const solveNotes = async (req: Request, res: Response, next: NextFunction
     const { orderId } = req.params
     const { notes, userId } = req.body
 
-    const findWorker = await prisma.user.findFirst({
-      where: {
-        id: userId
-      }
-    })
-
-    if (!findWorker) throw { msg: "Worker tidak ditemukan", status: 404 }
-
-    const solvedProblem = await prisma.order.update({
-      where: {
-        id: orderId,
-      },
-      data: {
-        isSolved: true,
-        notes
-      }
-    })
-
-    if (!solvedProblem) throw { msg: "Masalah pada order harus dijelaskan", status: 404 }
+    const solvedProblem = await solveNotesService({ orderId, userId, notes });
 
     res.status(200).json({
       error: false,
@@ -1055,7 +1037,7 @@ export const paymentOrderVA = async (req: Request, res: Response, next: NextFunc
 
     res.status(200).json({
       error: false,
-      message: 'Transaksi berhasil!',
+      message: 'Anda akan diarahkan ke halaman pembayaran',
       OrderUrl: updatedOrderWithPaymentUrl
     });
 
@@ -1081,7 +1063,7 @@ export const paymentOrderTf = async (req: Request, res: Response, next: NextFunc
 
     res.status(200).json({
       error: false,
-      message: 'Transaksi berhasil',
+      message: 'Transaksi berhasil. Menunggu Verifikasi Admin.',
     });
 
   } catch (error) {

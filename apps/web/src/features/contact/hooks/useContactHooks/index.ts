@@ -6,7 +6,7 @@ import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useRouter } from 'next/navigation'
 
-export const useContactHooks = ()=> {
+export const useContactHook = () => {
     const token = authStore((state) => state?.token)
     const [isDisabledSuccess, setIsDisabledSuccess] = useState<boolean>(false)
     const [isValuePhoneNumber, setIsValuePhoneNumber] = useState<string>('')

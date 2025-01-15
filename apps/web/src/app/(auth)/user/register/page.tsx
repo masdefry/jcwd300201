@@ -4,13 +4,13 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
 import Link from "next/link";
-import { useRegisterHooks } from "@/features/user/hooks/useRegisterHooks";
+import { useRegisterHook } from "@/features/user/hooks/useRegisterHook";
 import { registerUserValidationSchema } from "@/features/user/schemas/registerUserValidationSchema";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 
 export default function Page() {
-    const { handleRegister, isPending, isValuePhoneNumber, setIsValuePhoneNumber } = useRegisterHooks()
+    const { handleRegister, isPending, isValuePhoneNumber, setIsValuePhoneNumber } = useRegisterHook()
 
     return (
 

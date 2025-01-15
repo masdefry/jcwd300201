@@ -4,9 +4,9 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
-import { IParamsType } from "@/features/user/hooks/useSetPasswordHooks/types";
+import { IParamsType } from "@/features/user/hooks/useSetPasswordHook/types";
 import { setPasswordValidationSchema } from "@/features/worker/schemas/setPasswordValidationSchema";
-import { useSetPasswordWorkerHooks } from "@/features/worker/hooks/useSetPasswordWorkerHooks";
+import { useSetPasswordWorkerHook } from "@/features/worker/hooks/useSetPasswordWorkerHook";
 
 export default function Page({ params }: { params: Promise<IParamsType> }) {
     const { passwordVisible,
@@ -15,7 +15,7 @@ export default function Page({ params }: { params: Promise<IParamsType> }) {
         toggleConfirmPasswordVisibility,
         togglePasswordVisibility,
         handleSetPassword,
-        isPending } = useSetPasswordWorkerHooks(params)
+        isPending } = useSetPasswordWorkerHook(params)
 
     return (
         <main className='w-full h-screen flex'>

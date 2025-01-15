@@ -1,8 +1,6 @@
 'use client'
 
-import HeaderMobile from "@/components/core/headerMobile"
 import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
 import { useQuery, useMutation } from "@tanstack/react-query"
@@ -18,134 +16,26 @@ import Pagination from "@/components/core/pagination"
 import Image from "next/image"
 import ContentWebLayout from "@/components/core/webSessionContent";
 import ButtonCustom from "@/components/core/button";
-import SearchInputCustom from "@/components/core/searchBar";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select"
 import { FaArrowUpRightFromSquare, FaCheck, FaPlus } from "react-icons/fa6";
 import { ConfirmAlert } from "@/components/core/confirmAlert"
 import NoData from "@/components/core/noData"
 import Loading from "@/components/core/loading"
 import FilterWeb from "@/components/core/filterWeb"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
+import { useAdminOutletPaymentHook } from "@/features/adminOutlet/hooks/useAdminOutletPaymentHook"
+import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import PaymentContentMobile from "@/features/adminOutlet/components/PaymentContentMobile"
+import PaymentContentWeb from "@/features/adminOutlet/components/PaymentContentWeb"
 
 
 export default function DeliveryRequest() {
-    const params = useSearchParams();
-    const router = useRouter();
-    const pathname = usePathname();
-    const { toast } = useToast()
-    const token = authStore((state) => state?.token);
-    const email = authStore((state) => state?.email);
-
-    const [page, setPage] = useState(Number(params.get("page")) || 1);
-    const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
-
-    const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
-    const [activeTab, setActiveTab] = useState(params.get("tab") || "verification");
-    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
-    const [isSearchValues, setIsSearchValues] = useState<string>('')
-    const [imageLoading, setImageLoading] = useState(true);
-
-    const limit = 5;
-
-    const { data: dataOrderList, refetch, isLoading: dataOrderListLoading, isError: dataOrderListError, isFetching } = useQuery({
-        queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
-        queryFn: async () => {
-            const res = await instance.get(`/order/payment/`, {
-                params: {
-                    page,
-                    limit_data: limit,
-                    search: searchInput || "",
-                    sort: sortOption,
-                    tab: activeTab,
-                    dateFrom,
-                    dateUntil,
-                },
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            return res?.data?.data;
-        },
-    });
-
-
-    const { mutate: handleConfirmPayment, isPending: handlConfirmPaymentPending } = useMutation({
-        mutationFn: async (orderId: any) => {
-            return await instance.post(`/order/payment-done/${orderId}`, { email }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-        },
-        onSuccess: (res: any) => {
-            toast({
-                description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
-            refetch()
-        },
-        onError: (err: any) => {
-            toast({
-                description: err?.response?.data?.message,
-                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
-            })
-        }
-    })
-    const getDataItem = dataOrderList?.orders
-
-    const handlePageChange = (page: any) => {
-        setPage(page)
-    }
-
-    const debounce = useDebouncedCallback(values => {
-        setSearchInput(values)
-        setPage(1)
-    }, 500);
-
-    useEffect(() => {
-        const currentUrl = new URLSearchParams(params.toString());
-        if (searchInput) {
-            currentUrl.set(`search`, searchInput)
-        } else {
-            currentUrl.delete(`search`)
-        }
-        if (sortOption) {
-            currentUrl.set("sort", sortOption);
-        } else {
-            currentUrl.delete(`sort`)
-        }
-        if (activeTab) {
-            currentUrl.set("tab", activeTab);
-        } else {
-            currentUrl.delete(`tab`)
-        }
-        if (dateFrom) {
-            currentUrl.set('date-from', dateFrom?.toString())
-        } else {
-            currentUrl.delete('date-from')
-        }
-        if (dateUntil) {
-            currentUrl.set('date-until', dateUntil?.toString())
-        } else {
-            currentUrl.delete('date-until')
-        }
-        if (page) {
-            currentUrl.set('page', page?.toString())
-        } else {
-            currentUrl.delete('page')
-        }
-        router.push(`${pathname}?${currentUrl.toString()}`)
-        refetch()
-    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
-
-
-    const totalPages = dataOrderList?.totalPage || 1;
+    const {
+        isSearchValues, setIsSearchValues, page, setPage, searchInput, setSearchInput, sortOption, setSortOption,
+        activeTab, setActiveTab, dateFrom, setDateFrom, dateUntil, setDateUntil, debounce, totalPages, isFetching,
+        dataOrderListLoading, dataOrderListError, dataOrderList,
+        handlePageChange, entriesPerPage, handleConfirmPayment, handlConfirmPaymentPending,
+        imageLoading, setImageLoading, getDataItem
+    } = useAdminOutletPaymentHook()
 
     return (
         <>
@@ -178,51 +68,9 @@ export default function DeliveryRequest() {
                                 {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
                                 {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
                                     dataOrderList?.orders?.map((order: any) => (
-                                        <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                            <ConfirmAlert colorConfirmation="blue" caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?" description={
-                                                <>
-                                                    {imageLoading && 'Memuat Gambar...'}
-                                                    <Image
-                                                        src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
-                                                        alt="payment proof"
-                                                        width={500}
-                                                        height={200}
-                                                        onLoadingComplete={() => setImageLoading(false)}
-                                                        onError={() => setImageLoading(false)}
-                                                        className={`transition-opacity duration-300 ${imageLoading ? "opacity-0" : "opacity-100"
-                                                            }`}
-                                                    />
-                                                </>
-                                            }
-                                                disabled={handlConfirmPaymentPending}
-                                                onClick={() => handleConfirmPayment(order?.id)}
-
-                                            >
-                                                <div className="flex items-center">
-                                                    <div className="px-2">
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.id}
-                                                        </h2>
-                                                        <h2 className="font-medium text-gray-900">
-                                                            {order?.User?.firstName} {order?.User?.lastName}
-                                                        </h2>
-                                                        <div className="text-xs text-gray-500">
-                                                            {order?.orderStatus[0]?.status === 'AWATING_PAYMENT'
-                                                                ? 'Menunggu Pembayaran'
-                                                                : 'Terbayarkan'}
-                                                        </div>
-                                                        <p className="text-xs text-gray-500">
-                                                            {order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}
-                                                        </p>
-                                                    </div>
-                                                </div>
-                                            </ConfirmAlert>
-                                            <div className="flex gap-1">
-                                                <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
-                                                    <FaWhatsapp />
-                                                </Link>
-                                            </div>
-                                        </section>
+                                        <PaymentContentMobile
+                                            key={order?.id} order={order} imageLoading={imageLoading} setImageLoading={setImageLoading} handlConfirmPaymentPending={handlConfirmPaymentPending} handleConfirmPayment={handleConfirmPayment}
+                                        />
                                     ))
                                 ) : (
                                     !dataOrderListLoading && (
@@ -267,19 +115,10 @@ export default function DeliveryRequest() {
                 {/* table */}
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Order ID</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Total</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
-                            </tr>
-                        </thead>
+                        <TableHeaderWeb columns={["NO", "Order ID", "Nama", "Total", "Tipe", "Action"]} />
                         <tbody>
 
-                            {isFetching ? (
+                            {dataOrderListLoading ? (
                                 <tr>
                                     <td colSpan={6} className="text-center py-10">
                                         <Loading />
@@ -288,35 +127,8 @@ export default function DeliveryRequest() {
                             ) : (
                                 !dataOrderListLoading && getDataItem?.length > 0 ? (
                                     getDataItem?.map((order: any, i: number) => (
-                                        <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * entriesPerPage + i + 1}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.id}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">Rp. {order?.totalPrice?.toLocaleString('id-ID')}</td>
-                                            <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : 'Mencuci dan Setrika'}</td>
-                                            <td className="py-4 px-6 text-sm text-center">
-                                                <div className="flex gap-4 items-center">
-                                                    <Link href={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
-                                                        target="_blank" className="text-blue-700 hover:text-blue-500 relative group">
-                                                        <FaArrowUpRightFromSquare />
-                                                        <span className="absolute z-20 bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs rounded-md px-2 py-1 mt-1 transition-opacity duration-200">
-                                                            Lihat Bukti Pembayaran
-                                                        </span>
-                                                    </Link>
-
-                                                    <ConfirmAlert colorConfirmation="blue" caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?"
-                                                        description="Mohon periksa kembali bukti pembayaran, hati-hati terhadap penipuan"
-                                                        onClick={() => handleConfirmPayment(order?.id)}>
-                                                        <button className="text-green-600 hover:text-green-400 relative group">
-                                                            <FaCheck />
-                                                            <span className="absolute bottom-0 z-20 left-1/2 transform -translate-x-1/2 translate-y-full opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs rounded-md px-2 py-1 mt-1 transition-opacity duration-200">
-                                                                Verifikasi Pembayaran
-                                                            </span>
-                                                        </button>
-                                                    </ConfirmAlert>
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        <PaymentContentWeb
+                                            key={order?.id} order={order} page={page} handleConfirmPayment={handleConfirmPayment} i={i} entriesPerPage={entriesPerPage} />
                                     ))
                                 ) : (
                                     <tr>

@@ -23,6 +23,7 @@ import { toast } from "@/components/hooks/use-toast";
 
 export default function Page() {
     const token = authStore((state) => state?.token)
+    const email = authStore((state) => state?.email)
     const params = useSearchParams()
     const currentUrl = new URLSearchParams(params)
     const [currentPage, setCurrentPage] = useState<number>(1)
@@ -52,7 +53,7 @@ export default function Page() {
 
     const { mutate: deleteStoreById, isPending: isPendingDelete } = useMutation({
         mutationFn: async (id) => {
-            return await instance.patch(`/store/delete/${id}`, {}, {
+            return await instance.patch(`/store/delete/${id}`, {email}, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

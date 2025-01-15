@@ -49,7 +49,7 @@ export default function ProfileSettingsMobile({ tempProfilePict, getData, profil
                             )}
                             {!tempProfilePict && (
                                 <div className='flex items-center gap-2'>
-                                    <h1 className='text-neutral-500 md:text-base text-xs font-medium'>JPG/PNG, 3MB Max.</h1>
+                                    <h1 className='text-neutral-500 md:text-base text-xs font-medium'>JPG/PNG/GIF, 1MB Max.</h1>
                                 </div>
                             )}
                         </div>

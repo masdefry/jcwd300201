@@ -4,8 +4,8 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
-import { useSetPasswordHooks } from "@/features/user/hooks/useSetPasswordHooks";
-import { IParamsType } from "@/features/user/hooks/useSetPasswordHooks/types";
+import { useSetPasswordHook } from "@/features/user/hooks/useSetPasswordHook";
+import { IParamsType } from "@/features/user/hooks/useSetPasswordHook/types";
 import { setPasswordValidationSchema } from "@/features/user/schemas/setPasswordValidationSchema";
 
 export default function Page({ params }: { params: Promise<IParamsType> }) {
@@ -16,7 +16,7 @@ export default function Page({ params }: { params: Promise<IParamsType> }) {
         toggleConfirmPasswordVisibility,
         togglePasswordVisibility,
         handleSetPassword,
-        isPending } = useSetPasswordHooks(params)
+        isPending } = useSetPasswordHook(params)
 
     return (
         <main className='w-full h-screen flex'>

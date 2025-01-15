@@ -10,7 +10,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup'
 import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
-import { useAdminOutletSettingsHooks } from '@/features/adminOutlet/hooks/useAdminOutletSettingsHooks';
+import { useAdminOutletSettingsHook } from '@/features/adminOutlet/hooks/useAdminOutletSettingsHook';
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -30,7 +30,7 @@ export default function Page() {
         passwordVisible, confirmPasswordVisible, handleChange, togglePasswordVisibility,
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
-        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useAdminOutletSettingsHooks()
+        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useAdminOutletSettingsHook()
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
@@ -161,7 +161,7 @@ export default function Page() {
                             }}>
                             <ChangePassword togglePasswordVisibility={togglePasswordVisibility} isDisableSucces={isChangePassword}
                                 confirmPasswordVisible={confirmPasswordVisible} oldPasswordVisible={oldPasswordVisible}
-                                isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible} 
+                                isPendingChangePassword={isPendingChangePassword} passwordVisible={passwordVisible}
                                 toggleConfirmPasswordVisibility={toggleConfirmPasswordVisibility} toggleOldPasswordVisibility={toggleOldPasswordVisibility} />
                         </Formik>
                     </TabPanel>

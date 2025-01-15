@@ -10,12 +10,12 @@ import ContentWebLayout from "@/components/core/webSessionContent";
 import SearchInputCustom from "@/components/core/searchBar";
 import { ChangeEvent } from "react";
 import { FaAddressCard, FaEllipsisVertical, FaPlus } from "react-icons/fa6";
-import TableNotFoundComponent from "@/features/user/components/tableNotFound";
-import { useUserAddressHooks } from "@/features/user/hooks/useUserAddressHooks";
-import SkeletonLoadingComponent from "@/features/user/components/skeletonLoadingComponents";
+import TableNotFoundComponent from "@/features/user/components/TableNotFound";
+import { useUserAddressHook } from "@/features/user/hooks/useUserAddressHook";
+import SkeletonLoadingComponent from "@/features/user/components/SkeletonLoadingComponents";
 import PaginationWebLayout from "@/components/core/paginationWebLayout";
-import TableAddressUser from "@/features/user/components/tableAddressUser";
-import TableHeadUserAddress from "@/features/user/components/tableHeadUserAddress";
+import TableAddressUser from "@/features/user/components/TableAddressUser";
+import TableHeadUserAddress from "@/features/user/components/TableHeadUserAddress";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
@@ -24,7 +24,7 @@ import NoData from "@/components/core/noData";
 
 export default function Page() {
     const { currentPage, entriesPerPage, debounce, getDataItem, isFetching, isPending, handleDeleteItem,
-        isPendingDelete, handleChangeMainAddress, router, settingsItems } = useUserAddressHooks()
+        isPendingDelete, handleChangeMainAddress, router, settingsItems } = useUserAddressHook()
 
     if (isFetching) return (
         <SkeletonLoadingComponent />

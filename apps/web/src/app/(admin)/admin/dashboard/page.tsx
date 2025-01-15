@@ -21,11 +21,11 @@ import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { RiProfileFill } from "react-icons/ri";
-import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
+import TabTracking from "@/features/superAdmin/components/TabOrderTracking";
 import Notification from "@/components/core/notification";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import NotificationOutletAdmin from "@/features/adminOutlet/components/notification";
-import NotificationSuperAdmin from "@/features/superAdmin/components/notification";
+import NotificationOutletAdmin from "@/features/adminOutlet/components/Notification";
+import NotificationSuperAdmin from "@/features/superAdmin/components/NotificationSuperAdmin";
 
 export default function Page() {
     const name = authStore((state) => state?.firstName)
@@ -41,7 +41,7 @@ export default function Page() {
     const [date, setDate] = useState<Date | undefined>(new Date())
     const [isDate, setIsDate] = useState<string>('')
     const [isDay, setIsDay] = useState<number>(0)
-    const [isCurrentWeither, setIsCurrentWeither] = useState<any>({})
+    const [isCurrentWeather, setIsCurrentWeather] = useState<any>({})
     const [selectedTab, setSelectedTab] = useState<'today' | 'month'>('today');
     const [isMonthlyStatistic, setIsMonthlyStatistic] = useState<string>(currentUrl.get('outlet') || '')
 
@@ -64,7 +64,7 @@ export default function Page() {
         }
     })
 
-    const { data: dataOrderList, refetch, isPending } = useQuery({
+    const { data: dataOrderList, refetch, isLoading, isPending } = useQuery({
         queryKey: ['get-order'],
         queryFn: async () => {
             const res = await instance.get(`/order/orders`, {
@@ -94,7 +94,7 @@ export default function Page() {
                 try {
                     const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${process.env.NEXT_PUBLIC_OPEN_WEITHER}&lang=id`)
 
-                    setIsCurrentWeither(res?.data)
+                    setIsCurrentWeather(res?.data)
                 } catch (error) {
                     console.log('error')
                 }
@@ -104,12 +104,6 @@ export default function Page() {
         }
     }, [lat, lng])
 
-    const iconButtons = [
-        { icon: FaStore, label: "Data Outlet" },
-        { icon: IoSearchSharp, label: "Cari Pesanan" },
-        { icon: IoPersonSharp, label: "Data Pelanggan" },
-        { icon: GrUserWorker, label: "Data Pekerja" },
-    ];
 
     const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
@@ -144,7 +138,6 @@ export default function Page() {
 
     if (isPending) return (
         <>
-
             <LoadingDashboardWeb />
         </>
     )
@@ -201,8 +194,8 @@ export default function Page() {
                             <div className="h-full bg-white bg-opacity-70 rounded-lg p-4">
                                 <h2 className="text-lg font-semibold text-gray-700 mb-2">Status Cuaca</h2>
                                 <p className="text-sm text-gray-600">
-                                    {isCurrentWeither?.weather && isCurrentWeither.weather[0]?.description
-                                        ? `${isCurrentWeither.weather[0].description}, ${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C`
+                                    {isCurrentWeather?.weather && isCurrentWeather.weather[0]?.description
+                                        ? `${isCurrentWeather.weather[0].description}, ${(isCurrentWeather.main.temp - 273.15).toFixed(1)}°C`
                                         : "Data cuaca tidak tersedia"}
                                 </p>
                             </div>
@@ -248,9 +241,9 @@ export default function Page() {
                             <div className="text-center">
                                 <h2 className="text-xl font-semibold text-gray-700">Status Cuaca</h2>
                                 <div className="flex justify-center items-center py-4">
-                                    {isCurrentWeither?.weather ? (
-                                        <p className='text-6xl text-neutral-700 font-bold'> {isCurrentWeither?.main?.temp
-                                            ? `${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C`
+                                    {isCurrentWeather?.weather ? (
+                                        <p className='text-6xl text-neutral-700 font-bold'> {isCurrentWeather?.main?.temp
+                                            ? `${(isCurrentWeather.main.temp - 273.15).toFixed(1)}°C`
                                             : '- °C'}
                                         </p>
                                     ) : (
@@ -260,11 +253,11 @@ export default function Page() {
                             </div>
                             <div>
                                 <p className="text-lg text-gray-600">
-                                    {isCurrentWeither?.weather && isCurrentWeither.weather[0]?.description
+                                    {isCurrentWeather?.weather && isCurrentWeather.weather[0]?.description
                                         ?
                                         <span className='flex gap-2 items-center '>
                                             <FaCloud className="text-gray-200" />
-                                            {isCurrentWeither.weather[0].description.toUpperCase()}
+                                            {isCurrentWeather.weather[0].description.toUpperCase()}
                                         </span>
                                         : 'Data cuaca tidak tersedia'}
                                 </p>
@@ -272,12 +265,12 @@ export default function Page() {
                             <div className="py-4 space-y-2 w-full">
                                 <div className="flex items-center space-x-3 bg-white bg-opacity-70 w-full py-1 px-4 rounded-full">
                                     <FaTint className="text-neutral-400" />
-                                    <p className="text-neutral-700 text-sm">{isCurrentWeither?.main?.humidity ? `${isCurrentWeither.main.humidity}%` : '- %'}</p>
+                                    <p className="text-neutral-700 text-sm">{isCurrentWeather?.main?.humidity ? `${isCurrentWeather.main.humidity}%` : '- %'}</p>
                                 </div>
                                 <div className="flex items-center space-x-3 bg-white bg-opacity-70 w-full py-1 px-4 rounded-full">
                                     <FaTemperatureHigh className="text-neutral-400" />
-                                    <p className="text-neutral-700 text-sm"> {isCurrentWeither?.main?.temp
-                                        ? `${(isCurrentWeither.main.temp - 273.15).toFixed(1)}°C`
+                                    <p className="text-neutral-700 text-sm"> {isCurrentWeather?.main?.temp
+                                        ? `${(isCurrentWeather.main.temp - 273.15).toFixed(1)}°C`
                                         : '- °C'}</p>
                                 </div>
                             </div>
@@ -294,7 +287,7 @@ export default function Page() {
                 </section>
                 <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
                     <div className="w-full px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
-                        <MonthlyCharts monthlyData={dataOrderList?.monthlyStatistic} showDropdown={true} isPending={isPending}
+                        <MonthlyCharts monthlyData={dataOrderList?.monthlyStatistic} showDropdown={true} isLoading={isLoading}
                             onChange={(e: any) => setIsMonthlyStatistic(e.target.value)} value={isMonthlyStatistic} />
                     </div>
                     <div className="w-fit px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
