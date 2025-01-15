@@ -10,7 +10,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup'
 import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
-import { useWashingWorkerSettingsHooks } from '@/features/washingWorker/hooks/useWashingWorkerSettingsHooks';
+import { useWashingWorkerSettingsHook } from '@/features/washingWorker/hooks/useWashingWorkerSettingsHook';
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -27,7 +27,7 @@ export default function Page() {
         passwordVisible, confirmPasswordVisible, handleChange, togglePasswordVisibility,
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
-        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useWashingWorkerSettingsHooks()
+        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useWashingWorkerSettingsHook()
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">

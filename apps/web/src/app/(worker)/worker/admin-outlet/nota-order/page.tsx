@@ -7,10 +7,10 @@ import FilterWorker from "@/components/core/filter"
 import Pagination from "@/components/core/pagination"
 import ContentWebLayout from "@/components/core/webSessionContent"
 import ButtonCustom from "@/components/core/button"
-import TableHeadNotaOrder from "@/features/adminOutlet/components/tableHeadNotaOrder"
-import TableHeadLayout from "@/features/adminOutlet/components/tableHeadLayout"
-import TableBodyContent from "@/features/adminOutlet/components/tableBodyContent"
-import { useNotaOrderHooks } from "@/features/adminOutlet/hooks/useNotaOrderHooks"
+import TableHeadNotaOrder from "@/features/adminOutlet/components/TableHeadNotaOrder"
+import TableHeadLayout from "@/features/adminOutlet/components/TableHeadLayout"
+import TableBodyContent from "@/features/adminOutlet/components/TableBodyContent"
+import { useNotaOrderHook } from "@/features/adminOutlet/hooks/useNotaOrderHook"
 import PaginationWebLayout from "@/components/core/paginationWebLayout"
 import Loading from "@/components/core/loading"
 import NoData from "@/components/core/noData"
@@ -21,7 +21,7 @@ export default function HistoryOrderWashing() {
     const { page, totalPages, sortOption, dateFrom, dateUntil, limit,
         debounce, setSearchInput, setSortOption, activeTab, setActiveTab,
         setDateFrom, setDateUntil, dataCreateOrder, dataCreateOrderLoading,
-        dataCreateOrderError, setPage, searchInput, isSearchValues, setIsSearchValues } = useNotaOrderHooks()
+        dataCreateOrderError, setPage, searchInput, isSearchValues, setIsSearchValues } = useNotaOrderHook()
 
     return (
         <>
@@ -66,7 +66,7 @@ export default function HistoryOrderWashing() {
                                     </Link>
 
                                     <div className="flex gap-1">
-                                        <Link href={`https://wa.me/62${order?.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                        <Link href={`https://wa.me/${order?.User?.phoneNumber}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
                                             <FaWhatsapp />
                                         </Link>
                                     </div>

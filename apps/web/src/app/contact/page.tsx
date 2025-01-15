@@ -3,13 +3,13 @@
 import ButtonCustom from '@/components/core/button';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { createMessageValidation } from '@/features/contact/schemas/createMessageValidation';
-import { useContactHooks } from '@/features/contact/hooks/useContactHooks';
+import { useContactHook } from '@/features/contact/hooks/useContactHook';
 import Image from 'next/image';
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 
 export default function Page() {
-    const { handleSendMessage, isPendingSendMessage, isValuePhoneNumber, setIsValuePhoneNumber } = useContactHooks();
+    const { handleSendMessage, isPendingSendMessage, isValuePhoneNumber, setIsValuePhoneNumber } = useContactHook();
 
     return (
         <main className="flex w-full bg-white pt-[120px] md:pt-[90px] py-0 md:pb-0 pb-20 md:py-10">

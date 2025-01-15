@@ -9,7 +9,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
-import { useUserSettingsHooks } from '@/features/user/hooks/useUserSettingsHooks';
+import { useUserSettingsHook } from '@/features/user/hooks/useUserSettingsHook';
 import { FaEye, FaEyeSlash, FaGear } from 'react-icons/fa6';
 import ButtonCustom from '@/components/core/button';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
@@ -17,7 +17,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 import { userAccountValidationMobileSchema } from '@/features/user/schemas/userAccountMobileValidationSchema';
 import { userAccountValidationSchema } from '@/features/user/schemas/userAccountValidationSchema';
-import { userGoogleChangePasswordValidation } from '@/features/user/schemas/userGoogleChangePasswordValidationSchema';
+import { userGoogleChangePasswordValidationSchema } from '@/features/user/schemas/userGoogleChangePasswordValidationSchema';
 import ContentWebLayout from '@/components/core/webSessionContent';
 import { userChangePasswordValidationSchema } from '@/features/user/schemas/userChangePasswordValidationSchema';
 
@@ -28,7 +28,7 @@ export default function Page() {
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataUser, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
         handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword,
-        handleChangePasswordGoogleRegister, isPendingChangePasswordGoogleRegister } = useUserSettingsHooks()
+        handleChangePasswordGoogleRegister, isPendingChangePasswordGoogleRegister } = useUserSettingsHook()
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">
@@ -88,7 +88,7 @@ export default function Page() {
                                 <Formik initialValues={{
                                     password: '',
                                     confirmPassword: ''
-                                }} validationSchema={userGoogleChangePasswordValidation}
+                                }} validationSchema={userGoogleChangePasswordValidationSchema}
                                     onSubmit={(values, { resetForm }) => handleChangePasswordGoogleRegister({ password: values?.password }, {
                                         onSuccess: () => { resetForm() }
                                     })}>
@@ -178,7 +178,7 @@ export default function Page() {
                             <Formik initialValues={{
                                 password: '',
                                 confirmPassword: ''
-                            }} validationSchema={userGoogleChangePasswordValidation}
+                            }} validationSchema={userGoogleChangePasswordValidationSchema}
                                 onSubmit={(values, { resetForm }) => handleChangePasswordGoogleRegister({ password: values?.password }, {
                                     onSuccess: () => { resetForm() }
                                 })}>

@@ -2,14 +2,14 @@
 
 import { ConfirmAlert } from "@/components/core/confirmAlert";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
-import LayoutDetailWorker from "@/features/superAdmin/components/layoutDetailWorker";
-import { useDetailWorkerHooks } from "@/features/superAdmin/hooks/useDetailWorkerHooks";
+import LayoutDetailWorker from "@/features/superAdmin/components/LayoutDetailWorker";
+import { useDetailWorkerHook } from "@/features/superAdmin/hooks/useDetailWorkerHook";
 import Image from "next/image";
 import { BsTrash3 } from "react-icons/bs";
 
 export default function Page({ params }: { params: Promise<{ detail: string }> }) {
     const { workerData, isFetching,
-        handleDeleteData, isPendingDelete } = useDetailWorkerHooks({ params })
+        handleDeleteData, isPendingDelete } = useDetailWorkerHook({ params })
 
     if (isFetching) return <div></div>
 

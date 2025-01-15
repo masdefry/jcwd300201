@@ -23,7 +23,7 @@ ChartJS.register(
     Legend
 );
 
-export default function MonthlyCharts({ monthlyData, onChange, value, showDropdown, isPending }: IMonthlyChartsProps) {
+export default function MonthlyCharts({ monthlyData, onChange, value, showDropdown, isLoading }: IMonthlyChartsProps) {
     const months = [
         'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
         'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
@@ -33,8 +33,8 @@ export default function MonthlyCharts({ monthlyData, onChange, value, showDropdo
     monthlyData?.forEach((item: any) => {
         const monthIndex = item.month;
         item?.monthlyStatistics?.forEach((stat: any) => {
-            if (stat._sum?.totalPrice !== null) {
-                monthlyPrices[monthIndex] += stat._sum.totalPrice;
+            if (stat._sum?.laundryPrice !== null) {
+                monthlyPrices[monthIndex] += stat._sum.laundryPrice;
             }
         });
     });
@@ -99,7 +99,7 @@ export default function MonthlyCharts({ monthlyData, onChange, value, showDropdo
                     <option value="">Reset</option>
                 </select>
             )}
-            {isPending ?
+            {isLoading ?
                 <Loading />
                 : <Bar data={data} options={options} className='w-full' style={{ width: '100%' }} />
             }

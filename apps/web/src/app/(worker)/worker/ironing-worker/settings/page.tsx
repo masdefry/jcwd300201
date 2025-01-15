@@ -9,7 +9,7 @@ import TabPanel from '@mui/lab/TabPanel';
 import { Formik } from 'formik';
 import ProfileSettings from '@/components/core/profileSettings';
 import ChangePassword from '@/components/core/changePassword';
-import { useIroningWorkerSettingsHooks } from '@/features/ironingWorker/hooks/useIroningWorkerSettingsHooks';
+import { useIroningWorkerSettingsHook } from '@/features/ironingWorker/hooks/useIroningWorkerSettingsHook';
 import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -29,7 +29,7 @@ export default function Page() {
         passwordVisible, confirmPasswordVisible, handleChange, togglePasswordVisibility,
         toggleOldPasswordVisibility, toggleConfirmPasswordVisibility, getDataWorker, isFetching,
         handleUpdateProfile, isPendingUpdate, handleDeleteProfilePicture, isPendingDelete,
-        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useIroningWorkerSettingsHooks()
+        handleChangePassword, isPendingChangePassword, isDisableSucces, isChangePassword, handleLogoutAdmin, isPending } = useIroningWorkerSettingsHook()
 
     if (isFetching) return (
         <main className="w-full h-full bg-neutral-200 p-4 gap-2 hidden md:flex">

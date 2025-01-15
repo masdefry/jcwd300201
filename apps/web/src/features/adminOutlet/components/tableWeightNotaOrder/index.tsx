@@ -5,7 +5,7 @@ export default function TableWeightComponent({ values }: { values: any }) {
                 <thead className="bg-gray-200">
                     <tr>
                         <th className="py-3 px-6 text-center text-sm font-bold text-gray-600 uppercase">Total Item</th>
-                        <th className="py-3 px-6 text-sm font-bold text-gray-600 uppercase text-center">Total Berat</th>
+                        <th className="py-3 px-6 text-sm font-bold text-gray-600 uppercase text-center">Total Berat (kg)</th>
                         <th className="py-3 px-6 text-center text-sm font-bold text-gray-600 uppercase">Total Harga</th>
                     </tr>
                 </thead>

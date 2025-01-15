@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import * as React from 'react'
 import Cookies from 'js-cookie'
 
-export const usePackingWorkerSettingsHooks = () => {
+export const usePackingWorkerSettingsHook = () => {
   const token = authStore((state) => state?.token)
   const email = authStore((state) => state?.email)
   const resetAuth = authStore((state) => state?.resetAuth)

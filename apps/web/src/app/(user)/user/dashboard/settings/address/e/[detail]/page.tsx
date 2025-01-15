@@ -6,17 +6,10 @@ import { instance } from "@/utils/axiosInstance";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { use, useEffect, useMemo, useState } from "react";
-import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import { locationStore } from "@/zustand/locationStore";
 import axios from "axios";
-import LocationPicker from "@/components/core/locationPicker";
 import L from 'leaflet'
-import { TextField } from "@mui/material";
 import ButtonCustom from "@/components/core/button";
-import HeaderMobileUser from "@/components/core/headerMobileUser";
-import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa6";
-import * as Yup from 'yup'
 import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
 import { IAddressDetail } from "./types";

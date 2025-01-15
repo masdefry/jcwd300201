@@ -6,8 +6,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa6";
 import { GrMail } from "react-icons/gr";
-import { useState } from "react";
-import { CardContent } from "@/components/ui/card";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 const getMessageCustomer = async () => {
     const token = (await cookies()).get('__toksed')?.value

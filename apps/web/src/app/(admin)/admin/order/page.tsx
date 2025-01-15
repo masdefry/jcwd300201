@@ -204,7 +204,7 @@ export default function OrderList() {
                                         </div>
 
                                         <div className="flex gap-1">
-                                            <Link href={`https://wa.me/62${order.userPhoneNumber?.substring(1)}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
+                                            <Link href={`https://wa.me/${order?.User?.phoneNumber}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
                                                 <FaWhatsapp />
                                             </Link>
                                         </div>
@@ -252,7 +252,7 @@ export default function OrderList() {
                                             <div className="font-semibold">Driver Pickup:</div>
                                             {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
                                                 <>
-                                                    <Link href={`https://wa.me/62${orderData?.orderStatus[1]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
+                                                    <Link href={`https://wa.me/${orderData?.orderStatus[1]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
                                                         <div>
                                                             {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
                                                         </div>
@@ -270,7 +270,7 @@ export default function OrderList() {
                                             <div>
                                                 {orderData?.orderStatus[7]?.status === "DRIVER_TO_CUSTOMER" ? (
                                                     <>
-                                                        <Link href={`https://wa.me/62${orderData?.orderStatus[7]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
+                                                        <Link href={`https://wa.me/${orderData?.orderStatus[7]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
                                                             <div>
                                                                 {`${orderData?.orderStatus[7]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[7]?.Worker?.lastName ?? ''}`}
                                                             </div>
@@ -282,7 +282,7 @@ export default function OrderList() {
 
                                                 ) : orderData?.orderStatus[8]?.status === "DRIVER_TO_CUSTOMER" ? (
                                                     <>
-                                                        <Link href={`https://wa.me/62${orderData?.orderStatus[8]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
+                                                        <Link href={`https://wa.me/${orderData?.orderStatus[8]?.Worker?.phoneNumber.substring(1)}`} className="text-black">
                                                             <div>
                                                                 {`${orderData?.orderStatus[8]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[8]?.Worker?.lastName ?? ''}`}
                                                             </div>

@@ -208,8 +208,12 @@ export const workerLoginService = async ({ email, password }: ILoginBody) => {
     let findAdmin: any
 
     await prisma.$transaction(async (tx) => {
-        findAdmin = await tx.worker.findFirst({ where: { email }, include: { Shift: true } })
+        findAdmin = await tx.worker.findFirst({ where: { email }, include: { Shift: true, Store: true } })
         if (!findAdmin) throw { msg: 'User admin tidak tersedia', status: 404 }
+
+        if (findAdmin.Store?.deletedAt) {
+            throw { msg: 'Anda tidak dapat login, silahkan hubungi admin.', status: 403 };
+        }
 
         if (findAdmin?.Shift?.startTime !== undefined) {
             const currentDate = format(new Date(), 'yyyy-MM-dd')

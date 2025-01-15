@@ -14,7 +14,7 @@ import { FaEllipsisVertical, FaPlus } from "react-icons/fa6";
 import ButtonCustom from "@/components/core/button";
 import { ChangeEvent } from "react";
 import SearchInputCustom from "@/components/core/searchBar";
-import { useWorkerHooks } from "@/features/superAdmin/hooks/useWorkerHooks";
+import { useWorkerHook } from "@/features/superAdmin/hooks/useWorkerHook";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import PaginationWebLayout from "@/components/core/paginationWebLayout";
 import { BsTrash } from "react-icons/bs";
@@ -29,7 +29,7 @@ import { MdWorkHistory } from "react-icons/md";
 
 export default function Page() {
     const { currentPage, entriesPerPage, sortWorker, setSortWorker, isFetching,
-        dataWorker, totalPages, handlePageChange, debounce, searchWorker, setCurrentPage, isValueSearch, isLoading, setIsValueSearch, router } = useWorkerHooks()
+        dataWorker, totalPages, handlePageChange, debounce, searchWorker, setCurrentPage, isValueSearch, isLoading, setIsValueSearch, router } = useWorkerHook()
 
     return (
         <>
@@ -50,7 +50,7 @@ export default function Page() {
                             <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" />
                         </div>
                     </div>
-                    <ButtonCustom onClick={()=> router.push('/admin/worker/c')} py='py-3' rounded="rounded-xl flex items-center" btnColor="bg-orange-500" width="w-fit"><FaPlus className="text-sm" /></ButtonCustom>
+                    <ButtonCustom onClick={() => router.push('/admin/worker/c')} py='py-3' rounded="rounded-xl flex items-center" btnColor="bg-orange-500" width="w-fit"><FaPlus className="text-sm" /></ButtonCustom>
                     <div className="w-fit py-2 flex items-center">
                         <Dialog>
                             <DialogTrigger asChild>

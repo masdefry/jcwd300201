@@ -31,6 +31,8 @@ export const requestPickUpService = async ({ userId, deliveryFee, outletId, orde
       orderTypeId: parseInt(orderTypeId),
       userAddressId,
       isPaid: false,
+      isConfirm: false,
+      isComplain: false
     },
   });
 
@@ -101,7 +103,7 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
         cos(radians(longitude) - radians(${userLongitude})) + 
         sin(radians(${userLatitude})) * sin(radians(latitude))
       ) 
-    )/1000 <= 5000 -- within 5 km
+    )/1000 <= 5 -- within 5 km
     ORDER BY distance ASC
     LIMIT 1;
   `;
@@ -572,11 +574,7 @@ export const getOrdersForWashingService = async ({
         orderBy: { createdAt: 'desc' },
         take: 1,
       },
-      OrderType: {
-        select: {
-          type: true,
-        },
-      },
+      OrderType: true
     },
   });
 
@@ -1119,6 +1117,7 @@ export const getPackingHistoryService = async ({ userId, authorizationRole, stor
         status: {
           in: statusFilter,
         },
+        workerId: userId,
       },
     },
     AND: [
@@ -1186,6 +1185,7 @@ export const getPackingHistoryService = async ({ userId, authorizationRole, stor
           phoneNumber: true
         }
       },
+      OrderType: true
     },
     skip: offset,
     take: Number(limit_data),
@@ -1290,6 +1290,7 @@ export const getIroningHistoryService = async ({ userId, authorizationRole, stor
           phoneNumber: true
         }
       },
+      OrderType: true
     },
     skip: offset,
     take: Number(limit_data),
@@ -1396,6 +1397,7 @@ export const getWashingHistoryService = async ({ userId, authorizationRole, stor
           phoneNumber: true
         }
       },
+      OrderType: true
     },
     skip: offset,
     take: Number(limit_data),
@@ -1525,27 +1527,6 @@ export const packingProcessDoneService = async ({ email, orderId }: { email: str
 
   return result;
 };
-
-// export const packingProcessService = async ({ email, orderId, userId }: { email: string, orderId: string, userId: string }) => {
-//   const findWorker = await prisma.worker.findFirst({ where: { email } })
-//   if (!findWorker) throw { msg: "Pekerja tidak tersedia", status: 404 }
-
-//   const orderStatuses = await prisma.orderStatus.findFirst({
-//     where: {
-//       orderId,
-//       status: 'IN_PACKING_PROCESS'
-//     },
-//   });
-
-//   if (!orderStatuses) throw { msg: "Tidak ada order dengan status 'IN_IRONING_PROCESS'", status: 404 };
-
-//   await prisma.orderStatus.update({
-//     where: { id: orderStatuses.id },
-//     data: {
-//       workerId: userId,
-//     },
-//   })
-// }
 
 export const getCreateNoteOrderService = async ({
   userId,
@@ -2042,13 +2023,10 @@ export const schedulePaymentCheck = async (orderId: string, checkTime: Date) => 
   }
 
   const task = cron.schedule(`*/1 * * * *`, async () => {
-    console.log(`Test cron job running at ${new Date()}`);
 
     const now = new Date();
 
     if (now >= checkTime) {
-      console.log(`Check time ${checkTime} reached. Stopping cron.`);
-
       try {
         const order = await prisma.order.findFirst({ where: { id: orderId } });
 
@@ -2278,7 +2256,7 @@ export const getAllOrderForAdminService = async ({
           storeId: outletId
         },
         _sum: {
-          totalPrice: true
+          laundryPrice: true
         }
       });
       monthlyStatistic.push({ month, monthlyStatistics })
@@ -2292,7 +2270,7 @@ export const getAllOrderForAdminService = async ({
           },
         },
         _sum: {
-          totalPrice: true
+          laundryPrice: true
         }
       });
       monthlyStatistic.push({ month, monthlyStatistics })
@@ -2450,6 +2428,7 @@ export const getDriverHistoryService = async ({ tab, userId, authorizationRole, 
           phoneNumber: true
         }
       },
+      OrderType: true
     },
     skip: offset,
     take: Number(limit_data),
@@ -2998,8 +2977,6 @@ export const orderTrackingAdminService = async ({ userId, authorizationRole, per
     },
     where: totalPcsWhere,
   });
-
-  console.log(totalPcs);
   return { totalPcs, stats };
 
 }
@@ -3457,7 +3434,7 @@ export const ironingProcessService = async ({
       },
     });
     if (!orderStatuses)
-      throw { msg: "Tidak ada order dengan status 'IN_IRONING_PROCESS'", status: 404 };
+      throw { msg: "Tidak ada order dengan status disetrika", status: 404 };
 
     await tx.orderStatus.update({
       where: { id: orderStatuses.id },
@@ -3550,6 +3527,7 @@ export const packingProcessService = async ({
         message: "Permintaan persetujuan kepada admin telah diajukan!",
         order: updatedOrder,
       };
+
     } else {
       const updatedOrder = await tx.order.update({
         where: {
@@ -3574,9 +3552,18 @@ export const packingProcessService = async ({
 
       if (!existingStatus)
         throw {
-          msg: "Order tidak dapat diproses karena belum disetrika",
+          msg: "Order tidak dapat diproses karena belum disetrika/dicuci",
           status: 400,
         };
+
+      await tx.orderStatus.update({
+        where: {
+          id: existingStatus.id,
+        },
+        data: {
+          workerId: userId
+        }
+      })
 
       return {
         message: "Order berhasil diupdate!",
@@ -3590,7 +3577,7 @@ export const packingProcessService = async ({
 
 export const solveNotesService = async ({ orderId, userId, notes }: ISolveNotesInput) => {
   return await prisma.$transaction(async (tx) => {
-    const findWorker = await tx.user.findFirst({
+    const findWorker = await tx.worker.findFirst({
       where: {
         id: userId,
       },

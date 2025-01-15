@@ -3,14 +3,14 @@
 import ButtonCustom from "@/components/core/button";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import ContentWebLayout from "@/components/core/webSessionContent";
-import { useCreateWorkerHooks } from "@/features/superAdmin/hooks/useCreateWorkerHooks";
+import { useCreateWorkerHook } from "@/features/superAdmin/hooks/useCreateWorkerHook";
 import { createUserValidationSchema } from "@/features/superAdmin/schemas/createUserValidationSchema";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import 'react-phone-number-input/style.css'
 import PhoneInput from 'react-phone-number-input'
 
 export default function Page() {
-    const { getDataStore, handleCreateUser, isPending, isValuePhoneNumber, setIsValuePhoneNumber } = useCreateWorkerHooks()
+    const { getDataStore, handleCreateUser, isPending, isValuePhoneNumber, setIsValuePhoneNumber } = useCreateWorkerHook()
 
     return (
         <>

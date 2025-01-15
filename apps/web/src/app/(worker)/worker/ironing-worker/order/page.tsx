@@ -25,121 +25,34 @@ import NoData from "@/components/core/noData"
 import FilterWeb from "@/components/core/filterWeb"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
+import { useIroningOrderHook } from "@/features/ironingWorker/hooks/useIroningOrderHook"
+import IroningContentMobile from "@/features/ironingWorker/components/IroningContentMobile"
+import IroningContentWeb from "@/features/ironingWorker/components/IroningContentWeb"
+import TableHeaderWeb from "@/components/core/tableHeadWeb"
 
-export default function DriverPickUp() {
-    const params = useSearchParams();
-    const router = useRouter();
-    const pathname = usePathname();
-
-    const { toast } = useToast()
-
-    const token = authStore((state) => state?.token);
-    const email = authStore((state) => state?.email);
-
-    const [page, setPage] = useState(Number(params.get("page")) || 1);
-    const [searchInput, setSearchInput] = useState(params.get("search") || "");
-    const [sortOption, setSortOption] = useState(params.get("sort") || "date-asc");
-    const [activeTab, setActiveTab] = useState(params.get("tab") || "all");
-    const [dateFrom, setDateFrom] = useState(params.get('date-from') || null);
-    const [dateUntil, setDateUntil] = useState(params.get('date-until') || null);
-    const [isDisabledSucces, setIsDisabledSucces] = useState<boolean>(false)
-    const [isSearchValues, setIsSearchValues] = useState<string>('')
-
-    const limit = 5;
-
-    const { data: dataOrderIroningProcess, isFetching, refetch, isLoading: dataOrderIroningProcessLoading, isError: dataOrderIroningProcessError } = useQuery({
-        queryKey: ['get-order', page, searchInput, page, searchInput, dateFrom, dateUntil, sortOption, activeTab],
-        queryFn: async () => {
-            const res = await instance.get('/order/order-ironing', {
-                params: {
-                    page,
-                    limit_data: limit,
-                    search: searchInput || "",
-                    sort: sortOption,
-                    tab: activeTab,
-                    dateFrom: dateFrom ?? '',
-                    dateUntil: dateUntil ?? '',
-
-                },
-                headers: { Authorization: `Bearer ${token}` }
-            });
-            return res?.data?.data;
-        },
-    });
-
-    const { mutate: handleProcessIroning, isPending } = useMutation({
-        mutationFn: async (id: any) => {
-            return await instance.post(`/order/ironing-done/${id}`, { email }, {
-
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-        },
-        onSuccess: (res: any) => {
-            toast({
-                description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
-            })
-            refetch()
-            setIsDisabledSucces(true)
-        },
-        onError: (err: any) => {
-            toast({
-                description: err?.response?.data?.message,
-                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
-            })
-        }
-    })
-
-
-    const debounce = useDebouncedCallback(values => {
-        setSearchInput(values)
-        setPage(1)
-    }, 500);
-
-    useEffect(() => {
-        const currentUrl = new URLSearchParams(params.toString());
-        if (searchInput) {
-            currentUrl.set(`search`, searchInput)
-        } else {
-            currentUrl.delete(`search`)
-        }
-        if (sortOption) {
-            currentUrl.set("sort", sortOption);
-        } else {
-            currentUrl.delete(`sort`)
-        }
-        if (activeTab) {
-            currentUrl.set("tab", activeTab);
-        } else {
-            currentUrl.delete(`tab`)
-        }
-        if (dateFrom) {
-            currentUrl.set('date-from', dateFrom?.toString())
-        } else {
-            currentUrl.delete('date-from')
-        }
-        if (dateUntil) {
-            currentUrl.set('date-until', dateUntil?.toString())
-        } else {
-            currentUrl.delete('date-until')
-        }
-        if (page) {
-            currentUrl.set('page', page?.toString())
-        } else {
-            currentUrl.delete('page')
-        }
-        if (totalPages === undefined || page > totalPages) {
-            setPage(1)
-        }
-        router.push(`${pathname}?${currentUrl.toString()}`)
-        refetch()
-    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
-
-
-    const totalPages = dataOrderIroningProcess?.totalPage || 1;
-
+export default function IroningOrder() {
+    const {
+        params,
+        router,
+        pathname,
+        token,
+        isSearchValues,
+        setIsSearchValues,
+        page,
+        setPage,
+        searchInput, setSearchInput,
+        sortOption, setSortOption,
+        activeTab, setActiveTab,
+        dateFrom, setDateFrom,
+        dateUntil, setDateUntil,
+        refetch,
+        debounce, totalPages, isFetching, limit,
+        dataOrderIroningProcess,
+        dataOrderIroningProcessLoading,
+        dataOrderIroningProcessError,
+        handleProcessIroning,
+        isPending
+    } = useIroningOrderHook()
     return (
         <>
             <ContentMobileLayout title="Pesanan" icon={<FaFileInvoice className='text-lg' />}>
@@ -160,91 +73,13 @@ export default function DriverPickUp() {
                             {dataOrderIroningProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                             {!dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
                                 dataOrderIroningProcess?.orders?.map((order: any) => (
-                                    <section key={order.id} className="flex justify-between items-center border-b py-4">
-                                        {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' || ((order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' || order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS') && order?.OrderType?.type === 'Wash & Iron') ? (
-                                            <div className="flex items-center">
-                                                <div className="px-2">
-                                                    <h2 className="font-medium text-gray-900">{order?.id}</h2>
-                                                    <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
-                                                    <p className="text-xs text-gray-500">
-                                                        {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false
-                                                            ? 'Belum Disetrika'
-                                                            : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false && order?.orderTypeId === 2
-                                                                ? 'Belum Disetrika'
-                                                                : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                    ? 'Proses Setrika'
-                                                                    : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                        ? 'Selesai'
-                                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.orderTypeId === 3
-                                                                            ? 'Menunggu Proses Cuci Selesai'
-                                                                            : order?.orderStatus[0]?.status}
-                                                    </p>
-                                                    <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            <ConfirmAlert colorConfirmation="blue" caption={
-                                                order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
-                                                    order?.isProcessed === false &&
-                                                    order?.isSolved === false
-                                                    ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
-                                                    : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
-                                                        order?.isProcessed === false &&
-                                                        order?.isSolved === true
-                                                        ? 'Apakah anda yakin ingin melakukan proses setrika pada order ini?'
-                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' &&
-                                                            order?.isProcessed === false &&
-                                                            order?.isSolved === true
-                                                            ? 'Apakah anda yakin ingin melakukan proses setrika pada order ini?'
-                                                            : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                ? 'Apakah anda yakin ingin menyelesaikan proses setrika pada order ini?'
-                                                                : ''
-                                            } description={
-                                                order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
-                                                    order?.isProcessed === false &&
-                                                    order?.isSolved === false
-                                                    ? 'Silahkan hubungi admin'
-                                                    : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
-                                                        order?.isProcessed === false &&
-                                                        order?.isSolved === true
-                                                        ? 'Pastikan anda memilih order yang tepat/benar'
-                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' &&
-                                                            order?.isProcessed === false &&
-                                                            order?.isSolved === true
-                                                            ? 'Pastikan anda memilih order yang tepat/benar'
-                                                            : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                : ''
-                                            }
-                                                hideButtons={(order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isSolved === false}
-                                                onClick={() => {
-                                                    if ((order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isProcessed === false) {
-                                                        router.push(`/worker/ironing-worker/order/c/${order?.id}`);
-                                                    } else if (order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true) {
-                                                        handleProcessIroning(order?.id);
-                                                    }
-                                                }} disabled={isPending}>
-                                                <div className="flex items-center">
-                                                    <div className="px-2">
-                                                        <h2 className="font-medium text-gray-900">{order?.id}</h2>
-                                                        <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
-                                                        <p className="text-xs text-gray-500">
-                                                            {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false
-                                                                ? 'Belum Disetrika'
-                                                                : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false
-                                                                    ? 'Belum Disetrika'
-                                                                    : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                        ? 'Proses Setrika'
-                                                                        : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                            ? 'Selesai'
-                                                                            : order?.orderStatus[0]?.status}
-                                                        </p>
-                                                        <p className="text-xs text-gray-500">{order.createdAt.split('T')[0]} {order.createdAt.split('T')[1].split('.')[0]}</p>
-                                                    </div>
-                                                </div>
-                                            </ConfirmAlert>
-                                        )}
-                                    </section>
+                                    <IroningContentMobile
+                                        key={order?.id}
+                                        order={order}
+                                        handleProcessIroning={handleProcessIroning}
+                                        isPending={isPending}
+                                        router={router}
+                                    />
                                 ))
                             ) : (
                                 !dataOrderIroningProcessLoading && (
@@ -288,18 +123,9 @@ export default function DriverPickUp() {
 
                 <div className="w-full flex flex-col justify-center">
                     <table className="min-w-full bg-white border border-gray-200">
-                        <thead className="bg-gray-200">
-                            <tr>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">NO</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Nama</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tipe Order</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Status</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Tanggal dibuat</th>
-                                <th className="py-3 px-6 text-left text-sm font-bold text-gray-600 uppercase">Action</th>
-                            </tr>
-                        </thead>
+                        <TableHeaderWeb columns={["NO", "Nama", "Tipe Order", "Status", "Tanggal dibuat", "Action"]} />
                         <tbody>
-                            {isFetching ? (
+                            {dataOrderIroningProcessLoading ? (
                                 <tr>
                                     <td colSpan={6} className="text-center py-10">
                                         <Loading />
@@ -309,77 +135,16 @@ export default function DriverPickUp() {
                                 !dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
                                     dataOrderIroningProcess?.orders?.map((order: any, i: number) => {
                                         return (
-                                            <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>
-                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{(page - 1) * limit + i + 1}</td>
-                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.User?.firstName} {order?.User?.lastName}</td>
-                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : order?.OrderType?.type === 'Wash & Iron' ? 'Mencuci dan Setrika' : ''}</td>
-                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">
-                                                    {order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === false
-                                                        ? 'Belum Disetrika'
-                                                        : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.isProcessed === false && order?.orderTypeId === 2
-                                                            ? 'Belum Disetrika'
-                                                            : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                ? 'Proses Setrika'
-                                                                : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS'
-                                                                    ? 'Selesai'
-                                                                    : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.orderTypeId === 3
-                                                                        ? 'Menunggu Proses Cuci Selesai'
-                                                                        : order?.orderStatus[0]?.status}
-                                                </td>
-                                                <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.createdAt.split('T')[0]} {order?.createdAt.split('T')[1].split('.')[0]}</td>
-                                                <td className="py-4 px-6 hover:underline break-words">
-                                                    <ConfirmAlert
-                                                        colorConfirmation="blue"
-                                                        disabled={isPending}
-                                                        caption={
-                                                            order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
-                                                                order?.isProcessed === false &&
-                                                                order?.isSolved === false
-                                                                ? 'Order ini belum disetujui oleh admin untuk dilanjutkan'
-                                                                : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
-                                                                    order?.isProcessed === false &&
-                                                                    order?.isSolved === true
-                                                                    ? 'Apakah anda yakin ingin melakukan proses setrika pada order ini?'
-                                                                    : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' &&
-                                                                        order?.isProcessed === false &&
-                                                                        order?.isSolved === true
-                                                                        ? 'Apakah anda yakin ingin melakukan proses setrika pada order ini?'
-                                                                        : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                            ? 'Apakah anda yakin ingin menyelesaikan proses setrika pada order ini?'
-                                                                            : ''
-                                                        }
-                                                        description={
-                                                            order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
-                                                                order?.isProcessed === false &&
-                                                                order?.isSolved === false
-                                                                ? 'Silahkan hubungi admin'
-                                                                : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' &&
-                                                                    order?.isProcessed === false &&
-                                                                    order?.isSolved === true
-                                                                    ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                    : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' &&
-                                                                        order?.isProcessed === false &&
-                                                                        order?.isSolved === true
-                                                                        ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                        : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true
-                                                                            ? 'Pastikan anda memilih order yang tepat/benar'
-                                                                            : ''
-                                                        }
-                                                        hideButtons={(order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isSolved === false}
-                                                        onClick={() => {
-                                                            if ((order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' || order?.orderStatus[0]?.status === 'AWAITING_PAYMENT') && order?.isProcessed === false) {
-                                                                router.push(`/worker/ironing-worker/order/c/${order?.id}`);
-                                                            } else if (order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true) {
-                                                                handleProcessIroning(order?.id);
-                                                            }
-                                                        }}
-                                                    >
-                                                        <button disabled={order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' || ((order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' || order?.orderStatus[0]?.status === 'IN_WASHING_PROCESS') && order?.OrderType?.type === 'Wash & Iron')} className='text-sm disabled:text-neutral-500 text-blue-700 hover:text-blue-500'>
-                                                            {order?.orderStatus[0]?.status === "IN_IRONING_PROCESS" && order?.isProcessed === false ? 'Proses' : order?.orderStatus[0]?.status === 'IN_IRONING_PROCESS' && order?.isProcessed === true ? 'Selesaikan' : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.orderTypeId === 3 ? "Proses" : order?.orderStatus[0]?.status === 'AWAITING_PAYMENT' && order?.orderTypeId === 2 ? "Proses" :'Selesai'}
-                                                        </button>
-                                                    </ConfirmAlert>
-                                                </td>
-                                            </tr>
+                                            <IroningContentWeb
+                                                key={order?.id}
+                                                order={order}
+                                                handleProcessIroning={handleProcessIroning}
+                                                isPending={isPending}
+                                                router={router}
+                                                limit={limit}
+                                                i={i}
+                                                page={page}
+                                            />
                                         )
                                     })
                                 ) : (

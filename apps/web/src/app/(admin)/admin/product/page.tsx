@@ -4,9 +4,9 @@ import ButtonCustom from "@/components/core/button";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
 import SearchInputCustom from "@/components/core/searchBar";
 import { ChangeEvent } from "react";
-import { useProductLaundryHooks } from "@/features/superAdmin/hooks/useProductLaundryHooks";
-import DialogCreateProduct from "@/features/superAdmin/components/dialogCreateProductLaundry";
-import DialogUpdateProduct from "@/features/superAdmin/components/dialogUpdateProductLaundry";
+import { useProductLaundryHook } from "@/features/superAdmin/hooks/useProductLaundryHook";
+import DialogCreateProduct from "@/features/superAdmin/components/DialogCreateProductLaundry";
+import DialogUpdateProduct from "@/features/superAdmin/components/DialogUpdateProductLaundry";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import { BsTrash } from "react-icons/bs";
 import PaginationWebLayout from "@/components/core/paginationWebLayout";
@@ -24,7 +24,7 @@ import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuL
 export default function Page() {
     const { currentPage, entriesPerPage, sortProduct, setSortProduct, isLoading, createProductItem,
         isPending, handleDeleteItem, isPendingDelete, handleUpdateItem, isPendingUpdate,
-        getDataItem, totalPages, handlePageChange, debounce, searchItem, setCurrentPage } = useProductLaundryHooks()
+        getDataItem, totalPages, handlePageChange, debounce, searchItem, setCurrentPage } = useProductLaundryHook()
 
     return (
         <>

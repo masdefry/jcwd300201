@@ -13,5 +13,5 @@ export interface IMonthlyChartsProps {
     onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
     value?: string;
     showDropdown?: boolean;
-    isPending?: boolean;
+    isLoading?: boolean;
 }

@@ -5,11 +5,11 @@ import Image from "next/image";
 import ButtonCustom from "@/components/core/button";
 import Link from "next/link";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa6";
-import { useResendEmailWorkerHooks } from "@/features/worker/hooks/useResendEmailWorkerHooks";
+import { useResendEmailWorkerHook } from "@/features/worker/hooks/useResendEmailWorkerHook";
 import { resendEmailValidationSchema } from "@/features/worker/schemas/resendEmailValidationSchema";
 
 export default function Page() {
-    const { handleResendEmail, isPending, router } = useResendEmailWorkerHooks()
+    const { handleResendEmail, isPending, router } = useResendEmailWorkerHook()
 
     return (
         <main className='w-full h-screen flex'>
