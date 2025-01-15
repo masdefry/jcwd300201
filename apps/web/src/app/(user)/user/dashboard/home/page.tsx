@@ -61,7 +61,7 @@ export default function Page() {
                     <WeatherMobile isCurrentWeather={isCurrentWeather} />
                     <WidgetDashboardMobile title={"Menunggu Pembayaran"} data={dataOrderUser} />
                     <div className="w-full flex gap-3 justify-center items-center py-3 px-4 bg-white border rounded-lg shadow-sm transition-all">
-                        <TabTrackingUser
+                        <TabTracking
                             selectedTab={selectedTab}
                             setSelectedTab={setSelectedTab}
                             dataOrder={dataOrder}
@@ -89,7 +89,7 @@ export default function Page() {
                     <WidgetDashboardWeb title={"Menunggu Pembayaran"} data={dataOrderUser} dataOrderNotif={dataOrderNotif} />
 
                     <div className="w-full h-full flex justify-center p-5 bg-white bg-opacity-45 rounded-2xl ">
-                        <TabTrackingUser
+                        <TabTracking
                             selectedTab={selectedTab}
                             setSelectedTab={setSelectedTab}
                             dataOrder={dataOrder}
