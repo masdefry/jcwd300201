@@ -1,23 +1,19 @@
 'use client'
 
 import ButtonCustom from "@/components/core/button";
-import { FaEdit, FaTrashAlt, FaArrowLeft, FaSearch } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 import Image from "next/image";
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
 import Link from "next/link";
-import HeaderMobileUser from "@/components/core/headerMobileUser";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import SearchInputCustom from "@/components/core/searchBar";
 import { ChangeEvent } from "react";
-import { FaAddressCard, FaEllipsisVertical, FaPlus } from "react-icons/fa6";
-import TableNotFoundComponent from "@/features/user/components/TableNotFound";
+import { FaAddressCard, FaPlus } from "react-icons/fa6";
 import { useUserAddressHook } from "@/features/user/hooks/useUserAddressHook";
-import SkeletonLoadingComponent from "@/features/user/components/SkeletonLoadingComponents";
+import SkeletonLoadingComponent from "@/features/user/components/skeletonLoadingComponents";
 import PaginationWebLayout from "@/components/core/paginationWebLayout";
-import TableAddressUser from "@/features/user/components/TableAddressUser";
-import TableHeadUserAddress from "@/features/user/components/TableHeadUserAddress";
+import TableAddressUser from "@/features/user/components/tableAddressUser";
+import TableHeadUserAddress from "@/features/user/components/tableHeadUserAddress";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ConfirmAlert } from "@/components/core/confirmAlert";
 import { BsPencil, BsTrash } from "react-icons/bs";
 import NoData from "@/components/core/noData";
