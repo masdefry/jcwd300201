@@ -101,7 +101,7 @@ export default function MonthlyCharts({ monthlyData, onChange, value, showDropdo
             )}
             {isLoading ?
                 <Loading />
-                : <Bar data={data} options={options} className='w-full' style={{ width: '100%' }} />
+                : <Bar data={data} options={options} className='w-full' style={{ width: '100%',height: '100%'  }} />
             }
         </div>
     );

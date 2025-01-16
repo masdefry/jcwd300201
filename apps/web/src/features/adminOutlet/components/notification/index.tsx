@@ -10,11 +10,6 @@ interface NotificationData {
 export default function NotificationOutletAdmin({ dataOrderNotif }: INotificationProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const notifications: NotificationData[] = [
-        { id: 1, message: "Your order has been shipped." },
-        { id: 2, message: "New product added to your wishlist." },
-        { id: 3, message: "Your payment was successful." },
-    ];
 
 
     return (

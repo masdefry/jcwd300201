@@ -42,17 +42,16 @@ export default function Page() {
                 </div>
             </section>
             <section className='w-full h-full bg-white lg:p-10 relative'>
-                <div className="w-full h-full hidden md:flex flex-col">
-                    <div className="w-full z-20 flex items-end opacity-40 justify-end h-full gap-3">
-                        <Link href='/' className="font-bold text-3xl md:text-4xl"><FaInstagram /> </Link>
-                        <Link href='/' className="font-bold text-3xl md:text-4xl"><FaLinkedin /> </Link>
-                        <Link href='/' className="font-bold text-3xl md:text-4xl"><FaTwitter /> </Link>
-                    </div>
-                </div>
                 <div className="relative h-full w-full">
+                    <div className="w-full h-full absolute hidden md:flex flex-col">
+                        <div className="w-full z-20 flex items-end opacity-40 justify-end h-full gap-3">
+                            <Link href='/' className="font-bold text-3xl md:text-4xl"><FaInstagram /> </Link>
+                            <Link href='/' className="font-bold text-3xl md:text-4xl"><FaLinkedin /> </Link>
+                            <Link href='/' className="font-bold text-3xl md:text-4xl"><FaTwitter /> </Link>
+                        </div>
+                    </div>
 
                     <div className="flex flex-col absolute inset-0 h-full px-10 items-center justify-center w-full bg-white md:bg-transparent">
-                        {/* Blurred background for mobile */}
                         <div className="absolute inset-0 bg-gray-200/50 backdrop-blur-md rounded-3xl lg:hidden"></div>
                         <Image
                             src='/images/register.jpg'

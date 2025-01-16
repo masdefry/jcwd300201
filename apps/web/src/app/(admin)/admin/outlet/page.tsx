@@ -20,98 +20,25 @@ import Pagination from "@/components/core/pagination";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { toast } from "@/components/hooks/use-toast";
+import { useAdminStoreHook } from "@/features/superAdmin/hooks/useAdminStoreHook";
+import NoData from "@/components/core/noData";
 
 export default function Page() {
-    const token = authStore((state) => state?.token)
-    const email = authStore((state) => state?.email)
-    const params = useSearchParams()
-    const currentUrl = new URLSearchParams(params)
-    const [currentPage, setCurrentPage] = useState<number>(1)
-    const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
-    const [searchItem, setSearchItem] = useState<string>(params.get('search') || '')
-    const [sortStore, setSortStore] = useState<string>('')
-    const router = useRouter()
-    const pathname = usePathname()
-
-    const { data: dataItem, isFetching, isLoading, refetch } = useQuery({
-        queryKey: ['get-data-outlet', searchItem, sortStore],
-        queryFn: async () => {
-            const response = await instance.get('/store/stores', {
-                params: {
-                    search: searchItem,
-                    page: currentPage,
-                    sort: sortStore
-                },
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-
-            return response?.data?.data
-        }
-    })
-
-    const { mutate: deleteStoreById, isPending: isPendingDelete } = useMutation({
-        mutationFn: async (id) => {
-            return await instance.patch(`/store/delete/${id}`, {email}, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-        },
-        onSuccess: (res) => {
-            refetch()
-            toast({
-                description: res?.data?.message,
-                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
-            })
-        },
-        onError: (err: any) => {
-            toast({
-                description: err?.response?.data?.message,
-                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
-            })
-        }
-    })
-
-
-    const getDataStore = dataItem?.findStore
-    const totalPages = dataItem?.totalPage
-
-    const handlePageChange = (page: any) => {
-        setCurrentPage(page)
-    }
-
-    const debounce = useDebouncedCallback((value) => {
-        setSearchItem(value)
-    }, 1000)
-
-    useEffect(() => {
-        if (searchItem) {
-            currentUrl.set('search', searchItem)
-        } else {
-            currentUrl.delete('search')
-        }
-
-        if (sortStore) {
-            currentUrl.set('sort', sortStore)
-        } else {
-            currentUrl.delete('sort')
-        }
-        if (currentPage) {
-            currentUrl.set('page', String(currentPage))
-        } else {
-            currentUrl.delete('page')
-        }
-        if (totalPages === undefined || currentPage > totalPages) {
-            setCurrentPage(1)
-        }
-
-        router.push(`${pathname}?${currentUrl.toString()}`)
-        router.refresh()
-        refetch()
-
-    }, [params, refetch, pathname, currentPage, totalPages, entriesPerPage, sortStore])
+    const {
+        isLoading,
+        isPendingDelete,
+        deleteStoreById,
+        params,
+        router,
+        pathname,
+        token,
+        refetch,
+        debounce, totalPages, isFetching,
+        getDataStore,
+        handlePageChange, entriesPerPage,
+        searchItem, sortStore, currentPage,
+        setSortStore, setCurrentPage, isError
+    } = useAdminStoreHook()
 
     return (
         <>
@@ -158,7 +85,9 @@ export default function Page() {
                         </div>
                     </div>
                 </div>
-                {getDataStore?.length > 0 ? (
+                {isLoading && <Loading />}
+                {isError && <p>Silahkan coba beberapa saat lagi.</p>}
+                {!isLoading && getDataStore?.length > 0 ? (
                     getDataStore?.map((store: any, i: number) => {
                         const address = `${store?.address}, ${store?.city}, ${store?.province}`
                         return (
@@ -192,9 +121,9 @@ export default function Page() {
                         )
                     })
                 ) : (
-                    <div>
-                        <div className="text-center py-20 font-bold">{isLoading ? <Loading /> : 'Data tidak tersedia'}</div>
-                    </div>
+                    !isLoading && (
+                        <NoData />
+                    )
                 )}
                 {!isLoading && getDataStore?.length > 0 && (
                     <Pagination page={currentPage} totalPages={totalPages} setPage={setCurrentPage} />
@@ -230,33 +159,44 @@ export default function Page() {
                             </tr>
                         </thead>
                         <tbody>
-                            {getDataStore?.length > 0 ? (
-                                getDataStore?.map((store: any, i: number) => {
-                                    const address = `${store?.address}, ${store?.city}, ${store?.province}`
-                                    return (
-                                        <tr className="hover:bg-gray-100 border-b" key={store?.id || i}>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{store?.storeName?.toUpperCase()}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{address?.length > 50 ? `${address?.slice(0, 50)}..` : address}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{new Date(store?.createdAt).toLocaleDateString()}</td>
-                                            <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <div className='flex gap-2'>
-                                                    <ConfirmAlert disabled={isPendingDelete}
-                                                        caption={`Hapus "${store?.storeName?.toUpperCase()}"?`}
-                                                        description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
-                                                        onClick={() => deleteStoreById(store?.id)}>
-                                                        <button disabled={isPendingDelete} className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
-                                                    </ConfirmAlert>
-                                                    <Link href={`/admin/outlet/e/${store?.id}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </Link>
-                                                </div>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
-                            ) : (
+
+                            {isLoading ? (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">{isLoading ? <Loading /> : 'Data tidak tersedia'}</td>
+                                    <td colSpan={6} className="text-center py-10">
+                                        <Loading />
+                                    </td>
                                 </tr>
+                            ) : (
+                                !isLoading && getDataStore?.length > 0 ? (
+                                    getDataStore?.map((store: any, i: number) => {
+                                        const address = `${store?.address}, ${store?.city}, ${store?.province}`
+                                        return (
+                                            <tr className="hover:bg-gray-100 border-b" key={store?.id || i}>
+                                                <td className="py-3 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
+                                                <td className="py-3 px-6 text-sm text-gray-600 break-words">{store?.storeName?.toUpperCase()}</td>
+                                                <td className="py-3 px-6 text-sm text-gray-600 break-words">{address?.length > 50 ? `${address?.slice(0, 50)}..` : address}</td>
+                                                <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{new Date(store?.createdAt).toLocaleDateString()}</td>
+                                                <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
+                                                    <div className='flex gap-2'>
+                                                        <ConfirmAlert disabled={isPendingDelete}
+                                                            caption={`Hapus "${store?.storeName?.toUpperCase()}"?`}
+                                                            description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
+                                                            onClick={() => deleteStoreById(store?.id)}>
+                                                            <button disabled={isPendingDelete} className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
+                                                        </ConfirmAlert>
+                                                        <Link href={`/admin/outlet/e/${store?.id}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </Link>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
+                                ) : (
+                                    <tr>
+                                        <td colSpan={6} className="text-center font-bold">
+                                            {isLoading ? <span className="py-10"><Loading /></span> : <NoData />}
+                                        </td>
+                                    </tr>
+                                )
                             )}
                         </tbody>
                     </table>
