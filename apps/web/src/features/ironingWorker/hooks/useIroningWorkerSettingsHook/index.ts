@@ -54,7 +54,7 @@ export const useIroningWorkerSettingsHook = () => {
 
       window.location.reload()
     },
-    onError: (err: any) => {
+    onError: (err: { response: { data: { message: string } } }) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -79,7 +79,7 @@ export const useIroningWorkerSettingsHook = () => {
 
       window.location.reload()
     },
-    onError: (err: any) => {
+    onError: (err: { response: { data: { message: string } } }) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -104,7 +104,7 @@ export const useIroningWorkerSettingsHook = () => {
       })
       setIsChangePassword(true)
     },
-    onError: (err: any) => {
+    onError: (err: { response: { data: { message: string } } }) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -132,7 +132,7 @@ export const useIroningWorkerSettingsHook = () => {
         window.location.href = '/worker/login'
       }
     },
-    onError: (err: any) => {
+    onError: (err: { response: { data: { message: string } } }) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"

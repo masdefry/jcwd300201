@@ -13,40 +13,12 @@ import ButtonCustom from "@/components/core/button";
 import { toast } from "@/components/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
+import { useSetLocationHook } from "@/features/superAdmin/hooks/useSetLocationHook";
 
-export default function Page() {
-    const latitudeGlobal = locationStore((state) => state?.latitude);
-    const lngGlobal = locationStore((state) => state?.longitude);
-    const setLocation = locationStore((state) => state?.setLocationUser)
-    const setIsPositionCheck = locationStore((state) => state?.setIsPositionCheck)
-    const [pickLocationSuccess, setIsPickLocationSuccess] = useState<boolean>(false)
-    const token = authStore((state) => state?.token)
-    const [isPosition, setIsPosition] = useState({ lat: latitudeGlobal || -6.200000, lng: lngGlobal || 106.816666 });
-    const router = useRouter()
-
-    useEffect(() => {
-        return () => {
-            const container: any = L?.DomUtil.get("map-container");
-            if (container != null) {
-                container._leaflet_id = null;
-            }
-        }
-    }, [])
-
-    useEffect(() => {
-        return () => {
-            const container: any = L?.DomUtil.get("map-container-mobile");
-            if (container != null) {
-                container._leaflet_id = null;
-            }
-        }
-    }, [])
-
-    useEffect(() => {
-        setIsPosition({ lat: latitudeGlobal || -6.200000, lng: lngGlobal || 106.816666 })
-    }, [latitudeGlobal, lngGlobal])
-
-    const time = useMemo(() => new Date().getTime(), [])
+export default function SetLocation() {
+    const {
+              time, token, latitudeGlobal, lngGlobal, setIsPositionCheck, setLocation, pickLocationSuccess, setIsPickLocationSuccess, isPosition, setIsPosition, router
+   }=useSetLocationHook()
     return (
         <>
             <MobileSessionLayout title='Pilih Alamat'>
@@ -97,6 +69,7 @@ export default function Page() {
                     </Formik>
                 </div>
             </MobileSessionLayout>
+            
             <ContentWebLayout caption='Pilih Alamat' height="h-full">
                 <div className='w-full h-full flex pb-5'>
                     <Formik

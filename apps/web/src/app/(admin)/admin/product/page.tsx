@@ -15,11 +15,12 @@ import Loading from "@/components/core/loading";
 import NoData from "@/components/core/noData";
 import { FaCartArrowDown, FaEllipsisVertical, FaPlus } from "react-icons/fa6";
 import Pagination from "@/components/core/pagination";
-import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { createProductLaundryValidationSchema } from "@/features/superAdmin/schemas/createProductLaundryValidationSchema";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
+import ProductMobile from "@/features/superAdmin/components/ProductMobile";
+import ProductWeb from "@/features/superAdmin/components/ProductWeb";
 
 export default function Page() {
     const { currentPage, entriesPerPage, sortProduct, setSortProduct, isLoading, createProductItem,
@@ -108,21 +109,9 @@ export default function Page() {
                 {getDataItem?.length > 0 ? (
                     getDataItem?.map((prod: any, i: number) => {
                         return (
-                            <div key={i} className="flex items-center justify-between bg-white py-4 px-2 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100">
-                                <div className="flex items-center">
-                                    <div className="ml-2">
-                                        <h2 className="font-medium text-gray-900">{prod?.itemName}</h2>
-                                        <p className="text-xs text-gray-500">{new Date(prod?.createdAt).toLocaleDateString()}</p>
-                                    </div>
-                                </div>
-
-                                <div className="flex space-x-1">
-                                    <DialogUpdateProduct handleUpdateItem={handleUpdateItem} product={prod} isPendingUpdate={isPendingUpdate} />
-                                    <ConfirmAlert disabled={isPendingDelete} caption="Apakah anda yakin ingin menghapus data ini?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => handleDeleteItem(prod?.id)}>
-                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
-                                    </ConfirmAlert>
-                                </div>
-                            </div>
+                            <ProductMobile
+                                key={prod?.id} i={i} isPendingDelete={isPendingDelete} handleUpdateItem={handleUpdateItem} prod={prod} handleDeleteItem={handleDeleteItem} isPendingUpdate={isPendingUpdate}
+                            />
                         )
                     }))
                     : (
@@ -168,19 +157,10 @@ export default function Page() {
                             {getDataItem?.length > 0 ? (
                                 getDataItem?.map((prod: any, i: number) => {
                                     return (
-                                        <tr className="hover:bg-gray-100 border-b" key={prod?.id || i}>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words">{prod?.itemName}</td>
-                                            <td className="py-3 px-6 text-sm text-gray-600 break-words text-center">{new Date(prod?.createdAt).toLocaleDateString()}</td>
-                                            <td className="py-3 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <div className='flex gap-2'>
-                                                    <ConfirmAlert disabled={isPendingDelete} caption="Apakah anda yakin ingin menghapus data ini?" description="Data akan dihapus secara permanen, harap berhati-hati." onClick={() => handleDeleteItem(prod?.id)}>
-                                                        <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
-                                                    </ConfirmAlert>
-                                                    <DialogUpdateProduct handleUpdateItem={handleUpdateItem} product={prod} isPendingUpdate={isPendingUpdate} />
-                                                </div>
-                                            </td>
-                                        </tr>
+                                        <ProductWeb
+                                            key={prod?.id} currentPage={currentPage} entriesPerPage={entriesPerPage} i={i} isPendingDelete={isPendingDelete} handleUpdateItem={handleUpdateItem} prod={prod} handleDeleteItem={handleDeleteItem} isPendingUpdate={isPendingUpdate}
+                                        />
+
                                     )
                                 })
                             ) : (

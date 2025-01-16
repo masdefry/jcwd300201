@@ -6,7 +6,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { useToast } from '@/components/hooks/use-toast';
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
-import { IAddress, IOrderType, IRequestPickup } from '@/app/(user)/user/dashboard/pickup/type';
+import { IAddress, IOrderType, IRequestPickup } from './type';
 
 export const useRequestPickupHook = () => {
     const token = authStore((state) => state?.token);
@@ -35,7 +35,7 @@ export const useRequestPickupHook = () => {
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"

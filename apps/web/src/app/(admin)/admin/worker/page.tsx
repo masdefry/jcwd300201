@@ -1,15 +1,7 @@
 'use client'
 
-import { Card, CardContent } from "@/components/ui/card"
-import { FaEdit, FaSearch, FaTrashAlt } from 'react-icons/fa';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import HeaderMobile from "@/components/core/headerMobile"
-import { FaArrowLeft } from 'react-icons/fa';
+import { FaEdit, FaEye, FaSearch } from 'react-icons/fa';
 import Link from "next/link"
-
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog"
-import LocationAndSearch from "@/features/workerData/components/locationAndSearch";
 import { FaEllipsisVertical, FaPlus } from "react-icons/fa6";
 import ButtonCustom from "@/components/core/button";
 import { ChangeEvent } from "react";
@@ -17,19 +9,18 @@ import SearchInputCustom from "@/components/core/searchBar";
 import { useWorkerHook } from "@/features/superAdmin/hooks/useWorkerHook";
 import ContentWebLayout from "@/components/core/webSessionContent";
 import PaginationWebLayout from "@/components/core/paginationWebLayout";
-import { BsTrash } from "react-icons/bs";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
 import Loading from "@/components/core/loading";
 import NoData from "@/components/core/noData";
-import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import Pagination from "@/components/core/pagination";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { MdWorkHistory } from "react-icons/md";
+import { ConfirmAlert } from '@/components/core/confirmAlert';
+import { BsTrash } from 'react-icons/bs';
 
 export default function Page() {
-    const { currentPage, entriesPerPage, sortWorker, setSortWorker, isFetching,
-        dataWorker, totalPages, handlePageChange, debounce, searchWorker, setCurrentPage, isValueSearch, isLoading, setIsValueSearch, router } = useWorkerHook()
+    const { currentPage, entriesPerPage, sortWorker, setSortWorker, isFetching, handleDeleteData, isPendingDelete,
+        dataWorker, totalPages, handlePageChange, debounce, setCurrentPage, isValueSearch, isLoading, setIsValueSearch, router } = useWorkerHook()
 
     return (
         <>
@@ -79,7 +70,10 @@ export default function Page() {
                         </Dialog>
                     </div>
                 </div>
-                {dataWorker?.length > 0 ? (
+
+                {isLoading && <Loading />}
+
+                {!isLoading && dataWorker?.length > 0 ? (
                     dataWorker?.map((worker: any, i: number) => {
                         return (< div
                             key={i}
@@ -156,14 +150,23 @@ export default function Page() {
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{worker?.phoneNumber}</td>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{worker?.workerRole}</td>
                                             <td className="py-4 px-6 text-sm text-blue-700 hover:text-blue-500 hover:underline break-words">
-                                                <Link href={`/admin/worker/detail/${worker?.id}`}>View</Link>
+                                                <div className='flex gap-2'>
+                                                    <ConfirmAlert disabled={isPendingDelete}
+                                                        caption={`Hapus "${worker?.firstName?.toUpperCase()} ${worker?.lastName?.toUpperCase()}"?`}
+                                                        description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
+                                                        onClick={() => handleDeleteData(worker?.id)}>
+                                                        <button disabled={isPendingDelete} className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
+                                                    </ConfirmAlert>
+                                                    <Link className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl" href={`/admin/worker/detail/${worker?.id}`}><FaEye className="text-white" /></Link>
+                                                </div>
+
                                             </td>
                                         </tr>
                                     )
                                 })
                             ) : (
                                 <tr>
-                                    <td colSpan={6} className="text-center py-20 font-bold">{isFetching ? 'Mohon tunggu...' : 'Data tidak tersedia'}</td>
+                                    <td colSpan={6} className="text-center py-20 font-bold">{isLoading ? <Loading /> : <NoData />}</td>
                                 </tr>
                             )}
                         </tbody>

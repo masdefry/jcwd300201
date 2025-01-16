@@ -42,7 +42,7 @@ export const useWashingWorkerSettingsHook = () => {
         window.location.href = '/worker/login'
       }
     },
-    onError: (err: any) => {
+    onError: (err: { response: { data: { message: string } } }) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -80,7 +80,7 @@ export const useWashingWorkerSettingsHook = () => {
 
       window.location.reload()
     },
-    onError: (err: any) => {
+    onError: (err: { response: { data: { message: string } } }) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -105,7 +105,7 @@ export const useWashingWorkerSettingsHook = () => {
 
       window.location.reload()
     },
-    onError: (err: any) => {
+    onError: (err: { response: { data: { message: string } } }) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -130,7 +130,7 @@ export const useWashingWorkerSettingsHook = () => {
       })
       setIsChangePassword(true)
     },
-    onError: (err: any) => {
+    onError: (err: { response: { data: { message: string } } }) => {
       toast({
         description: err?.response?.data?.message,
         className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"

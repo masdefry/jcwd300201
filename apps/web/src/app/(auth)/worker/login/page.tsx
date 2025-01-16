@@ -37,14 +37,8 @@ export default function Page() {
                 </div>
             </section>
             <section className='w-full h-full bg-white p-0 lg:p-10 relative'>
-                {/* <div className="w-full h-full hidden lg:flex flex-col">
-                    <div className="w-full z-20 flex items-end opacity-40 justify-end h-full gap-3"></div>
-                </div> */}
-
                 <div className="relative h-full w-full">
-
                     <div className="flex flex-col absolute inset-0 h-full px-10 items-center justify-center w-full bg-white md:bg-transparent">
-                        {/* Blurred background for mobile */}
                         <div className="absolute inset-0 bg-gray-200/50 backdrop-blur-md rounded-3xl lg:hidden"></div>
                         <Image
                             src='/images/register.jpg'
