@@ -6,7 +6,7 @@ import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import NotificationDriver from "@/features/driver/components/Notification";
+import NotificationDriver from "@/features/driver/components/notification";
 import { useDriverDashboardHook } from "@/features/driver/hooks/useDriverDashboardHook";
 import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
 import WeatherMobile from "@/components/core/weatherMobile";
