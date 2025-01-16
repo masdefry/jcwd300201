@@ -9,11 +9,14 @@ import dotenv from 'dotenv'
 import { compile } from "handlebars"
 import { ICreateWorkerService, ILoginBody, IRegisterBody } from "./types"
 import { addHours, format, isAfter, isBefore, parse } from "date-fns"
+import validate from "deep-email-validator"
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
 export const userRegisterService = async ({ id, email, firstName, lastName, phoneNumber, verifyCode }: IRegisterBody) => {
+    const checkedEmail = await validate(email)
+    if (!checkedEmail?.valid) throw { msg: 'Email tidak terdaftar/tidak valid', status: 400 }
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
 

@@ -4,27 +4,21 @@ import React from 'react';
 import ContentWebLayout from "@/components/core/webSessionContent";
 import NotaHeader from "@/components/core/createNotaHeaders";
 import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import { FaWallet } from "react-icons/fa6";
-import { RiBankCardFill } from "react-icons/ri";
-import ButtonCustom from "@/components/core/button";
-import Image from "next/image";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { useUserPaymentHook } from "@/features/user/hooks/useUserPaymentHook";
 import PaymentPopUpDialog from "@/features/user/components/PaymentPopUpDialog";
 import PaymentMethodMobile from '@/features/user/components/PaymentMethodMobile';
 import PaymentMethodWeb from '@/features/user/components/PaymentMethodMobile';
 
-
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
-
     const {
-        isArrCardPayment, token, isUploadDialogOpen, setIsUploadDialogOpen, isPaymentMethod, setIsPaymentMethod
-        , isFetching, refetch, isPending, uploadPaymentProof, isUploading
-        , router, email, dataOrderNote, dataOrderNoteLoading, handlePaymmentOrder
-    } = useUserPaymentHook({ params })
+        isArrCardPayment, token, isUploadDialogOpen, setIsUploadDialogOpen, isPaymentMethod, setIsPaymentMethod,
+        isFetching, refetch, isPending, uploadPaymentProof, isUploading, router, email, dataOrderNote,
+        dataOrderNoteLoading, handlePaymmentOrder } = useUserPaymentHook({ params })
 
     if (dataOrderNote == undefined) return <div></div>
     if (isFetching) return <div></div>
+
     return (
         <>
             <MobileSessionLayout title='Pembayaran'>
@@ -60,7 +54,6 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
                     <PaymentMethodWeb
                         isArrCardPayment={isArrCardPayment} dataOrderNote={dataOrderNote} setIsPaymentMethod={setIsPaymentMethod} isPaymentMethod={isPaymentMethod} handlePaymmentOrder={handlePaymmentOrder} setIsUploadDialogOpen={setIsUploadDialogOpen} router={router}
                     />
-
                 </div>
             </ContentWebLayout >
         </>
