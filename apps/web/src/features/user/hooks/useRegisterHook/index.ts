@@ -23,7 +23,7 @@ export const useRegisterHook = () => {
 
             setIsDisabledSucces(true)
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"

@@ -34,7 +34,7 @@ const useLandingSettingsUserHooks = () => {
                 window.location.href = '/user/login'
             }
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -53,16 +53,16 @@ const useLandingSettingsUserHooks = () => {
         { name: 'Kebijakan Privasi', description: 'Kebijakan privasi aplikasi', icon: FaShieldAlt, url: '/privacy-policy' },
         { name: 'Syarat dan Ketentuan', description: 'Syarat dan ketentuan penggunaan', icon: FaFileContract, url: '/terms-condition' },
     ];
-    
-  return {
-    email,
-    token,
-    resetAuth,
-    isDisabledSucces,
-    handleLogoutAdmin,
-    isPending,
-    settingsItems
-  }
+
+    return {
+        email,
+        token,
+        resetAuth,
+        isDisabledSucces,
+        handleLogoutAdmin,
+        isPending,
+        settingsItems
+    }
 }
 
 export default useLandingSettingsUserHooks

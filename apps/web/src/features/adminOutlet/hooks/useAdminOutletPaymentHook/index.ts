@@ -56,14 +56,14 @@ export const useAdminOutletPaymentHook = () => {
                 }
             })
         },
-        onSuccess: (res: any) => {
+        onSuccess: (res: { data: { message: string } }) => {
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
             })
             refetch()
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"

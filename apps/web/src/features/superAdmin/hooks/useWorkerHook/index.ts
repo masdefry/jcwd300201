@@ -1,10 +1,12 @@
 'use client'
 
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { instance } from "@/utils/axiosInstance";
 import { useDebouncedCallback } from "use-debounce";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "@/components/hooks/use-toast";
+import authStore from "@/zustand/authstore";
 
 const useWorkerHook = () => {
     const params = useSearchParams()
@@ -16,6 +18,8 @@ const useWorkerHook = () => {
     const [isValueSearch, setIsValueSearch] = useState<string>('')
     const router = useRouter()
     const pathname = usePathname()
+    const token = authStore((state) => state?.token)
+    const email = authStore((state) => state?.email)
 
     const { data: getDataWorker, refetch, isFetching, isLoading } = useQuery({
         queryKey: ['get-data-worker', searchWorker, sortWorker],
@@ -30,6 +34,31 @@ const useWorkerHook = () => {
             })
 
             return response?.data?.data
+        }
+    })
+
+    const { mutate: handleDeleteData, isPending: isPendingDelete } = useMutation({
+        mutationFn: async (idUser: any) => {
+            return await instance.patch(`/worker/detail/${idUser}`, { email }, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+        },
+        onSuccess: (res: { data: { message: string } }) => {
+            toast({
+                description: res?.data?.message,
+                className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
+            refetch()
+            router.push('/admin/worker')
+
+        },
+        onError: (err: { response: { data: { message: string } } }) => {
+            toast({
+                description: err?.response?.data?.message,
+                className: "bg-red-500 text-white p-4 rounded-lg shadow-lg border-none"
+            })
         }
     })
 
@@ -74,7 +103,7 @@ const useWorkerHook = () => {
         dataWorker, totalPages,
         handlePageChange, debounce, isLoading,
         isValueSearch, setIsValueSearch,
-        router
+        router, handleDeleteData, isPendingDelete
     }
 }
 

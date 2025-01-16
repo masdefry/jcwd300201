@@ -212,7 +212,7 @@ export const getOrdersForDriverService = async ({ authorizationRole, tab, storeI
 
   if (!worker) throw { msg: "Driver tidak tersedia", status: 404 }
 
-  const statusFilter: any =
+  const statusFilter: Status[] =
     tab === 'AWAITING_DRIVER_PICKUP'
       ? ['AWAITING_DRIVER_PICKUP']
       : tab === 'DRIVER_TO_OUTLET'
@@ -478,7 +478,7 @@ export const getOrdersForWashingService = async ({
 
   if (!worker) throw { msg: "Driver tidak tersedia", status: 404 };
 
-  let statusFilter: any;
+  let statusFilter: Status[];
   if (tab === "not-washed") {
     statusFilter = ['AWAITING_PAYMENT'];
   } else if (tab === "in-washing") {
@@ -488,7 +488,7 @@ export const getOrdersForWashingService = async ({
   } else if (tab === "all") {
     statusFilter = ['AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS'];
   } else if (tab) {
-    statusFilter = [tab];
+    statusFilter = [tab as Status];
   } else {
     statusFilter = ['AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS'];
   }
@@ -629,7 +629,7 @@ export const getOrdersForIroningService = async ({
 
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
-  let statusFilter: any;
+  let statusFilter: Status[];
   if (tab === "proses-setrika") {
     statusFilter = ['IN_IRONING_PROCESS'];
   } else if (tab === "belum-disetrika") {
@@ -639,7 +639,7 @@ export const getOrdersForIroningService = async ({
   } else if (tab === "all") {
     statusFilter = ['AWAITING_PAYMENT', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
   } else if (tab) {
-    statusFilter = [tab];
+    statusFilter = [tab as Status];
   } else {
     statusFilter = ['AWAITING_PAYMENT', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
   }
@@ -968,7 +968,7 @@ export const getOrdersForPackingService = async ({
 
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
-  let statusFilter: any;
+  let statusFilter: Status[];
   if (tab === "packing-process") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "not-packed-yet") {
@@ -978,7 +978,7 @@ export const getOrdersForPackingService = async ({
   } else if (tab === "all") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab) {
-    statusFilter = [tab];
+    statusFilter = [tab as Status];
   } else {
     statusFilter = ['IN_PACKING_PROCESS'];
   }
@@ -1680,7 +1680,7 @@ export const getOrdersForDeliveryService = async ({
 
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
-  let statusFilter: any;
+  let statusFilter: Status[];
   if (tab === " ") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "ready-to-deliver") {
@@ -1851,7 +1851,7 @@ export const getOrdersForDriverDeliveryService = async ({
 
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
-  let statusFilter: any;
+  let statusFilter: Status[];
   if (tab === "waiting-driver") {
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "proses") {
@@ -1861,7 +1861,7 @@ export const getOrdersForDriverDeliveryService = async ({
   } else if (tab === "all") {
     statusFilter = ['IN_PACKING_PROCESS', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
-    statusFilter = [tab];
+    statusFilter = [tab as Status];
   } else {
     statusFilter = ['IN_IRONING_PROCESS', 'IN_PACKING_PROCESS'];
   }
@@ -2133,7 +2133,7 @@ export const getAllOrderForAdminService = async ({
 
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
-  let statusFilter: any;
+  let statusFilter: Status[];
   if (tab === "proses") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab === "complaint") {
@@ -2141,7 +2141,7 @@ export const getAllOrderForAdminService = async ({
   } else if (tab === "done") {
     statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
-    statusFilter = [tab];
+    statusFilter = [tab as Status];
   } else {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
   }
@@ -2474,7 +2474,7 @@ export const getAllOrderForUserService = async ({
 
   if (!user) throw { msg: "User tidak tersedia", status: 404 }
 
-  let statusFilter: any;
+  let statusFilter: Status[];
   if (tab === "waiting-payment") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab === "complaint") {
@@ -2484,7 +2484,7 @@ export const getAllOrderForUserService = async ({
   } else if (tab === "done") {
     statusFilter = ['DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
-    statusFilter = [tab];
+    statusFilter = [tab as Status];
   } else {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'DRIVER_TO_OUTLET', 'DRIVER_ARRIVED_AT_OUTLET', 'AWAITING_PAYMENT', 'IN_WASHING_PROCESS', 'IN_IRONING_PROCESS', 'IN_PACKING_PROCESS', 'PAYMENT_DONE', 'DRIVER_TO_CUSTOMER', 'DRIVER_DELIVERED_LAUNDRY'];
   }
@@ -2722,7 +2722,7 @@ export const getPaymentOrderForAdminService = async ({
 
   if (!worker) throw { msg: "Worker tidak tersedia", status: 404 }
 
-  let statusFilter: any;
+  let statusFilter: Status[];
   if (tab === "verification") {
     statusFilter = ['AWAITING_PAYMENT'];
   } else if (tab === "waiting-payment") {
@@ -2730,7 +2730,7 @@ export const getPaymentOrderForAdminService = async ({
   } else if (tab === "done") {
     statusFilter = ['PAYMENT_DONE'];
   } else if (tab) {
-    statusFilter = [tab];
+    statusFilter = [tab as Status];
   } else {
     statusFilter = ['AWAITING_PAYMENT', 'PAYMENT_DONE'];
   }
@@ -3239,7 +3239,7 @@ export const getOrdersForNotifService = async ({
 
   const offset = Math.max(limit * (pageNumber - 1), 0);
 
-  let statusFilter: any;
+  let statusFilter: Status[];
   if (tab === "driver") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'PAYMENT_DONE'];
   } else if (tab === "admin") {
@@ -3247,7 +3247,7 @@ export const getOrdersForNotifService = async ({
   } else if (tab === "user") {
     statusFilter = ['AWAITING_DRIVER_PICKUP', 'AWAITING_PAYMENT', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
   } else if (tab) {
-    statusFilter = [tab];
+    statusFilter = [tab as Status];
   } else {
     statusFilter = ['AWAITING_PAYMENT', 'DRIVER_ARRIVED_AT_OUTLET', 'PAYMENT_DONE', 'DRIVER_DELIVERED_LAUNDRY'];
   }

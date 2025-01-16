@@ -38,7 +38,7 @@ export const useUserPaymentHook = ({ params }: { params: Promise<{ slug: string 
                 }
             })
         },
-        onSuccess: (res: any) => {
+        onSuccess: (res: { data: { message: string; OrderUrl: { paymentProof: string }; } }) => {
             toast({
                 description: res?.data?.message,
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg border-none"
@@ -48,7 +48,7 @@ export const useUserPaymentHook = ({ params }: { params: Promise<{ slug: string 
                 router.push(res?.data?.OrderUrl?.paymentProof);
             }, 1000);
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"

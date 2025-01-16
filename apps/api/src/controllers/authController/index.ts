@@ -68,7 +68,7 @@ export const userLogout = async (req: Request, res: Response, next: NextFunction
                 req.app.locals.credentials = null
             })
         }, { timeout: 30000 })
-        
+
         res.status(200).json({
             error: false,
             message: 'Logout Berhasil!',

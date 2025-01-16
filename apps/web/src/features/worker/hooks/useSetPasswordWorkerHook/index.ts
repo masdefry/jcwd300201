@@ -36,7 +36,7 @@ export const useSetPasswordWorkerHook = (params: Promise<IParamsType>) => {
             setIsDisabledSucces(true)
             router.push('/worker/login')
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             if (err?.response?.data?.message === 'jwt expired' || err?.response?.data?.message === 'jwt malformed') {
                 toast({
                     description: 'Link sudah tidak berlaku, harap mengirim ulang email anda',

@@ -15,7 +15,6 @@ import Loading from "@/components/core/loading";
 import NoData from "@/components/core/noData";
 import { FaCartArrowDown, FaEllipsisVertical, FaPlus } from "react-icons/fa6";
 import Pagination from "@/components/core/pagination";
-import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { createProductLaundryValidationSchema } from "@/features/superAdmin/schemas/createProductLaundryValidationSchema";

@@ -69,7 +69,7 @@ export const useEditOutletHook = ({ params }: { params: Promise<{ detail: string
             setIsDisabledSucces(true)
             router.push('/admin/outlet/')
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
@@ -79,8 +79,8 @@ export const useEditOutletHook = ({ params }: { params: Promise<{ detail: string
 
 
     return {
-        router, isDisabledSucces, dataOutlet, isFetching, loadingPage,handleUpdateOutlet, lngGlobal, token, isPosition, setIsPosition, selectedProvince, setSelectedProvince,
-        cities, isPositionCheck, citiesLoading, provinces, provincesLoading,isPending,
+        router, isDisabledSucces, dataOutlet, isFetching, loadingPage, handleUpdateOutlet, lngGlobal, token, isPosition, setIsPosition, selectedProvince, setSelectedProvince,
+        cities, isPositionCheck, citiesLoading, provinces, provincesLoading, isPending,
     }
 
 }

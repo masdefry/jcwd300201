@@ -19,7 +19,7 @@ export const useAdminStoreHook = () => {
     const router = useRouter()
     const pathname = usePathname()
 
-    const { data: dataItem, isFetching, isLoading,isError, refetch } = useQuery({
+    const { data: dataItem, isFetching, isLoading, isError, refetch } = useQuery({
         queryKey: ['get-data-outlet', searchItem, sortStore],
         queryFn: async () => {
             const response = await instance.get('/store/stores', {
@@ -52,7 +52,7 @@ export const useAdminStoreHook = () => {
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
             })
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"

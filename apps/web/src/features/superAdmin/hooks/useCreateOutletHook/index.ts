@@ -54,7 +54,7 @@ export const useCreateOutletHook = () => {
                 className: "bg-blue-500 text-white p-4 rounded-lg shadow-lg"
             })
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
@@ -95,7 +95,7 @@ export const useCreateOutletHook = () => {
 
     return {
         lngGlobal, token, isPosition, setIsPosition, selectedProvince, setSelectedProvince, dataUser, setDataUser,
-        time,cities, citiesLoading, provinces, provincesLoading, handleSubmitAddStore,isPending,
+        time, cities, citiesLoading, provinces, provincesLoading, handleSubmitAddStore, isPending,
     }
 
 }

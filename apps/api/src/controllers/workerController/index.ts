@@ -149,7 +149,10 @@ export const getSingleWorkerById = async (req: Request, res: Response, next: Nex
 
 export const deleteDataWorkerById = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { id } = req.params
+    const { id: idFromParams } = req.params
+    const { id: idFromBody } = req.body
+
+    const id = idFromParams || idFromBody;
 
     await deleteDataWorkerByIdService({ id })
 

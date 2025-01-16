@@ -54,7 +54,7 @@ export const UsePackingCheckHook = ({ params }: { params: Promise<{ slug: string
                 }
             })
         },
-        onSuccess: (res: any) => {
+        onSuccess: (res: { data: { message: string } }) => {
 
             setIsDisabledSucces(true)
             toast({
@@ -65,7 +65,7 @@ export const UsePackingCheckHook = ({ params }: { params: Promise<{ slug: string
                     router.push('/worker/packing-worker/order/');
                 }, 1000);
         },
-        onError: (err: any) => {
+        onError: (err: { response: { data: { message: string } } }) => {
             toast({
                 description: err?.response?.data?.message,
                 className: "bg-red-500 text-white p-4 rounded-lg shadow-lg"
