@@ -39,8 +39,7 @@ export const useDeliveryRequestHook = () => {
                     dateUntil,
                 },
                 headers: { Authorization: `Bearer ${token}` }
-            });
-            console.log(res)
+            })
             return res?.data?.data;
         },
     });

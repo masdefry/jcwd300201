@@ -18,10 +18,10 @@ export const createUserValidationSchema = Yup.object().shape({
         .trim(),
 
     phoneNumber: Yup.string()
-        .matches(/^(?:\+62|0)[2-9][0-9]{7,10}$/, 'Nomor telepon tidak valid')
+        .matches(/^[0-9]+$/, 'Nomor telepon hanya boleh berisi angka')
         .required('Harap diisi')
         .trim(),
-        
+
     workerRole: Yup.string()
         .required('Harap diisi')
         .trim(),

@@ -151,9 +151,7 @@ async function main() {
 
         console.log("Data seeded successfully.")
 
-    } catch (error) {
-        console.log(error)
-    }
+    } catch (error) {}
 }
 
 main()
