@@ -50,7 +50,7 @@ export default function Page() {
             setDataUser(response?.data)
 
         } catch (error) {
-            console.log('error')
+            
         }
     }
 

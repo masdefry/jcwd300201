@@ -76,9 +76,7 @@ export const useUserDashboardHook = () => {
                     const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${process.env.NEXT_PUBLIC_OPEN_WEITHER}&lang=id`)
 
                     setIsCurrentWeather(res?.data)
-                } catch (error) {
-                    console.log('error')
-                }
+                } catch (error) {}
             }
 
             handleCurrentWeither()

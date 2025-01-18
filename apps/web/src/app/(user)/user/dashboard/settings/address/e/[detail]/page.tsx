@@ -51,7 +51,7 @@ export default function Page({ params }: { params: Promise<any> }) {
             setDataUser(response?.data)
 
         } catch (error) {
-            console.log('error')
+            
         }
     }
 

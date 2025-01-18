@@ -79,7 +79,7 @@ export const useAdminOutletDashboardHook = () => {
 
                     setIsCurrentWeather(res?.data)
                 } catch (error) {
-                    console.log('error')
+                    
                 }
             }
 

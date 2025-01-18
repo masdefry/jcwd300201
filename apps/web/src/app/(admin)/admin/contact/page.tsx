@@ -2,10 +2,6 @@ import ContentWebLayout from "@/components/core/webSessionContent";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { id } from 'date-fns/locale'
 import { cookies } from "next/headers";
-import Image from "next/image";
-import Link from "next/link";
-import { FaWhatsapp } from "react-icons/fa6";
-import { GrMail } from "react-icons/gr";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import ContactMobile from "@/features/superAdmin/components/ContactMobile";
 import ContactWeb from "@/features/superAdmin/components/ContactWeb";
@@ -25,7 +21,7 @@ const getMessageCustomer = async () => {
 
         return result
     } catch (error) {
-        console.log('error')
+        
     }
 }
 
@@ -46,17 +42,13 @@ export default async function Contact() {
         <>
             <MobileSessionLayout title="Pesan Pelanggan">
                 {dataMessage?.map((message: any, i: number) => (
-                    <ContactMobile
-                        message={message} formatDistanceToNow={formatDistanceToNow} messageWhatsapp={messageWhatsapp} id={id} i={i}
-                    />
+                    <ContactMobile key={i} message={message} formatDistanceToNow={formatDistanceToNow} messageWhatsapp={messageWhatsapp} id={id} i={i} />
                 ))}
             </MobileSessionLayout>
             <ContentWebLayout caption="Pesan Pelanggan">
                 <div className="w-full h-fit pb-4 flex flex-col gap-2">
                     {dataMessage?.map((message: any, i: number) => (
-                        <ContactWeb
-                            message={message} formatDistanceToNow={formatDistanceToNow} messageWhatsapp={messageWhatsapp} id={id} i={i}
-                        />
+                        <ContactWeb key={i} message={message} formatDistanceToNow={formatDistanceToNow} messageWhatsapp={messageWhatsapp} id={id} i={i}/>
                     ))}
                 </div>
             </ContentWebLayout>
