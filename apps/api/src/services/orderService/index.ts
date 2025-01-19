@@ -97,7 +97,9 @@ export const findNearestStoreService = async ({ userId, address }: IFindNearestS
         ) 
       )/1000 AS distance
     FROM public.stores
-    WHERE ( 
+    WHERE 
+          "deletedAt" IS NULL AND -- Exclude deleted stores
+    ( 
       6371000 * acos( 
         cos(radians(${userLatitude})) * cos(radians(latitude)) * 
         cos(radians(longitude) - radians(${userLongitude})) + 
@@ -375,7 +377,13 @@ export const acceptOrderOutletService = async ({ email, orderId, userId }: IAcce
   if (existingStatus) throw { msg: "Order sudah diproses oleh driver lain", status: 400 }
 
 
-  if (order.orderStatus.some((status) => status.status === "DRIVER_TO_OUTLET")) {
+  const driverToOutletStatus = order.orderStatus.find(
+    (status) => status.status === "DRIVER_TO_OUTLET"
+  );
+  if (driverToOutletStatus) {
+    if (driverToOutletStatus.workerId !== userId) {
+      throw { msg: "Order sedang diproses oleh driver lain", status: 400 };
+    }
     const newStatus: any = await prisma.orderStatus.create({
       data: {
         orderId: order.id,
@@ -3253,7 +3261,7 @@ export const getOrdersForNotifService = async ({
   }
 
   const whereConditions: Prisma.OrderWhereInput = {
-    ...(authorizationRole === "SUPER_ADMIN" ? { storeId } : {}),
+    ...(authorizationRole === "SUPER_ADMIN" ? {} : { storeId }),
     orderStatus: {
       some: {
         status: { in: statusFilter },

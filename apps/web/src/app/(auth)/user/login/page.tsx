@@ -51,7 +51,7 @@ export default function Page() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col absolute inset-0 h-full px-10 items-center justify-center w-full bg-white md:bg-transparent">
+                    <div className="flex z-50 flex-col absolute inset-0 h-full px-10 items-center justify-center w-full bg-white md:bg-transparent">
                         <div className="absolute inset-0 bg-gray-200/50 backdrop-blur-md rounded-3xl lg:hidden"></div>
                         <Image
                             src='/images/register.jpg'

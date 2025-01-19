@@ -5,7 +5,11 @@ import { Prisma } from "@prisma/client"
 
 const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
 export const getStoreService = async () => {
-    const findStore = await prisma.store.findMany()
+    const findStore = await prisma.store.findMany({
+        where: {
+            deletedAt: null,
+        },
+    });
     const dataStore = findStore?.map((store: IStoreMap) => {
         return {
             storeId: store?.id,
