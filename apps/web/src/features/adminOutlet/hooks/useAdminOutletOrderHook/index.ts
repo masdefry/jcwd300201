@@ -57,7 +57,6 @@ export const useAdminOutletOrderHook = () => {
                     Authorization: `Bearer ${token}`
                 }
             })
-            console.log(res)
             return setOrderData(res?.data?.data);
         },
     })

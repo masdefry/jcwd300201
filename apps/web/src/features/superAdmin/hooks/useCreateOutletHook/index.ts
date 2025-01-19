@@ -36,9 +36,7 @@ export const useCreateOutletHook = () => {
             const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${isPosition?.lat?.toString()}&lon=${isPosition?.lng?.toString()}&format=json`)
             setDataUser(response?.data)
 
-        } catch (error) {
-            console.log('error')
-        }
+        } catch (error) {}
     }
 
     const { mutate: handleSubmitAddStore, isPending } = useMutation({

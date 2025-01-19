@@ -62,9 +62,7 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
                 })
             }
 
-        } catch (error) {
-            console.log('error')
-        }
+        } catch (error) {}
     }
 
     useEffect(() => {
@@ -96,9 +94,7 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
             try {
                 const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${latitude?.toString()}&lon=${longitude?.toString()}&format=json`)
                 setDataUser(response?.data?.display_name)
-            } catch (error) {
-                console.log('error')
-            }
+            } catch (error) {}
         }
         if (latitude && longitude) {
             getLocation()
