@@ -66,9 +66,9 @@ export const deleteProfilePictureWorkerService = async ({ userId }: { userId: st
         data: { profilePicture: profilePict }
     })
 
-    if (!findWorker?.profilePicture?.includes(profilePict)) {
-        rmSync(`src/public/images/${findWorker?.profilePicture}`)
-    }
+    // if (!findWorker?.profilePicture?.includes(profilePict)) {
+    //     rmSync(`src/public/images/${findWorker?.profilePicture}`)
+    // }
 }
 
 export const createNotesService = async ({ email, notes, orderId }: ICreateNotes) => {

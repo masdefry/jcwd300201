@@ -2703,10 +2703,6 @@ export const paymentOrderTfService = async ({ orderId, email, userId, paymentPro
       },
     });
 
-    if (!updatedOrder) {
-      fs.rmSync(`src/public/images/${paymentProof}`);
-    }
-
     return { updatedOrder };
   });
 
