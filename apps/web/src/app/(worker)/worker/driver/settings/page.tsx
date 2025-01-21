@@ -7,17 +7,17 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Formik } from 'formik';
-import ProfileSettings from '@/components/core/profileSettings';
-import ChangePassword from '@/components/core/changePassword';
+import ProfileSettings from '@/components/core/ProfileSettings';
+import ChangePassword from '@/components/core/ChangePassword';
 import { useDriverSettingsHook } from '@/features/driver/hooks/useDriverSettingsHook';
-import ContentWebLayout from '@/components/core/webSessionContent';
+import ContentWebLayout from '@/components/core/WebSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { driverChangePasswordValidationSchema } from '@/features/driver/schemas/driverChangePasswordValidationSchema';
 import { driverAccountValidationSchema } from '@/features/driver/schemas/driverAccountValidationSchema';
-import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
-import ButtonCustom from '@/components/core/button';
-import { ConfirmAlert } from '@/components/core/confirmAlert';
+import ProfileSettingsMobile from '@/components/core/ProfileSettingsMobile';
+import ButtonCustom from '@/components/core/Button';
+import { ConfirmAlert } from '@/components/core/ConfirmAlert';
 import { FaSignOutAlt } from 'react-icons/fa';
 import { driverAccountMobileValidationSchema } from '@/features/driver/schemas/driverAccountMobileValidationSchema';
 

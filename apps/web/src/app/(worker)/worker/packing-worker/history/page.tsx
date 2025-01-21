@@ -2,19 +2,20 @@
 
 import { FaHistory } from "react-icons/fa"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
-import ButtonCustom from "@/components/core/button"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
+import ButtonCustom from "@/components/core/Button"
 import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
-import FilterWeb from "@/components/core/filterWeb"
+import NoData from "@/components/core/NoData"
+import FilterWeb from "@/components/core/FilterWeb"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { usePackingHistoryHook } from "@/features/packingWorker/hooks/usePackingHistoryHook"
 import HistoryContentMobile from "@/features/packingWorker/components/HistoryContentMobile"
 import HistoryContentWeb from "@/features/packingWorker/components/HistoryContentWeb"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
+import { IOrderPacking } from "@/features/packingWorker/types/type"
 
 export default function HistoryOrderPacking() {
     const {
@@ -50,7 +51,7 @@ export default function HistoryOrderPacking() {
                     {dataOrderPackingProcessLoading && <Loading />}
                     {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                     {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
-                        dataOrderPackingProcess?.orders?.map((order: any) => (
+                        dataOrderPackingProcess?.orders?.map((order: IOrderPacking) => (
                             <HistoryContentMobile key={order?.id} order={order} />
                         ))) : (
                         !dataOrderPackingProcessLoading && (
@@ -78,7 +79,7 @@ export default function HistoryOrderPacking() {
                                 </tr>
                             ) : (
                                 !dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
-                                    dataOrderPackingProcess?.orders?.map((order: any, i: number) => (
+                                    dataOrderPackingProcess?.orders?.map((order: IOrderPacking, i: number) => (
                                         <HistoryContentWeb key={order?.id} order={order} page={page} limit={limit} i={i} />
                                     ))) : (
                                     <tr>

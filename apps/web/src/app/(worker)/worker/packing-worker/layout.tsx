@@ -11,8 +11,9 @@ import Cookies from 'js-cookie'
 import { FaDashcube, FaHistory, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { toast } from "@/components/hooks/use-toast";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { FaCartArrowDown } from "react-icons/fa6";
+import { Role } from "@/components/core/Role";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Layout({ children }: { children: ReactNode }) {
@@ -30,7 +31,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         setIsClose(!isClose)
     }
 
-    const dashboardMenuUrl: any = {
+    const dashboardMenuUrl: Record<Role, string> = {
+        SUPER_ADMIN: '/admin/dashboard',
         OUTLET_ADMIN: '/worker/admin-outlet/dashboard',
         WASHING_WORKER: '/worker/washing-worker/dashboard',
         IRONING_WORKER: '/worker/ironing-worker/dashboard',
@@ -38,7 +40,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         DRIVER: '/worker/driver/dashboard',
     }
 
-    const dashboardUrl = dashboardMenuUrl[role] || ''
+    const dashboardUrl = dashboardMenuUrl[role as Role] || ''
 
     const { mutate: handleLogoutAdmin, isPending } = useMutation({
         mutationFn: async () => {

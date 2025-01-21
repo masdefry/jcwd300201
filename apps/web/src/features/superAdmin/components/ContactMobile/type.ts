@@ -1,3 +1,4 @@
+import { Locale } from 'date-fns/locale';
 interface IUser {
     firstName: string;
     lastName: string;
@@ -17,6 +18,6 @@ export interface IContactMobile {
     message: IMessage;
     formatDistanceToNow: any;
     messageWhatsapp: string;
-    id: any;
+    id: Locale;
     i: number;
 }

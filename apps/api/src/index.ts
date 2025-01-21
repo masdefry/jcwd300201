@@ -24,10 +24,17 @@ interface IError extends Error {
     status: number
 }
 
+
+interface UploadedFiles {
+    images?: { path: string }[];
+}
+
+
+
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
-    const imagesUpload: any = req.files
+    const imagesUpload = req.files as UploadedFiles | undefined;
     if (imagesUpload?.images?.length != 0 || imagesUpload?.images?.length != undefined) {
-        imagesUpload?.images?.forEach((img: any) => {
+        imagesUpload?.images?.forEach((img) => {
             fs.rmSync(`${img?.path}`)
         });
     }

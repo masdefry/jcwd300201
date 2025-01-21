@@ -1,11 +1,7 @@
 import Link from "next/link";
+import { IOrderTable } from "./type";
 
-interface IOrderTable {
-    order: any,
-    page: number,
-    limit: number,
-    index: number
-}
+
 export default function TableBodyContent({ order, page, limit, index }: IOrderTable) {
     return (
         <tr className="hover:bg-gray-100 border-b">

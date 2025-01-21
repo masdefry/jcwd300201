@@ -6,5 +6,5 @@ export const createProductLaundryValidationSchema = Yup.object().shape({
         .required('harap diisi terlebih dahulu')
         .matches(/^[A-Za-z]+$/, 'Format nama tidak valid')
         .trim()
-        .test('no-whitespace', 'Email tidak boleh hanya terdiri dari spasi', (value: any) => value && !/^\s+$/.test(value))
+        .test('no-whitespace', 'Email tidak boleh hanya terdiri dari spasi', (value: string | undefined) => !!value && !/^\s+$/.test(value))
 })

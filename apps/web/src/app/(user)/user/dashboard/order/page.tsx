@@ -2,20 +2,21 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import ContentWebLayout from "@/components/core/webSessionContent";
-import ButtonCustom from "@/components/core/button";
-import NoData from "@/components/core/noData"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import ButtonCustom from "@/components/core/Button";
+import NoData from "@/components/core/NoData"
 import Loading from "@/components/core/loading"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { GrNotes } from "react-icons/gr"
-import FilterWeb from "@/components/core/filterWeb"
+import FilterWeb from "@/components/core/FilterWeb"
 import { useUserOrderHook } from "@/features/user/hooks/useUserOrderHook"
 import OrderContentMobile from "@/features/user/components/OrderContentMobile"
 import OrderContentWeb from "@/features/user/components/OrderContentWeb"
 import OrderPopUpDialog from "@/features/user/components/OrderPopUpDialog"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
+import { IOrderContentMobile } from "./type"
 
 export default function Page() {
     const {
@@ -80,7 +81,7 @@ export default function Page() {
                             {dataOrderListLoading && <Loading />}
                             {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
                             {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
-                                dataOrderList?.orders?.map((order: any) => (
+                                dataOrderList?.orders?.map((order: IOrderContentMobile) => (
                                     <OrderContentMobile
                                         key={order?.id}
                                         order={order}
@@ -149,7 +150,7 @@ export default function Page() {
                                 </tr>
                             ) : (
                                 !dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
-                                    dataOrderList?.orders?.map((order: any, i: number) => (
+                                    dataOrderList?.orders?.map((order: IOrderContentMobile, i: number) => (
                                         <OrderContentWeb
                                             key={order?.id}
                                             order={order}

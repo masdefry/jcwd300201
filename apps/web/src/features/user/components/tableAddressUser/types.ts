@@ -1,5 +1,5 @@
 export interface ITableAddress {
-    address: any,
+    address: string,
     currentPage: number,
     entriesPerPage: number,
     i: number,

@@ -1,6 +1,6 @@
 'use client'
 
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { useRouter } from "next/navigation";
 
 export default function NavigationSection() {

@@ -3,19 +3,20 @@
 import { FaHistory } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
-import ButtonCustom from "@/components/core/button"
-import NoData from "@/components/core/noData"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
+import ButtonCustom from "@/components/core/Button"
+import NoData from "@/components/core/NoData"
 import Loading from "@/components/core/loading"
-import FilterWeb from "@/components/core/filterWeb"
+import FilterWeb from "@/components/core/FilterWeb"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { useDriverHistoryHook } from "@/features/driver/hooks/useDriverHistoryHook"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
 import HistoryContentMobile from "@/features/driver/components/HistoryContentMobile"
 import HistoryContentWeb from "@/features/driver/components/HistoryContentWeb"
+import { IOrderDriver } from "@/features/driver/types/type"
 
 export default function HistoryOrderDriver() {
     const {
@@ -52,7 +53,7 @@ export default function HistoryOrderDriver() {
                                 {dataHistoryOrderLoading && <Loading />}
                                 {dataHistoryOrderError && <p>Silahkan coba beberapa saat lagi.</p>}
                                 {!dataHistoryOrderLoading && dataHistoryOrder?.orders?.length > 0 ? (
-                                    dataHistoryOrder?.orders?.map((order: any) => (
+                                    dataHistoryOrder?.orders?.map((order: IOrderDriver) => (
                                         <HistoryContentMobile key={order?.id} order={order} />
                                     ))
                                 ) : (
@@ -107,7 +108,7 @@ export default function HistoryOrderDriver() {
                                 </tr>
                             ) : (
                                 !dataHistoryOrderLoading && dataHistoryOrder?.orders?.length > 0 ? (
-                                    dataHistoryOrder?.orders?.map((order: any, i: number) => (
+                                    dataHistoryOrder?.orders?.map((order: IOrderDriver, i: number) => (
                                         <HistoryContentWeb key={order.id} order={order} page={page} limit={limit} i={i} />
                                     ))
                                 ) : (

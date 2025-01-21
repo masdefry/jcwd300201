@@ -2,20 +2,21 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import ContentWebLayout from "@/components/core/webSessionContent";
-import ButtonCustom from "@/components/core/button";
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import ButtonCustom from "@/components/core/Button";
 import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
-import FilterWeb from "@/components/core/filterWeb"
+import NoData from "@/components/core/NoData"
+import FilterWeb from "@/components/core/FilterWeb"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import { useAdminOutletOrderHook } from "@/features/adminOutlet/hooks/useAdminOutletOrderHook"
 import OrderContentMobile from "@/features/adminOutlet/components/OrderContentMobile"
 import OrderContentWeb from "@/features/adminOutlet/components/OrderContentWeb"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
 import OrderDialogAdminOutlet from "@/features/adminOutlet/components/OrderDialogAdminOutlet"
+import { IOrder } from "@/features/adminOutlet/types/type"
 
 
 export default function DeliveryRequest() {
@@ -61,7 +62,7 @@ export default function DeliveryRequest() {
                             {dataOrderListLoading && <Loading />}
                             {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
                             {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
-                                dataOrderList?.orders?.map((order: any) => (
+                                dataOrderList?.orders?.map((order: IOrder) => (
                                     <OrderContentMobile
                                         key={order?.id} order={order} setOrderData={setOrderData} handleOrderDetail={handleOrderDetail} setOpenDialog={setOpenDialog}
                                     />
@@ -113,7 +114,7 @@ export default function DeliveryRequest() {
                                 </tr>
                             ) : (
                                 !dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
-                                    dataOrderList?.orders?.map((order: any, i: number) => (
+                                    dataOrderList?.orders?.map((order: IOrder, i: number) => (
                                         <OrderContentWeb
                                             key={order?.id}
                                             order={order}

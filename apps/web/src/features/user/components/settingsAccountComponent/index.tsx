@@ -7,18 +7,18 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
-import ProfileSettings from '@/components/core/profileSettings';
-import ChangePassword from '@/components/core/changePassword';
+import ProfileSettings from '@/components/core/ProfileSettings';
+import ChangePassword from '@/components/core/ChangePassword';
 import { useUserSettingsHook } from '@/features/user/hooks/useUserSettingsHook';
 import { FaEye, FaEyeSlash, FaGear } from 'react-icons/fa6';
-import ButtonCustom from '@/components/core/button';
+import ButtonCustom from '@/components/core/Button';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
+import ProfileSettingsMobile from '@/components/core/ProfileSettingsMobile';
 import { userAccountValidationMobileSchema } from '@/features/user/schemas/userAccountMobileValidationSchema';
 import { userAccountValidationSchema } from '@/features/user/schemas/userAccountValidationSchema';
 import { userGoogleChangePasswordValidationSchema } from '@/features/user/schemas/userGoogleChangePasswordValidationSchema';
-import ContentWebLayout from '@/components/core/webSessionContent';
+import ContentWebLayout from '@/components/core/WebSessionContent';
 import { userChangePasswordValidationSchema } from '@/features/user/schemas/userChangePasswordValidationSchema';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { IOrderContent } from "./type";
 import { FaWhatsapp } from "react-icons/fa6";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 
 export default function OrderContentMobile(
     { order, setOrderData, handleOrderDetail, setOpenDialog }: IOrderContent

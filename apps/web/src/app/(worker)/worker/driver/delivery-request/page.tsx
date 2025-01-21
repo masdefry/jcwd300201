@@ -2,20 +2,21 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import ButtonCustom from "@/components/core/button"
+import ButtonCustom from "@/components/core/Button"
 import { FaTruck } from "react-icons/fa6"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import Pagination from "@/components/core/pagination"
-import FilterWorker from "@/components/core/filter"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import Pagination from "@/components/core/Pagination"
+import FilterWorker from "@/components/core/Filter"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
 import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
+import NoData from "@/components/core/NoData"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
-import FilterWeb from "@/components/core/filterWeb"
+import FilterWeb from "@/components/core/FilterWeb"
 import { useDeliveryRequestHook } from "@/features/driver/hooks/useDeliveryRequestHook"
-import TableHeaderWeb from "@/components/core/tableHeadWeb";
+import TableHeaderWeb from "@/components/core/TableHeadWeb";
 import DeliveryContentMobile from "@/features/driver/components/DeliveryContentMobile";
 import DeliveryContentWeb from "@/features/driver/components/DeliveryContentWeb";
+import { IOrderDriver } from "@/features/driver/types/type"
 
 export default function DriverDelivery() {
     const { dataOrderDelivery, isFetching, dataOrderDeliveryLoading, dataOrderDeliveryError, handleProcessDelivery, handleAcceptOrderDelivery, debounce,
@@ -42,7 +43,7 @@ export default function DriverDelivery() {
                                 {dataOrderDeliveryLoading && <Loading />}
                                 {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}
                                 {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 ? (
-                                    dataOrderDelivery?.orders?.map((order: any) => (
+                                    dataOrderDelivery?.orders?.map((order: IOrderDriver) => (
                                         <DeliveryContentMobile
                                             key={order.id}
                                             order={order}
@@ -87,7 +88,7 @@ export default function DriverDelivery() {
                                 </tr>
                             ) : (
                                 !dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 ? (
-                                    dataOrderDelivery?.orders?.map((order: any, i: number) => (
+                                    dataOrderDelivery?.orders?.map((order: IOrderDriver, i: number) => (
                                         <DeliveryContentWeb
                                             key={order.id}
                                             order={order}

@@ -47,7 +47,7 @@ export const useWashingOrderHook = () => {
     });
 
     const { mutate: handleProcessWashing, isPending } = useMutation({
-        mutationFn: async (id: any) => {
+        mutationFn: async (id: string) => {
             return await instance.post(`/order/washing-done/${id}`, { email }, {
                 headers: {
                     Authorization: `Bearer ${token}`

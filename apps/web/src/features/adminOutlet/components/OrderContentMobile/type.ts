@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from 'react';
+
+
 export interface IUser {
     firstName: string;
     lastName: string;
@@ -10,14 +13,14 @@ export interface IOrderStatus {
 
 export interface IOrder {
     id: string;
-    isPaid: any;
+    isPaid: boolean;
     createdAt: string;
     orderStatus: IOrderStatus[];
     User: IUser;
 }
 export interface IOrderContent {
     order: IOrder;
-    setOrderData: (data: any) => void; 
+    setOrderData: Dispatch<SetStateAction<IOrder[] | null>>
     handleOrderDetail: (id: string) => void;
-    setOpenDialog: (open: boolean) => void;
+    setOpenDialog: Dispatch<SetStateAction<boolean>>
 }

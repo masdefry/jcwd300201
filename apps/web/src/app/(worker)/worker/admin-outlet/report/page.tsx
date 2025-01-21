@@ -2,18 +2,19 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
 import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
+import NoData from "@/components/core/NoData"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import FilterWeb from "@/components/core/filterWeb"
-import ButtonCustom from "@/components/core/button"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import FilterWeb from "@/components/core/FilterWeb"
+import ButtonCustom from "@/components/core/Button"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
 import ReportContentMobile from "@/features/adminOutlet/components/ReportContentMobile"
 import ReportContentWeb from "@/features/adminOutlet/components/ReportContentWeb"
 import { useAdminOutletReportHook } from "@/features/adminOutlet/hooks/useAdminOutletReportHook"
+import { IOrder } from "@/features/adminOutlet/types/type"
 
 export default function DriverPickUp() {
     const {
@@ -71,7 +72,7 @@ export default function DriverPickUp() {
                                 {dataOrderPackingProcessLoading && <Loading />}
                                 {dataOrderPackingProcessError && <div>Silahkan coba beberapa saat lagi.</div>}
                                 {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
-                                    dataOrderPackingProcess?.orders?.map((order: any) => (
+                                    dataOrderPackingProcess?.orders?.map((order: IOrder) => (
                                         <ReportContentMobile
                                             key={order?.id} order={order} handleLaundryProblem={handleLaundryProblem} isPending={isPending} isDisableSuccess={isDisableSuccess}
                                         />
@@ -126,7 +127,7 @@ export default function DriverPickUp() {
                                 </tr>
                             ) : (
                                 !dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
-                                    dataOrderPackingProcess?.orders?.map((order: any, i: number) => (
+                                    dataOrderPackingProcess?.orders?.map((order: IOrder, i: number) => (
                                         <ReportContentWeb
                                             key={order?.id} order={order} handleLaundryProblem={handleLaundryProblem} isPending={isPending} isDisableSuccess={isDisableSuccess} page={page} i={i}
                                         />

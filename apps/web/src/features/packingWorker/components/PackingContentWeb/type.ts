@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 
 interface IUser {
     firstName: string;
@@ -10,12 +11,14 @@ interface IOrder {
     OrderType: IOrderType;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: any;
+    orderStatus: IOrderStatus;
     User: IUser;
     orderTypeId: number
-    isDone: any
+    isDone: boolean
 }
-
+export interface IOrderStatus {
+    status: string;
+}
 interface IOrderType {
     type: string
 }
@@ -24,7 +27,7 @@ export interface IPackingContentWebProps {
     order: IOrder;
     handleProcessPacking: (orderId: string) => void;
     isPending: boolean;
-    router: any
+    router: ReturnType<typeof useRouter>;
     page: number
     limit: number
     i: number

@@ -1,10 +1,10 @@
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { IDeliveryContentWeb } from "./type";
 
 export default function DeliveryContentWeb(
     { order,
         handleRequestDelivery,
-         page, limit, i }: IDeliveryContentWeb
+        page, limit, i }: IDeliveryContentWeb
 ) {
     return (
         <tr className="hover:bg-gray-100 border-b" key={order?.id || i}>

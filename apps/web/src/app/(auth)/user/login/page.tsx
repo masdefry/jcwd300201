@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { FaGoogle, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa6";
 import { useLoginUserHook } from "@/features/user/hooks/useLoginUserHook";
 import { loginUserValidationSchema } from "@/features/user/schemas/loginUserValidationSchema";
@@ -51,7 +51,7 @@ export default function Page() {
                         </div>
                     </div>
 
-                    <div className="flex flex-col absolute inset-0 h-full px-10 items-center justify-center w-full bg-white md:bg-transparent">
+                    <div className="flex z-50 flex-col absolute inset-0 h-full px-10 items-center justify-center w-full bg-white md:bg-transparent">
                         <div className="absolute inset-0 bg-gray-200/50 backdrop-blur-md rounded-3xl lg:hidden"></div>
                         <Image
                             src='/images/register.jpg'

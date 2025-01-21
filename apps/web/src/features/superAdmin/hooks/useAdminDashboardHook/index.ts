@@ -12,6 +12,7 @@ import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { IOrder } from "./type";
 
 export const useAdminDashboardHook = () => {
     const name = authStore((state) => state?.firstName)
@@ -32,11 +33,12 @@ export const useAdminDashboardHook = () => {
     const [selectedTab, setSelectedTab] = useState<'today' | 'month'>('today');
     const [isMonthlyStatistic, setIsMonthlyStatistic] = useState<string>(currentUrl.get('outlet') || '')
 
+    const outletId = isMonthlyStatistic ? isMonthlyStatistic : '';
 
-    const { data: dataOrder } = useQuery({
+    const { data: dataOrder, refetch: refetchTab } = useQuery({
         queryKey: ['get-order-status', selectedTab],
         queryFn: async () => {
-            const res = await instance.get(`/order/tracking?period=${selectedTab}`, {
+            const res = await instance.get(`/order/tracking?period=${selectedTab}&outletId=${outletId}`, {
                 headers: { Authorization: `Bearer ${token}` }
             })
             return res?.data?.data
@@ -82,7 +84,7 @@ export const useAdminDashboardHook = () => {
                     const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${process.env.NEXT_PUBLIC_OPEN_WEITHER}&lang=id`)
 
                     setIsCurrentWeather(res?.data)
-                } catch (error) {}
+                } catch (error) { }
             }
 
             handleCurrentWeither()
@@ -114,11 +116,11 @@ export const useAdminDashboardHook = () => {
         router.push(`${pathname}?${currentUrl.toString()}`)
         router.refresh()
         refetch()
+        refetchTab()
+    }, [refetch, refetchTab,pathname, router, isMonthlyStatistic, params])
 
-    }, [refetch, pathname, router, isMonthlyStatistic, params])
-
-    const completedOrders = dataOrderList?.trackingOrder?.filter((order: any) => order?.isConfirm);
-    const pendingOrders = dataOrderList?.trackingOrder?.filter((order: any) => !order?.isDone);
+    const completedOrders = dataOrderList?.trackingOrder?.filter((order: IOrder) => order?.isConfirm);
+    const pendingOrders = dataOrderList?.trackingOrder?.filter((order: IOrder) => !order?.isDone);
 
 
 
@@ -139,6 +141,7 @@ export const useAdminDashboardHook = () => {
         isCurrentWeather,
         isDay,
         role,
+        refetchTab,
         selectedTab,
         setSelectedTab,
         isDayArr,

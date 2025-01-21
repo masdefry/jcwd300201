@@ -1,20 +1,21 @@
 'use client'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import ButtonCustom from "@/components/core/button"
+import ButtonCustom from "@/components/core/Button"
 import { FaBoxOpen } from "react-icons/fa6"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import Pagination from "@/components/core/pagination"
-import FilterWorker from "@/components/core/filter"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import Pagination from "@/components/core/Pagination"
+import FilterWorker from "@/components/core/Filter"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
 import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
-import FilterWeb from "@/components/core/filterWeb"
+import NoData from "@/components/core/NoData"
+import FilterWeb from "@/components/core/FilterWeb"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { usePickupRequestHook } from "@/features/driver/hooks/usePickupRequestHook";
-import TableHeaderWeb from "@/components/core/tableHeadWeb";
+import TableHeaderWeb from "@/components/core/TableHeadWeb";
 import PickupContentMobile from "@/features/driver/components/PickupContentMobile";
 import PickupContentWeb from "@/features/driver/components/PickupContentWeb";
+import { IOrderDriver } from "@/features/driver/types/type"
 
 export default function Page() {
     const {
@@ -44,7 +45,7 @@ export default function Page() {
                                 {dataOrderAwaitingPickupLoading && <Loading />}
                                 {dataOrderAwaitingPickupError && <p>Silahkan coba beberapa saat lagi.</p>}
                                 {!dataOrderAwaitingPickupLoading && dataOrderAwaitingPickup?.orders?.length > 0 ? (
-                                    dataOrderAwaitingPickup?.orders?.map((order: any) => (
+                                    dataOrderAwaitingPickup?.orders?.map((order: IOrderDriver) => (
                                         <PickupContentMobile
                                             key={order?.id}
                                             order={order}
@@ -91,7 +92,7 @@ export default function Page() {
                                 </tr>
                             ) : (
                                 !dataOrderAwaitingPickupLoading && dataOrderAwaitingPickup?.orders?.length > 0 ? (
-                                    dataOrderAwaitingPickup?.orders?.map((order: any, i: number) => (
+                                    dataOrderAwaitingPickup?.orders?.map((order: IOrderDriver, i: number) => (
                                         <PickupContentWeb
                                             key={order?.id}
                                             order={order}

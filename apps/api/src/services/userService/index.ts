@@ -26,7 +26,7 @@ export const userCreateAddressService = async ({ userId, addressName, addressDet
     if (findAddressUser?.length >= 5) throw { msg: 'Alamat anda sudah penuh, harap hapus salah satu alamat anda', status: 401 }
 
     const isMain = !hasMainAddress;
-    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+    const responseApi = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
         headers: {
             key: rajaOngkirApiKey
         }
@@ -69,7 +69,7 @@ export const userEditAddressService = async ({ addressId, addressName, addressDe
     const existingAddress = await prisma.userAddress.findFirst({ where: { id: parseInt(addressId) } })
     if (!existingAddress) throw { msg: 'Alamat tidak tersedia', status: 404 }
 
-    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+    const responseApi = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
         headers: { key: rajaOngkirApiKey }
     });
 
@@ -185,6 +185,14 @@ export const getUserMainAddressService = async ({ userId }: { userId: string }) 
     if (!mainAddress) throw { msg: "Alamat utama tidak ditemukan" }
 
     return { mainAddress }
+}
+
+interface Image {
+    filename: string;
+}
+
+interface ImageUpload {
+    images: Image[];
 }
 
 export const updateProfileUserService = async ({ userId, email, phoneNumber, firstName, lastName, imageUploaded }: IUpdateProfileUser) => {

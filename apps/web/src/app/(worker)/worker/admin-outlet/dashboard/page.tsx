@@ -2,21 +2,22 @@
 
 import { FaExclamationTriangle, FaTint } from "react-icons/fa";
 import Image from "next/image";
-import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
+import ChartComponents from "@/components/core/chart/PieChartTrackingStatusOrder";
 import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaStore, FaTruck, FaUserCheck } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
-import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
+import MonthlyCharts from "@/components/core/chart/ChartMonthlyStatistic";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import TabTracking from "@/features/superAdmin/components/TabOrderTracking";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import NotificationOutletAdmin from "@/features/adminOutlet/components/Notification";
-import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
-import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
-import WeatherMobile from "@/components/core/weatherMobile";
-import WeatherWeb from "@/components/core/weatherWeb";
+import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
+import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
+import WeatherMobile from "@/components/core/WeatherMobile";
+import WeatherWeb from "@/components/core/WeatherWeb";
 import { useAdminOutletDashboardHook } from "@/features/adminOutlet/hooks/useAdminOutletDashboardHook";
-import HeaderAdminDashboardWeb from "@/components/core/headerDashboardWeb copy";
+import HeaderAdminDashboardWeb from "@/components/core/HeaderDashboardWeb copy";
+import { IOrder } from "@/app/(admin)/admin/order/type";
 
 
 export default function Page() {
@@ -40,8 +41,8 @@ export default function Page() {
         refetch,
         isLoading } = useAdminOutletDashboardHook()
 
-    const completedOrders = dataOrderList?.trackingOrder?.filter((order: any) => order?.isConfirm);
-    const pendingOrders = dataOrderList?.trackingOrder?.filter((order: any) => !order?.isDone);
+    const completedOrders = dataOrderList?.trackingOrder?.filter((order: IOrder) => order?.isConfirm);
+    const pendingOrders = dataOrderList?.trackingOrder?.filter((order: IOrder) => !order?.isDone);
 
 
     if (isLoading) return (

@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { IFormikIroningWebProps } from "./type";
 import { ironingItemValidationSchema } from "../../schemas/ironingItemValidationSchema";
 
@@ -73,7 +73,7 @@ export default function FormikIroningWeb({
                                     <div className='flex w-full gap-2 items-end'>
                                         <div className='w-full'>
                                             <label className="font-semibold">Produk Laundry <span className="text-red-600">*</span></label>
-                                            <Field as="select" name="itemName" onChange={(e: any) => {
+                                            <Field as="select" name="itemName" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                 setFieldValue('itemName', e.target.value)
                                                 setIsCheckedItem(false)
                                             }} className="w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500 rounded-md">

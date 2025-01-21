@@ -2,14 +2,23 @@ import prisma from "@/connection";
 import dotenv from 'dotenv'
 import { NextFunction, Request, Response } from "express";
 import { changePasswordWorkerService, createNotesService, deleteDataWorkerByIdService, deleteProfilePictureWorkerService, getAllWorkerService, updateProfileWorkerService } from "@/services/workerService";
-import { Prisma } from "@prisma/client";
+import { Prisma, Role } from "@prisma/client";
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
+interface UploadedFile {
+  filename: string;
+}
+
+interface UploadedFiles {
+  images?: UploadedFile[];
+}
+
+
 export const updateProfileWorker = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const imageUploaded: any = req.files
+    const imageUploaded = req.files as UploadedFiles | undefined
     const { userId, email, phoneNumber, firstName, lastName } = req.body
     await updateProfileWorkerService({ userId, email, phoneNumber, firstName, lastName, imageUploaded })
 
@@ -96,7 +105,7 @@ export const getAllWorker = async (req: Request, res: Response, next: NextFuncti
     const take = parseInt(limit as string)
     const skip = (parseInt(page as string) - 1) * take
 
-    let whereClause: any = {
+    let whereClause: Prisma.WorkerWhereInput = {
       deletedAt: null,
     };
 
@@ -111,9 +120,19 @@ export const getAllWorker = async (req: Request, res: Response, next: NextFuncti
         ]
       }
     } else if (typeof sort === 'string') {
-      const roles = ['super_admin', 'driver', 'washing_worker', 'ironing_worker', 'packing_worker', 'outlet_admin'] as string[]
-      if (roles.includes(sort)) {
-        whereClause.workerRole = sort.toUpperCase()
+      const rolesEnum: Record<string, Role> = {
+        super_admin: Role.SUPER_ADMIN,
+        outlet_admin: Role.OUTLET_ADMIN,
+        washing_worker: Role.WASHING_WORKER,
+        ironing_worker: Role.IRONING_WORKER,
+        packing_worker: Role.PACKING_WORKER,
+        driver: Role.DRIVER,
+      };
+
+
+      const role = rolesEnum[sort.toLowerCase()];
+      if (role) {
+        whereClause.workerRole = role;
       }
     }
 

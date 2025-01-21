@@ -5,7 +5,11 @@ import { Prisma } from "@prisma/client"
 
 const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
 export const getStoreService = async () => {
-    const findStore = await prisma.store.findMany()
+    const findStore = await prisma.store.findMany({
+        where: {
+            deletedAt: null,
+        },
+    });
     const dataStore = findStore?.map((store: IStoreMap) => {
         return {
             storeId: store?.id,
@@ -58,7 +62,7 @@ export const getAllStoreService = async ({ search, sort, take, skip, limit }: IG
 }
 
 export const createStoreByAdminService = async ({ storeName, address, province, city, zipCode, latitude, longitude }: ICreateStore) => {
-    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+    const responseApi = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
         headers: { key: rajaOngkirApiKey }
     })
 
@@ -91,7 +95,7 @@ export const createStoreByAdminService = async ({ storeName, address, province, 
 }
 
 export const updateStoreService = async ({ storeName, address, city, province, zipCode, latitude, longitude, outletId }: IUpdateStore) => {
-    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+    const responseApi = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
         headers: { key: rajaOngkirApiKey }
     })
 

@@ -1,7 +1,7 @@
 'use client'
 
 import Image from "next/image";
-import ButtonCustom from "../button";
+import ButtonCustom from "../Button";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FaBurger, FaDashcube, FaQq, FaRug, FaShoePrints, FaSpaghettiMonsterFlying, FaSprayCan, FaTag, FaUserGear } from "react-icons/fa6";
@@ -13,12 +13,13 @@ import { toast } from "@/components/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { FaHandHoldingWater, FaLaughWink, FaTimes, FaTshirt } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
-import MenuCustom from "../menu";
+import MenuCustom from "../Menu";
 import { IoAlbumsOutline } from "react-icons/io5";
 import { LuContact } from "react-icons/lu";
-import { ConfirmAlert } from "../confirmAlert";
+import { ConfirmAlert } from "../ConfirmAlert";
 import { MdArrowDropDown } from "react-icons/md";
 import { FiHelpCircle } from "react-icons/fi";
+import { Role } from "../Role";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Header() {
@@ -75,7 +76,7 @@ export default function Header() {
     }
   })
 
-  const dashboardMenuUrl: any = {
+  const dashboardMenuUrl: Record<Role, string> = {
     SUPER_ADMIN: '/admin/dashboard',
     OUTLET_ADMIN: '/worker/admin-outlet/dashboard',
     WASHING_WORKER: '/worker/washing-worker/dashboard',
@@ -84,7 +85,7 @@ export default function Header() {
     DRIVER: '/worker/driver/dashboard',
   }
 
-  const profilMenuUrl: any = {
+  const profilMenuUrl: Record<Role, string> = {
     SUPER_ADMIN: '/admin/settings',
     OUTLET_ADMIN: '/worker/admin-outlet/settings',
     WASHING_WORKER: '/worker/washing-worker/settings',
@@ -93,7 +94,7 @@ export default function Header() {
     DRIVER: '/worker/driver/settings',
   }
 
-  const settingsMenuUrl: any = {
+  const settingsMenuUrl: Record<Role, string> = {
     SUPER_ADMIN: '/admin/settings',
     OUTLET_ADMIN: '/worker/admin-outlet/settings',
     WASHING_WORKER: '/worker/washing-worker/settings',
@@ -102,9 +103,9 @@ export default function Header() {
     DRIVER: '/worker/driver/settings',
   }
 
-  const dashboardUrl = dashboardMenuUrl[role] || ''
-  const profileUrl = profilMenuUrl[role] || ''
-  const settingsUrl = settingsMenuUrl[role] || ''
+  const dashboardUrl = dashboardMenuUrl[role as Role] || ''
+  const profileUrl = profilMenuUrl[role as Role] || ''
+  const settingsUrl = settingsMenuUrl[role as Role] || ''
 
   return (
     <nav className={`w-full h-fit hidden md:block md:fixed bg-white z-20 ${pathname == '/worker/login' || pathname == '/user/login'
