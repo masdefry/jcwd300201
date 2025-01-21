@@ -10,7 +10,7 @@ interface IOrder {
     isSolved: boolean;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: IOrderStatus;
+    orderStatus: IOrderStatus[];
     User: IUser;
     isConfirm: boolean;
 }

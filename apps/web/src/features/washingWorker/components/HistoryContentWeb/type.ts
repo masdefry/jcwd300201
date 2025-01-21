@@ -2,7 +2,7 @@ export interface IHistoryContentWeb {
     order: IOrder;
     page: number;
     limit: number;
-    i:number
+    i: number
 }
 
 interface IUser {
@@ -26,5 +26,6 @@ interface IOrder {
     paymentProof: string
     notes: string
     isSolved: boolean
-    orderTypeId: number
+    orderTypeId?: number
+    OrderType:any
 }

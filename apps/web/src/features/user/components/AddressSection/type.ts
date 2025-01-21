@@ -1,4 +1,3 @@
-import { IAddress } from "@/app/(user)/user/dashboard/pickup/type";
 
 export interface IAddressPopUpDialogProps {
     setUserAddress: (id: string) => void;
@@ -7,4 +6,12 @@ export interface IAddressPopUpDialogProps {
     dataAllAddressLoading: boolean;
     openDialog: boolean;
     setOpenDialog: (open: boolean) => void;
+}
+
+export interface IAddress {
+    id: string
+    addressName: string
+    addressDetail: string
+    city: string
+    province: string
 }

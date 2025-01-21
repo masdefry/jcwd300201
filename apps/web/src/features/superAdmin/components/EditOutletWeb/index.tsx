@@ -38,8 +38,8 @@ export default function EditOutletWeb({
                     province: values?.province,
                     city: values?.city,
                     zipCode: values?.zipCode,
-                    latitude: values?.latitude.toString(),
-                    longitude: values?.longitude.toString()
+                    latitude: values?.latitude !== null ? values?.latitude.toString() : '',
+                    longitude: values?.longitude !== null ? values?.longitude.toString() : ''
                 })
             }}>
             {({ values, setFieldValue, handleChange }) => (
