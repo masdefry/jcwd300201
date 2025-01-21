@@ -26,5 +26,7 @@ interface IOrder {
     paymentProof: string
     notes: string
     isSolved: boolean
-    orderTypeId: number
+    orderTypeId?: number
+    OrderType:any
+    isReqDelivery:boolean
 }

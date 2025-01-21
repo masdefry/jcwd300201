@@ -16,7 +16,7 @@ import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
 import WeatherMobile from "@/components/core/WeatherMobile";
 import WeatherWeb from "@/components/core/WeatherWeb";
 import { useAdminOutletDashboardHook } from "@/features/adminOutlet/hooks/useAdminOutletDashboardHook";
-import HeaderAdminDashboardWeb from "@/components/core/HeaderDashboardWeb copy";
+import HeaderAdminDashboardWeb from "@/components/core/HeaderAdminDashboardWeb";
 import { IOrder } from "@/app/(admin)/admin/order/type";
 
 

@@ -10,11 +10,11 @@ interface IOrder {
     isSolved: boolean;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: IOrderStatus;
+    orderStatus: IOrderStatus[];
     User: IUser;
 }
 export interface IOrderStatus {
-    status: string;
+    status: any;
 }
 export interface IWashingContentMobileProps {
     order: IOrder;

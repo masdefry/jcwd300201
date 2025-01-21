@@ -2,7 +2,7 @@ export interface IOrder {
     id: string;
     createdAt: string;
     orderStatus: { status: string }[];
-    orderTypeId: number;
+    orderTypeId?: number;
     User: {
         firstName: string;
         lastName: string;

@@ -1,8 +1,7 @@
 'use client'
 
-import { IAddress } from '@/app/(user)/user/dashboard/pickup/type';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { IAddressPopUpDialogProps } from './type';
+import { IAddress, IAddressPopUpDialogProps } from './type';
 
 
 export const AddressPopUpDialog = ({ setUserAddress, handleAddressSelect, dataAllAddress, dataAllAddressLoading, openDialog, setOpenDialog }: IAddressPopUpDialogProps) => (
@@ -36,3 +35,4 @@ export const AddressPopUpDialog = ({ setUserAddress, handleAddressSelect, dataAl
         </DialogContent>
     </Dialog>
 )
+

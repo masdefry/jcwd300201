@@ -1,25 +1,10 @@
 'use client'
 
-import Link from "next/link";
-import { FaArrowLeft } from "react-icons/fa";
-import HeaderMobile from "@/components/core/HeaderMobile"
-import { Formik, Form, Field, ErrorMessage } from "formik";
-import * as Yup from "yup";
-import { FaRegTrashAlt } from "react-icons/fa";
-import React, { useEffect } from 'react';
+import React from 'react';
 import ContentWebLayout from "@/components/core/WebSessionContent";
-import ButtonCustom from "@/components/core/Button";
 import NotaCaptionContent from "@/features/adminOutlet/components/NotaCaptionContent";
-import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import TableHeadLayout from "@/features/adminOutlet/components/TableHeadLayout";
-import TableHeadContentProduct from "@/features/adminOutlet/components/TableContentProductNotaOrder";
-import TableProductNotFound from "@/features/adminOutlet/components/TableProductNotaNotFound";
-import TableContentProduct from "@/features/adminOutlet/components/TableBodyContentProduct";
-import TotalWeightComponent from "@/features/adminOutlet/components/TotalWeightComponent";
-import TableWeightComponent from "@/features/adminOutlet/components/TableWeightNotaOrder";
 import { useCreateNotaOrderHook } from "@/features/adminOutlet/hooks/useCreateNotaOrderHook";
 import NotaHeader from "@/components/core/CreateNotaHeaders";
-import { notaOrderValidationSchema } from "@/features/adminOutlet/schemas/notaOrderValidationSchema";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import FormikAdminOutletWeb from "@/features/adminOutlet/components/FormikAdminOutletWeb";
 import FormikAdminOutletMobile from "@/features/adminOutlet/components/FormikAdminOutletMobile";

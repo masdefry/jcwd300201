@@ -13,7 +13,7 @@ export interface IPaymentMethodWeb {
     };
     setIsPaymentMethod: (method: string) => void;
     isPaymentMethod: string;
-    handlePaymmentOrder: (orderId?: number) => void;
+    handlePaymmentOrder: any
     setIsUploadDialogOpen: (isOpen: boolean) => void;
     router: ReturnType<typeof useRouter>;
 }

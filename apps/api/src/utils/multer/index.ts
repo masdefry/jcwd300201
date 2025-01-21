@@ -11,6 +11,8 @@ const storage = multer.diskStorage({
     }
 })
 
+// const storage = multer.memoryStorage()
+
 const fileFilter = (req: any, file: any, cb: any) => {
     const extensionAccepted = ['jpg', 'jpeg', 'png', 'gif']
     const imagesExt = file.originalname.split('.')

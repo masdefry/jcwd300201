@@ -26,11 +26,11 @@ export interface IOrder {
     User: IUser;
     paymentMethod: PaymentMethod;
     paymentProof: string
-    isDone:boolean
+    isDone: boolean
     notes: string
-    isConfirm:boolean
+    isConfirm: boolean
     isSolved: boolean
-    orderTypeId: number
+    orderTypeId?: number
     OrderType: IOrderType
 }
 

@@ -11,9 +11,9 @@ interface IOrder {
     OrderType: IOrderType;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: IOrderStatus;
+    orderStatus: IOrderStatus[];
     User: IUser;
-    orderTypeId: number
+    orderTypeId?: number
     isDone: boolean
 }
 export interface IOrderStatus {

@@ -10,14 +10,14 @@ interface IOrder {
     isSolved: boolean;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: IOrderStatus;
+    orderStatus: IOrderStatus[];
     User: IUser;
     OrderType: { type: string }
-    orderTypeId: number
+    orderTypeId?: number
 }
 
 export interface IOrderStatus {
-    status: string;
+    status: any;
 }
 export interface IIroningContentMobileProps {
     order: IOrder;

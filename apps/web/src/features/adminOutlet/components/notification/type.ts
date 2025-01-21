@@ -28,8 +28,8 @@ export interface IOrder {
     paymentProof: string
     notes: string
     isSolved: boolean
-    orderTypeId: number
-    OrderType:IOrderType
+    orderTypeId?: number
+    OrderType: IOrderType
 }
 
 

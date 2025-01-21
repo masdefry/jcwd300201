@@ -12,7 +12,7 @@ interface IOrder {
     OrderType: IOrderType;
 }
 
-interface IWidgetDashboardMobile {
+export interface IWidgetDashboardMobileDriver {
     data: {
         orders: IOrder[];
     };
