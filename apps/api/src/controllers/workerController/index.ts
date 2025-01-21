@@ -18,7 +18,7 @@ interface UploadedFiles {
 
 export const updateProfileWorker = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const imageUploaded = req.files as UploadedFiles | undefined
+    const imageUploaded = req.files as any
     const { userId, email, phoneNumber, firstName, lastName } = req.body
     await updateProfileWorkerService({ userId, email, phoneNumber, firstName, lastName, imageUploaded })
 

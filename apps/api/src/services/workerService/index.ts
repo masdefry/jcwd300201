@@ -5,6 +5,7 @@ import { IChangePasswordWorker, ICreateNotes, IGetAllWorker, IUpdateProfileWorke
 import fs, { rmSync } from 'fs'
 import { comparePassword, hashPassword } from "@/utils/passwordHash"
 import dotenv from 'dotenv'
+import { cloudinaryUpload } from "@/utils/cloudinary"
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
@@ -23,9 +24,14 @@ export const updateProfileWorkerService = async ({ userId, email, phoneNumber, f
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan nomor telepon dengan format nomor', status: 401 }
     if (email === findUser?.email && firstName === findUser?.firstName && lastName === findUser?.lastName && phoneNumber === findUser?.phoneNumber && (imageUploaded?.images?.length === 0 || imageUploaded?.images?.length === undefined)) throw { msg: 'Data tidak ada yang diubah', status: 400 }
 
-    const dataImage: string[] = imageUploaded?.images?.map((img: Image) => {
-        return img?.filename
-    })
+    // const dataImage: string[] = imageUploaded?.images?.map((img: Image) => {
+    //     return img?.filename
+    // })
+
+     const dataImage = await Promise.all(imageUploaded?.images?.map(async (item: any) => {
+            const result: any = await cloudinaryUpload(item?.buffer)
+            return result?.res!
+        }))
 
     const newDataWorker = await prisma.worker.update({
         where: { id: userId },

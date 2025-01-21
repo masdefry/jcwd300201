@@ -5,6 +5,7 @@ import { getCreateNoteOrderService, ironingProcessDoneService, getOrdersForPacki
 import { IGetOrderNoteDetail, IGetUserOrder, IGetOrderForDriver } from "@/services/orderService/types";
 import dotenv from 'dotenv'
 import { addHours } from "date-fns";
+import { cloudinaryUpload } from "@/utils/cloudinary";
 
 dotenv.config()
 const rajaOngkirApiKey: string | undefined = process.env.RAJAONGKIR_API_KEY as string
@@ -1061,9 +1062,13 @@ export const paymentOrderTf = async (req: Request, res: Response, next: NextFunc
 
     if (!paymentProof || !paymentProof.images || paymentProof.images.length === 0) throw { msg: 'Bukti pembayaran harus dilampirkan', status: 400 }
 
-    const dataImage: string[] = paymentProof?.images?.map((img) => {
-      return img?.filename
-    })
+    // const dataImage: string[] = paymentProof?.images?.map((img) => {
+    //   return img?.filename
+    // })
+    const dataImage = await Promise.all(paymentProof?.images?.map(async (item: any) => {
+      const result: any = await cloudinaryUpload(item?.buffer)
+      return result?.res!
+    }))
 
     if (!dataImage) throw { msg: 'Harap unggah bukti transfer anda', status: 401 }
     await paymentOrderTfService({ paymentProof: dataImage[0], orderId, email, userId });

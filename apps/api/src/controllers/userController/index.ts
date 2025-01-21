@@ -190,7 +190,7 @@ interface IUpdateProfileUser {
 
 export const updateProfileUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const imageUploaded = req.files as UploadedFiles | undefined
+    const imageUploaded = req.files as any
     const { userId, email, phoneNumber, firstName, lastName } = req.body
 
     await updateProfileUserService({ userId, email, phoneNumber, firstName, lastName, imageUploaded })
