@@ -16,7 +16,7 @@ export default function PackingContentMobile(
                         <h2 className="font-medium text-gray-900">{order?.id}</h2>
                         <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
                         <p className="text-xs text-gray-500">
-                            {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && order?.isDone === false
+                            {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === false && !order?.isDone
                                 ? 'Belum Packing'
                                 : order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isProcessed === true
                                     ? 'Proses Packing'

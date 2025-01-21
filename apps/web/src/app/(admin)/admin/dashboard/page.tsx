@@ -15,7 +15,7 @@ import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
 import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
 import MenuAdditionalDashboardMobile from "@/components/core/MenuAdditionalDashboardMobile";
 import WeatherMobile from "@/components/core/WeatherMobile";
-import HeaderAdminDashboardWeb from "@/components/core/HeaderDashboardWeb copy";
+import HeaderAdminDashboardWeb from "@/components/core/HeaderAdminDashboardWeb";
 import WeatherWeb from "@/components/core/WeatherWeb";
 import { useAdminDashboardHook } from "@/features/superAdmin/hooks/useAdminDashboardHook";
 

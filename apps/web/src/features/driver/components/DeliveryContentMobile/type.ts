@@ -13,7 +13,7 @@ interface IUser {
 }
 
 interface IOrderStatus {
-    status: string;
+    status: any;
 }
 type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
 
@@ -27,5 +27,6 @@ interface IOrder {
     paymentProof: string
     notes: string
     isSolved: boolean
-    orderTypeId: number
+    orderTypeId?: number
+    isReqDelivery?:boolean
 }

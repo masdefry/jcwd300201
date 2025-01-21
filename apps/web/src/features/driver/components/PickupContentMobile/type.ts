@@ -1,3 +1,5 @@
+import { WeekNumberLabel } from "react-day-picker";
+
 export interface IPickupContent {
     order: IOrder;
     handleProcessOrder: (id: string) => void;
@@ -27,7 +29,14 @@ interface IOrder {
     paymentProof: string
     notes: string
     isSolved: boolean
-    orderTypeId: number
+    orderTypeId?: number
+    UserAddress: IUserAddress
+    isReqDelivery:boolean
+}
+
+interface IUserAddress{
+    latitude: number;
+    longitude:number
 }
 
 

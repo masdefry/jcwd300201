@@ -11,14 +11,14 @@ interface IOrder {
     OrderType: IOrderType;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: IOrderStatus;
+    orderStatus: IOrderStatus[];
     User: IUser;
 }
 export interface IOrderStatus {
     status: string;
 }
-interface IOrderType{
-    type:string
+interface IOrderType {
+    type: string
 }
 
 export interface IWashingContentWebProps {

@@ -20,7 +20,7 @@ export default function DeliveryContentMobile(
                             <h2 className="font-medium text-gray-900">{order?.id}</h2>
                             <h2 className="font-medium text-gray-900">{order?.User?.firstName} {order?.User?.lastName}</h2>
                             <div className="text-xs text-gray-500">
-                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === false
+                                {order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && !order?.isPaid
                                     ? 'Menunggu Pembayaran' :
                                     order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
                                         ? 'Siap untuk dikirim'

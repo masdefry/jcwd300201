@@ -62,6 +62,12 @@ export interface IOrderDriver {
     isComplain: boolean;
     complaintText: string;
     notes: string;
-
+    orderTypeId?: number
+    isReqDelivery: boolean
+    UserAddress:IUserAddress
 }
 
+interface IUserAddress {
+    latitude: number;
+    longitude: number
+}

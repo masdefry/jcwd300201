@@ -11,7 +11,7 @@ interface IOrder {
     OrderType: IOrderType;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: IOrderStatus;
+    orderStatus: IOrderStatus[];
     User: IUser;
     orderTypeId:number
 }

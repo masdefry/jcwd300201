@@ -10,10 +10,10 @@ interface IOrder {
     isSolved: boolean;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: IOrderStatus;
+    orderStatus: IOrderStatus[];
     User: IUser;
     OrderType: { type: string }
-    orderTypeId: number
+    orderTypeId?: number
     isDone: boolean
 }
 export interface IOrderStatus {
