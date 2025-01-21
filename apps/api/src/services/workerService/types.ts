@@ -6,7 +6,7 @@ export interface IUpdateProfileWorker {
     phoneNumber: string
     firstName: string
     lastName: string
-    imageUploaded: string | null
+    imageUploaded: any
 }
 
 export interface IChangePasswordWorker {
