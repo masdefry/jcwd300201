@@ -22,18 +22,18 @@ export default function FormikCreateWorkerWeb({ getDataStore, isPending, handleC
             validationSchema={createUserValidationSchema}
             onSubmit={(values, { resetForm }) => {
                 console.log(values)
-                // handleCreateUser({
-                //     email: values?.email,
-                //     firstName: values?.firstName,
-                //     lastName: values?.lastName,
-                //     phoneNumber: values?.phoneNumber,
-                //     workerRole: values?.workerRole,
-                //     identityNumber: values?.identityNumber,
-                //     outletId: values?.outletId,
-                //     motorcycleType: values?.motorcycleType,
-                //     plateNumber: values?.plateNumber,
-                //     shiftId: values?.shiftId
-                // }, { onSuccess: () => resetForm() })
+                handleCreateUser({
+                    email: values?.email,
+                    firstName: values?.firstName,
+                    lastName: values?.lastName,
+                    phoneNumber: values?.phoneNumber,
+                    workerRole: values?.workerRole,
+                    identityNumber: values?.identityNumber,
+                    outletId: values?.outletId,
+                    motorcycleType: values?.motorcycleType,
+                    plateNumber: values?.plateNumber,
+                    shiftId: values?.shiftId
+                }, { onSuccess: () => resetForm() })
             }}>
             {({ setFieldValue, values }) => (
                 <Form>
