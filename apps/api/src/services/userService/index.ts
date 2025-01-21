@@ -8,6 +8,7 @@ import { ICreateAddressUser, IEditAddressUser, IUpdateProfileUser } from "./type
 import dotenv from 'dotenv'
 import axios from "axios"
 import { Prisma } from "@prisma/client"
+import { cloudinaryUpload } from "@/utils/cloudinary"
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
@@ -204,9 +205,15 @@ export const updateProfileUserService = async ({ userId, email, phoneNumber, fir
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan nomor telepon dengan format nomor', status: 401 }
     if (email === findUser?.email && firstName === findUser?.firstName && lastName === findUser?.lastName && phoneNumber === findUser?.phoneNumber && (imageUploaded?.images?.length === 0 || imageUploaded?.images?.length === undefined)) throw { msg: 'Data tidak ada yang diubah', status: 400 }
 
-    const dataImage: string[] = imageUploaded?.images?.map((img: Image) => {
-        return img?.filename
-    })
+    // const dataImage: string[] = imageUploaded?.images?.map((img: any) => {
+    //     return img?.filename
+    // })
+
+    const dataImage = await Promise.all(imageUploaded?.images?.map(async (item: any) => {
+        const result: any = await cloudinaryUpload(item?.buffer)
+
+        return result?.res!
+    }))
 
     const newDataUser = await prisma.user.update({
         where: { id: userId },
