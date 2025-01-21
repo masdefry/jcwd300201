@@ -10,6 +10,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "prisma": "npx prisma",
     "seed": "prisma db seed"
+    "start": "node server.js"
   },
   "prisma": {
     "seed": "node prisma/seed.js"
