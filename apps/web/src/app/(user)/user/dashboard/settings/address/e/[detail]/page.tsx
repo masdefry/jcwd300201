@@ -1,7 +1,7 @@
 'use client'
 
 import "leaflet/dist/leaflet.css";
-import ContentWebLayout from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/WebSessionContent";
 import { instance } from "@/utils/axiosInstance";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -9,10 +9,10 @@ import { use, useEffect, useMemo, useState } from "react";
 import { locationStore } from "@/zustand/locationStore";
 import axios from "axios";
 import L from 'leaflet'
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
-import { IAddressDetail } from "./types";
+import { IAddressDetail, ICity, IProvince } from "./types";
 import { useRouter } from "next/navigation";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { createAddressValidationSchema } from "@/features/user/schemas/createAddressValidationSchema";
@@ -51,7 +51,7 @@ export default function Page({ params }: { params: Promise<any> }) {
             setDataUser(response?.data)
 
         } catch (error) {
-            
+
         }
     }
 
@@ -194,7 +194,7 @@ export default function Page({ params }: { params: Promise<any> }) {
                                             }}>
                                             <option value="" disabled>Pilih Provinsi</option>
                                             {provincesLoading ? (<option disabled>Loading...</option>) : (
-                                                provinces?.map((province: any) => (
+                                                provinces?.map((province: IProvince) => (
                                                     <option key={province.province_id} value={province.province_id}>
                                                         {province.province}
                                                     </option>
@@ -217,7 +217,7 @@ export default function Page({ params }: { params: Promise<any> }) {
                                                 {!selectedProvince ? "Silahkan Pilih Provinsi" : "Pilih Kota"}
                                             </option>
                                             {citiesLoading ? (<option disabled>Loading...</option>) : (
-                                                cities?.map((city: any) => (
+                                                cities?.map((city: ICity) => (
                                                     <option key={city.city_id} value={city.city_name}>
                                                         {city.city_name}
                                                     </option>
@@ -318,7 +318,7 @@ export default function Page({ params }: { params: Promise<any> }) {
                                             }}>
                                             <option value="" disabled>Pilih Provinsi</option>
                                             {provincesLoading ? (<option disabled>Loading...</option>) : (
-                                                provinces?.map((province: any) => (
+                                                provinces?.map((province: IProvince) => (
                                                     <option key={province.province_id} value={province.province_id}>
                                                         {province.province}
                                                     </option>
@@ -341,7 +341,7 @@ export default function Page({ params }: { params: Promise<any> }) {
                                                 {!selectedProvince ? "Silahkan Pilih Provinsi" : "Pilih Kota"}
                                             </option>
                                             {citiesLoading ? (<option disabled>Loading...</option>) : (
-                                                cities?.map((city: any) => (
+                                                cities?.map((city: ICity) => (
                                                     <option key={city.city_id} value={city.city_name}>
                                                         {city.city_name}
                                                     </option>

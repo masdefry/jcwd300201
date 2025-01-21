@@ -3,20 +3,21 @@
 import { FaEdit, FaEye, FaSearch } from 'react-icons/fa';
 import Link from "next/link"
 import { FaEllipsisVertical, FaPlus } from "react-icons/fa6";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { ChangeEvent } from "react";
-import SearchInputCustom from "@/components/core/searchBar";
+import SearchInputCustom from "@/components/core/SearchBar";
 import { useWorkerHook } from "@/features/superAdmin/hooks/useWorkerHook";
-import ContentWebLayout from "@/components/core/webSessionContent";
-import PaginationWebLayout from "@/components/core/paginationWebLayout";
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import PaginationWebLayout from "@/components/core/PaginationWebLayout";
 import Loading from "@/components/core/loading";
-import NoData from "@/components/core/noData";
+import NoData from "@/components/core/NoData";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import Pagination from "@/components/core/pagination";
+import Pagination from "@/components/core/Pagination";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { MdWorkHistory } from "react-icons/md";
-import { ConfirmAlert } from '@/components/core/confirmAlert';
+import { ConfirmAlert } from '@/components/core/ConfirmAlert';
 import { BsTrash } from 'react-icons/bs';
+import { IWorker } from './type';
 
 export default function Page() {
     const { currentPage, entriesPerPage, sortWorker, setSortWorker, isFetching, handleDeleteData, isPendingDelete,
@@ -74,7 +75,7 @@ export default function Page() {
                 {isLoading && <Loading />}
 
                 {!isLoading && dataWorker?.length > 0 ? (
-                    dataWorker?.map((worker: any, i: number) => {
+                    dataWorker?.map((worker: IWorker, i: number) => {
                         return (< div
                             key={i}
                             className="flex items-center justify-between bg-white py-4 px-2 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100"
@@ -141,7 +142,7 @@ export default function Page() {
                         </thead>
                         <tbody>
                             {dataWorker?.length > 0 ? (
-                                dataWorker?.map((worker: any, i: number) => {
+                                dataWorker?.map((worker: IWorker, i: number) => {
                                     return (
                                         <tr className="hover:bg-gray-100 border-b" key={worker?.id || i}>
                                             <td className="py-4 px-6 text-sm text-gray-600 break-words">{(currentPage - 1) * entriesPerPage + i + 1}</td>

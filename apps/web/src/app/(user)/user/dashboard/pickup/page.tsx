@@ -1,6 +1,6 @@
 'use client'
 
-import ContentWebLayout from '@/components/core/webSessionContent';
+import ContentWebLayout from '@/components/core/WebSessionContent';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { FaTruck } from "react-icons/fa6";
 import { pickupValidationSchema } from '@/features/user/schemas/pickupValidationSchema';

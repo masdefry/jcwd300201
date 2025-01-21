@@ -10,7 +10,7 @@ import { ReactNode, useState } from "react";
 import { FaArrowLeft, FaArrowRight, FaCartArrowDown, FaDashcube, FaExclamationTriangle, FaHistory, FaHouseDamage, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { FaCreditCard, FaFileInvoice, FaTruck } from "react-icons/fa6";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 
@@ -30,8 +30,10 @@ export default function Layout({ children }: { children: ReactNode }) {
         setIsClose(!isClose)
     }
 
+    type Role = 'OUTLET_ADMIN' | 'WASHING_WORKER' | 'IRONING_WORKER' | 'PACKING_WORKER' | 'DRIVER';
 
-    const dashboardMenuUrl: any = {
+
+    const dashboardMenuUrl: Record<Role, string> = {
         OUTLET_ADMIN: '/worker/admin-outlet/dashboard',
         WASHING_WORKER: '/worker/washing-worker/dashboard',
         IRONING_WORKER: '/worker/ironing-worker/dashboard',
@@ -39,7 +41,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         DRIVER: '/worker/driver/dashboard',
     }
 
-    const dashboardUrl = dashboardMenuUrl[role] || ''
+    const dashboardUrl = dashboardMenuUrl[role as Role] || ''
 
     const { mutate: handleLogoutAdmin, isPending } = useMutation({
         mutationFn: async () => {

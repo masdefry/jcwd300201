@@ -1,10 +1,10 @@
 import { IProductContent } from "./type";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import DialogUpdateProduct from "../DialogUpdateProductLaundry";
 import { BsTrash } from "react-icons/bs";
 
 export default function ProductMobile(
-    { i ,isPendingDelete, handleUpdateItem, prod, handleDeleteItem, isPendingUpdate }: IProductContent
+    { i, isPendingDelete, handleUpdateItem, prod, handleDeleteItem, isPendingUpdate }: IProductContent
 ) {
     return (
         <div key={i} className="flex items-center justify-between bg-white py-4 px-2 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100">

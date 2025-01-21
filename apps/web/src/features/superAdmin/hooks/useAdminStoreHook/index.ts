@@ -38,7 +38,7 @@ export const useAdminStoreHook = () => {
     })
 
     const { mutate: deleteStoreById, isPending: isPendingDelete } = useMutation({
-        mutationFn: async (id) => {
+        mutationFn: async (id: string | number) => {
             return await instance.patch(`/store/delete/${id}`, { email }, {
                 headers: {
                     Authorization: `Bearer ${token}`

@@ -37,7 +37,7 @@ export default function NotificationSuperAdmin({ dataOrderNotif }: INotification
 
                     <ul className="mt-2 space-y-2 max-h-48 overflow-y-auto">
                         {dataOrderNotif?.orders?.length ? (
-                            dataOrderNotif.orders.map((order: any, i: number) => (
+                            dataOrderNotif.orders.map((order, i: number) => (
                                 <li
                                     key={order.id}
                                     className={`text-sm text-gray-600 py-2 ${i !== dataOrderNotif.orders.length - 1 ? "border-b border-gray-300" : ""

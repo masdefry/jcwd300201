@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react';
-import ContentWebLayout from "@/components/core/webSessionContent";
-import NotaHeader from "@/components/core/createNotaHeaders";
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import NotaHeader from "@/components/core/CreateNotaHeaders";
 import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { useUserPaymentHook } from "@/features/user/hooks/useUserPaymentHook";

@@ -1,31 +1,20 @@
 'use client'
 
-import Link from "next/link"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import { useQuery, useMutation } from "@tanstack/react-query"
-import { instance } from "@/utils/axiosInstance"
-import authStore from "@/zustand/authstore"
-import { useState, useEffect, ChangeEvent } from "react"
-import { useSearchParams, useRouter, usePathname } from "next/navigation"
-import { useDebouncedCallback } from "use-debounce"
-import { FaWhatsapp } from "react-icons/fa";
-import { useToast } from "@/components/hooks/use-toast"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import Image from "next/image"
-import ContentWebLayout from "@/components/core/webSessionContent";
-import ButtonCustom from "@/components/core/button";
-import { FaArrowUpRightFromSquare, FaCheck, FaPlus } from "react-icons/fa6";
-import { ConfirmAlert } from "@/components/core/confirmAlert"
-import NoData from "@/components/core/noData"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import ButtonCustom from "@/components/core/Button";
+import NoData from "@/components/core/NoData"
 import Loading from "@/components/core/loading"
-import FilterWeb from "@/components/core/filterWeb"
+import FilterWeb from "@/components/core/FilterWeb"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import { useAdminOutletPaymentHook } from "@/features/adminOutlet/hooks/useAdminOutletPaymentHook"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
 import PaymentContentMobile from "@/features/adminOutlet/components/PaymentContentMobile"
 import PaymentContentWeb from "@/features/adminOutlet/components/PaymentContentWeb"
+import { IOrder } from "@/features/adminOutlet/types/type"
 
 
 export default function DeliveryRequest() {
@@ -67,7 +56,7 @@ export default function DeliveryRequest() {
                                 {dataOrderListLoading && <Loading />}
                                 {dataOrderListError && <div>Silahkan coba beberapa saat lagi.</div>}
                                 {!dataOrderListLoading && dataOrderList?.orders?.length > 0 ? (
-                                    dataOrderList?.orders?.map((order: any) => (
+                                    dataOrderList?.orders?.map((order: IOrder) => (
                                         <PaymentContentMobile
                                             key={order?.id} order={order} imageLoading={imageLoading} setImageLoading={setImageLoading} handlConfirmPaymentPending={handlConfirmPaymentPending} handleConfirmPayment={handleConfirmPayment}
                                         />
@@ -126,7 +115,7 @@ export default function DeliveryRequest() {
                                 </tr>
                             ) : (
                                 !dataOrderListLoading && getDataItem?.length > 0 ? (
-                                    getDataItem?.map((order: any, i: number) => (
+                                    getDataItem?.map((order: IOrder, i: number) => (
                                         <PaymentContentWeb
                                             key={order?.id} order={order} page={page} handleConfirmPayment={handleConfirmPayment} i={i} entriesPerPage={entriesPerPage} />
                                     ))

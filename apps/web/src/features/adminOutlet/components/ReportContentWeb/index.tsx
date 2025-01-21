@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { notesSchema } from "../../schemas/notesSchema";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 
 export default function ReportContentWeb(
     { order, handleLaundryProblem, isPending, isDisableSuccess, page, i }: IReportContent
@@ -54,7 +54,7 @@ export default function ReportContentWeb(
                                     Beri catatan untuk memproses data pesanan pengguna.
                                 </DialogDescription>
                             </DialogHeader>
-                            <Formik initialValues={{ notes: '' }} validationSchema={notesSchema} onSubmit={(values) => {
+                            <Formik initialValues={{ notes: order?.notes || '' }} validationSchema={notesSchema} onSubmit={(values) => {
                                 handleLaundryProblem({ notes: values.notes, orderId: order?.id })
                             }}>
                                 <Form className='relative py-2 pt-5'>
@@ -67,7 +67,7 @@ export default function ReportContentWeb(
                                     />
                                     <ErrorMessage name="notes" component="div" className="text-red-500 text-xs absolute top-[-2px]" />
                                     <DialogFooter>
-                                        <ButtonCustom disabled={isPending || isDisableSuccess} width="w-full" btnColor='bg-orange-500 hover:bg-orange-500' type="submit">Save changes</ButtonCustom>
+                                        <ButtonCustom disabled={isPending || isDisableSuccess} width="w-full" btnColor='bg-orange-500 hover:bg-orange-500' type="submit">Lanjutkan Proses</ButtonCustom>
                                     </DialogFooter>
                                 </Form>
                             </Formik>

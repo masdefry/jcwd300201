@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { washingItemValidationSchema } from "../../schemas/washingItemValidationSchema";
 import { IFormikWashingMobileProps } from "./type";
 
@@ -73,7 +73,7 @@ export default function FormikWashingMobile({
                                             <Field
                                                 as="select"
                                                 name="itemName"
-                                                onChange={(e: any) => {
+                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     setIsCheckedItem(false)
                                                     setFieldValue('itemName', e.target.value)
                                                 }}

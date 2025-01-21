@@ -7,17 +7,18 @@ export interface IUser {
 export interface IOrderStatus {
     status: string;
 }
+type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
 
 export interface IOrder {
     id: string;
-    isPaid: any;
+    isPaid: boolean;
     createdAt: string;
     orderStatus: IOrderStatus[];
     User: IUser;
-    paymentMethod: any;
+    paymentMethod: PaymentMethod;
     paymentProof: string
     notes: string
-    isSolved: any
+    isSolved: boolean
 }
 export interface IReportContent {
     order: IOrder;

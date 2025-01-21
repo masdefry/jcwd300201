@@ -1,10 +1,10 @@
 'use client'
 
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { use, useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import ContentWebLayout from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/WebSessionContent";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";

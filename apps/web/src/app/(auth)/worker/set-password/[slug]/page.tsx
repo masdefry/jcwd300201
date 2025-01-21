@@ -3,7 +3,7 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { IParamsType } from "@/features/user/hooks/useSetPasswordHook/types";
 import { setPasswordValidationSchema } from "@/features/worker/schemas/setPasswordValidationSchema";
 import { useSetPasswordWorkerHook } from "@/features/worker/hooks/useSetPasswordWorkerHook";

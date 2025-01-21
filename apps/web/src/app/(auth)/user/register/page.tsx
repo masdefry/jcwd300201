@@ -2,7 +2,7 @@
 
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Image from "next/image";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import Link from "next/link";
 import { useRegisterHook } from "@/features/user/hooks/useRegisterHook";
 import { registerUserValidationSchema } from "@/features/user/schemas/registerUserValidationSchema";

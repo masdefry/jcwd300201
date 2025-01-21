@@ -1,5 +1,5 @@
 import { IProductContent } from "./type";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import DialogUpdateProduct from "../DialogUpdateProductLaundry";
 import { BsTrash } from "react-icons/bs";
 

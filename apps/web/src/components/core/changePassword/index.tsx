@@ -1,6 +1,6 @@
 import { useFormikContext, ErrorMessage, Field, Form } from "formik";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
-import ButtonCustom from "../button";
+import ButtonCustom from "../Button";
 
 export default function ChangePassword({ oldPasswordVisible, passwordVisible, toggleConfirmPasswordVisibility,
     togglePasswordVisibility, toggleOldPasswordVisibility, isDisableSucces, confirmPasswordVisible, isPendingChangePassword
@@ -39,7 +39,7 @@ export default function ChangePassword({ oldPasswordVisible, passwordVisible, to
                 </div>
             </div>
             <div className='py-2'>
-                <ButtonCustom disabled={isPendingChangePassword || isDisableSucces || !values.existingPassword || !values.password || !values.confirmPassword}  rounded='rounded-2xl' btnColor='bg-orange-500 hover:bg-orange-500' width='w-full' type='submit'>Ubah</ButtonCustom>
+                <ButtonCustom disabled={isPendingChangePassword || isDisableSucces || !values.existingPassword || !values.password || !values.confirmPassword} rounded='rounded-2xl' btnColor='bg-orange-500 hover:bg-orange-500' width='w-full' type='submit'>Ubah</ButtonCustom>
             </div>
         </Form>
     );

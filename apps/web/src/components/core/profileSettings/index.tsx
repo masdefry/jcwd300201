@@ -1,7 +1,7 @@
 import { ErrorMessage, Field, Form } from "formik"
 import Image from "next/image"
-import { ConfirmAlert } from "../confirmAlert"
-import ButtonCustom from "../button"
+import { ConfirmAlert } from "../ConfirmAlert"
+import ButtonCustom from "../Button"
 import { FaPhotoFilm, FaTrash } from "react-icons/fa6"
 
 export default function ProfileSettings({ tempProfilePict, getData, profilePict, isDisabledSucces, disabledProfilePhoto, disabledSubmitButton, setFieldValue, setTempProfilePict, handleDeleteProfilePicture }: any) {
@@ -31,11 +31,12 @@ export default function ProfileSettings({ tempProfilePict, getData, profilePict,
                         <div className="flex items-center gap-4">
                             <label htmlFor="images" className="cursor-pointer inline-flex items-center px-4 py-2 bg-orange-500 text-white font-medium text-sm rounded-xl">
                                 {tempProfilePict ? '1 foto terpilih' : <span className="flex gap-2 items-center"><FaPhotoFilm /> Pilih foto</span>}
-                                <input onChange={(e: any) => {
-                                    const file = e?.currentTarget?.files[0]
-
-                                    setFieldValue('images', e?.currentTarget.files[0])
-                                    if (file) setTempProfilePict(URL?.createObjectURL(file))
+                                <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                    const file = e.currentTarget.files ? e.currentTarget.files[0] : null;
+                                    if (file) {
+                                        setFieldValue('images', file);
+                                        setTempProfilePict(URL.createObjectURL(file));
+                                    }
                                 }} id="images" type="file" accept="image/*" className="hidden" />
                             </label>
                             {tempProfilePict && (

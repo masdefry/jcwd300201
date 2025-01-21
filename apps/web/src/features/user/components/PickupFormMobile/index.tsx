@@ -2,7 +2,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Link from 'next/link'
 import { MdInfoOutline } from "react-icons/md";
 import { FaLocationDot, FaTruck } from "react-icons/fa6";
-import ButtonCustom from '@/components/core/button';
+import ButtonCustom from '@/components/core/Button';
 import { Tooltip } from 'react-tooltip'
 import { CiSquarePlus } from "react-icons/ci";
 import { IPickupFormProps } from './type';
@@ -74,7 +74,7 @@ export const PickupForm = ({ dataOrderType, dataOrderTypeLoading, dataNearestSto
 
                     <section className="w-full pb-4">
                         <Field as="select" name="orderTypeId" className="w-full border border-gray-300 rounded-md p-2 bg-gray-50 hover:bg-gray-100"
-                            onChange={(e: any) => setFieldValue('orderTypeId', e.target.value)}>
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFieldValue('orderTypeId', e.target.value)}>
                             <option value="" disabled>-- Pilih Tipe Laundry --</option>
                             {dataOrderTypeLoading ? (
                                 <option disabled>Memuat...</option>

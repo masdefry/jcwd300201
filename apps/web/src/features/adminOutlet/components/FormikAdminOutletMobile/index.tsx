@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { IFormikAdminOutletMobileProps } from "./type";
 import TableWeightComponent from "../TableWeightNotaOrder";
 import TotalWeightComponent from "../TotalWeightComponent";
@@ -40,11 +40,6 @@ export default function FormikAdminOutletMobile({
         }}
             validationSchema={notaOrderValidationSchema}
             onSubmit={(values: any) => {
-                const itemOrder = values.items.map((item: any) => ({
-                    laundryItemId: item.itemName,
-                    quantity: item.quantity,
-                }));
-
                 handleCreateNotaOrder({
                     email: email,
                     totalWeight: values.totalWeight,
@@ -76,7 +71,7 @@ export default function FormikAdminOutletMobile({
                                     <div className='flex w-full gap-2 items-end'>
                                         <div className='w-full'>
                                             <label className="font-semibold">Produk <span className="text-red-600">*</span></label>
-                                            <Field as="select" name="itemName" onChange={(e: any) => {
+                                            <Field as="select" name="itemName" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                 setIsCheckedItem(false)
                                                 setFieldValue('itemName', e.target.value)
                                             }} className="w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500 rounded-md">

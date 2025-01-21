@@ -1,4 +1,4 @@
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import Link from "next/link";
 import { BsPencil, BsTrash } from "react-icons/bs";
 import { ITableAddress } from "./types";

@@ -47,7 +47,7 @@ export const UsePackingCheckHook = ({ params }: { params: Promise<{ slug: string
     });
 
     const { mutate: handleStatusOrder, isPending } = useMutation({
-        mutationFn: async ({ email, notes }: any) => {
+        mutationFn: async ({ email, notes }: { email:string, notes:string }) => {
             return await instance.post(`/order/packing-process/${slug}`, { email, notes }, {
                 headers: {
                     Authorization: `Bearer ${token}`

@@ -42,7 +42,7 @@ export const usePackingOrderHook = () => {
     });
 
     const { mutate: handleProcessPacking, isPending } = useMutation({
-        mutationFn: async (id: any) => {
+        mutationFn: async (id: string | number) => {
             return await instance.post(`/order/packing-done/${id}`, { email }, {
 
                 headers: {

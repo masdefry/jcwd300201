@@ -2,19 +2,20 @@
 
 import { FaHistory } from "react-icons/fa"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import NoData from "@/components/core/noData"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import NoData from "@/components/core/NoData"
 import Loading from "@/components/core/loading"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import FilterWeb from "@/components/core/filterWeb"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
-import ButtonCustom from "@/components/core/button"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import FilterWeb from "@/components/core/FilterWeb"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
+import ButtonCustom from "@/components/core/Button"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { useWashingHistoryHook } from "@/features/washingWorker/hooks/useWashingHistoryHook"
 import HistoryContentMobile from "@/features/washingWorker/components/HistoryContentMobile"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
 import HistoryContentWeb from "@/features/washingWorker/components/HistoryContentWeb"
+import { IOrderWashing } from "@/features/washingWorker/types/type"
 
 export default function HistoryOrderWashing() {
     const {
@@ -45,7 +46,7 @@ export default function HistoryOrderWashing() {
                         {dataOrderWashingProcessLoading && <Loading />}
                         {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                         {!dataOrderWashingProcessLoading && dataOrderWashingProcess?.orders?.length > 0 ? (
-                            dataOrderWashingProcess?.orders?.map((order: any) => (
+                            dataOrderWashingProcess?.orders?.map((order: IOrderWashing) => (
                                 <HistoryContentMobile key={order?.id} order={order} />
                             ))
                         ) : (
@@ -97,7 +98,7 @@ export default function HistoryOrderWashing() {
                                 </tr>
                             ) : (
                                 !dataOrderWashingProcessLoading && dataOrderWashingProcess?.orders?.length > 0 ? (
-                                    dataOrderWashingProcess?.orders?.map((order: any, i: number) => (
+                                    dataOrderWashingProcess?.orders?.map((order: IOrderWashing, i: number) => (
                                         <HistoryContentWeb key={order.id} order={order} page={page} limit={limit} i={i} />
                                     ))
                                 ) : (

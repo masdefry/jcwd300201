@@ -13,8 +13,8 @@ export const createContactMessageService = async ({ email, phoneNumber, userId, 
 
     if (messageUser) {
         const emailFile = fs.readFileSync('./src/public/sendMail/emailContact.html', 'utf-8')
-        let compiledHtml: any = compile(emailFile)
-        compiledHtml = compiledHtml({ firstName: name, url: 'http://localhost:3000' })
+        let template = compile(emailFile)
+        const compiledHtml = template({ firstName: name, url: 'http://localhost:3000' })
         await transporter.sendMail({
             to: email,
             subject: 'Terimakasih telah menghubungi kami',

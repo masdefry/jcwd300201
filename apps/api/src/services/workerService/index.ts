@@ -9,6 +9,10 @@ import dotenv from 'dotenv'
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
+interface Image {
+    filename: string;
+}
+
 export const updateProfileWorkerService = async ({ userId, email, phoneNumber, firstName, lastName, imageUploaded }: IUpdateProfileWorker) => {
     const findUser = await prisma.worker.findFirst({ where: { id: userId } })
     const findEmail = await prisma.worker.findFirst({ where: { email } })
@@ -19,7 +23,7 @@ export const updateProfileWorkerService = async ({ userId, email, phoneNumber, f
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan nomor telepon dengan format nomor', status: 401 }
     if (email === findUser?.email && firstName === findUser?.firstName && lastName === findUser?.lastName && phoneNumber === findUser?.phoneNumber && (imageUploaded?.images?.length === 0 || imageUploaded?.images?.length === undefined)) throw { msg: 'Data tidak ada yang diubah', status: 400 }
 
-    const dataImage: string[] = imageUploaded?.images?.map((img: any) => {
+    const dataImage: string[] = imageUploaded?.images?.map((img: Image) => {
         return img?.filename
     })
 
@@ -73,7 +77,7 @@ export const createNotesService = async ({ email, notes, orderId }: ICreateNotes
 
     if (!order) throw { msg: 'Order tidak ditemukan', status: 404 }
 
-    const note: any = await prisma.order.update({
+    const note = await prisma.order.update({
         where: {
             id: order.id
         },

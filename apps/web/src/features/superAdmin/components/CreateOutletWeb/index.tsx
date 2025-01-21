@@ -1,8 +1,8 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { createOutletValidationSchema } from "../../schemas/createOutletValidationSchema";
 import { MapContainer, TileLayer, } from "react-leaflet";
-import LocationPicker from "@/components/core/locationPicker";
-import ButtonCustom from "@/components/core/button";
+import LocationPicker from "@/components/core/LocationPicker";
+import ButtonCustom from "@/components/core/Button";
 import { ICreateOutletMobile } from "./type";
 
 

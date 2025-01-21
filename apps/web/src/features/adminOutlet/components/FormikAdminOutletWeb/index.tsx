@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { IFormikAdminOutletWeb } from "./type";
 import TableWeightComponent from "../TableWeightNotaOrder";
 import TotalWeightComponent from "../TotalWeightComponent";
@@ -40,11 +40,6 @@ export default function FormikAdminOutletWeb({
         }}
             validationSchema={notaOrderValidationSchema}
             onSubmit={(values: any) => {
-                const itemOrder = values.items.map((item: any) => ({
-                    laundryItemId: item.itemName,
-                    quantity: item.quantity,
-                }));
-
                 handleCreateNotaOrder({
                     email: email,
                     totalWeight: values.totalWeight,
@@ -79,7 +74,7 @@ export default function FormikAdminOutletWeb({
                                             <Field
                                                 as="select"
                                                 name="itemName"
-                                                onChange={(e: any) => {
+                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     setIsCheckedItem(false)
                                                     setFieldValue('itemName', e.target.value)
                                                 }}

@@ -1,20 +1,21 @@
 'use client'
 
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
 import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import FilterWeb from "@/components/core/filterWeb"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
-import ButtonCustom from "@/components/core/button"
+import NoData from "@/components/core/NoData"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import FilterWeb from "@/components/core/FilterWeb"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
+import ButtonCustom from "@/components/core/Button"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { FaGear } from "react-icons/fa6"
 import { useIroningHistoryHook } from "@/features/ironingWorker/hooks/useIroningHistoryHook"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
 import HistoryContentMobile from "@/features/ironingWorker/components/HistoryContentMobile"
 import HistoryContentWeb from "@/features/ironingWorker/components/HistoryContentWeb"
+import { IOrderIroning } from "@/features/ironingWorker/types/type"
 
 export default function HistoryOrderIroning() {
     const {
@@ -44,7 +45,7 @@ export default function HistoryOrderIroning() {
                     {dataOrderIroningProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                     {!dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
 
-                        dataOrderIroningProcess?.orders?.map((order: any) => (
+                        dataOrderIroningProcess?.orders?.map((order: IOrderIroning) => (
                             <HistoryContentMobile key={order?.id} order={order} />
                         ))
                     ) : (
@@ -79,7 +80,7 @@ export default function HistoryOrderIroning() {
                                 </tr>
                             ) : (
                                 !dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
-                                    dataOrderIroningProcess?.orders?.map((order: any, i: number) => {
+                                    dataOrderIroningProcess?.orders?.map((order: IOrderIroning, i: number) => {
                                         return (
                                             <HistoryContentWeb key={order?.id} order={order} page={page} limit={limit} i={i} />
                                         )

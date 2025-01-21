@@ -62,7 +62,7 @@ export const getAllStoreService = async ({ search, sort, take, skip, limit }: IG
 }
 
 export const createStoreByAdminService = async ({ storeName, address, province, city, zipCode, latitude, longitude }: ICreateStore) => {
-    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+    const responseApi = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
         headers: { key: rajaOngkirApiKey }
     })
 
@@ -95,7 +95,7 @@ export const createStoreByAdminService = async ({ storeName, address, province, 
 }
 
 export const updateStoreService = async ({ storeName, address, city, province, zipCode, latitude, longitude, outletId }: IUpdateStore) => {
-    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+    const responseApi = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
         headers: { key: rajaOngkirApiKey }
     })
 

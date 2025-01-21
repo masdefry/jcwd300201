@@ -1,8 +1,8 @@
 'use client'
 
-import ContentWebLayout from "@/components/core/webSessionContent";
-import ButtonCustom from "@/components/core/button";
-import SearchInputCustom from "@/components/core/searchBar";
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import ButtonCustom from "@/components/core/Button";
+import SearchInputCustom from "@/components/core/SearchBar";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";
 import { useMutation, useQuery } from "@tanstack/react-query";
@@ -15,13 +15,14 @@ import { FaSearch } from 'react-icons/fa';
 import Image from "next/image";
 import Link from "next/link";
 import Loading from "@/components/core/loading";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
-import Pagination from "@/components/core/pagination";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import Pagination from "@/components/core/Pagination";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { toast } from "@/components/hooks/use-toast";
 import { useAdminStoreHook } from "@/features/superAdmin/hooks/useAdminStoreHook";
-import NoData from "@/components/core/noData";
+import NoData from "@/components/core/NoData";
+import { IStore } from "./type";
 
 export default function Page() {
     const {
@@ -88,7 +89,7 @@ export default function Page() {
                 {isLoading && <Loading />}
                 {isError && <p>Silahkan coba beberapa saat lagi.</p>}
                 {!isLoading && getDataStore?.length > 0 ? (
-                    getDataStore?.map((store: any, i: number) => {
+                    getDataStore?.map((store: IStore, i: number) => {
                         const address = `${store?.address}, ${store?.city}, ${store?.province}`
                         return (
                             <div key={i} className="flex items-center justify-between bg-white py-4 px-2 rounded-lg shadow-sm transition-all duration-200 hover:bg-gray-100">
@@ -112,7 +113,10 @@ export default function Page() {
                                     <ConfirmAlert disabled={isPendingDelete}
                                         caption={`Hapus "${store?.storeName?.toUpperCase()}"?`}
                                         description='Semua data yang berkaitan dengan outlet ini akan ikut terhapus.'
-                                        onClick={() => deleteStoreById(store?.id)}>
+                                        onClick={() => {
+                                            deleteStoreById(store?.id); // No return value
+                                        }}
+                                    >
                                         <button className="py-2 hover:bg-red-500 px-2 bg-red-600 rounded-xl"><BsTrash className="text-white" /> </button>
                                     </ConfirmAlert>
                                     <Link href={`/admin/outlet/e/${store?.id}`} className="py-2 hover:bg-blue-500 px-2 bg-blue-600 rounded-xl"><BsPencil className="text-white" /> </Link>
@@ -168,7 +172,7 @@ export default function Page() {
                                 </tr>
                             ) : (
                                 !isLoading && getDataStore?.length > 0 ? (
-                                    getDataStore?.map((store: any, i: number) => {
+                                    getDataStore?.map((store: IStore, i: number) => {
                                         const address = `${store?.address}, ${store?.city}, ${store?.province}`
                                         return (
                                             <tr className="hover:bg-gray-100 border-b" key={store?.id || i}>

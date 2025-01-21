@@ -49,7 +49,7 @@ export const useIroningOrderHook = () => {
     });
 
     const { mutate: handleProcessIroning, isPending } = useMutation({
-        mutationFn: async (id: any) => {
+        mutationFn: async (id: string | number) => {
             return await instance.post(`/order/ironing-done/${id}`, { email }, {
 
                 headers: {

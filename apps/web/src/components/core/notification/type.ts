@@ -7,7 +7,7 @@ interface IOrderType {
     type: string;
 }
 
-interface IOrder {
+export interface IOrder {
     id: number;
     User: IUser;
     OrderType: IOrderType;

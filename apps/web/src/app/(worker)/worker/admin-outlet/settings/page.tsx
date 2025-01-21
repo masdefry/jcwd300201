@@ -8,17 +8,17 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Formik } from 'formik';
 import * as Yup from 'yup'
-import ProfileSettings from '@/components/core/profileSettings';
-import ChangePassword from '@/components/core/changePassword';
+import ProfileSettings from '@/components/core/ProfileSettings';
+import ChangePassword from '@/components/core/ChangePassword';
 import { useAdminOutletSettingsHook } from '@/features/adminOutlet/hooks/useAdminOutletSettingsHook';
-import ContentWebLayout from '@/components/core/webSessionContent';
+import ContentWebLayout from '@/components/core/WebSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { oAdminChangePasswordValidationSchema } from '@/features/adminOutlet/schemas/oAdminChangePasswordValidationSchema';
-import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
-import { ConfirmAlert } from '@/components/core/confirmAlert';
+import ProfileSettingsMobile from '@/components/core/ProfileSettingsMobile';
+import { ConfirmAlert } from '@/components/core/ConfirmAlert';
 import { FaSignOutAlt } from 'react-icons/fa';
-import ButtonCustom from '@/components/core/button';
+import ButtonCustom from '@/components/core/Button';
 import { oAdminAccountMobileValidationSchema } from '@/features/adminOutlet/schemas/oAdminAccountMobileValidationSchema';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { FaGear } from 'react-icons/fa6';

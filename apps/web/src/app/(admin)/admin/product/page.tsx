@@ -1,26 +1,27 @@
 'use client'
 
-import ButtonCustom from "@/components/core/button";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
-import SearchInputCustom from "@/components/core/searchBar";
+import ButtonCustom from "@/components/core/Button";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import SearchInputCustom from "@/components/core/SearchBar";
 import { ChangeEvent } from "react";
 import { useProductLaundryHook } from "@/features/superAdmin/hooks/useProductLaundryHook";
 import DialogCreateProduct from "@/features/superAdmin/components/DialogCreateProductLaundry";
 import DialogUpdateProduct from "@/features/superAdmin/components/DialogUpdateProductLaundry";
-import ContentWebLayout from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/WebSessionContent";
 import { BsTrash } from "react-icons/bs";
-import PaginationWebLayout from "@/components/core/paginationWebLayout";
+import PaginationWebLayout from "@/components/core/PaginationWebLayout";
 import { FaSearch } from "react-icons/fa";
 import Loading from "@/components/core/loading";
-import NoData from "@/components/core/noData";
+import NoData from "@/components/core/NoData";
 import { FaCartArrowDown, FaEllipsisVertical, FaPlus } from "react-icons/fa6";
-import Pagination from "@/components/core/pagination";
+import Pagination from "@/components/core/Pagination";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { createProductLaundryValidationSchema } from "@/features/superAdmin/schemas/createProductLaundryValidationSchema";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import ProductMobile from "@/features/superAdmin/components/ProductMobile";
 import ProductWeb from "@/features/superAdmin/components/ProductWeb";
+import { IProduct } from "./type";
 
 export default function Page() {
     const { currentPage, entriesPerPage, sortProduct, setSortProduct, isLoading, createProductItem,
@@ -107,7 +108,7 @@ export default function Page() {
                     </div>
                 </div>
                 {getDataItem?.length > 0 ? (
-                    getDataItem?.map((prod: any, i: number) => {
+                    getDataItem?.map((prod: IProduct, i: number) => {
                         return (
                             <ProductMobile
                                 key={prod?.id} i={i} isPendingDelete={isPendingDelete} handleUpdateItem={handleUpdateItem} prod={prod} handleDeleteItem={handleDeleteItem} isPendingUpdate={isPendingUpdate}
@@ -155,7 +156,7 @@ export default function Page() {
                         </thead>
                         <tbody>
                             {getDataItem?.length > 0 ? (
-                                getDataItem?.map((prod: any, i: number) => {
+                                getDataItem?.map((prod: IProduct, i: number) => {
                                     return (
                                         <ProductWeb
                                             key={prod?.id} currentPage={currentPage} entriesPerPage={entriesPerPage} i={i} isPendingDelete={isPendingDelete} handleUpdateItem={handleUpdateItem} prod={prod} handleDeleteItem={handleDeleteItem} isPendingUpdate={isPendingUpdate}

@@ -1,19 +1,20 @@
 'use client'
 
 import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
+import NoData from "@/components/core/NoData"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import ContentWebLayout from "@/components/core/webSessionContent";
-import ButtonCustom from "@/components/core/button";
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import ButtonCustom from "@/components/core/Button";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
-import FilterWeb from "@/components/core/filterWeb";
+import FilterWeb from "@/components/core/FilterWeb";
 import DeliveryContentMobile from "@/features/adminOutlet/components/DeliveryContentMobile";
-import TableHeaderWeb from "@/components/core/tableHeadWeb";
+import TableHeaderWeb from "@/components/core/TableHeadWeb";
 import DeliveryContentWeb from "@/features/adminOutlet/components/DeliveryContentWeb";
 import { UseAdminOutletDeliveryHook } from "@/features/adminOutlet/hooks/useAdminOutletDeliveryHook";
+import { IOrder } from "@/features/adminOutlet/types/type"
 
 export default function DeliveryRequest() {
     const {
@@ -64,7 +65,7 @@ export default function DeliveryRequest() {
                             {dataOrderDeliveryLoading && <Loading />}
                             {dataOrderDeliveryError && <div>Silahkan coba beberapa saat lagi.</div>}
                             {!dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 ? (
-                                dataOrderDelivery?.orders?.map((order: any) => (
+                                dataOrderDelivery?.orders?.map((order: IOrder) => (
                                     <DeliveryContentMobile key={order?.id} order={order} handleRequestDelivery={handleRequestDelivery} />
                                 ))) : (
                                 !dataOrderDeliveryLoading && (
@@ -110,7 +111,7 @@ export default function DeliveryRequest() {
                                 </tr>
                             ) : (
                                 !dataOrderDeliveryLoading && dataOrderDelivery?.orders?.length > 0 ? (
-                                    dataOrderDelivery?.orders?.map((order: any, i: number) => (
+                                    dataOrderDelivery?.orders?.map((order: IOrder, i: number) => (
                                         <DeliveryContentWeb key={order?.id} order={order}
                                             handleRequestDelivery={handleRequestDelivery}
                                             page={page} limit={limit} i={i} />

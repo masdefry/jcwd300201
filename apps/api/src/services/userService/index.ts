@@ -25,7 +25,7 @@ export const userCreateAddressService = async ({ userId, addressName, addressDet
     if (findAddressUser?.length >= 5) throw { msg: 'Alamat anda sudah penuh, harap hapus salah satu alamat anda', status: 401 }
 
     const isMain = !hasMainAddress;
-    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+    const responseApi = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
         headers: {
             key: rajaOngkirApiKey
         }
@@ -68,7 +68,7 @@ export const userEditAddressService = async ({ addressId, addressName, addressDe
     const existingAddress = await prisma.userAddress.findFirst({ where: { id: parseInt(addressId) } })
     if (!existingAddress) throw { msg: 'Alamat tidak tersedia', status: 404 }
 
-    const responseApi: any = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
+    const responseApi = await axios.get(`https://api.rajaongkir.com/starter/province?id=${province}`, {
         headers: { key: rajaOngkirApiKey }
     });
 
@@ -186,6 +186,14 @@ export const getUserMainAddressService = async ({ userId }: { userId: string }) 
     return { mainAddress }
 }
 
+interface Image {
+    filename: string;
+}
+
+interface ImageUpload {
+    images: Image[];
+}
+
 export const updateProfileUserService = async ({ userId, email, phoneNumber, firstName, lastName, imageUploaded }: IUpdateProfileUser) => {
     const findUser = await prisma.user.findFirst({ where: { id: userId } })
     const findEmail = await prisma.user.findFirst({ where: { email } })
@@ -196,7 +204,7 @@ export const updateProfileUserService = async ({ userId, email, phoneNumber, fir
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan nomor telepon dengan format nomor', status: 401 }
     if (email === findUser?.email && firstName === findUser?.firstName && lastName === findUser?.lastName && phoneNumber === findUser?.phoneNumber && (imageUploaded?.images?.length === 0 || imageUploaded?.images?.length === undefined)) throw { msg: 'Data tidak ada yang diubah', status: 400 }
 
-    const dataImage: string[] = imageUploaded?.images?.map((img: any) => {
+    const dataImage: string[] = imageUploaded?.images?.map((img: Image) => {
         return img?.filename
     })
 

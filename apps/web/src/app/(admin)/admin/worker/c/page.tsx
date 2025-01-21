@@ -1,8 +1,8 @@
 'use client'
 
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
-import ContentWebLayout from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/WebSessionContent";
 import { useCreateWorkerHook } from "@/features/superAdmin/hooks/useCreateWorkerHook";
 import { createUserValidationSchema } from "@/features/superAdmin/schemas/createUserValidationSchema";
 import { ErrorMessage, Field, Form, Formik } from "formik";

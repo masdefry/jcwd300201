@@ -8,8 +8,10 @@ import fs from 'fs'
 import dotenv from 'dotenv'
 import { compile } from "handlebars"
 import { ICreateWorkerService, ILoginBody, IRegisterBody } from "./types"
-import { addHours, format, isAfter, isBefore, parse } from "date-fns"
+import {  format, isAfter, isBefore } from "date-fns"
 import validate from "deep-email-validator"
+import { Prisma, Worker } from "@prisma/client"
+import { TemplateDelegate } from "handlebars";
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
@@ -48,8 +50,8 @@ export const userRegisterService = async ({ id, email, firstName, lastName, phon
         const setTokenUser = await encodeToken({ id: dataUser?.id, role: dataUser?.email, expiresIn: '1h' })
 
         const emailHTML = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
-        let compiledHtml: any = compile(emailHTML)
-        compiledHtml = compiledHtml({
+        const template: TemplateDelegate = compile(emailHTML);
+        const compiledHtml: string = template({
             email: email,
             url: `http://localhost:3000/user/set-password/${setTokenUser}`,
         })
@@ -91,7 +93,7 @@ export const signInWithGoogleService = async ({ email }: { email: string }) => {
     return { findEmail, token }
 }
 
-export const userLogoutService = async ({ authorization, email }: { authorization: any, email: string }) => {
+export const userLogoutService = async ({ authorization, email }: { authorization: string, email: string }) => {
     const findUser = await prisma.user.findFirst({ where: { email } })
     if (!findUser) throw { msg: 'User tidak tersedia', status: 404 }
     let token = authorization?.split(' ')[1] as string
@@ -111,8 +113,8 @@ export const resendEmailUserService = async ({ email }: { email: string }) => {
 
     if (updateToken) {
         const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
-        let compiledHtml: any = compile(readEmailHtml)
-        compiledHtml = compiledHtml({ email, url: `http://localhost:3000/user/set-password/${token}` })
+        let template = compile(readEmailHtml)
+        const compiledHtml = template({ email, url: `http://localhost:3000/user/set-password/${token}` })
 
         await transporter.sendMail({
             to: email,
@@ -134,8 +136,8 @@ export const resendEmailWorkerService = async ({ email }: { email: string }) => 
 
     if (updatedToken) {
         const readEmailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
-        let compiledHtml: any = compile(readEmailHtml)
-        compiledHtml = compiledHtml({ email, url: `http://localhost:3000/worker/set-password/${token}` })
+        let template = compile(readEmailHtml)
+        const compiledHtml = template({ email, url: `http://localhost:3000/worker/set-password/${token}` })
 
         await transporter.sendMail({
             to: email,
@@ -145,7 +147,7 @@ export const resendEmailWorkerService = async ({ email }: { email: string }) => 
     }
 }
 
-export const setPasswordUserService = async ({ authorization, userId, password }: { authorization: any, userId: string, password: string }) => {
+export const setPasswordUserService = async ({ authorization, userId, password }: { authorization: string, userId: string, password: string }) => {
     const token = authorization?.split(' ')[1]
     const findUser = await prisma.user.findFirst({ where: { id: userId } })
 
@@ -165,8 +167,8 @@ export const setPasswordUserService = async ({ authorization, userId, password }
 
     if (updatedPassword) {
         const emailRead = fs.readFileSync('./src/public/sendMail/verifyEmailSucces.html', 'utf-8')
-        let compiledHtml: any = compile(emailRead)
-        compiledHtml = compiledHtml({ firstName: updatedPassword?.firstName, url: 'http://localhost:3000/user/login' })
+        let template = compile(emailRead)
+        const compiledHtml = template({ firstName: updatedPassword?.firstName, url: 'http://localhost:3000/user/login' })
         await transporter.sendMail({
             to: updatedPassword?.email,
             subject: `Selamat datang ${updatedPassword?.firstName}`,
@@ -175,7 +177,7 @@ export const setPasswordUserService = async ({ authorization, userId, password }
     }
 }
 
-export const setPasswordWorkerService = async ({ authorization, userId, password }: { authorization: any, userId: string, password: string }) => {
+export const setPasswordWorkerService = async ({ authorization, userId, password }: { authorization: string, userId: string, password: string }) => {
     const token = authorization?.split(' ')[1]
     const findUser = await prisma.worker.findFirst({ where: { id: userId } })
 
@@ -193,8 +195,8 @@ export const setPasswordWorkerService = async ({ authorization, userId, password
 
     if (updatedPassword) {
         const emailRead = fs.readFileSync('./src/public/sendMail/verifyEmailSucces.html', 'utf-8')
-        let compiledHtml: any = compile(emailRead)
-        compiledHtml = compiledHtml({ firstName: updatedPassword?.firstName, url: 'http://localhost:3000/worker/login' })
+        let template = compile(emailRead)
+        const compiledHtml = template({ firstName: updatedPassword?.firstName, url: 'http://localhost:3000/worker/login' })
 
         await transporter.sendMail({
             to: updatedPassword?.email,
@@ -204,11 +206,13 @@ export const setPasswordWorkerService = async ({ authorization, userId, password
     }
 }
 
+
+
 export const workerLoginService = async ({ email, password }: ILoginBody) => {
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
 
     let token;
-    let findAdmin: any
+    let findAdmin: any;
 
     await prisma.$transaction(async (tx) => {
         findAdmin = await tx.worker.findFirst({ where: { email }, include: { Shift: true, Store: true } })
@@ -266,7 +270,7 @@ export const createWorkerService = async ({
     if (findEmailInUser) throw { msg: 'Email sudah terpakai!', status: 401 }
 
     await prisma.$transaction(async (tx) => {
-        let dataWorker: any
+        let dataWorker: Worker
         let token: string
         if (workerRole != 'DRIVER') {
             dataWorker = await tx.worker.create({
@@ -319,8 +323,8 @@ export const createWorkerService = async ({
         })
 
         const emailHtml = fs.readFileSync('./src/public/sendMail/emailChangePassword.html', 'utf-8')
-        let compiledHtml: any = compile(emailHtml)
-        compiledHtml = compiledHtml({
+        let template = compile(emailHtml)
+        const compiledHtml = template({
             email: email,
             url: `http://localhost:3000/worker/set-password/${token}`
         })

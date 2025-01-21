@@ -6,8 +6,8 @@ export interface ICreateUserBody {
     workerRole: string;
     identityNumber: string;
     outletId: string;
-    motorcycleType?: any
-    plateNumber?: any   
+    motorcycleType?: string
+    plateNumber?: string   
     shiftId: string;
 }
 

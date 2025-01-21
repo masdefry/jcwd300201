@@ -1046,15 +1046,22 @@ export const paymentOrderVA = async (req: Request, res: Response, next: NextFunc
   }
 }
 
+interface UploadedFile {
+  filename: string;
+}
+interface UploadedFiles {
+  images?: UploadedFile[];
+}
+
 export const paymentOrderTf = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const paymentProof: any = req.files
+    const paymentProof = req.files as UploadedFiles | undefined
     const { orderId } = req.params
     const { email, userId } = req.body
 
-    if (!paymentProof) throw { msg: 'Bukti pembayaran harus dilampirkan', status: 400 }
+    if (!paymentProof || !paymentProof.images || paymentProof.images.length === 0) throw { msg: 'Bukti pembayaran harus dilampirkan', status: 400 }
 
-    const dataImage: string[] = paymentProof?.images?.map((img: any) => {
+    const dataImage: string[] = paymentProof?.images?.map((img) => {
       return img?.filename
     })
 
@@ -1164,11 +1171,12 @@ export const userConfirmOrder = async (req: Request, res: Response, next: NextFu
 export const orderTrackingAdmin = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { userId, authorizationRole, storeId } = req.body;
-    const { period } = req.query;
+    const { period, outletId } = req.query;
 
     const periodTypes = typeof period !== 'string' ? "" : period
+    const outletIdTypes = typeof outletId !== 'string' ? "" : outletId
 
-    const { totalPcs, stats } = await orderTrackingAdminService({ userId, authorizationRole, period: periodTypes, storeId })
+    const { totalPcs, stats } = await orderTrackingAdminService({ outletId: outletIdTypes, userId, authorizationRole, period: periodTypes, storeId })
 
 
     res.status(200).json({

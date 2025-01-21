@@ -1,34 +1,22 @@
 'use client'
 
-import HeaderMobile from "@/components/core/headerMobile"
-import Link from "next/link"
-import { FaArrowLeft } from "react-icons/fa"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import { useQuery, useMutation } from "@tanstack/react-query"
-import { instance } from "@/utils/axiosInstance"
-import authStore from "@/zustand/authstore"
-import { useState, useEffect, ChangeEvent } from "react"
-import { useSearchParams, useRouter, usePathname } from "next/navigation"
-import { useDebouncedCallback } from "use-debounce"
-import { useToast } from "@/components/hooks/use-toast"
-import { ConfirmAlert } from "@/components/core/confirmAlert"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
-import ButtonCustom from "@/components/core/button"
-import SearchInputCustom from "@/components/core/searchBar"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
+import ButtonCustom from "@/components/core/Button"
 import { FaFileInvoice, FaPlus } from "react-icons/fa6"
 import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
-import FilterWeb from "@/components/core/filterWeb"
-import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
+import NoData from "@/components/core/NoData"
+import FilterWeb from "@/components/core/FilterWeb"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { useIroningOrderHook } from "@/features/ironingWorker/hooks/useIroningOrderHook"
 import IroningContentMobile from "@/features/ironingWorker/components/IroningContentMobile"
 import IroningContentWeb from "@/features/ironingWorker/components/IroningContentWeb"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
+import { IOrderIroning } from "@/features/ironingWorker/types/type"
 
 export default function IroningOrder() {
     const {
@@ -72,7 +60,7 @@ export default function IroningOrder() {
                             {dataOrderIroningProcessLoading && <Loading />}
                             {dataOrderIroningProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                             {!dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
-                                dataOrderIroningProcess?.orders?.map((order: any) => (
+                                dataOrderIroningProcess?.orders?.map((order: IOrderIroning) => (
                                     <IroningContentMobile
                                         key={order?.id}
                                         order={order}
@@ -133,7 +121,7 @@ export default function IroningOrder() {
                                 </tr>
                             ) : (
                                 !dataOrderIroningProcessLoading && dataOrderIroningProcess?.orders?.length > 0 ? (
-                                    dataOrderIroningProcess?.orders?.map((order: any, i: number) => {
+                                    dataOrderIroningProcess?.orders?.map((order: IOrderIroning, i: number) => {
                                         return (
                                             <IroningContentWeb
                                                 key={order?.id}

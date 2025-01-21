@@ -2,20 +2,21 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import ButtonCustom from "@/components/core/button"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
-import NoData from "@/components/core/noData"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import ButtonCustom from "@/components/core/Button"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
+import NoData from "@/components/core/NoData"
 import Loading from "@/components/core/loading"
-import FilterWeb from "@/components/core/filterWeb"
+import FilterWeb from "@/components/core/FilterWeb"
 import { GrNotes } from "react-icons/gr"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
 import { useWashingOrderHook } from "@/features/washingWorker/hooks/useWashingOrderHook"
 import WashingContentMobile from "@/features/washingWorker/components/WashingContentMobile"
 import WashingContentWeb from "@/features/washingWorker/components/WashingContentWeb"
+import { IOrderWashing } from "@/features/washingWorker/types/type"
 
 export default function Page() {
     const {
@@ -72,7 +73,7 @@ export default function Page() {
                                 {dataOrderWashingProcessLoading && <Loading />}
                                 {dataOrderWashingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                                 {!dataOrderWashingProcessLoading && dataOrderWashingProcess?.orders?.length > 0 ? (
-                                    dataOrderWashingProcess?.orders?.map((order: any) => (
+                                    dataOrderWashingProcess?.orders?.map((order: IOrderWashing) => (
                                         <WashingContentMobile
                                             key={order?.id}
                                             order={order}
@@ -135,7 +136,7 @@ export default function Page() {
                                 </tr>
                             ) : (
                                 !dataOrderWashingProcessLoading && dataOrderWashingProcess?.orders?.length > 0 ? (
-                                    dataOrderWashingProcess?.orders?.map((order: any, i: number) => (
+                                    dataOrderWashingProcess?.orders?.map((order: IOrderWashing, i: number) => (
                                         <WashingContentWeb
                                             key={order?.id}
                                             order={order}

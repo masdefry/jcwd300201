@@ -10,12 +10,12 @@ export interface IOrderStatus {
 
 export interface IOrder {
     id: string;
-    isPaid: any;
+    isPaid: boolean;
     createdAt: string;
     orderStatus: IOrderStatus[];
     User: IUser;
 }
 export interface IDeliveryContent {
     order: IOrder;
-    handleRequestDelivery: (orderId: string) => void; 
+    handleRequestDelivery: (orderId: string) => void;
 }

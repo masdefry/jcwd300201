@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import Link from "next/link";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import Image from "next/image";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { FaGoogle, FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa6";
 import { useLoginUserHook } from "@/features/user/hooks/useLoginUserHook";
 import { loginUserValidationSchema } from "@/features/user/schemas/loginUserValidationSchema";

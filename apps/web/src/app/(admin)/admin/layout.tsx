@@ -9,7 +9,7 @@ import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaUserCheck } from "react-icons/fa";
 import { RiProfileFill } from "react-icons/ri";
 import { MdFeedback, MdOutlet, MdWorkHistory } from "react-icons/md";
-import FloatingMessageCustomer from "@/components/core/floatingComponent";
+import FloatingMessageCustomer from "@/components/core/FloatingComponent";
 import { FaStore } from "react-icons/fa6";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
