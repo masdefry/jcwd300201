@@ -1,8 +1,8 @@
 'use client'
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import NotaHeader from "@/components/core/createNotaHeaders";
-import ContentWebLayout from "@/components/core/webSessionContent";
+import NotaHeader from "@/components/core/CreateNotaHeaders";
+import ContentWebLayout from "@/components/core/WebSessionContent";
 import NotaCaptionContent from "@/features/adminOutlet/components/NotaCaptionContent";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import FormikIroningMobile from "@/features/ironingWorker/components/FormikIroningMobile";

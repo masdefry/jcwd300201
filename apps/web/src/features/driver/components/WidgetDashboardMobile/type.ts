@@ -17,4 +17,5 @@ interface IWidgetDashboardMobile {
         orders: IOrder[];
     };
     title: string
+    link:string
 }

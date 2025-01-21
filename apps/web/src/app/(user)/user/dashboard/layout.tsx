@@ -11,7 +11,7 @@ import Cookies from 'js-cookie'
 import { FaDashcube, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { toast } from "@/components/hooks/use-toast";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { FaAddressCard, FaBuysellads, FaCartShopping, FaTruck } from "react-icons/fa6";
 import { MdSportsMotorsports } from "react-icons/md";
 

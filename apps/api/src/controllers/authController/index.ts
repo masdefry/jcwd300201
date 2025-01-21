@@ -179,6 +179,13 @@ export const setPasswordUser = async (req: Request, res: Response, next: NextFun
         const { userId, password } = req.body
         const { authorization } = req.headers
 
+        if (!authorization) {
+            return res.status(400).json({
+                error: true,
+                message: 'Anda tidak berwenang untuk mengganti password',
+                data: {}
+            });
+        }
         await setPasswordUserService({ authorization, userId, password })
 
         res.status(200).json({
@@ -196,6 +203,14 @@ export const setPasswordWorker = async (req: Request, res: Response, next: NextF
     try {
         const { userId, password } = req.body
         const { authorization } = req.headers
+
+        if (!authorization) {
+            return res.status(400).json({
+                error: true,
+                message: 'Anda tidak berwenang untuk mengganti password',
+                data: {}
+            });
+        }
         await setPasswordWorkerService({ authorization, userId, password })
 
         res.status(200).json({
@@ -213,7 +228,13 @@ export const workerLogin = async (req: Request, res: Response, next: NextFunctio
     try {
         const { email, password } = req.body
         const { findAdmin, token } = await workerLoginService({ email, password })
-
+        
+        if (!findAdmin) {
+            return res.status(404).json({
+                error: true,
+                message: 'User not found',
+            })
+        }
         res?.status(200).json({
             error: false,
             message: 'Berhasil, silahkan masuk!',

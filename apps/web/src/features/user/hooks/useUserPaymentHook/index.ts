@@ -31,7 +31,7 @@ export const useUserPaymentHook = ({ params }: { params: Promise<{ slug: string 
     });
 
     const { mutate: handlePaymmentOrder, isPending } = useMutation({
-        mutationFn: async ({ email }: any) => {
+        mutationFn: async ({ email }: { email:string }) => {
             return await instance.post(`/order/payment/${slug}`, { email }, {
                 headers: {
                     Authorization: `Bearer ${token}`

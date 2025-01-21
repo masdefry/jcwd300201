@@ -7,7 +7,7 @@ import {
     CarouselContent,
     CarouselItem,
 } from '@/components/ui/carousel';
-import ButtonCustom from '@/components/core/button';
+import ButtonCustom from '@/components/core/Button';
 import Image from 'next/image';
 import { FaHome, FaInfoCircle, FaPhoneAlt, FaTshirt } from 'react-icons/fa';
 import { MdBusiness, MdContactMail, MdDesignServices, MdEmail, MdFeedback, MdLocalLaundryService, MdWorkHistory } from 'react-icons/md';
@@ -15,6 +15,7 @@ import Link from 'next/link';
 import { FaCartArrowDown, FaServicestack } from 'react-icons/fa6';
 import { RiProfileFill } from 'react-icons/ri';
 import { useRouter } from 'next/navigation';
+import { MenuItem } from './type';
 
 export default function HeroSectionMobile() {
     const [isFade, setIsFade] = useState<boolean>(false);
@@ -36,7 +37,7 @@ export default function HeroSectionMobile() {
         },
     ];
 
-    const arrMenu = [
+    const arrMenu: MenuItem[] = [
         { icon: <FaHome />, url: '/', name: 'Beranda' },
         { icon: <MdDesignServices />, url: '/service', name: 'Layanan' },
         { icon: <MdBusiness />, url: '/about-us', name: 'Tentang' },
@@ -70,7 +71,7 @@ export default function HeroSectionMobile() {
                                         <h2 className="text-3xl font-bold tracking-tight">{captionImage[index].title}</h2>
                                         <p className="text-sm md:text-base lg:text-lg text-gray-300 leading-relaxed">{captionImage[index].description}</p>
                                     </div>
-                                    <ButtonCustom onClick={()=> router.push('/user/dashboard/pickup')} rounded='rounded-full' btnColor="bg-orange-500 hover:bg-orange-500">
+                                    <ButtonCustom onClick={() => router.push('/user/dashboard/pickup')} rounded='rounded-full' btnColor="bg-orange-500 hover:bg-orange-500">
                                         Pesan Sekarang
                                     </ButtonCustom>
                                 </div>
@@ -90,7 +91,7 @@ export default function HeroSectionMobile() {
                 </CarouselContent>
                 <div className="flex justify-center h-fit w-full p-2 mt-2 bg-gradient-to-tr from-white via-sky-50 to-sky-100 rounded-2xl">
                     <div className="grid grid-cols-4 gap-2 w-full">
-                        {arrMenu?.map((item: any, i: number) => (
+                        {arrMenu?.map((item, i: number) => (
                             <Link href={item?.url} className="w-full p-3 flex flex-col items-center justify-center gap-2 bg-white shadow-sm border rounded-2xl hover:shadow-md transition-all" key={i}>
                                 <span className="text-2xl text-orange-500">{item?.icon}</span>
                                 <h1 className="text-xs text-gray-700">{item?.name}</h1>

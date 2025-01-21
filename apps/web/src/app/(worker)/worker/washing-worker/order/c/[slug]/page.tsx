@@ -1,13 +1,13 @@
 'use client'
 import React from 'react';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import ContentWebLayout from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/WebSessionContent";
 import NotaCaptionContent from "@/features/adminOutlet/components/NotaCaptionContent";
-import NotaHeader from "@/components/core/createNotaHeaders";
+import NotaHeader from "@/components/core/CreateNotaHeaders";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import FormikWashingMobile from "@/features/washingWorker/components/FormikWashingMobile";
 import FormikWashingWeb from "@/features/washingWorker/components/FormikWashingWeb";
-import { UseWashingCheckHook } from "@/features/washingWorker/hooks/useWashingCheckHook";
+import { useWashingCheckHook } from "@/features/washingWorker/hooks/useWashingCheckHook";
 
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
@@ -32,7 +32,7 @@ export default function Page({ params }: { params: Promise<{ slug: string }> }) 
         compareData,
         emails,
         handleDialogSubmit
-    } = UseWashingCheckHook({ params });
+    } = useWashingCheckHook({ params });
 
     if (dataOrderNote == undefined) return <div></div>
     if (isFetching) return <div></div>

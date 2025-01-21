@@ -6,13 +6,13 @@ import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import NotificationDriver from "@/features/driver/components/notification";
+import NotificationDriver from "@/features/driver/components/Notification";
 import { useDriverDashboardHook } from "@/features/driver/hooks/useDriverDashboardHook";
-import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
-import WeatherMobile from "@/components/core/weatherMobile";
-import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
-import HeaderDashboardWeb from "@/components/core/headerDashboardWeb";
-import WeatherWeb from "@/components/core/weatherWeb";
+import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
+import WeatherMobile from "@/components/core/WeatherMobile";
+import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
+import HeaderDashboardWeb from "@/components/core/HeaderDashboardWeb";
+import WeatherWeb from "@/components/core/WeatherWeb";
 import WidgetDashboardMobile from "@/features/driver/components/WidgetDashboardMobile";
 import WidgetDashboardWeb from "@/features/driver/components/WidgetDashboardWeb";
 
@@ -63,8 +63,8 @@ export default function Page() {
 
                     <div className="w-full flex flex-col md:flex-row gap-4 px-2 mt-5 h-auto">
                         <WeatherMobile isCurrentWeather={isCurrentWeather} />
-                        <WidgetDashboardMobile title={"Pengantaran Laundry"} data={dataOrderAwaitingPickup} />
-                        <WidgetDashboardMobile title={"Penjemputan Laudry"} data={dataOrderDelivery} />
+                        <WidgetDashboardMobile link={'/worker/driver/pickup-request?tab=proses'} title={"Pengantaran Laundry"} data={dataOrderAwaitingPickup} />
+                        <WidgetDashboardMobile link={'/worker/driver/delivery-request?tab=proses'} title={"Penjemputan Laudry"} data={dataOrderDelivery} />
                     </div>
                 </main>
             </ContentMobileLayout>

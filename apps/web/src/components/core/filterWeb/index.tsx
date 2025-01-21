@@ -8,7 +8,7 @@ import {
 import { FaSearch } from 'react-icons/fa';
 import { IoMdRefresh } from "react-icons/io";
 import { IFilterPropsWeb } from "./type";
-import SearchInputCustom from "../searchBar";
+import SearchInputCustom from "../SearchBar";
 import { ChangeEvent } from "react"
 
 

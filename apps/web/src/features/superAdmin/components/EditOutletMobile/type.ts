@@ -10,8 +10,8 @@ export interface IEditOutletMobile {
         storeName: string;
         address: string;
         zipCode: string;
-        latitude: any;
-        longitude: any;
+        latitude: number;
+        longitude: number;
     };
     setSelectedProvince: React.Dispatch<React.SetStateAction<string>>;
     isPositionCheck: boolean;

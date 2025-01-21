@@ -1,5 +1,5 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { IFormikCreateWorkerWeb } from "./type";
 import { createUserValidationSchema } from "../../schemas/createUserValidationSchema";
 import PhoneInput from 'react-phone-number-input'
@@ -21,18 +21,19 @@ export default function FormikCreateWorkerWeb({ getDataStore, isPending, handleC
             }}
             validationSchema={createUserValidationSchema}
             onSubmit={(values, { resetForm }) => {
-                handleCreateUser({
-                    email: values?.email,
-                    firstName: values?.firstName,
-                    lastName: values?.lastName,
-                    phoneNumber: values?.phoneNumber,
-                    workerRole: values?.workerRole,
-                    identityNumber: values?.identityNumber,
-                    outletId: values?.outletId,
-                    motorcycleType: values?.motorcycleType,
-                    plateNumber: values?.plateNumber,
-                    shiftId: values?.shiftId
-                }, { onSuccess: () => resetForm() })
+                console.log(values)
+                // handleCreateUser({
+                //     email: values?.email,
+                //     firstName: values?.firstName,
+                //     lastName: values?.lastName,
+                //     phoneNumber: values?.phoneNumber,
+                //     workerRole: values?.workerRole,
+                //     identityNumber: values?.identityNumber,
+                //     outletId: values?.outletId,
+                //     motorcycleType: values?.motorcycleType,
+                //     plateNumber: values?.plateNumber,
+                //     shiftId: values?.shiftId
+                // }, { onSuccess: () => resetForm() })
             }}>
             {({ setFieldValue, values }) => (
                 <Form>
@@ -95,7 +96,7 @@ export default function FormikCreateWorkerWeb({ getDataStore, isPending, handleC
                             </div>
                             <div className="w-full flex flex-col gap-2 relative">
                                 <label htmlFor="workerRole" className="font-semibold">Tipe pekerja <span className="text-red-600">*</span></label>
-                                <Field as='select' name='workerRole' id='workerRole' onChange={(e: any) => setFieldValue('workerRole', e.target.value)} className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500'>
+                                <Field as='select' name='workerRole' id='workerRole' onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFieldValue('workerRole', e.target.value)} className='w-full py-2 text-sm px-3 focus:outline-none border focus:border-orange-500'>
                                     <option value="" disabled>Pilih opsi</option>
                                     <option value="OUTLET_ADMIN">Admin Outlet</option>
                                     <option value="WASHING_WORKER">Petugas Cuci</option>

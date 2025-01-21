@@ -1,8 +1,8 @@
 'use client'
 
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { RiShutDownLine } from "react-icons/ri";
-import HeaderMobile from "@/components/core/headerMobile";
+import HeaderMobile from "@/components/core/HeaderMobile";
 import { FaUser, FaStore, FaClock, FaCut, FaTags, FaTruck, FaCashRegister, FaUsers, FaReceipt, FaHome, FaClipboardList, FaChartBar, FaCog } from 'react-icons/fa';
 import authStore from "@/zustand/authstore";
 import Link from "next/link";
@@ -13,8 +13,8 @@ import { toast } from "@/components/hooks/use-toast";
 import { useState } from "react";
 import Image from "next/image";
 import { FaIdCard, FaUserCheck, FaVoicemail } from "react-icons/fa6";
-import ListCustom from "@/components/core/listSettings";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import ListCustom from "@/components/core/ListSettings";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string

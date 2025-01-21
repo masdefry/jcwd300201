@@ -6,14 +6,14 @@ import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import Notification from "@/components/core/notification";
+import Notification from "@/components/core/Notification";
 import { useIroningDashboardHook } from "@/features/ironingWorker/hooks/useIroningDashboardHook";
-import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
-import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
-import WeatherMobile from "@/components/core/weatherMobile";
+import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
+import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
+import WeatherMobile from "@/components/core/WeatherMobile";
 import WidgetDashboardMobile from "@/features/driver/components/WidgetDashboardMobile";
-import HeaderDashboardWeb from "@/components/core/headerDashboardWeb";
-import WeatherWeb from "@/components/core/weatherWeb";
+import HeaderDashboardWeb from "@/components/core/HeaderDashboardWeb";
+import WeatherWeb from "@/components/core/WeatherWeb";
 import WidgetDashboardWeb from "@/features/ironingWorker/components/WidgetDashboardWeb";
 
 export default function Page() {

@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react';
-import ContentWebLayout from "@/components/core/webSessionContent";
-import NotaHeader from "@/components/core/createNotaHeaders";
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import NotaHeader from "@/components/core/CreateNotaHeaders";
 import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { useUserComplaintHook } from "@/features/user/hooks/useUserComplaintHook";
@@ -12,7 +12,7 @@ import FormikComplaintWeb from "@/features/user/components/FormikComplaintWeb";
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
 
-    const { dataOrderNote, isFetching, handleComplaint, isPending } = useUserComplaintHook({params})
+    const { dataOrderNote, isFetching, handleComplaint, isPending } = useUserComplaintHook({ params })
 
     if (dataOrderNote == undefined) return <div></div>
     if (isFetching) return <div></div>

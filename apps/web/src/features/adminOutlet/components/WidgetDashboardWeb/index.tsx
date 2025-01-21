@@ -1,4 +1,4 @@
-import Notification from "@/components/core/notification"
+import Notification from "@/components/core/Notification"
 import Link from "next/link"
 
 export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWidgetDashboardWeb) {
@@ -12,7 +12,7 @@ export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWid
                 <Notification dataOrderNotif={dataOrderNotif} />
             </div>
             <div className="w-full space-y-4">
-                {data?.orders?.map((order: any, i: number) => (
+                {data?.orders?.map((order, i: number) => (
                     <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
                         <div className="w-full flex items-center">
                             <div className="w-2 h-2 bg-green-600 rounded-full"></div>

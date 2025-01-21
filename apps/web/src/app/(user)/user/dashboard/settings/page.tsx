@@ -1,13 +1,13 @@
 'use client'
 
 import { FaSignOutAlt } from 'react-icons/fa';
-import ContentWebLayout from "@/components/core/webSessionContent";
-import ListCustom from "@/components/core/listSettings";
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import ListCustom from "@/components/core/ListSettings";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { FaGear } from "react-icons/fa6";
 import Link from "next/link";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
-import ButtonCustom from '@/components/core/button';
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import ButtonCustom from '@/components/core/Button';
 import useLandingSettingsUserHooks from '@/features/user/hooks/useLandingSettingsUserHooks/useLandingSettingsUserHooks';
 export default function Page() {
     const { isDisabledSucces, handleLogoutAdmin, isPending, settingsItems } = useLandingSettingsUserHooks()

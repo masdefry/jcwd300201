@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { IPaymentContent } from "./type";
 import { FaWhatsapp } from "react-icons/fa6";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import Image from "next/image";
 export default function PaymentContentMobile(
     { order, imageLoading, setImageLoading, handlConfirmPaymentPending, handleConfirmPayment }: IPaymentContent
@@ -9,7 +9,7 @@ export default function PaymentContentMobile(
     return (
         <section key={order.id} className="flex justify-between items-center border-b py-4">
 
-            {order?.isPaid === false && order?.paymentMethod === 'TF_MANUAL' && order?.paymentProof ?
+            {order?.isPaid === false && (order?.paymentMethod as 'MIDTRANS' | 'TF_MANUAL') === 'TF_MANUAL' && order?.paymentProof ?
 
                 <ConfirmAlert colorConfirmation="blue" caption="Apakah anda yakin ingin melakukan verifikasi pembayaran pada order berikut?" description={
                     <>

@@ -171,9 +171,26 @@ export const getSingleDataUser = async (req: Request, res: Response, next: NextF
   }
 }
 
+interface UploadedFile {
+  filename: string;
+}
+
+interface UploadedFiles {
+  images?: UploadedFile[];
+}
+
+interface IUpdateProfileUser {
+  userId: string;
+  email: string;
+  phoneNumber: string;
+  firstName: string;
+  lastName: string;
+  imageUploaded?: UploadedFiles;
+}
+
 export const updateProfileUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const imageUploaded: any = req.files
+    const imageUploaded = req.files as UploadedFiles | undefined
     const { userId, email, phoneNumber, firstName, lastName } = req.body
 
     await updateProfileUserService({ userId, email, phoneNumber, firstName, lastName, imageUploaded })

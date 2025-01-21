@@ -40,7 +40,7 @@ const useUserAddressHook = () => {
     }, 1000)
 
     const { mutate: handleDeleteItem, isPending: isPendingDelete } = useMutation({
-        mutationFn: async (id) => {
+        mutationFn: async (id: string | number) => {
             return await instance.delete(`/user/address/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`

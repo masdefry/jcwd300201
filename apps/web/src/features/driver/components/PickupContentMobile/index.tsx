@@ -1,4 +1,4 @@
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa6";
 import { IPickupContent } from "./type";

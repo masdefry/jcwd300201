@@ -1,37 +1,22 @@
 'use client'
 
-import { IoSearchSharp, IoPersonSharp } from "react-icons/io5";
-import { GrUserWorker } from "react-icons/gr";
-import { FaTint } from "react-icons/fa";
 import { MdFeedback, MdWorkHistory } from "react-icons/md";
-import Image from "next/image";
-import authStore from "@/zustand/authstore";
-import { useEffect, useState } from "react";
 import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying, FaStore } from "react-icons/fa6";
-import { FaCloud, FaTemperatureHigh } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
-import axios from "axios";
-import { locationStore } from "@/zustand/locationStore";
-import Link from "next/link";
-import { instance } from "@/utils/axiosInstance";
-import { useQuery } from "@tanstack/react-query";
-import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
-import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
+import ChartComponents from "@/components/core/chart/PieChartTrackingStatusOrder";
+import MonthlyCharts from "@/components/core/chart/ChartMonthlyStatistic";
 import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { RiProfileFill } from "react-icons/ri";
 import TabTracking from "@/features/superAdmin/components/TabOrderTracking";
-import Notification from "@/components/core/notification";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import NotificationOutletAdmin from "@/features/adminOutlet/components/Notification";
 import NotificationSuperAdmin from "@/features/superAdmin/components/NotificationSuperAdmin";
-import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
-import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
+import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
+import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
 import MenuAdditionalDashboardMobile from "@/components/core/MenuAdditionalDashboardMobile";
-import WeatherMobile from "@/components/core/weatherMobile";
-import HeaderAdminDashboardWeb from "@/components/core/headerDashboardWeb copy";
-import WeatherWeb from "@/components/core/weatherWeb";
+import WeatherMobile from "@/components/core/WeatherMobile";
+import HeaderAdminDashboardWeb from "@/components/core/HeaderDashboardWeb copy";
+import WeatherWeb from "@/components/core/WeatherWeb";
 import { useAdminDashboardHook } from "@/features/superAdmin/hooks/useAdminDashboardHook";
 
 export default function Page() {
@@ -60,7 +45,8 @@ export default function Page() {
         refetch,
         isLoading,
         setIsMonthlyStatistic,
-        isMonthlyStatistic
+        isMonthlyStatistic,
+        refetchTab
     } = useAdminDashboardHook()
 
     if (isPending) return (
@@ -94,7 +80,7 @@ export default function Page() {
                         <MenuAdditionalDashboardMobile arrMenu={arrMenu} />
                         <div className="w-full px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
                             <MonthlyCharts monthlyData={dataOrderList?.monthlyStatistic} showDropdown={true} isLoading={isLoading}
-                                onChange={(e: any) => setIsMonthlyStatistic(e.target.value)} value={isMonthlyStatistic} />
+                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setIsMonthlyStatistic(e.target.value)} value={isMonthlyStatistic} />
                         </div>
                         <TabTracking
                             selectedTab={selectedTab}
@@ -131,8 +117,8 @@ export default function Page() {
                     </div>
                 </section>
                 <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
-                    <MonthlyCharts monthlyData={dataOrderList?.monthlyStatistic} showDropdown={true} isLoading={isLoading}
-                        onChange={(e: any) => setIsMonthlyStatistic(e.target.value)} value={isMonthlyStatistic} />
+                    <MonthlyCharts refetch={refetch} refetchTab={refetchTab} monthlyData={dataOrderList?.monthlyStatistic} showDropdown={true} isLoading={isLoading}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setIsMonthlyStatistic(e.target.value)} value={isMonthlyStatistic} />
                     <div className="w-fit px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
                         <TabTracking
                             selectedTab={selectedTab}

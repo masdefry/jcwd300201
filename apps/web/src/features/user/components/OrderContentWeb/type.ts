@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 
 interface IUser {
     firstName: string;
@@ -10,12 +11,14 @@ interface IOrder {
     OrderType: IOrderType;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: any;
+    orderStatus: IOrderStatus;
     User: IUser;
     laundryPrice: number
     isConfirm: boolean;
 }
-
+export interface IOrderStatus {
+    status: string;
+}
 interface IOrderType {
     type: string
 }
@@ -24,8 +27,8 @@ export interface IOrderContentWeb {
     order: IOrder;
     page: number
     i: number
-    setOrderData: (data: any) => void;
+    setOrderData: Dispatch<SetStateAction<IOrder[] | null>>
     handleOrderDetail: (orderId: string) => void;
-    setOpenDialog: (open: boolean) => void;
-    entriesPerPage:number
+    setOpenDialog: Dispatch<SetStateAction<boolean>>
+    entriesPerPage: number
 }

@@ -2,20 +2,21 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import ButtonCustom from "@/components/core/button"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import ButtonCustom from "@/components/core/Button"
 import { FaCartArrowDown } from "react-icons/fa6"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
-import NoData from "@/components/core/noData"
-import FilterWeb from "@/components/core/filterWeb"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
+import NoData from "@/components/core/NoData"
+import FilterWeb from "@/components/core/FilterWeb"
 import Loading from "@/components/core/loading"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { usePackingOrderHook } from "@/features/packingWorker/hooks/usePackingOrderHook"
 import PackingContentMobile from "@/features/packingWorker/components/PackingContentMobile"
 import PackingContentWeb from "@/features/packingWorker/components/PackingContentWeb"
-import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import TableHeaderWeb from "@/components/core/TableHeadWeb"
+import { IOrderPacking } from "@/features/packingWorker/types/type"
 
 export default function DriverPickUp() {
     const {
@@ -71,7 +72,7 @@ export default function DriverPickUp() {
                             {dataOrderPackingProcessLoading && <Loading />}
                             {dataOrderPackingProcessError && <p>Silahkan coba beberapa saat lagi.</p>}
                             {!dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
-                                dataOrderPackingProcess?.orders?.map((order: any) => (
+                                dataOrderPackingProcess?.orders?.map((order: IOrderPacking) => (
                                     <PackingContentMobile
                                         key={order?.id}
                                         order={order}
@@ -130,7 +131,7 @@ export default function DriverPickUp() {
                                 </tr>
                             ) : (
                                 !dataOrderPackingProcessLoading && dataOrderPackingProcess?.orders?.length > 0 ? (
-                                    dataOrderPackingProcess?.orders?.map((order: any, i: number) => (
+                                    dataOrderPackingProcess?.orders?.map((order: IOrderPacking, i: number) => (
                                         <PackingContentWeb
                                             key={order?.id}
                                             order={order}

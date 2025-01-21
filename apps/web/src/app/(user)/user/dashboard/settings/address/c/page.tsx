@@ -1,7 +1,7 @@
 'use client'
 
 import "leaflet/dist/leaflet.css";
-import ContentWebLayout from "@/components/core/webSessionContent";
+import ContentWebLayout from "@/components/core/WebSessionContent";
 import { instance } from "@/utils/axiosInstance";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -9,13 +9,13 @@ import { useEffect, useMemo, useState } from "react";
 import { MapContainer, Marker, TileLayer, useMapEvents } from "react-leaflet";
 import { locationStore } from "@/zustand/locationStore";
 import axios from "axios";
-import LocationPicker from "@/components/core/locationPicker";
+import LocationPicker from "@/components/core/LocationPicker";
 import L from 'leaflet'
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import * as Yup from 'yup'
 import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
-import { IAddressDetail } from "./types";
+import { IAddressDetail, ICity, IProvince } from "./types";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { createAddressValidationSchema } from "@/features/user/schemas/createAddressValidationSchema";
 
@@ -50,7 +50,7 @@ export default function Page() {
             setDataUser(response?.data)
 
         } catch (error) {
-            
+
         }
     }
 
@@ -178,7 +178,7 @@ export default function Page() {
                                         }}>
                                         <option value="" disabled>Pilih Provinsi</option>
                                         {provincesLoading ? (<option disabled>Loading...</option>) : (
-                                            provinces?.map((province: any) => (
+                                            provinces?.map((province: IProvince) => (
                                                 <option key={province.province_id} value={province.province_id}>
                                                     {province.province}
                                                 </option>
@@ -201,7 +201,7 @@ export default function Page() {
                                             {!selectedProvince ? "Silahkan Pilih Provinsi" : "Pilih Kota"}
                                         </option>
                                         {citiesLoading ? (<option disabled>Loading...</option>) : (
-                                            cities?.map((city: any) => (
+                                            cities?.map((city: ICity) => (
                                                 <option key={city.city_id} value={city.city_name}>{city.city_name}</option>
                                             ))
                                         )}
@@ -295,7 +295,7 @@ export default function Page() {
                                             }}>
                                             <option value="" disabled>Pilih Provinsi</option>
                                             {provincesLoading ? (<option disabled>Loading...</option>) : (
-                                                provinces?.map((province: any) => (
+                                                provinces?.map((province: IProvince) => (
                                                     <option key={province.province_id} value={province.province_id}>
                                                         {province.province}
                                                     </option>
@@ -318,7 +318,7 @@ export default function Page() {
                                                 {!selectedProvince ? "Silahkan Pilih Provinsi" : "Pilih Kota"}
                                             </option>
                                             {citiesLoading ? (<option disabled>Loading...</option>) : (
-                                                cities?.map((city: any) => (
+                                                cities?.map((city: ICity) => (
                                                     <option key={city.city_id} value={city.city_name}>{city.city_name}</option>
                                                 ))
                                             )}

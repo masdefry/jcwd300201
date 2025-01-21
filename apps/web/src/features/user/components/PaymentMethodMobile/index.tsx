@@ -1,4 +1,4 @@
-import ButtonCustom from "@/components/core/button"
+import ButtonCustom from "@/components/core/Button"
 import Image from "next/image"
 import { FaWallet } from "react-icons/fa6"
 import { RiBankCardFill } from "react-icons/ri"
@@ -28,19 +28,19 @@ export default function PaymentMethodWeb({ isArrCardPayment, dataOrderNote, setI
             {dataOrderNote?.order?.isPaid === false && !dataOrderNote?.order?.paymentMethod && !dataOrderNote?.order?.paymentProof ? (
                 <>
                     <div className="space-y-4">
-                        <label htmlFor="midtrans" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                        <label htmlFor="midtrans" className=" peer-checked:bg-blue-100 flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
                             <div className='flex gap-2 items-center'>
                                 <FaWallet className="text-lg" />
                                 <span className="text-gray-700 flex">Pembayaran Online <span className="text-sm mt-1 text-gray-500">(Verifikasi Otomatis)</span></span>
                             </div>
-                            <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='midtrans' type="radio" name="paymentMethod" id="midtrans" className="w-4 h-4 text-blue-600" />
+                            <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIsPaymentMethod(e.target.value)} value='midtrans' type="radio" name="paymentMethod" id="midtrans" className="w-4 h-4 text-blue-600 peer" />
                         </label>
-                        <label htmlFor="manualTransfer" className="flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
+                        <label htmlFor="manualTransfer" className=" peer-checked:bg-blue-100 flex items-center justify-between p-4 gap-2 w-full border rounded-lg cursor-pointer hover:bg-gray-50 transition">
                             <div className='flex gap-2 items-center'>
                                 <RiBankCardFill className="text-lg" />
                                 <span className="text-gray-700 flex">Transfer Bank <span className="text-sm mt-1 text-gray-500">(Verifikasi Manual Admin)</span></span>
                             </div>
-                            <input onChange={(e: any) => setIsPaymentMethod(e.target.value)} value='manualTransfer' type="radio" name="paymentMethod" id="manualTransfer" className="w-4 h-4 text-blue-600" />
+                            <input onChange={(e: React.ChangeEvent<HTMLInputElement>) => setIsPaymentMethod(e.target.value)} value='manualTransfer' type="radio" name="paymentMethod" id="manualTransfer" className="w-4 h-4 text-blue-600 peer" />
                         </label>
                     </div>
                     <ButtonCustom type="button" btnColor="bg-blue-500 hover:bg-blue-500" disabled={!isPaymentMethod || dataOrderNote?.order?.laundryPrice === null || dataOrderNote?.order?.laundryPrice === 0} width="w-full" onClick={() => {
@@ -52,12 +52,17 @@ export default function PaymentMethodWeb({ isArrCardPayment, dataOrderNote, setI
                     <div>Anda telah memilih metode Pembayaran Online</div>
                     <ButtonCustom width="w-full" btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`${dataOrderNote?.order?.paymentProof}`)}>Lanjutkan Pembayaran</ButtonCustom>
                 </div>
-                :
-                <div className="text-lg mt-8 border-gray-300 p-4">
-                    <h1 className="font-bold">Terima kasih,</h1>
-                    <p>Anda Telah Melakukan Pembayaran!</p>
-                    <p>Menunggu Verifikasi Admin!</p>
-                </div>
+                : dataOrderNote?.order?.isPaid === true && dataOrderNote?.order?.paymentMethod === 'MIDTRANS' ?
+                    <div className="text-lg mt-8 border-gray-300 p-4">
+                        <h1 className="font-bold">Terima kasih,</h1>
+                        <p>Anda Telah Melakukan Pembayaran,</p>
+                        <p>Terima kasih!</p>
+                    </div>
+                    : <div className="text-lg mt-8 border-gray-300 p-4">
+                        <h1 className="font-bold">Terima kasih,</h1>
+                        <p>Anda Telah Melakukan Pembayaran!</p>
+                        <p>Menunggu Verifikasi Admin!</p>
+                    </div>
             }
         </div>
     )

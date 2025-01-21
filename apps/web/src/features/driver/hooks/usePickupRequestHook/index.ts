@@ -55,7 +55,7 @@ export const usePickupRequestHook = () => {
     });
 
     const { mutate: handleProcessOrder, isPending: handleProcessOrderPending } = useMutation({
-        mutationFn: async (slug: any) => {
+        mutationFn: async (slug: string) => {
             return await instance.post(`/order/accept-order/${slug}`, { email }, {
                 headers: {
                     Authorization: `Bearer ${token}`
@@ -77,7 +77,7 @@ export const usePickupRequestHook = () => {
         }
     })
     const { mutate: handleProcessOrderOutlet, isPending: handleProcessOrderOutletPending } = useMutation({
-        mutationFn: async (slug: any) => {
+        mutationFn: async (slug: string) => {
             return await instance.post(`/order/accept-outlet/${slug}`, { email }, {
                 headers: {
                     Authorization: `Bearer ${token}`

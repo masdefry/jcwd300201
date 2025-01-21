@@ -1,3 +1,4 @@
+import { useRouter } from "next/navigation";
 
 interface IUser {
     firstName: string;
@@ -9,13 +10,15 @@ interface IOrder {
     isSolved: boolean;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: any;
+    orderStatus: IOrderStatus;
     User: IUser;
 }
-
+export interface IOrderStatus {
+    status: string;
+}
 export interface IWashingContentMobileProps {
     order: IOrder;
     handleProcessWashing: (orderId: string) => void;
     isPending: boolean;
-    router: any
+    router: ReturnType<typeof useRouter>;
 }

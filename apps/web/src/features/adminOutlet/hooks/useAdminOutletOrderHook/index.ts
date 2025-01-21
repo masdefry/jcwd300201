@@ -51,7 +51,7 @@ export const useAdminOutletOrderHook = () => {
     const [orderData, setOrderData] = useState<any>(null);
 
     const { mutate: handleOrderDetail } = useMutation({
-        mutationFn: async (id: any) => {
+        mutationFn: async (id: string | number) => {
             const res = await instance.get(`/order/orders-detail/${id}`, {
                 headers: {
                     Authorization: `Bearer ${token}`

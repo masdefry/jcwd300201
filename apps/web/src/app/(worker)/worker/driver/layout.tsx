@@ -12,9 +12,10 @@ import { FaCartArrowDown, FaCogs, FaDashcube, FaHistory, FaMoneyBillWave, FaSign
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { RiProfileFill } from "react-icons/ri";
 import { toast } from "@/components/hooks/use-toast";
-import ButtonCustom from "@/components/core/button";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import ButtonCustom from "@/components/core/Button";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { FaBoxOpen, FaTruck } from "react-icons/fa6";
+import { Role } from "@/components/core/Role";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Layout({ children }: { children: ReactNode }) {
@@ -32,7 +33,8 @@ export default function Layout({ children }: { children: ReactNode }) {
         setIsClose(!isClose)
     }
 
-    const dashboardMenuUrl: any = {
+    const dashboardMenuUrl: Record<Role, string> = {
+        SUPER_ADMIN: '/admin/dashboard',
         OUTLET_ADMIN: '/worker/admin-outlet/dashboard',
         WASHING_WORKER: '/worker/washing-worker/dashboard',
         IRONING_WORKER: '/worker/ironing-worker/dashboard',
@@ -40,7 +42,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         DRIVER: '/worker/driver/dashboard',
     }
 
-    const dashboardUrl = dashboardMenuUrl[role] || ''
+    const dashboardUrl = dashboardMenuUrl[role as Role] || ''
 
     const { mutate: handleLogoutAdmin, isPending } = useMutation({
         mutationFn: async () => {

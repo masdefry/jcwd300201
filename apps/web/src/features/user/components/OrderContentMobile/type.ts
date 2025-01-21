@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from 'react';
 
 interface IUser {
     firstName: string;
@@ -9,14 +10,16 @@ interface IOrder {
     isSolved: boolean;
     isProcessed: boolean;
     createdAt: string;
-    orderStatus: any;
+    orderStatus: IOrderStatus;
     User: IUser;
     isConfirm: boolean;
 }
-
+export interface IOrderStatus {
+    status: string;
+}
 export interface IOrderContentMobile {
     order: IOrder;
-    setOrderData: (data: any) => void;
+    setOrderData: Dispatch<SetStateAction<IOrder[] | null>>
     handleOrderDetail: (orderId: string) => void;
-    setOpenDialog: (open: boolean) => void;
+    setOpenDialog: Dispatch<SetStateAction<boolean>>
 }

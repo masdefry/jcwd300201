@@ -1,6 +1,6 @@
 import Link from "next/link"
 
-export default function WidgetDashboardMobile({ data, title }: IWidgetDashboardMobile) {
+export default function WidgetDashboardMobile({link, data, title }: IWidgetDashboardMobile) {
     return (
         <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
             <div className="flex items-center gap-4 pb-4">
@@ -8,7 +8,7 @@ export default function WidgetDashboardMobile({ data, title }: IWidgetDashboardM
                 <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
             </div>
             <div className="w-full space-y-2 max-h-[calc(3*3rem)] overflow-y-auto">
-                {data?.orders?.map((order: any, i: number) => (
+                {data?.orders?.map((order, i: number) => (
                     <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
                         <div className="w-full flex items-center">
                             <div className="w-2 h-2 bg-green-600 rounded-full"></div>
@@ -23,13 +23,13 @@ export default function WidgetDashboardMobile({ data, title }: IWidgetDashboardM
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Link href='/worker/driver/pickup-request' className='text-blue-500 hover:text-blue-700 text-sm'>
+                            <Link href={link} className='text-blue-500 hover:text-blue-700 text-sm'>
                                 Proses
                             </Link>
                         </div>
                     </div>
                 ))}
-                <Link href='/worker/driver/pickup-request' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                <Link href={link} className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                     Lihat Selengkapnya...
                 </Link>
             </div>

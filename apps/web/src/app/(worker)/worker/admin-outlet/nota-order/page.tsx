@@ -3,19 +3,20 @@
 import Link from "next/link"
 import { CardContent } from "@/components/ui/card"
 import { FaWhatsapp } from "react-icons/fa";
-import FilterWorker from "@/components/core/filter"
-import Pagination from "@/components/core/pagination"
-import ContentWebLayout from "@/components/core/webSessionContent"
-import ButtonCustom from "@/components/core/button"
+import FilterWorker from "@/components/core/Filter"
+import Pagination from "@/components/core/Pagination"
+import ContentWebLayout from "@/components/core/WebSessionContent"
+import ButtonCustom from "@/components/core/Button"
 import TableHeadNotaOrder from "@/features/adminOutlet/components/TableHeadNotaOrder"
 import TableHeadLayout from "@/features/adminOutlet/components/TableHeadLayout"
 import TableBodyContent from "@/features/adminOutlet/components/TableBodyContent"
 import { useNotaOrderHook } from "@/features/adminOutlet/hooks/useNotaOrderHook"
-import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import PaginationWebLayout from "@/components/core/PaginationWebLayout"
 import Loading from "@/components/core/loading"
-import NoData from "@/components/core/noData"
-import FilterWeb from "@/components/core/filterWeb"
+import NoData from "@/components/core/NoData"
+import FilterWeb from "@/components/core/FilterWeb"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
+import { IOrder } from "@/features/adminOutlet/types/type";
 
 export default function HistoryOrderWashing() {
     const { page, totalPages, sortOption, dateFrom, dateUntil, limit,
@@ -45,7 +46,7 @@ export default function HistoryOrderWashing() {
                     {dataCreateOrderLoading && <Loading />}
                     {dataCreateOrderError && <p>Silahkan coba beberapa saat lagi.</p>}
                     {!dataCreateOrderLoading && dataCreateOrder?.orders?.length > 0 ? (
-                        dataCreateOrder?.orders?.map((order: any) => {
+                        dataCreateOrder?.orders?.map((order: IOrder) => {
                             return (
                                 <section key={order.id} className="flex justify-between items-center border-b py-4">
                                     <Link href={`/worker/admin-outlet/nota-order/c/${order?.id}`}>
@@ -119,7 +120,7 @@ export default function HistoryOrderWashing() {
                                 </tr>
                             ) : (
                                 !dataCreateOrderLoading && dataCreateOrder?.orders?.length > 0 ? (
-                                    dataCreateOrder?.orders?.map((order: any, i: number) => (
+                                    dataCreateOrder?.orders?.map((order: IOrder, i: number) => (
                                         <TableBodyContent key={order?.id || i} index={i} limit={limit} order={order} page={page} />
                                     ))
                                 ) : (

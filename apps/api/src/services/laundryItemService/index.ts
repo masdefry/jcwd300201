@@ -1,6 +1,6 @@
 import prisma from "@/connection";
 import { IGetLaundryItems } from "./types";
-import { Prisma } from "@prisma/client";
+import { PrismaClient, Prisma, LaundryItem } from "@prisma/client";
 
 export const getListItemService = async ({ userId }: { userId: string }) => {
     const worker = await prisma.worker.findFirst({
@@ -31,7 +31,7 @@ export const createLaundryItemsService = async ({ itemName }: { itemName: string
 export const getLaundryItemsService = async ({ limit, page, search, sort }: IGetLaundryItems) => {
     const take = parseInt(limit as string)
     const skip = (parseInt(page as string) - 1) * take
-    let whereClause: any = {
+    let whereClause: Prisma.LaundryItemWhereInput = {
         deletedAt: null,
     };
 
@@ -43,7 +43,7 @@ export const getLaundryItemsService = async ({ limit, page, search, sort }: IGet
             ],
         };
     }
-    let findItem: any
+    let findItem: LaundryItem[];
 
 
     const totalData = await prisma.laundryItem.count({

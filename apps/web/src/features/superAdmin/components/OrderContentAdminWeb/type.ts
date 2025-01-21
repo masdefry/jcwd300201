@@ -1,3 +1,5 @@
+import { Dispatch, SetStateAction } from 'react';
+
 export interface IUser {
     firstName: string;
     lastName: string;
@@ -10,19 +12,19 @@ export interface IOrderStatus {
 
 export interface IOrder {
     id: string;
-    isPaid: any;
+    isPaid: boolean;
     createdAt: string;
     orderStatus: IOrderStatus[];
     User: IUser;
     OrderType: { type: string }
-    Store:{storeName:string}
+    Store: { storeName: string }
 }
 export interface IOrderContentWeb {
     order: IOrder;
     page: number;
     i: number
-    setOrderData: (data: any) => void; 
-    handleOrderDetail: (id: any) => void; 
-    setOpenDialog: (open: any) => void;
+    setOrderData: Dispatch<SetStateAction<IOrder[] | null>>
+    handleOrderDetail: (id: string) => void;
+    setOpenDialog: Dispatch<SetStateAction<boolean>>
     entriesPerPage: number
 }

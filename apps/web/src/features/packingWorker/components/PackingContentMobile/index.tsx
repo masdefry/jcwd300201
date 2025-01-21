@@ -1,4 +1,4 @@
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { IPackingContentMobileProps } from "./type";
 
 export default function PackingContentMobile(

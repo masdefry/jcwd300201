@@ -20,7 +20,7 @@ interface IOrderData {
         Worker?: {
             firstName?: string;
             lastName?: string;
-            phoneNumber?: any;
+            phoneNumber?: string;
         };
     }>;
 }

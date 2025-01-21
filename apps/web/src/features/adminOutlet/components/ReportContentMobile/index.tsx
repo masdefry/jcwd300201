@@ -12,14 +12,14 @@ import {
 } from "@/components/ui/dialog"
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { notesSchema } from "../../schemas/notesSchema";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 
 export default function ReportContentMobile(
     { order, handleLaundryProblem, isPending, isDisableSuccess }: IReportContent
 ) {
     return (
         <section key={order.id} className="flex justify-between items-center border-b py-4">
-            {order?.notes && order?.isSolved === true ?
+            {order?.notes && (order?.isSolved as true | false) === true ?
                 <Dialog>
                     <DialogTrigger asChild>
                         <div className="flex items-center">
@@ -76,7 +76,7 @@ export default function ReportContentMobile(
                                 />
                                 <ErrorMessage name="notes" component="div" className="text-red-500 text-xs absolute top-[-2px]" />
                                 <DialogFooter>
-                                    <ButtonCustom disabled={isPending || isDisableSuccess} width="w-full" btnColor='bg-orange-500 hover:bg-orange-500' type="submit">Save changes</ButtonCustom>
+                                    <ButtonCustom disabled={isPending || isDisableSuccess} width="w-full" btnColor='bg-orange-500 hover:bg-orange-500' type="submit">Lanjutkan Proses</ButtonCustom>
                                 </DialogFooter>
                             </Form>
                         </Formik>

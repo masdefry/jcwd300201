@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { IFormikPackingMobileProps } from "./type";
 import { packingItemValidationSchema } from "../../schemas/packingItemValidationSchema";
 
@@ -76,7 +76,7 @@ export default function FormikPackingMobile({
                                             <Field
                                                 as="select"
                                                 name="itemName"
-                                                onChange={(e: any) => {
+                                                onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                                     setIsCheckedItem(false)
                                                     setFieldValue('itemName', e.target.value)
                                                 }}

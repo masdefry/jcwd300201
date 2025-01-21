@@ -3,11 +3,11 @@ import { Inter } from 'next/font/google';
 import { Ubuntu } from 'next/font/google';
 import './globals.css';
 import TanstackProviders from '@/providers/tanstackProviders';
-import Header from '@/components/core/navbar'
-import Footer from '@/components/core/footer'
+import Header from '@/components/core/Navbar'
+import Footer from '@/components/core/Footer'
 import AuthProviders from '@/providers/authProviders'
 import { Toaster } from "@/components/ui/toaster"
-import FloatingWhatsappIcon from '@/components/core/floatingWhatsapp';
+import FloatingWhatsappIcon from '@/components/core/FloatingWhatsapp';
 
 
 const inter = Inter({ subsets: ['latin'] });

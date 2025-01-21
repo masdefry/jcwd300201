@@ -1,15 +1,15 @@
 'use client'
 
 import "leaflet/dist/leaflet.css";
-import LocationPicker from "@/components/core/locationPicker";
-import ContentWebLayout from "@/components/core/webSessionContent";
+import LocationPicker from "@/components/core/LocationPicker";
+import ContentWebLayout from "@/components/core/WebSessionContent";
 import authStore from "@/zustand/authstore";
 import { locationStore } from "@/zustand/locationStore";
 import { Form, Formik } from "formik";
 import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
 import L from 'leaflet'
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { toast } from "@/components/hooks/use-toast";
 import { useRouter } from "next/navigation";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
@@ -17,8 +17,8 @@ import { useSetLocationHook } from "@/features/superAdmin/hooks/useSetLocationHo
 
 export default function SetLocation() {
     const {
-              time, token, latitudeGlobal, lngGlobal, setIsPositionCheck, setLocation, pickLocationSuccess, setIsPickLocationSuccess, isPosition, setIsPosition, router
-   }=useSetLocationHook()
+        time, token, latitudeGlobal, lngGlobal, setIsPositionCheck, setLocation, pickLocationSuccess, setIsPickLocationSuccess, isPosition, setIsPosition, router
+    } = useSetLocationHook()
     return (
         <>
             <MobileSessionLayout title='Pilih Alamat'>
@@ -69,7 +69,7 @@ export default function SetLocation() {
                     </Formik>
                 </div>
             </MobileSessionLayout>
-            
+
             <ContentWebLayout caption='Pilih Alamat' height="h-full">
                 <div className='w-full h-full flex pb-5'>
                     <Formik

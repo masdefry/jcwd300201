@@ -1,5 +1,5 @@
 
-export default function WeatherMobile({ isCurrentWeather }: any) {
+export default function WeatherMobile({ isCurrentWeather }: { isCurrentWeather: { weather: { description: string }[]; main: { temp: number } } }) {
     return (
         <div className="w-full md:w-1/2 h-auto bg-gradient-to-tr from-sky-100 via-orange-100 to-white p-4 rounded-2xl shadow-md">
             <div className="h-full bg-white bg-opacity-70 rounded-lg p-4">

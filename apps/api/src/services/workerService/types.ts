@@ -1,10 +1,12 @@
+import { Prisma } from "@prisma/client"
+
 export interface IUpdateProfileWorker {
     userId: string
     email: string
     phoneNumber: string
     firstName: string
     lastName: string
-    imageUploaded: any
+    imageUploaded: string | null
 }
 
 export interface IChangePasswordWorker {
@@ -20,7 +22,7 @@ export interface ICreateNotes {
 }
 
 export interface IGetAllWorker {
-    whereClause: any
+    whereClause: Prisma.WorkerWhereInput
     take: number
     skip: number
 }

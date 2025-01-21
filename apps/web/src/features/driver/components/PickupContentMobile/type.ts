@@ -1,8 +1,33 @@
 export interface IPickupContent {
-    order: any;
+    order: IOrder;
     handleProcessOrder: (id: string) => void;
     handleProcessOrderOutlet: (id: string) => void;
     handleProcessOrderPending?: boolean;
     handleProcessOrderOutletPending?: boolean;
 }
+
+interface IUser {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+}
+
+interface IOrderStatus {
+    status: string;
+}
+type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
+
+interface IOrder {
+    id: string;
+    isPaid: boolean;
+    createdAt: string;
+    orderStatus: IOrderStatus[];
+    User: IUser;
+    paymentMethod: PaymentMethod;
+    paymentProof: string
+    notes: string
+    isSolved: boolean
+    orderTypeId: number
+}
+
 

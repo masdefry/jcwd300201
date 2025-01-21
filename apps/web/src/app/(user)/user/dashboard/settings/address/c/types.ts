@@ -23,6 +23,15 @@ export interface IPosition {
     lng: number;
 }
 
+export interface IProvince {
+    province_id: number;
+    province: string;
+}
+
+export interface ICity {
+    city_id: number;
+    city_name: string;
+}
 export interface ILocationPicker {
     setFieldValue: any
     position: IPosition

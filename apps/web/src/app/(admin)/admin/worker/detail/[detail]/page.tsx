@@ -1,6 +1,6 @@
 'use client'
 
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import LayoutDetailWorker from "@/features/superAdmin/components/LayoutDetailWorker";
 import { useDetailWorkerHook } from "@/features/superAdmin/hooks/useDetailWorkerHook";

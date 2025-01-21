@@ -58,9 +58,32 @@ export interface IGetOrderNoteDetail {
 
 export interface IGetOrdersForWashing {
     totalPage: number;
-    orders: any[];
+    orders: IOrder;
 }
 
+export interface IUser {
+    firstName: string;
+    lastName: string;
+    phoneNumber: string;
+}
+
+export interface IOrderStatus {
+    status: string;
+}
+type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
+
+export interface IOrder {
+    id: string;
+    isPaid: boolean;
+    createdAt: string;
+    orderStatus: IOrderStatus[];
+    User: IUser;
+    OrderType: { type: string }
+    Store: { storeName: string }
+    paymentMethod: PaymentMethod;
+    paymentProof: string
+    totalPrice: number
+}
 export interface IGetPackingHistory {
     userId: string,
     authorizationRole: Role,
@@ -126,7 +149,7 @@ export interface IPaymentOrderTf {
     orderId: string,
     email: string,
     userId: string,
-    paymentProof:string
+    paymentProof: string
 }
 export interface IPaymentTfOrder {
     orderId: string,
@@ -152,7 +175,7 @@ export interface IIroningProcessDone {
 }
 
 export interface IGeDriverHistory {
-    tab:string,
+    tab: string,
     userId: string,
     authorizationRole: Role,
     storeId: string,
@@ -165,6 +188,13 @@ export interface IGeDriverHistory {
 }
 
 export interface IOrderTrackingAdminParams {
+    userId: string;
+    authorizationRole: Role
+    period: string | undefined;
+    storeId?: string;
+    outletId: string
+}
+export interface IOrderTrackingDriverParams {
     userId: string;
     authorizationRole: Role
     period: string | undefined;

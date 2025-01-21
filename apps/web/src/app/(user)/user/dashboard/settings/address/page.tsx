@@ -1,22 +1,23 @@
 'use client'
 
-import ButtonCustom from "@/components/core/button";
+import ButtonCustom from "@/components/core/Button";
 import { FaSearch } from 'react-icons/fa';
 import Image from "next/image";
 import Link from "next/link";
-import ContentWebLayout from "@/components/core/webSessionContent";
-import SearchInputCustom from "@/components/core/searchBar";
+import ContentWebLayout from "@/components/core/WebSessionContent";
+import SearchInputCustom from "@/components/core/SearchBar";
 import { ChangeEvent } from "react";
 import { FaAddressCard, FaPlus } from "react-icons/fa6";
 import { useUserAddressHook } from "@/features/user/hooks/useUserAddressHook";
 import SkeletonLoadingComponent from "@/features/user/components/SkeletonLoadingComponents";
-import PaginationWebLayout from "@/components/core/paginationWebLayout";
+import PaginationWebLayout from "@/components/core/PaginationWebLayout";
 import TableAddressUser from "@/features/user/components/TableAddressUser";
 import TableHeadUserAddress from "@/features/user/components/TableHeadUserAddress";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import { ConfirmAlert } from "@/components/core/confirmAlert";
+import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { BsPencil, BsTrash } from "react-icons/bs";
-import NoData from "@/components/core/noData";
+import NoData from "@/components/core/NoData";
+import { IUserAddress } from "./type";
 
 export default function Page() {
     const { currentPage, entriesPerPage, debounce, getDataItem, isFetching, isPending, handleDeleteItem,
@@ -44,7 +45,7 @@ export default function Page() {
                     <ButtonCustom onClick={() => router.push('/user/dashboard/settings/address/c')} py='py-3' rounded="rounded-xl flex items-center" btnColor="bg-orange-500" width="w-fit"><FaPlus className="text-sm" /></ButtonCustom>
                 </div>
                 {getDataItem?.length > 0 ? (
-                    getDataItem?.map((address: any, i: number) => {
+                    getDataItem?.map((address: IUserAddress, i: number) => {
                         return (
                             <div key={i} className='flex w-full justify-between items-center h-fit'>
                                 <div className="flex items-center">
@@ -90,7 +91,7 @@ export default function Page() {
                         </thead>
                         <tbody>
                             {getDataItem?.length > 0 ? (
-                                getDataItem?.map((address: any, i: number) => {
+                                getDataItem?.map((address: IUserAddress, i: number) => {
                                     return (
                                         <TableAddressUser key={i} onChangeMainAddress={() => handleChangeMainAddress(address?.id)} onDeleteAddress={() => handleDeleteItem(address?.id)}
                                             address={address} currentPage={currentPage} entriesPerPage={entriesPerPage} i={i} isPendingDelete={isPendingDelete} />
