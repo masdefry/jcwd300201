@@ -43,5 +43,5 @@ export interface IUpdateProfileUser {
     phoneNumber: string
     firstName: string
     lastName: string
-    imageUploaded: string | null
+    imageUploaded: any
 }

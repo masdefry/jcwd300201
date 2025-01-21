@@ -211,7 +211,6 @@ export const updateProfileUserService = async ({ userId, email, phoneNumber, fir
 
     const dataImage = await Promise.all(imageUploaded?.images?.map(async (item: any) => {
         const result: any = await cloudinaryUpload(item?.buffer)
-
         return result?.res!
     }))
 
