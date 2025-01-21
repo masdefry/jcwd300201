@@ -1056,7 +1056,7 @@ interface UploadedFiles {
 
 export const paymentOrderTf = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const paymentProof = req.files as UploadedFiles | undefined
+    const paymentProof = req.files as any
     const { orderId } = req.params
     const { email, userId } = req.body
 
