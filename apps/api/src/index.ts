@@ -32,12 +32,12 @@ interface UploadedFiles {
 
 
 app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
-    const imagesUpload = req.files as UploadedFiles | undefined;
-    if (imagesUpload?.images?.length != 0 || imagesUpload?.images?.length != undefined) {
-        imagesUpload?.images?.forEach((img) => {
-            fs.rmSync(`${img?.path}`)
-        });
-    }
+    // const imagesUpload = req.files as UploadedFiles | undefined;
+    // if (imagesUpload?.images?.length != 0 || imagesUpload?.images?.length != undefined) {
+    //     imagesUpload?.images?.forEach((img) => {
+    //         fs.rmSync(`${img?.path}`)
+    //     });
+    // }
 
     if (error?.message === 'jwt expired') throw { msg: 'jwt expired', status: 401 }
     res.status(error?.status || 500).json({
