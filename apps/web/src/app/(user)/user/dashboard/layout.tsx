@@ -12,8 +12,7 @@ import { FaDashcube, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { toast } from "@/components/hooks/use-toast";
 import { ConfirmAlert } from "@/components/core/ConfirmAlert";
-import { FaAddressCard, FaBuysellads, FaCartShopping, FaTruck } from "react-icons/fa6";
-import { MdSportsMotorsports } from "react-icons/md";
+import { FaAddressCard, FaCartShopping, FaTruck } from "react-icons/fa6";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Layout({ children }: { children: ReactNode }) {

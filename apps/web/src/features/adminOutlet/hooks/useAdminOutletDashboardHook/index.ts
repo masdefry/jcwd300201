@@ -1,17 +1,11 @@
 'use client'
 
-import { FaHistory, FaTint } from "react-icons/fa";
-import { MdOutlineIron } from "react-icons/md";
-import { CgSmartHomeWashMachine } from "react-icons/cg";
-import { BsPerson } from "react-icons/bs";
 import authStore from "@/zustand/authstore";
 import { useEffect, useState } from "react";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
-import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-
 
 export const useAdminOutletDashboardHook = () => {
     const name = authStore((state) => state?.firstName)

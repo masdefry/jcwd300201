@@ -123,7 +123,6 @@ export const UseAdminOutletDeliveryHook = () => {
         selectedOrder, setSelectedOrder,
         isSearchValues, setIsSearchValues,
         token,
-        name,
         refetch,
         debounce,
         totalPages,

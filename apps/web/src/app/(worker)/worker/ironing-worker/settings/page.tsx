@@ -11,7 +11,6 @@ import ProfileSettings from '@/components/core/ProfileSettings';
 import ChangePassword from '@/components/core/ChangePassword';
 import { useIroningWorkerSettingsHook } from '@/features/ironingWorker/hooks/useIroningWorkerSettingsHook';
 import ContentWebLayout from '@/components/core/WebSessionContent';
-import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ironingChangePasswordValidationSchema } from '@/features/ironingWorker/schemas/ironingChangePasswordValidationSchema';
 import ProfileSettingsMobile from '@/components/core/ProfileSettingsMobile';

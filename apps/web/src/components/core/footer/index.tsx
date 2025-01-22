@@ -1,15 +1,13 @@
 'use client'
-import { IoHomeSharp, IoSearchSharp } from "react-icons/io5";
+import { IoHomeSharp } from "react-icons/io5";
 import { GrNotes } from "react-icons/gr";
 import Link from "next/link";
 import { FaGear, FaPhone, FaStore, FaTruck, FaVoicemail } from "react-icons/fa6";
-
 import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { FaAddressCard, FaHandsHelping, FaHistory, FaInfoCircle, FaPhoneAlt } from "react-icons/fa";
 import authStore from "@/zustand/authstore";
-import { MdSportsMotorsports } from "react-icons/md";
 
 type MenuItem = {
   icon: JSX.Element;

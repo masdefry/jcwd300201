@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { IWidgetDashboardMobile } from "./type"
+import NoDataWidget from "@/components/core/NoDataWidget"
 
 export default function WidgetDashboardMobile({link, data, title }: IWidgetDashboardMobile) {
     return (
@@ -9,7 +10,7 @@ export default function WidgetDashboardMobile({link, data, title }: IWidgetDashb
                 <div className="w-3 h-3 bg-green-600 rounded-full animate-pulse"></div>
             </div>
             <div className="w-full space-y-2 max-h-[calc(3*3rem)] overflow-y-auto">
-                {data?.orders?.map((order, i: number) => (
+                {data?.orders?.length > 0 ? (data?.orders?.map((order, i: number) => (
                     <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
                         <div className="w-full flex items-center">
                             <div className="w-2 h-2 bg-green-600 rounded-full"></div>
@@ -29,7 +30,7 @@ export default function WidgetDashboardMobile({link, data, title }: IWidgetDashb
                             </Link>
                         </div>
                     </div>
-                ))}
+                ))):<NoDataWidget/>}
                 <Link href='/worker/washing-worker/order?tab=in-washing' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                     Lihat Selengkapnya...
                 </Link>

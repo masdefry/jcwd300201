@@ -2,20 +2,10 @@ import { IoIosNotifications } from "react-icons/io";
 import { useState } from "react";
 import { INotificationProps } from "./type";
 
-interface NotificationData {
-    id: number;
-    message: string;
-}
+
 
 export default function NotificationSuperAdmin({ dataOrderNotif }: INotificationProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
-
-    const notifications: NotificationData[] = [
-        { id: 1, message: "Your order has been shipped." },
-        { id: 2, message: "New product added to your wishlist." },
-        { id: 3, message: "Your payment was successful." },
-    ];
-
 
     return (
         <div className="relative">

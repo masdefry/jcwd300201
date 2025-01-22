@@ -1,6 +1,6 @@
 'use client'
 import React from 'react';
-import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import NotaHeader from "@/components/core/CreateNotaHeaders";
 import ContentWebLayout from "@/components/core/WebSessionContent";
 import NotaCaptionContent from "@/features/adminOutlet/components/NotaCaptionContent";

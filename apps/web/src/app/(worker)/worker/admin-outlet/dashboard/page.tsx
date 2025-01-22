@@ -1,9 +1,8 @@
 'use client'
 
-import { FaExclamationTriangle, FaTint } from "react-icons/fa";
-import Image from "next/image";
+import { FaExclamationTriangle } from "react-icons/fa";
 import ChartComponents from "@/components/core/chart/PieChartTrackingStatusOrder";
-import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaStore, FaTruck, FaUserCheck } from "react-icons/fa6";
+import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaTruck } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import MonthlyCharts from "@/components/core/chart/ChartMonthlyStatistic";
