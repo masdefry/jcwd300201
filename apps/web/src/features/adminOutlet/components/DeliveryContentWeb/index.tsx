@@ -16,7 +16,7 @@ export default function DeliveryContentWeb(
                     ? 'Menunggu Pembayaran' :
                     order?.orderStatus[0]?.status === 'IN_PACKING_PROCESS' && order?.isPaid === true
                         ? 'Siap untuk dikirim'
-                        : ''}</td>
+                        : 'Menunggu Proses Laundry'}</td>
             <td className="py-4 px-6 text-sm text-gray-600 break-words">{order?.OrderType?.type === 'Wash Only' ? 'Layanan Mencuci' : order?.OrderType?.type === 'Iron Only' ? 'Layanan Setrika' : 'Mencuci dan Setrika'}</td>
             <td className="py-4 px-6 text-sm text-blue-600 break-words">
                 <ConfirmAlert colorConfirmation="blue"

@@ -10,13 +10,6 @@ interface NotificationData {
 export default function Notification({ dataOrderNotif }: INotificationProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-    const notifications: NotificationData[] = [
-        { id: 1, message: "Your order has been shipped." },
-        { id: 2, message: "New product added to your wishlist." },
-        { id: 3, message: "Your payment was successful." },
-    ];
-
-
     return (
         <div className="relative">
             <button onClick={() => setIsDialogOpen(!isDialogOpen)} className=" text-2xl text-yellow-400 focus:outline-none">

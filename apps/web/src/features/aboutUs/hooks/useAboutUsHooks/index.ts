@@ -1,6 +1,6 @@
 'use client'
 
-import { FaRegClock, FaCheckCircle, FaRocket, FaUsers, FaStar, FaUsersCog } from 'react-icons/fa'
+import { FaRegClock, FaRocket, FaUsers, FaUsersCog } from 'react-icons/fa'
 export const useAboutUsHooks = () => {
     const teamContent = [
         { img: '/images/ceo.png', name: 'Andi Setiawan', position: 'CEO' },

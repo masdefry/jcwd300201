@@ -1,6 +1,5 @@
 'use client'
 
-import authStore from "@/zustand/authstore";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";

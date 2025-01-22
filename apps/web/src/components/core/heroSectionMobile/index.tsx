@@ -9,11 +9,10 @@ import {
 } from '@/components/ui/carousel';
 import ButtonCustom from '@/components/core/Button';
 import Image from 'next/image';
-import { FaHome, FaInfoCircle, FaPhoneAlt, FaTshirt } from 'react-icons/fa';
-import { MdBusiness, MdContactMail, MdDesignServices, MdEmail, MdFeedback, MdLocalLaundryService, MdWorkHistory } from 'react-icons/md';
+import { FaHome, FaInfoCircle,FaTshirt } from 'react-icons/fa';
+import { MdBusiness, MdContactMail, MdDesignServices, MdEmail } from 'react-icons/md';
 import Link from 'next/link';
-import { FaCartArrowDown, FaServicestack } from 'react-icons/fa6';
-import { RiProfileFill } from 'react-icons/ri';
+import { FaServicestack } from 'react-icons/fa6';
 import { useRouter } from 'next/navigation';
 import { MenuItem } from './type';
 

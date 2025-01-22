@@ -7,7 +7,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
-import { FaArrowLeft, FaArrowRight, FaCartArrowDown, FaDashcube, FaExclamationTriangle, FaHistory, FaHouseDamage, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import { FaDashcube, FaExclamationTriangle, FaHistory, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { ConfirmAlert } from "@/components/core/ConfirmAlert";

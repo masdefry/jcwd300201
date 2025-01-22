@@ -17,6 +17,8 @@ const useProductLaundryHook = () => {
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
     const [searchItem, setSearchItem] = useState<string>(params.get('search') || '')
     const [sortProduct, setSortProduct] = useState<string>('')
+    const [isValueSearch, setIsValueSearch] = useState<string>('')
+
     const router = useRouter()
     const pathname = usePathname()
 
@@ -159,7 +161,8 @@ const useProductLaundryHook = () => {
         handleDeleteItem, isPendingDelete,
         handleUpdateItem, isPendingUpdate,
         getDataItem, totalPages,
-        handlePageChange, debounce
+        handlePageChange, debounce,
+        isValueSearch, setIsValueSearch
     }
 }
 

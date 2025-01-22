@@ -17,7 +17,6 @@ export const usePackingDashboardHook = () => {
     const [isDay, setIsDay] = useState<number>(0)
     const [isCurrentWeather, setIsCurrentWeather] = useState<any>({})
     const [date, setDate] = useState<Date | undefined>(new Date())
-    const [selectedTab, setSelectedTab] = useState<'today' | 'month'>('today');
 
     const isDayArr = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu']
 
@@ -48,7 +47,7 @@ export const usePackingDashboardHook = () => {
         queryKey: ['get-order-notif'],
         queryFn: async () => {
             const res = await instance.get(`/order/order-packing`, {
-                params: { tab: 'all' },
+                params: { tab: 'not-packed-yet' },
                 headers: { Authorization: `Bearer ${token}` }
             });
 

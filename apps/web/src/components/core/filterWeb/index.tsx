@@ -5,7 +5,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { FaSearch } from 'react-icons/fa';
 import { IoMdRefresh } from "react-icons/io";
 import { IFilterPropsWeb } from "./type";
 import SearchInputCustom from "../SearchBar";

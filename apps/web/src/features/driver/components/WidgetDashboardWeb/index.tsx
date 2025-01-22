@@ -1,5 +1,6 @@
 import Link from "next/link"
 import NotificationDriver from "../Notification"
+import NoDataWidget from "@/components/core/NoDataWidget"
 
 export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWidgetDashboardWeb) {
     return (
@@ -12,7 +13,7 @@ export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWid
                 <NotificationDriver dataOrderNotif={dataOrderNotif} />
             </div>
             <div className="w-full space-y-4">
-                {data?.orders?.map((order, i: number) => (
+                {data?.orders?.length > 0 ? (data?.orders?.map((order, i: number) => (
                     <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
                         <div className="w-full flex items-center">
                             <div className="w-2 h-2 bg-green-600 rounded-full"></div>
@@ -32,7 +33,7 @@ export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWid
                             </Link>
                         </div>
                     </div>
-                ))}
+                ))):<NoDataWidget/>}
                 <Link href='/worker/driver/pickup-request?tab=process-pickup' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                     Lihat Selengkapnya...
                 </Link>

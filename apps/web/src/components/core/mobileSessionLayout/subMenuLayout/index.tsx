@@ -1,7 +1,6 @@
 'use client'
 
 import { useRouter } from "next/navigation";
-import { ReactNode } from "react";
 import { CgArrowLeft } from "react-icons/cg";
 import { IContentMobile } from "./type";
 

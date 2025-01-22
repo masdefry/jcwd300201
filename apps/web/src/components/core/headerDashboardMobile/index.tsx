@@ -1,4 +1,4 @@
-import { FaLocationDot, FaStore } from "react-icons/fa6";
+import { FaStore } from "react-icons/fa6";
 
 
 export default function HeaderDashboardMobile({ name, message, storeName, role, showStore = true }: { role: string, storeName: string, name: string, message: string, showStore?: boolean }) {

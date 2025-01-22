@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
-import { FaMessage, FaWhatsapp } from "react-icons/fa6";
+import { FaMessage } from "react-icons/fa6";
 
 export default function FloatingMessageCustomer() {
     const [showText, setShowText] = useState<boolean>(false)

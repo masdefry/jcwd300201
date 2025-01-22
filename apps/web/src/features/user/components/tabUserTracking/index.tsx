@@ -1,5 +1,4 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useState } from "react";
 import { ITabTrackingProps } from "./type";
 import { FaListAlt } from "react-icons/fa";
 import { FaWeightHanging } from "react-icons/fa6";

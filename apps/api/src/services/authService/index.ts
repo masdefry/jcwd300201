@@ -219,7 +219,11 @@ export const workerLoginService = async ({ email, password }: ILoginBody) => {
         findAdmin = await tx.worker.findFirst({ where: { email }, include: { Shift: true, Store: true } })
         if (!findAdmin) throw { msg: 'User admin tidak tersedia', status: 404 }
 
-        if (findAdmin.Store?.deletedAt) {
+        if (findAdmin?.Store?.deletedAt) {
+            throw { msg: 'Anda tidak dapat login, silahkan hubungi admin.', status: 403 };
+        }
+        
+        if (findAdmin?.deletedAt) {
             throw { msg: 'Anda tidak dapat login, silahkan hubungi admin.', status: 403 };
         }
 
