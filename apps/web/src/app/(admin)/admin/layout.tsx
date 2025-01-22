@@ -3,12 +3,12 @@
 import authStore from "@/zustand/authstore";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { ReactNode, useState } from "react";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaUserCheck } from "react-icons/fa";
 import { RiProfileFill } from "react-icons/ri";
-import { MdFeedback, MdOutlet, MdWorkHistory } from "react-icons/md";
+import { MdFeedback, MdWorkHistory } from "react-icons/md";
 import FloatingMessageCustomer from "@/components/core/FloatingComponent";
 import { FaStore } from "react-icons/fa6";
 

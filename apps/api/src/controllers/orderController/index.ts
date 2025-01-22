@@ -778,7 +778,7 @@ export const requestDeliveryDone = async (req: Request, res: Response, next: Nex
 
     res.status(200).json({
       error: false,
-      message: "Berhasil melakukan pengantaran!",
+      message: "Berhasil melakukan request pengantaran!",
       data: {
         order,
       },

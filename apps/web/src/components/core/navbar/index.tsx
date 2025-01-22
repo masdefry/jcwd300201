@@ -4,14 +4,14 @@ import Image from "next/image";
 import ButtonCustom from "../Button";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { FaBurger, FaDashcube, FaQq, FaRug, FaShoePrints, FaSpaghettiMonsterFlying, FaSprayCan, FaTag, FaUserGear } from "react-icons/fa6";
+import { FaBurger, FaDashcube, FaSprayCan,  FaUserGear } from "react-icons/fa6";
 import { useState } from "react";
 import authStore from "@/zustand/authstore";
 import { instance } from "@/utils/axiosInstance";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
-import { FaHandHoldingWater, FaLaughWink, FaTimes, FaTshirt } from "react-icons/fa";
+import { FaHandHoldingWater, FaTimes, FaTshirt } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
 import MenuCustom from "../Menu";
 import { IoAlbumsOutline } from "react-icons/io5";

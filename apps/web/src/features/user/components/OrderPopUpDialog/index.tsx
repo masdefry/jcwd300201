@@ -49,7 +49,7 @@ export default function OrderPopUpDialog({ openDialog, orderData, setOpenDialog,
                                     <div>
                                         {orderData?.orderStatus[1]?.status === "DRIVER_TO_OUTLET" ? (
                                             <>
-                                                <Link href={`https://wa.me/${orderData?.orderStatus[1]?.Worker?.phoneNumber?.substring(1)}`} className="text-black">
+                                                <Link href={`https://wa.me/${orderData?.orderStatus[1]?.Worker?.phoneNumber}`} className="text-black">
                                                     <div>
                                                         {`${orderData?.orderStatus[1]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[1]?.Worker?.lastName ?? ''}`}
                                                     </div>
@@ -68,7 +68,7 @@ export default function OrderPopUpDialog({ openDialog, orderData, setOpenDialog,
                                     <div>
                                         {orderData?.orderStatus[7]?.status === "DRIVER_TO_CUSTOMER" ? (
                                             <>
-                                                <Link href={`https://wa.me/${orderData?.orderStatus[7]?.Worker?.phoneNumber?.substring(1)}`} className="text-black">
+                                                <Link href={`https://wa.me/${orderData?.orderStatus[7]?.Worker?.phoneNumber}`} className="text-black">
                                                     <div>
                                                         {`${orderData?.orderStatus[7]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[7]?.Worker?.lastName ?? ''}`}
                                                     </div>
@@ -80,7 +80,7 @@ export default function OrderPopUpDialog({ openDialog, orderData, setOpenDialog,
 
                                         ) : orderData?.orderStatus[8]?.status === "DRIVER_TO_CUSTOMER" ? (
                                             <>
-                                                <Link href={`https://wa.me/${orderData?.orderStatus[8]?.Worker?.phoneNumber?.substring(1)}`} className="text-black">
+                                                <Link href={`https://wa.me/${orderData?.orderStatus[8]?.Worker?.phoneNumber}`} className="text-black">
                                                     <div>
                                                         {`${orderData?.orderStatus[8]?.Worker?.firstName ?? ''} ${orderData?.orderStatus[8]?.Worker?.lastName ?? ''}`}
                                                     </div>

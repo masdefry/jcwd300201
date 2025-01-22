@@ -1,6 +1,4 @@
-import Link from "next/link";
 import { IReportContent } from "./type";
-import { FaWhatsapp } from "react-icons/fa6";
 import {
     Dialog,
     DialogContent,

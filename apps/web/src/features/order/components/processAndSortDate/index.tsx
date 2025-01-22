@@ -7,7 +7,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import { FaSearch } from 'react-icons/fa';
 
 export default function ProcessAndSortDate() {
     return (

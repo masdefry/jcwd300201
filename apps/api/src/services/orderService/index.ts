@@ -2108,8 +2108,7 @@ export const acceptOrderDeliveryService = async ({ email, orderId, userId }: IAc
       }
     });
     const deliveredAt = newStatus.createdAt;
-    // const twoDaysLater = addHours(deliveredAt, 48);
-    const twoDaysLater = addMinutes(deliveredAt, 10);
+    const twoDaysLater = addHours(deliveredAt, 48);
 
     schedulePaymentCheck(order.id, twoDaysLater);
 

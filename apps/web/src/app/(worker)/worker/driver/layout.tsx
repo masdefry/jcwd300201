@@ -8,11 +8,9 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
 import Cookies from 'js-cookie'
-import { FaCartArrowDown, FaCogs, FaDashcube, FaHistory, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import {  FaCogs, FaDashcube, FaHistory, FaSignOutAlt } from "react-icons/fa";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
-import { RiProfileFill } from "react-icons/ri";
 import { toast } from "@/components/hooks/use-toast";
-import ButtonCustom from "@/components/core/Button";
 import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { FaBoxOpen, FaTruck } from "react-icons/fa6";
 import { Role } from "@/components/core/Role";

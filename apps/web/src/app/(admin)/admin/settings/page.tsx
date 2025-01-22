@@ -1,9 +1,7 @@
 'use client'
 
 import ButtonCustom from "@/components/core/Button";
-import { RiShutDownLine } from "react-icons/ri";
-import HeaderMobile from "@/components/core/HeaderMobile";
-import { FaUser, FaStore, FaClock, FaCut, FaTags, FaTruck, FaCashRegister, FaUsers, FaReceipt, FaHome, FaClipboardList, FaChartBar, FaCog } from 'react-icons/fa';
+import { FaUser, FaStore, FaCut, FaTruck, FaCashRegister, FaUsers, FaReceipt } from 'react-icons/fa';
 import authStore from "@/zustand/authstore";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
@@ -11,8 +9,7 @@ import { instance } from "@/utils/axiosInstance";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { useState } from "react";
-import Image from "next/image";
-import { FaIdCard, FaUserCheck, FaVoicemail } from "react-icons/fa6";
+import { FaUserCheck } from "react-icons/fa6";
 import ListCustom from "@/components/core/ListSettings";
 import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";

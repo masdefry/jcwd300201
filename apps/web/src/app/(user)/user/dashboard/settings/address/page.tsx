@@ -50,7 +50,7 @@ export default function Page() {
                     <ButtonCustom onClick={() => router.push('/user/dashboard/settings/address/c')} py='py-3' rounded="rounded-xl flex items-center" btnColor="bg-orange-500" width="w-fit"><FaPlus className="text-sm" /></ButtonCustom>
                 </div>
                 {isLoading && <Loading />}
-                {getDataItem?.length > 0 ? (
+                {!isLoading && getDataItem?.length > 0 ? (
                     getDataItem?.map((address: IUserAddress, i: number) => {
                         return (
                             <div key={i} className='flex w-full justify-between items-center h-fit'>

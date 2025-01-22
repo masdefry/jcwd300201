@@ -1,3 +1,4 @@
+import NoDataWidget from "@/components/core/NoDataWidget"
 import Notification from "@/components/core/Notification"
 import Link from "next/link"
 
@@ -12,7 +13,7 @@ export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWid
                 <Notification dataOrderNotif={dataOrderNotif} />
             </div>
             <div className="w-full space-y-4">
-                {data?.orders?.map((order, i: number) => (
+                {data?.orders?.length > 0 ? (data?.orders?.map((order, i: number) => (
                     <div key={i} className='flex px-2 justify-between items-center w-full gap-4 border-b pb-3'>
                         <div className="w-full flex items-center">
                             <div className="w-2 h-2 bg-green-600 rounded-full"></div>
@@ -32,7 +33,7 @@ export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWid
                             </Link>
                         </div>
                     </div>
-                ))}
+                ))) : <NoDataWidget />}
                 <Link href='/worker/packing-worker/order?tab=packing-process' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                     Lihat Selengkapnya...
                 </Link>

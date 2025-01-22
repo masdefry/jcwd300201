@@ -1,7 +1,7 @@
 'use client'
 
-import { FaUser, FaStore, FaHome, FaSignOutAlt, FaQuestionCircle, FaShieldAlt, FaInfoCircle, FaConciergeBell, FaPhoneAlt } from 'react-icons/fa';
-import { FaFileContract, FaGear } from "react-icons/fa6";
+import { FaUser, FaStore, FaHome, FaQuestionCircle, FaShieldAlt, FaInfoCircle, FaConciergeBell, FaPhoneAlt } from 'react-icons/fa';
+import { FaFileContract } from "react-icons/fa6";
 import { useMutation } from "@tanstack/react-query";
 import { instance } from "@/utils/axiosInstance";
 import authStore from "@/zustand/authstore";

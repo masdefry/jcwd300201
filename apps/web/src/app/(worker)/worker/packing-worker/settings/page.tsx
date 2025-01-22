@@ -7,12 +7,10 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Formik } from 'formik';
-import * as Yup from 'yup'
 import ProfileSettings from '@/components/core/ProfileSettings';
 import ChangePassword from '@/components/core/ChangePassword';
 import { usePackingWorkerSettingsHook } from '@/features/packingWorker/hooks/usePackingWorkerSettingsHook';
 import ContentWebLayout from '@/components/core/WebSessionContent';
-import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { packingChangePasswordValidationSchema } from '@/features/packingWorker/schemas/packingChangePasswordValidationSchema';
 import ProfileSettingsMobile from '@/components/core/ProfileSettingsMobile';

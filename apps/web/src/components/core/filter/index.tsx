@@ -3,8 +3,7 @@ import { FaSearch } from 'react-icons/fa';
 import { IoMdRefresh } from "react-icons/io";
 import { IFilterProps } from "./type";
 import { FaEllipsisVertical } from "react-icons/fa6";
-import { useState } from "react";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 export default function FilterWorker({ setIsSearchValues, isSearchValues, searchInput, setPage, debounce, sortOption, setSortOption, dateFrom, dateUntil, setDateFrom, setDateUntil, setActiveTab, setSearchInput }: IFilterProps) {
     return (
