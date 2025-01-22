@@ -23,7 +23,7 @@ export const getListItemService = async ({ userId }: { userId: string }) => {
 }
 
 export const createLaundryItemsService = async ({ itemName }: { itemName: string }) => {
-    const findName = await prisma.laundryItem.findFirst({ where: { itemName } })
+    const findName = await prisma.laundryItem.findFirst({ where: { itemName, deletedAt: null } })
     if (findName) throw { msg: 'Data sudah tersedia', status: 406 }
     await prisma.laundryItem.create({ data: { itemName } })
 }

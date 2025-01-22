@@ -63,7 +63,7 @@ const useProductLaundryHook = () => {
 
     const { mutate: handleDeleteItem, isPending: isPendingDelete } = useMutation({
         mutationFn: async (id: number) => {
-            return await instance.patch(`/laundry/laundry-items/${id}`, { email }, {
+            return await instance.patch(`/laundry/laundry-item/${id}`, { email }, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }

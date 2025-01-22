@@ -28,11 +28,14 @@ export const updateProfileWorkerService = async ({ userId, email, phoneNumber, f
     //     return img?.filename
     // })
 
-     const dataImage = await Promise.all(imageUploaded?.images?.map(async (item: any) => {
+    let dataImage: any
+    if (imageUploaded?.images?.length !== undefined) {
+        dataImage = await Promise.all(imageUploaded?.images?.map(async (item: any) => {
             const result: any = await cloudinaryUpload(item?.buffer)
             return result?.res!
         }))
-
+    }
+    
     const newDataWorker = await prisma.worker.update({
         where: { id: userId },
         data: { firstName, lastName, email, phoneNumber, profilePicture: dataImage?.length > 0 ? dataImage[0] : findUser?.profilePicture }
@@ -123,7 +126,7 @@ export const deleteDataWorkerByIdService = async ({ id }: { id: string }) => {
     await prisma.worker.update({
         where: { id },
         data: {
-            deletedAt : new Date()
+            deletedAt: new Date()
         }
     })
 }

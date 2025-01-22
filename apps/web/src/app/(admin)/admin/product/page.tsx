@@ -155,10 +155,7 @@ export default function Page() {
                             {getDataItem?.length > 0 ? (
                                 getDataItem?.map((prod: IProduct, i: number) => {
                                     return (
-                                        <ProductWeb
-                                            key={prod?.id} currentPage={currentPage} entriesPerPage={entriesPerPage} i={i} isPendingDelete={isPendingDelete} handleUpdateItem={handleUpdateItem} prod={prod} handleDeleteItem={handleDeleteItem} isPendingUpdate={isPendingUpdate}
-                                        />
-
+                                        <ProductWeb key={prod?.id} currentPage={currentPage} entriesPerPage={entriesPerPage} i={i} isPendingDelete={isPendingDelete} handleUpdateItem={handleUpdateItem} prod={prod} handleDeleteItem={handleDeleteItem} isPendingUpdate={isPendingUpdate} />
                                     )
                                 })
                             ) : (
