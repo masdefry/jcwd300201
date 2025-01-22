@@ -1697,8 +1697,8 @@ export const getOrdersForDeliveryService = async ({
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "ready-to-deliver") {
     statusFilter = ['IN_PACKING_PROCESS'];
-    // } else if (tab === "proses") {
-    //   statusFilter = ['DRIVER_TO_CUSTOMER'];
+    } else if (tab === "proses") {
+      statusFilter = ['DRIVER_TO_CUSTOMER'];
   } else {
     statusFilter = ['IN_PACKING_PROCESS'];
   }

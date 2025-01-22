@@ -1,7 +1,7 @@
 'use client'
 
 import { FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying, FaStore } from "react-icons/fa6";
-import { FaHistory, FaTint } from "react-icons/fa";
+import { FaHistory } from "react-icons/fa";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";

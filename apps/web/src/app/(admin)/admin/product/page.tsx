@@ -23,7 +23,7 @@ import { IProduct } from "./type";
 export default function Page() {
     const { currentPage, entriesPerPage, sortProduct, setSortProduct, isLoading, createProductItem,
         isPending, handleDeleteItem, isPendingDelete, handleUpdateItem, isPendingUpdate,
-        getDataItem, totalPages, handlePageChange, debounce, searchItem, setCurrentPage } = useProductLaundryHook()
+        getDataItem, totalPages, isValueSearch, setIsValueSearch, handlePageChange, debounce, searchItem, setCurrentPage } = useProductLaundryHook()
 
     return (
         <>
@@ -34,8 +34,11 @@ export default function Page() {
                             <div className="relative w-full">
                                 <input
                                     type="text"
-                                    onChange={(e) => debounce(e.target.value)}
-                                    value={searchItem}
+                                    onChange={(e) => {
+                                        setIsValueSearch(e.target.value)
+                                        debounce(e.target.value)
+                                    }}
+                                    value={isValueSearch || ''}
                                     placeholder="Search..."
                                     className="w-full pl-10 pr-4 py-2 border z-0 text-sm border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
                                 />
@@ -136,7 +139,10 @@ export default function Page() {
                         </select>
                     </div>
                     <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} value={searchItem} />
+                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            setIsValueSearch(e.target.value)
+                            debounce(e.target.value)
+                        }} />
                         <DialogCreateProduct createProductItem={createProductItem} isPending={isPending} />
                     </div>
                 </div>
