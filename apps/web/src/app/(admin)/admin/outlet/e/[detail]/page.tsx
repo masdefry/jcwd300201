@@ -28,7 +28,7 @@ export default function Page({ params }: { params: Promise<{ detail: string }> }
     return (
         <>
             <MobileSessionLayout title="Ubah Data Outlet">
-                <div className="w-full h-fit">
+                <div className="w-full h-fit pb-28">
                     <EditOutletMobile
                         isPosition={isPosition}
                         provinces={provinces}

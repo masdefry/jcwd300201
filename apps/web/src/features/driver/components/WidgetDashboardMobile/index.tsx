@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { IWidgetDashboardMobileDriver } from "./type"
 
-export default function WidgetDashboardMobile({link, data, title }: IWidgetDashboardMobileDriver) {
+export default function WidgetDashboardMobile({ link,data, title }: IWidgetDashboardMobileDriver) {
     return (
         <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
             <div className="flex items-center gap-4 pb-4">

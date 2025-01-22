@@ -36,7 +36,7 @@ export const useWashingDashboardHook = () => {
         queryKey: ['get-order-washing'],
         queryFn: async () => {
             const res = await instance.get(`/order/order-washing`, {
-                params: { tab: 'in-washing' },
+                params: { tab: '' },
                 headers: { Authorization: `Bearer ${token}` }
             });
             return res?.data?.data;

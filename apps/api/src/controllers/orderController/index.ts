@@ -1060,15 +1060,19 @@ export const paymentOrderTf = async (req: Request, res: Response, next: NextFunc
     const { orderId } = req.params
     const { email, userId } = req.body
 
-    if (!paymentProof || !paymentProof.images || paymentProof.images.length === 0) throw { msg: 'Bukti pembayaran harus dilampirkan', status: 400 }
+    if (!paymentProof || !paymentProof.images || (paymentProof.images.length === 0 || paymentProof?.images?.length !== undefined)) throw { msg: 'Bukti pembayaran harus dilampirkan', status: 400 }
 
     // const dataImage: string[] = paymentProof?.images?.map((img) => {
     //   return img?.filename
     // })
-    const dataImage = await Promise.all(paymentProof?.images?.map(async (item: any) => {
-      const result: any = await cloudinaryUpload(item?.buffer)
-      return result?.res!
-    }))
+
+    let dataImage: any
+    if (paymentProof?.images?.length !== undefined) {
+      dataImage = await Promise.all(paymentProof?.images?.map(async (item: any) => {
+        const result: any = await cloudinaryUpload(item?.buffer)
+        return result?.res!
+      }))
+    }
 
     if (!dataImage) throw { msg: 'Harap unggah bukti transfer anda', status: 401 }
     await paymentOrderTfService({ paymentProof: dataImage[0], orderId, email, userId });
