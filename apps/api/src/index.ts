@@ -42,7 +42,7 @@ app.use((error: IError, req: Request, res: Response, next: NextFunction) => {
     if (error?.message === 'jwt expired') throw { msg: 'jwt expired', status: 401 }
     res.status(error?.status || 500).json({
         error: true,
-        message: error?.msg || 'Ada kesalahan server, coba beberapa saat lagi',
+        message: error?.msg || error?.message,
         data: {}
     })
 })

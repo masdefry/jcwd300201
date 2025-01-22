@@ -17,7 +17,7 @@ export default function PaymentContentWeb(
 
                 {order?.isPaid === false && order?.paymentMethod === 'TF_MANUAL' && order?.paymentProof ?
                     <div className="flex gap-4 items-center">
-                        <Link href={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
+                        <Link href={`${order.paymentProof}`}
                             target="_blank" className="text-blue-700 hover:text-blue-500 relative group">
                             <FaArrowUpRightFromSquare />
                             <span className="absolute z-20 bottom-0 left-1/2 transform -translate-x-1/2 translate-y-full opacity-0 group-hover:opacity-100 bg-gray-800 text-white text-xs rounded-md px-2 py-1 mt-1 transition-opacity duration-200">
@@ -36,7 +36,7 @@ export default function PaymentContentWeb(
                             </button>
                         </ConfirmAlert>
                     </div>
-                    : order?.isPaid === false && !order?.paymentMethod && !order?.paymentProof ?
+                    : order?.isPaid === false ?
                         <div className="flex gap-1 justify-start">
                             <Link href={`https://wa.me/${order?.User?.phoneNumber}`} className="flex text-lg items-center h-fit space-x-2 px-1 py-1 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
                                 <FaWhatsapp />

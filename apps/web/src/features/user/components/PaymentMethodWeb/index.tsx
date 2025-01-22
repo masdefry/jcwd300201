@@ -52,7 +52,7 @@ export default function PaymentMethodMobile({ isArrCardPayment, dataOrderNote, s
                     <div className="flex justify-center text-center">Anda telah memilih metode Pembayaran Online</div>
                     <div className="w-full"><ButtonCustom width="w-full" btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`${dataOrderNote?.order?.paymentProof}`)}>Lanjutkan Pembayaran</ButtonCustom></div>
                 </div>
-                : dataOrderNote?.order?.isPaid === true && dataOrderNote?.order?.paymentMethod === 'MIDTRANS' ?
+                : dataOrderNote?.order?.isPaid === true && (dataOrderNote?.order?.paymentMethod === 'MIDTRANS' || dataOrderNote?.order?.paymentMethod === 'TF_MANUAL') ?
                     <div className="text-lg mt-8 border-gray-300 p-4">
                         <h1 className="font-bold">Terima kasih,</h1>
                         <p>Anda Telah Melakukan Pembayaran,</p>

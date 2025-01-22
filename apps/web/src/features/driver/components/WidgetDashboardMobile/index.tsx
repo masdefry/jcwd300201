@@ -24,13 +24,13 @@ export default function WidgetDashboardMobile({link, data, title }: IWidgetDashb
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Link href={link} className='text-blue-500 hover:text-blue-700 text-sm'>
+                            <Link href={link!} className='text-blue-500 hover:text-blue-700 text-sm'>
                                 Proses
                             </Link>
                         </div>
                     </div>
                 ))}
-                <Link href={link} className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                <Link href={link!} className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                     Lihat Selengkapnya...
                 </Link>
             </div>
