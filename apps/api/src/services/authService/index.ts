@@ -18,6 +18,7 @@ const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
 export const userRegisterService = async ({ id, email, firstName, lastName, phoneNumber, verifyCode }: IRegisterBody) => {
     const checkedEmail = await validate(email)
+    console.log(checkedEmail, '< email valid')
     if (!checkedEmail?.valid) throw { msg: 'Email tidak terdaftar/tidak valid', status: 400 }
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
