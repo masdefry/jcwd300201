@@ -34,4 +34,5 @@ interface IOrder {
     notes: string
     isSolved: boolean
     orderTypeId?: number
+    OrderType:any
 }

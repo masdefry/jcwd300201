@@ -11,10 +11,10 @@ import { useWashingDashboardHook } from "@/features/washingWorker/hooks/useWashi
 import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
 import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
 import WeatherMobile from "@/components/core/WeatherMobile";
-import WidgetDashboardMobile from "@/features/driver/components/WidgetDashboardMobile";
 import HeaderDashboardWeb from "@/components/core/HeaderDashboardWeb";
 import WeatherWeb from "@/components/core/WeatherWeb";
 import WidgetDashboardWeb from "@/features/washingWorker/components/WidgetDashboardWeb";
+import WidgetDashboardMobile from "@/features/washingWorker/components/WidgetDashboardMobile";
 
 export default function Page() {
     const {

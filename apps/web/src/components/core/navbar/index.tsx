@@ -188,8 +188,8 @@ export default function Header() {
               {role === 'CUSTOMER' ?
                 <>
                   <div className="flex flex-col gap-5">
-                    <MenuCustom url='/' navigation="Beranda"><FaDashcube /></MenuCustom>
-                    <MenuCustom url='/user/dashboard/home' navigation="Profil"><FaUserGear /></MenuCustom>
+                    <MenuCustom url='/user/dashboard/home' navigation="Beranda"><FaDashcube /></MenuCustom>
+                    <MenuCustom url='/user/dashboard/settings' navigation="Profil"><FaUserGear /></MenuCustom>
                     <MenuCustom url='/about-us' navigation="Tentang kami"><IoAlbumsOutline /></MenuCustom>
                     <MenuCustom url='/contact' navigation="Kontak"><LuContact /></MenuCustom>
                   </div>

@@ -27,13 +27,13 @@ export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWid
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Link href='worker/washing-worker/order' className='text-blue-500 hover:text-blue-700 text-sm'>
+                            <Link href='worker/packing-worker/order?tab=packing-process' className='text-blue-500 hover:text-blue-700 text-sm'>
                                 Proses
                             </Link>
                         </div>
                     </div>
                 ))}
-                <Link href='/worker/washing-worker/order?tab=in-washing' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                <Link href='/worker/packing-worker/order?tab=packing-process' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                     Lihat Selengkapnya...
                 </Link>
             </div>

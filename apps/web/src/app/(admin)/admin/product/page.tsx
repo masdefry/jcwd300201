@@ -1,14 +1,11 @@
 'use client'
 
 import ButtonCustom from "@/components/core/Button";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import SearchInputCustom from "@/components/core/SearchBar";
 import { ChangeEvent } from "react";
 import { useProductLaundryHook } from "@/features/superAdmin/hooks/useProductLaundryHook";
 import DialogCreateProduct from "@/features/superAdmin/components/DialogCreateProductLaundry";
-import DialogUpdateProduct from "@/features/superAdmin/components/DialogUpdateProductLaundry";
 import ContentWebLayout from "@/components/core/WebSessionContent";
-import { BsTrash } from "react-icons/bs";
 import PaginationWebLayout from "@/components/core/PaginationWebLayout";
 import { FaSearch } from "react-icons/fa";
 import Loading from "@/components/core/loading";

@@ -13,5 +13,16 @@ export interface IAddress {
     addressName: string
     addressDetail: string
     city: string
+    street: string
+    state: string
+    postalCode: string
+    country:string
     province: string
+    zipCode: number
+    User: IUser
+}
+interface IUser {
+    id: number;
+    firstName: string;
+    lastName: string;
 }

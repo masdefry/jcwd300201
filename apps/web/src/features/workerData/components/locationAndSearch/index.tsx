@@ -6,7 +6,7 @@ import {
     SelectLabel,
     SelectTrigger,
     SelectValue,
-} from "./../../../../components/ui/select"
+} from "@/components/ui/select"
 import { FaSearch } from 'react-icons/fa';
 
 interface LocationAndSearchProps {

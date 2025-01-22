@@ -15,7 +15,7 @@ export default function PaymentContentMobile(
                     <>
                         {imageLoading && 'Memuat Gambar...'}
                         <Image
-                            src={`http://localhost:5000/api/src/public/images/${order.paymentProof}`}
+                            src={`${order.paymentProof}`}
                             alt="payment proof"
                             width={500}
                             height={200}
