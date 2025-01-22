@@ -1,7 +1,9 @@
 import Notification from "@/components/core/Notification"
 import Link from "next/link"
 
-export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWidgetDashboardWeb) {
+export default function WidgetDashboardWeb({ data, title, dataOrderNotif, 
+    hrefLihatSelengkapnya, hrefProses
+ }: IWidgetDashboardWeb) {
     return (
         <div className="w-full h-full overflow-y-auto bg-white bg-opacity-45 rounded-xl p-4">
             <div className="flex justify-between">
@@ -27,13 +29,13 @@ export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWid
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Link href='worker/packing-worker/order' className='text-blue-500 hover:text-blue-700 text-sm'>
+                            <Link href={hrefProses} className='text-blue-500 hover:text-blue-700 text-sm'>
                                 Proses
                             </Link>
                         </div>
                     </div>
                 ))}
-                <Link href='/worker/driver/pickup-request?tab=process-pickup' className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                <Link href={hrefLihatSelengkapnya} className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                     Lihat Selengkapnya...
                 </Link>
             </div>

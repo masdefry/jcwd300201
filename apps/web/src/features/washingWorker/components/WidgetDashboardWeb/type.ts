@@ -18,4 +18,6 @@ interface IWidgetDashboardWeb {
     };
     title: string
     dataOrderNotif:any
+    hrefLihatSelengkapnya: string,
+    hrefProses: string
 }

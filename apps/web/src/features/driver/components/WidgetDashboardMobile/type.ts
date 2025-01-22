@@ -17,5 +17,4 @@ export interface IWidgetDashboardMobileDriver {
         orders: IOrder[];
     };
     title: string
-    link:string
 }

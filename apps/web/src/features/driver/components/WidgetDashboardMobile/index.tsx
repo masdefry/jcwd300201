@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { IWidgetDashboardMobileDriver } from "./type"
 
-export default function WidgetDashboardMobile({link, data, title }: IWidgetDashboardMobileDriver) {
+export default function WidgetDashboardMobile({ data, title }: IWidgetDashboardMobileDriver) {
     return (
         <div className="w-full flex justify-center flex-col h-full border border-gray-300 overflow-y-auto bg-white bg-opacity-45 rounded-xl p-2">
             <div className="flex items-center gap-4 pb-4">
@@ -24,13 +24,13 @@ export default function WidgetDashboardMobile({link, data, title }: IWidgetDashb
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Link href={link} className='text-blue-500 hover:text-blue-700 text-sm'>
+                            <Link href={'/worker/washing-worker/order'} className='text-blue-500 hover:text-blue-700 text-sm'>
                                 Proses
                             </Link>
                         </div>
                     </div>
                 ))}
-                <Link href={link} className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
+                <Link href={'/worker/washing-worker/order'} className='flex text-sm justify-end text-blue-600 hover:text-blue-800'>
                     Lihat Selengkapnya...
                 </Link>
             </div>

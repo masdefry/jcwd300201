@@ -7,7 +7,8 @@
     "build": "next build",
     "serve": "next start -p $PORT",
     "lint": "next lint",
-    "test": "npx cypress verify & cypress run --component"
+    "test": "npx cypress verify & cypress run --component",
+    "analyze": "cross-env ANALYZE=true next build"
   },
   "dependencies": {
     "@emotion/react": "^11.13.5",
@@ -15,6 +16,7 @@
     "@hookform/resolvers": "^3.9.1",
     "@mui/lab": "^6.0.0-beta.19",
     "@mui/material": "^6.2.0",
+    "@next/bundle-analyzer": "^15.1.5",
     "@radix-ui/react-accordion": "^1.2.2",
     "@radix-ui/react-alert-dialog": "^1.1.2",
     "@radix-ui/react-avatar": "^1.1.1",
