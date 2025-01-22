@@ -8,12 +8,18 @@ export interface IAddress {
     latitude?: number;
     longitude?: number;
     isPrimary?: boolean;
+    User: IUser;
+    addressName: string
+    addressDetail: string
+    province:string
+    zipCode:number
 }
 
 export interface IOrderType {
     id: string;
     name: string;
     description?: string;
+    type: string;
 }
 
 export interface IRequestPickup {
@@ -21,4 +27,12 @@ export interface IRequestPickup {
     outletId: string;
     orderTypeId: string;
     userAddressId: string;
+    User: IUser
 }
+
+interface IUser {
+    id: number;
+    firstName: string;
+    lastName: string;
+}
+

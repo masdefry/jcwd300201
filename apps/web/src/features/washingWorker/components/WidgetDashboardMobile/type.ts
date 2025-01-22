@@ -12,12 +12,12 @@ interface IOrder {
     OrderType: IOrderType;
 }
 
-interface IWidgetDashboardWeb {
+export interface IWidgetDashboardMobile {
     data: {
         orders: IOrder[];
     };
     title: string
-    dataOrderNotif:any
-    hrefLihatSelengkapnya?: string,
-    hrefProses?: string
+    link?:string
+
 }
+

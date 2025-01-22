@@ -1,24 +1,24 @@
 'use client'
-
-import "leaflet/dist/leaflet.css";
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import { locationStore } from "@/zustand/locationStore";
-import { instance } from "@/utils/axiosInstance";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import { useEffect, useMemo, useState } from "react";
+import { createOutletValidationSchema } from "@/features/superAdmin/schemas/createOutletValidationSchema";
 import { MapContainer, TileLayer, } from "react-leaflet";
 import LocationPicker from "@/components/core/LocationPicker";
 import ButtonCustom from "@/components/core/Button";
-import { createOutletValidationSchema } from "@/features/superAdmin/schemas/createOutletValidationSchema";
+
+import "leaflet/dist/leaflet.css";
+import ContentWebLayout from "@/components/core/WebSessionContent";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { useCreateOutletHook } from "@/features/superAdmin/hooks/useCreateOutletHook";
-import CreateOutletMobile from "@/features/superAdmin/components/CreateOutletMobile";
-import CreateOutletWeb from "@/features/superAdmin/components/CreateOutletMobile";
+// import CreateOutletMobile from "@/features/superAdmin/components/CreateOutletMobile";
+// import CreateOutletWeb from "@/features/superAdmin/components/CreateOutletMobile";
 import axios from "axios";
 import L from 'leaflet'
 import authStore from "@/zustand/authstore";
 import { toast } from "@/components/hooks/use-toast";
+import { locationStore } from "@/zustand/locationStore";
+import { useEffect, useMemo, useState } from "react";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { instance } from "@/utils/axiosInstance";
 
 export default function Page() {
     const latitudeGlobal = locationStore((state) => state?.latitude);

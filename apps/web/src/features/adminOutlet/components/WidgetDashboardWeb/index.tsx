@@ -27,7 +27,7 @@ export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWid
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <Link href='worker/admin-outlet/order' className='text-blue-500 hover:text-blue-700 text-sm'>
+                            <Link href='/worker/admin-outlet/order' className='text-blue-500 hover:text-blue-700 text-sm'>
                                 Proses
                             </Link>
                         </div>

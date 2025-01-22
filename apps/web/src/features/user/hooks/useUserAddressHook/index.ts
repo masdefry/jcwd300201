@@ -17,10 +17,12 @@ const useUserAddressHook = () => {
     const [currentPage, setCurrentPage] = useState<number>(1)
     const [entriesPerPage, setEntriesPerPage] = useState<number>(5)
     const [searchItem, setSearchItem] = useState<string>(params.get('search') || '')
+    const [isValueSearch, setIsValueSearch] = useState<string>('')
+
     const router = useRouter()
     const pathname = usePathname()
 
-    const { data: getDataItem, isFetching, refetch, isPending } = useQuery({
+    const { data: getDataItem, isFetching, refetch, isPending, isLoading } = useQuery({
         queryKey: ['get-data-item', searchItem],
         queryFn: async () => {
             const response = await instance.get('/user/all-address', {
@@ -108,7 +110,7 @@ const useUserAddressHook = () => {
         token, currentUrl, params, currentPage, setCurrentPage, entriesPerPage, setEntriesPerPage,
         searchItem, setSearchItem, debounce, getDataItem, isFetching, refetch, isPending,
         handleDeleteItem, isPendingDelete, handleChangeMainAddress, isPendingChangeAddress,
-        router, pathname, settingsItems
+        router, pathname, settingsItems, isValueSearch, setIsValueSearch, isLoading
     }
 }
 

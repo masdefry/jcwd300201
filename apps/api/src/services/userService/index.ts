@@ -209,10 +209,13 @@ export const updateProfileUserService = async ({ userId, email, phoneNumber, fir
     //     return img?.filename
     // })
 
-    const dataImage = await Promise.all(imageUploaded?.images?.map(async (item: any) => {
-        const result: any = await cloudinaryUpload(item?.buffer)
-        return result?.res!
-    }))
+    let dataImage: any
+    if (imageUploaded?.images?.length !== undefined) {
+        dataImage = await Promise.all(imageUploaded?.images?.map(async (item: any) => {
+            const result: any = await cloudinaryUpload(item?.buffer)
+            return result?.res!
+        }))
+    }
 
     const newDataUser = await prisma.user.update({
         where: { id: userId },

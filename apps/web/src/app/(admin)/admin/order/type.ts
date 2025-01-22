@@ -41,6 +41,7 @@ export interface IStore {
 export interface IOrderType {
     id: string; 
     name: string; 
-    description: string; 
-    type: string
+    description?: string; 
+    type: string;
+    
 }

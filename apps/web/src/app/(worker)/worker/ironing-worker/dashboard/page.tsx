@@ -11,10 +11,10 @@ import { useIroningDashboardHook } from "@/features/ironingWorker/hooks/useIroni
 import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
 import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
 import WeatherMobile from "@/components/core/WeatherMobile";
-import WidgetDashboardMobile from "@/features/driver/components/WidgetDashboardMobile";
 import HeaderDashboardWeb from "@/components/core/HeaderDashboardWeb";
 import WeatherWeb from "@/components/core/WeatherWeb";
 import WidgetDashboardWeb from "@/features/ironingWorker/components/WidgetDashboardWeb";
+import WidgetDashboardMobile from "@/features/ironingWorker/components/WidgetDashboardMobile";
 
 export default function Page() {
     const {

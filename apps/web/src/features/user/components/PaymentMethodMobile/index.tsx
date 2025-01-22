@@ -52,7 +52,7 @@ export default function PaymentMethodWeb({ isArrCardPayment, dataOrderNote, setI
                     <div>Anda telah memilih metode Pembayaran Online</div>
                     <ButtonCustom width="w-full" btnColor="bg-blue-500" txtColor="text-white" onClick={() => router.push(`${dataOrderNote?.order?.paymentProof}`)}>Lanjutkan Pembayaran</ButtonCustom>
                 </div>
-                : dataOrderNote?.order?.isPaid === true && dataOrderNote?.order?.paymentMethod === 'MIDTRANS' ?
+                    : dataOrderNote?.order?.isPaid === true && (dataOrderNote?.order?.paymentMethod === 'MIDTRANS' || dataOrderNote?.order?.paymentMethod === 'TF_MANUAL') ?
                     <div className="text-lg mt-8 border-gray-300 p-4">
                         <h1 className="font-bold">Terima kasih,</h1>
                         <p>Anda Telah Melakukan Pembayaran,</p>

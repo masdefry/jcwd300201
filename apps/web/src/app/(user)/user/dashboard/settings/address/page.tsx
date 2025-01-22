@@ -18,10 +18,11 @@ import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { BsPencil, BsTrash } from "react-icons/bs";
 import NoData from "@/components/core/NoData";
 import { IUserAddress } from "./type";
+import Loading from "@/components/core/loading";
 
 export default function Page() {
     const { currentPage, entriesPerPage, debounce, getDataItem, isFetching, isPending, handleDeleteItem,
-        isPendingDelete, handleChangeMainAddress, router, settingsItems } = useUserAddressHook()
+        isPendingDelete, handleChangeMainAddress, isValueSearch, setIsValueSearch, isLoading,setSearchItem, router, settingsItems } = useUserAddressHook()
 
     if (isFetching) return (
         <SkeletonLoadingComponent />
@@ -35,7 +36,11 @@ export default function Page() {
                         <div className="relative w-full">
                             <input
                                 type="text"
-                                onChange={(e) => debounce(e.target.value)}
+                                onChange={(e) => {
+                                    setIsValueSearch(e.target.value)
+                                    debounce(e.target.value)
+                                }}
+                                value={isValueSearch || ''}
                                 placeholder="Search..."
                                 className="w-full pl-10 pr-4 py-2 border z-0 text-sm border-gray-300 rounded-lg focus:outline-none focus:border-orange-500"
                             />
@@ -44,6 +49,7 @@ export default function Page() {
                     </div>
                     <ButtonCustom onClick={() => router.push('/user/dashboard/settings/address/c')} py='py-3' rounded="rounded-xl flex items-center" btnColor="bg-orange-500" width="w-fit"><FaPlus className="text-sm" /></ButtonCustom>
                 </div>
+                {isLoading && <Loading />}
                 {getDataItem?.length > 0 ? (
                     getDataItem?.map((address: IUserAddress, i: number) => {
                         return (
@@ -79,7 +85,10 @@ export default function Page() {
                 <div className="w-full h-fit flex">
                     <div className="w-1/2 h-fit flex items-center"></div>
                     <div className="w-1/2 h-fit flex gap-2 justify-end">
-                        <SearchInputCustom placeholder='Cari alamat..' onChange={(e: ChangeEvent<HTMLInputElement>) => debounce(e.target.value)} />
+                        <SearchInputCustom onChange={(e: ChangeEvent<HTMLInputElement>) => {
+                            setIsValueSearch(e.target.value)
+                            debounce(e.target.value)
+                        }} value={isValueSearch || ''}/>
                         <ButtonCustom onClick={() => router.push('/user/dashboard/settings/address/c')} rounded="rounded-2xl flex gap-2 items-center" btnColor="bg-orange-500"><FaPlus /> Tambah alamat</ButtonCustom>
                     </div>
                 </div>

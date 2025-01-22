@@ -1,4 +1,5 @@
-import { IAddress, IOrderType } from "@/app/(user)/user/dashboard/pickup/type";
+import { IAddress } from "../AddressSection/type";
+import { IOrderType } from "@/app/(admin)/admin/order/type";
 
 interface IStore {
     id: string;

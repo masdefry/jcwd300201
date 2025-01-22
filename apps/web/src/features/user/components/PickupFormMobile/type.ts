@@ -1,4 +1,5 @@
-import { IAddress, IOrderType } from "@/app/(user)/user/dashboard/pickup/type";
+import { IAddress } from "../AddressSection/type";
+import { IOrderType } from "@/app/(admin)/admin/order/type";
 
 interface IStore {
     id: string;
@@ -17,7 +18,7 @@ export interface IPickupFormProps {
     dataMainAddress: IAddress | null;
     selectedAddress: IAddress | null;
     handlePickupRequest: (values: any, callbacks: { onSuccess: () => void }) => void;
-    pickupValidationSchema: any; // Replace with appropriate Yup schema type if using Yup
+    pickupValidationSchema: any; 
     PendingPickupSubmit: boolean;
     isDisabledSucces: boolean;
 }
