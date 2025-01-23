@@ -162,7 +162,7 @@ export default function OrderPopUpDialog({ openDialog, orderData, setOpenDialog,
                             </div>
                             : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof && orderData?.order?.paymentMethod === "TF_MANUAL" ?
                                 <div className="flex justify-center">
-                                    <ButtonCustom btnColor="bg-white" txtColor="text-black">Menunggu Verifikasi Admin</ButtonCustom>
+                                    <ButtonCustom btnColor="bg-white" txtColor="text-black">Pembayaran Menunggu Verifikasi Admin</ButtonCustom>
                                 </div>
                                 : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof && orderData?.order?.paymentMethod === "MIDTRANS" ?
                                     <div className="flex justify-center">

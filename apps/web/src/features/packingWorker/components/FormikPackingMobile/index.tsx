@@ -49,15 +49,7 @@ export default function FormikPackingMobile({
                     if (isDataMatching) {
                         submitForm()
                     } else {
-                        const initialNotes = values.items
-                            .map((item: any) => {
-                                const itemDetails = dataItemName.find((data: any) => Number(data.id) === Number(item.itemName));
-                                return `Item: ${itemDetails?.itemName}, Quantity: ${item.quantity}`;
-                            })
-                            .join("\n");
-
-
-                        setDialogNotes(initialNotes);
+                        setDialogNotes("Catatan:");
                         setShowDialog(true);
                     }
                 }

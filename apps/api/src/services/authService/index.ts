@@ -8,17 +8,25 @@ import fs from 'fs'
 import dotenv from 'dotenv'
 import { compile } from "handlebars"
 import { ICreateWorkerService, ILoginBody, IRegisterBody } from "./types"
-import {  format, isAfter, isBefore } from "date-fns"
+import { format, isAfter, isBefore } from "date-fns"
 import validate from "deep-email-validator"
-import { Prisma, Worker } from "@prisma/client"
+import { Worker } from "@prisma/client"
 import { TemplateDelegate } from "handlebars";
 
 dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
 export const userRegisterService = async ({ id, email, firstName, lastName, phoneNumber, verifyCode }: IRegisterBody) => {
-    const checkedEmail = await validate(email)
-    console.log(checkedEmail, '< email valid')
+    const checkedEmail = await validate({
+        email,
+        sender: email,
+        validateRegex: true,
+        validateMx: true,
+        validateTypo: true,
+        validateDisposable: true,
+        validateSMTP: false,
+    })
+
     if (!checkedEmail?.valid) throw { msg: 'Email tidak terdaftar/tidak valid', status: 400 }
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
@@ -222,7 +230,7 @@ export const workerLoginService = async ({ email, password }: ILoginBody) => {
         if (findAdmin?.Store?.deletedAt) {
             throw { msg: 'Anda tidak dapat login, silahkan hubungi admin.', status: 403 };
         }
-        
+
         if (findAdmin?.deletedAt) {
             throw { msg: 'Anda tidak dapat login, silahkan hubungi admin.', status: 403 };
         }

@@ -29,4 +29,5 @@ interface IOrder {
     isSolved: boolean
     orderTypeId?: number
     isReqDelivery?:boolean
+    UserAddress:any
 }

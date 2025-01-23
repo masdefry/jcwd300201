@@ -36,7 +36,7 @@ export const usePackingDashboardHook = () => {
         queryKey: ['get-order-packing'],
         queryFn: async () => {
             const res = await instance.get(`/order/order-packing`, {
-                params: { tab: '' },
+                params: { tab: 'packing-process' },
                 headers: { Authorization: `Bearer ${token}` }
             });
 

@@ -63,8 +63,8 @@ export default function Page() {
 
                     <div className="w-full flex flex-col md:flex-row gap-4 px-2 mt-5 h-auto">
                         <WeatherMobile isCurrentWeather={isCurrentWeather} />
-                        <WidgetDashboardMobile link={'/worker/driver/pickup-request?tab=proses'} title={"Pengantaran Laundry"} data={dataOrderAwaitingPickup} />
-                        <WidgetDashboardMobile link={'/worker/driver/delivery-request?tab=proses'} title={"Penjemputan Laudry"} data={dataOrderDelivery} />
+                        <WidgetDashboardMobile link={'/worker/driver/pickup-request?tab=proses'} title={"Penjemputan Laundry"} data={dataOrderAwaitingPickup} />
+                        <WidgetDashboardMobile link={'/worker/driver/delivery-request?tab=proses'} title={"Pengantaran Laudry"} data={dataOrderDelivery} />
                     </div>
                 </main>
             </ContentMobileLayout>
@@ -85,8 +85,8 @@ export default function Page() {
                     </div>
                 </section>
                 <section className="w-full h-1/2 flex bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-5 gap-2">
-                    <WidgetDashboardWeb title={"Pengantaran Laundry"} data={dataOrderAwaitingPickup} dataOrderNotif={dataOrderNotif} />
-                    <WidgetDashboardWeb title={"Penjemputan Laundry"} data={dataOrderDelivery} dataOrderNotif={dataOrderNotif} />
+                    <WidgetDashboardWeb title={"Penjemputan Laundry"} data={dataOrderAwaitingPickup} dataOrderNotif={dataOrderNotif} />
+                    <WidgetDashboardWeb title={"Pengantaran Laundry"} data={dataOrderDelivery} dataOrderNotif={dataOrderNotif} />
                 </section>
             </main>
         </>
