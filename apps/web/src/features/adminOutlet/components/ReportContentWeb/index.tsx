@@ -65,7 +65,7 @@ export default function ReportContentWeb(
                                     />
                                     <ErrorMessage name="notes" component="div" className="text-red-500 text-xs absolute top-[-2px]" />
                                     <DialogFooter>
-                                        <ButtonCustom disabled={isPending || isDisableSuccess} width="w-full" btnColor='bg-orange-500 hover:bg-orange-500' type="submit">Lanjutkan Proses</ButtonCustom>
+                                        <ButtonCustom disabled={isPending} width="w-full" btnColor='bg-orange-500 hover:bg-orange-500' type="submit">Lanjutkan Proses</ButtonCustom>
                                     </DialogFooter>
                                 </Form>
                             </Formik>

@@ -117,8 +117,11 @@ export default function Page() {
                     </div>
                 </section>
                 <section className="w-full flex gap-2 h-1/2 bg-gradient-to-tr from-sky-100 via-orange-100 to-white rounded-xl p-2">
-                    <MonthlyCharts refetch={refetch} refetchTab={refetchTab} monthlyData={dataOrderList?.monthlyStatistic} showDropdown={true} isLoading={isLoading}
-                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setIsMonthlyStatistic(e.target.value)} value={isMonthlyStatistic} />
+                    <div className="w-full px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
+                        <MonthlyCharts refetch={refetch} refetchTab={refetchTab} monthlyData={dataOrderList?.monthlyStatistic} showDropdown={true} isLoading={isLoading}
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setIsMonthlyStatistic(e.target.value)} value={isMonthlyStatistic} />
+                    </div>
+
                     <div className="w-fit px-5 h-full bg-white bg-opacity-45 rounded-2xl flex items-center justify-center">
                         <TabTracking
                             selectedTab={selectedTab}
