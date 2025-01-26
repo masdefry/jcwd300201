@@ -264,7 +264,7 @@ export const changePasswordGoogleRegisterService = async ({ userId, password }: 
 }
 
 export const deleteUserAddressService = async ({ userId, addressId }: { userId: string, addressId: number }) => {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         const findAddressById = await tx.userAddress.findFirst({ where: { id: Number(addressId), userId } })
         const findAllAddress = await tx.userAddress.findMany({ where: { userId } })
         const findOrderUser = await tx.order.findFirst({
@@ -290,7 +290,7 @@ export const deleteUserAddressService = async ({ userId, addressId }: { userId: 
 }
 
 export const changeMainAddressUserServices = async ({ id, userId }: { id: number, userId: string }) => {
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         const findAddress = await tx.userAddress.findUnique({ where: { id: Number(id), userId } })
         const findAddressMain = await tx.userAddress.findFirst({ where: { isMain: true, userId } })
 
