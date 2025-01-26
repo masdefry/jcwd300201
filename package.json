@@ -9,7 +9,7 @@
     "start": "node api/server.js",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prepare": "husky install",
-    "postprepare": "powershell -Command \"Get-ChildItem .husky\\* | ForEach-Object { $_.Attributes = 'ReadOnly,Archive' }\""
+    "postprepare": "find .husky -type f -exec chmod +x {} \\;"
   },
   "devDependencies": {
     "@commitlint/cli": "^18.4.2",
@@ -17,7 +17,7 @@
     "@types/crypto-js": "^4.2.2",
     "@types/js-cookie": "^3.0.6",
     "eslint": "^8.48.0",
-    "husky": "^8.0.0",
+    "husky": "^8.0.3",
     "lint-staged": "^15.1.0",
     "prettier": "^3.1.0",
     "tsc-alias": "^1.8.10",
