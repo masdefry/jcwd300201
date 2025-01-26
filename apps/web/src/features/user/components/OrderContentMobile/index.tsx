@@ -1,4 +1,3 @@
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import { IOrderContentMobile } from "./type";
 
 export default function OrderContentMobile(
