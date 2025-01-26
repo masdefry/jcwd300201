@@ -3429,7 +3429,7 @@ export const ironingProcessService = async ({
   userId: string;
   notes?: string;
 }) => {
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: { email },
     });
@@ -3530,7 +3530,7 @@ export const packingProcessService = async ({
   orderId: string;
   notes?: string;
 }) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: { email },
     });
@@ -3604,7 +3604,7 @@ export const packingProcessService = async ({
 
 
 export const solveNotesService = async ({ orderId, userId, notes }: ISolveNotesInput) => {
-  return await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: {
         id: userId,
@@ -3639,7 +3639,7 @@ export const createComplaintService = async ({ orderId, complaintText, userId }:
     delete cronTasks[orderId];
   }
 
-  return await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findUser = await tx.user.findFirst({
       where: { id: userId },
     });
@@ -3665,7 +3665,7 @@ export const createComplaintService = async ({ orderId, complaintText, userId }:
 };
 export const solveComplaintService = async ({ orderId, email, userId }: { orderId: string, email: string, userId: string }) => {
 
-  return await prisma.$transaction(async (tx) => {
+  return await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findUser = await tx.user.findFirst({
       where: {
         id: userId,
