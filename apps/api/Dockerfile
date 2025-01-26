@@ -12,6 +12,7 @@ RUN npm ci
 
 # Copy the rest of the application code
 COPY . .
+COPY prisma ./prisma/
 
 # Expose the port your app runs on
 EXPOSE 3000
