@@ -1,8 +1,7 @@
 import prisma from "@/connection"
-import fs, { rmSync } from 'fs'
 import cron from 'node-cron'
 import dotenv from 'dotenv'
-import { IWashingProcessDone, ICreateOrder, IGetOrdersForWashing, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory, IPaymentOrder, IPaymentOrderTf, IOrderTrackingAdminParams, IOrderTrackingUser, ISolveNotesInput, IOrderTrackingDriverParams } from "./types"
+import { IWashingProcessDone, ICreateOrder, IAcceptOrderOutlet, IAcceptOrder, IFindNearestStore, IRequestPickup, IGetUserOrder, IGetOrderForDriver, IGetOrderNoteDetail, IGetPackingHistory, IGetIroningHistory, IGetWashingHistory, IGetNotes, IIroningProcessDone, IStatusOrder, IGeDriverHistory, IPaymentOrder, IPaymentOrderTf, IOrderTrackingAdminParams, IOrderTrackingUser, ISolveNotesInput, IOrderTrackingDriverParams } from "./types"
 import { Prisma, Role, Status, Payment, Order, OrderStatus, } from "@prisma/client"
 import { addHours, addMinutes, isBefore } from "date-fns"
 import { formatOrder } from "@/utils/formatOrder"
@@ -771,7 +770,7 @@ export const createOrderService = async ({
   laundryPrice,
   items,
 }: ICreateOrder) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: { email },
     });
@@ -844,7 +843,7 @@ export const createOrderService = async ({
 };
 
 export const washingProcessDoneService = async ({ orderId, email, userId }: IWashingProcessDone) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: { email },
     });
@@ -904,7 +903,7 @@ export const washingProcessDoneService = async ({ orderId, email, userId }: IWas
 };
 
 export const ironingProcessDoneService = async ({ orderId, email, userId }: IIroningProcessDone) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: { email },
     });
@@ -1517,7 +1516,7 @@ export const getNotesService = async ({ userId, authorizationRole, tab, limit_da
 }
 
 export const packingProcessDoneService = async ({ email, orderId }: { email: string; orderId: string }) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: { email },
     });
@@ -1697,8 +1696,8 @@ export const getOrdersForDeliveryService = async ({
     statusFilter = ['IN_PACKING_PROCESS'];
   } else if (tab === "ready-to-deliver") {
     statusFilter = ['IN_PACKING_PROCESS'];
-    } else if (tab === "proses") {
-      statusFilter = ['DRIVER_TO_CUSTOMER'];
+  } else if (tab === "proses") {
+    statusFilter = ['DRIVER_TO_CUSTOMER'];
   } else {
     statusFilter = ['IN_PACKING_PROCESS'];
   }
@@ -1985,7 +1984,7 @@ export const getOrdersForDriverDeliveryService = async ({
 
 
 export const processOrderDeliveryService = async ({ email, orderId, userId }: IAcceptOrder) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: { email },
     });
@@ -2622,7 +2621,7 @@ export const getAllOrderForUserService = async ({
 }
 
 export const paymentOrderVAService = async ({ orderId, email, userId }: IPaymentOrder) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findUser = await tx.user.findFirst({
       where: { id: userId, email },
     });
@@ -2673,7 +2672,7 @@ export const paymentOrderVAService = async ({ orderId, email, userId }: IPayment
 
 
 export const paymentOrderTfService = async ({ orderId, email, userId, paymentProof }: IPaymentOrderTf) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findUser = await tx.user.findFirst({
       where: { id: userId, email },
     });
@@ -2853,7 +2852,7 @@ export const getPaymentOrderForAdminService = async ({
 }
 
 export const PaymentDoneService = async ({ orderId, email, userId }: IIroningProcessDone) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: { email },
     });
@@ -2893,7 +2892,7 @@ export const PaymentDoneService = async ({ orderId, email, userId }: IIroningPro
 };
 
 export const userConfirmOrderService = async ({ orderId, email, userId }: IIroningProcessDone) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findUser = await tx.user.findFirst({
       where: { email },
     });

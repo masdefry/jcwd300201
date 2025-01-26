@@ -5,15 +5,17 @@
   "main": "src/index.ts",
   "scripts": {
     "dev": "cross-env NODE_ENV=development ts-node-dev -r tsconfig-paths/register src/index.ts",
-    "build": "tsc && tsc-alias",
+    "build": "tsc && tsc-alias && prisma generate && next build",
     "serve": "cross-env NODE_ENV=production node dist/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "prisma": "npx prisma",
     "seed": "prisma db seed",
-    "start": "node server.js"
+    "start": "node server.js",
+    "postinstall": "prisma generate"
   },
   "prisma": {
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "schema": "prisma/schema.prisma"
   },
   "author": "",
   "license": "ISC",
@@ -49,7 +51,9 @@
     "nodemailer": "^6.9.16",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "@prisma/client": "^6.0.1",
+    "prisma": "^6.0.1"
   },
   "devDependencies": {
     "@prisma/client": "^6.0.1",

@@ -10,7 +10,7 @@ import { compile } from "handlebars"
 import { ICreateWorkerService, ILoginBody, IRegisterBody } from "./types"
 import { format, isAfter, isBefore } from "date-fns"
 import validate from "deep-email-validator"
-import { Worker } from "@prisma/client"
+import { Prisma, Worker } from "@prisma/client"
 import { TemplateDelegate } from "handlebars";
 
 dotenv.config()
@@ -31,7 +31,7 @@ export const userRegisterService = async ({ id, email, firstName, lastName, phon
     if (!validateEmail(email)) throw { msg: 'Harap masukan format email dengan benar', status: 400 }
     if (!phoneNumberValidation(phoneNumber)) throw { msg: 'Harap masukan format nomor telepon dengan benar', status: 400 }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         const findEmailInWorker = await tx.worker.findFirst({ where: { email } })
         if (findEmailInWorker) throw { msg: 'User sudah terdaftar', status: 400 }
 
@@ -223,7 +223,7 @@ export const workerLoginService = async ({ email, password }: ILoginBody) => {
     let token;
     let findAdmin: any;
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         findAdmin = await tx.worker.findFirst({ where: { email }, include: { Shift: true, Store: true } })
         if (!findAdmin) throw { msg: 'User admin tidak tersedia', status: 404 }
 
@@ -282,7 +282,7 @@ export const createWorkerService = async ({
     if (findWorker) throw { msg: 'Email atau nomor identitas sudah terpakai!', status: 401 }
     if (findEmailInUser) throw { msg: 'Email sudah terpakai!', status: 401 }
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
         let dataWorker: Worker
         let token: string
         if (workerRole != 'DRIVER') {

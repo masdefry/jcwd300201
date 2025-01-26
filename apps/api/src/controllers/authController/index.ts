@@ -5,6 +5,7 @@ import { nanoid } from "nanoid";
 import jwt from 'jsonwebtoken'
 import { hashPassword } from "@/utils/passwordHash";
 import { encodeToken } from "@/utils/tokenValidation";
+import { Prisma } from "@prisma/client";
 
 const secret_key: string | undefined = process.env.JWT_SECRET as string
 
@@ -57,7 +58,7 @@ export const userLogout = async (req: Request, res: Response, next: NextFunction
     try {
         const { email } = req.body
         const { authorization } = req.headers
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
             const findUser = await tx.user.findFirst({ where: { email } })
             if (!findUser) throw { msg: 'Pengguna tidak tersedia', status: 404 }
             let token = authorization?.split(' ')[1] as string
@@ -228,7 +229,7 @@ export const workerLogin = async (req: Request, res: Response, next: NextFunctio
     try {
         const { email, password } = req.body
         const { findAdmin, token } = await workerLoginService({ email, password })
-        
+
         if (!findAdmin) {
             return res.status(404).json({
                 error: true,
@@ -289,7 +290,7 @@ export const workerRegisterByAdmin = async (req: Request, res: Response, next: N
 export const workerLogout = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { email } = req.body
-        await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
             const findAdmin = await tx.worker.findFirst({
                 where: { email }
             })
