@@ -1724,7 +1724,6 @@ export const getOrdersForDeliveryService = async ({
           ],
         }
         : {},
-      // ...(tab === 'waiting-payment' ? [{ isPaid: false, isProcessed: false, isDone: true }] : []),
       ...(tab === 'ready-to-deliver' ? [{ isPaid: true, isProcessed: false, isDone: true, isReqDelivery: false }] : []),
       parsedDateFrom ? { createdAt: { gte: parsedDateFrom } } : {},
       parsedDateUntil ? { createdAt: { lte: parsedDateUntil } } : {},
@@ -3348,7 +3347,7 @@ export const washingProcessService = async ({
   userId: string;
   notes?: string;
 }) => {
-  const result = await prisma.$transaction(async (tx) => {
+  const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     const findWorker = await tx.worker.findFirst({
       where: { email },
     });

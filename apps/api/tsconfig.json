@@ -8,6 +8,7 @@
     "forceConsistentCasingInFileNames": true,
     "outDir": "./dist",
     "baseUrl": ".",
+    "types": ["@prisma/client"],
     "paths": {
       "@/*": ["./src/*"]
     }
