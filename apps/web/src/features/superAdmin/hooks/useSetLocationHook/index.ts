@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { locationStore } from "@/zustand/locationStore";
 import { useRouter } from "next/navigation";
 import L from 'leaflet'
@@ -15,7 +15,7 @@ export const useSetLocationHook = () => {
     const [isPosition, setIsPosition] = useState({ lat: latitudeGlobal || -6.200000, lng: lngGlobal || 106.816666 });
     const router = useRouter()
     useEffect(() => {
-        return () => {
+        if (typeof window !== 'undefined') return () => {
             const container: any = L?.DomUtil.get("map-container");
             if (container != null) {
                 container._leaflet_id = null;
@@ -24,7 +24,7 @@ export const useSetLocationHook = () => {
     }, [])
 
     useEffect(() => {
-        return () => {
+        if (typeof window !== 'undefined') return () => {
             const container: any = L?.DomUtil.get("map-container-mobile");
             if (container != null) {
                 container._leaflet_id = null;
@@ -36,10 +36,10 @@ export const useSetLocationHook = () => {
         setIsPosition({ lat: latitudeGlobal || -6.200000, lng: lngGlobal || 106.816666 })
     }, [latitudeGlobal, lngGlobal])
 
-        const time = useMemo(() => new Date().getTime(), [])
-    
-    return {
-       time, token, latitudeGlobal, lngGlobal, setIsPositionCheck, setLocation, pickLocationSuccess, setIsPickLocationSuccess, isPosition, setIsPosition, router
+    const time = useMemo(() => new Date().getTime(), [])
 
+    return {
+        time, token, latitudeGlobal, lngGlobal, setIsPositionCheck, setLocation,
+        pickLocationSuccess, setIsPickLocationSuccess, isPosition, setIsPosition, router
     }
 }

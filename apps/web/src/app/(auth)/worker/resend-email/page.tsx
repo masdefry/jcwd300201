@@ -2,7 +2,7 @@
 
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import Image from "next/image";
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 import Link from "next/link";
 import { FaInstagram, FaLinkedin, FaTwitter } from "react-icons/fa6";
 import { useResendEmailWorkerHook } from "@/features/worker/hooks/useResendEmailWorkerHook";

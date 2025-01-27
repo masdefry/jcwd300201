@@ -7,7 +7,7 @@ import { useState } from "react";
 import { usePathname } from "next/navigation";
 import Image from "next/image";
 import { FaAddressCard, FaHandsHelping, FaHistory, FaInfoCircle, FaPhoneAlt } from "react-icons/fa";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 
 type MenuItem = {
   icon: JSX.Element;

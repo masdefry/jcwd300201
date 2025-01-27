@@ -1,11 +1,11 @@
-interface IUser {
+export interface IUser {
     id: string;
     firstName: string;
     lastName: string;
     phoneNumber: string;
 }
 
-interface IOrderStatus {
+export interface IOrderStatus {
     id: string;
     status:
     | 'AWAITING_DRIVER_PICKUP'

@@ -1,15 +1,15 @@
-interface Worker {
+export interface Worker {
     firstName: string;
     lastName: string;
     phoneNumber: string;
 }
 
-interface OrderStatus {
+export interface OrderStatus {
     status: string;
     Worker?: Worker;
 }
 
-interface OrderData {
+export interface OrderData {
     order: {
         id: string;
         OrderType: {
@@ -25,6 +25,6 @@ interface OrderData {
     orderStatus: OrderStatus[];
 }
 
-interface IOrderDialogAdminOutlet {
+export interface IOrderDialogAdminOutlet {
     orderData: OrderData;
 }

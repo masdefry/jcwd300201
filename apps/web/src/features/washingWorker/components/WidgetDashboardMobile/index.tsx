@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { IWidgetDashboardMobile } from "./type"
-import NoDataWidget from "@/components/core/NoDataWidget"
+import NoDataWidget from "@/components/core/noDataWidget"
 
 export default function WidgetDashboardMobile({link, data, title }: IWidgetDashboardMobile) {
     return (

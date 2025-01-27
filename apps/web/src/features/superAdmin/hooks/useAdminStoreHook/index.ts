@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import authStore from "@/zustand/authstore"
+import authStore from "@/zustand/authStore"
 import { instance } from "@/utils/axiosInstance"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { useDebouncedCallback } from "use-debounce"
@@ -73,31 +73,33 @@ export const useAdminStoreHook = () => {
     }, 1000)
 
     useEffect(() => {
+        const isUrl = new URLSearchParams(params?.toString())
+
         if (searchItem) {
-            currentUrl.set('search', searchItem)
+            isUrl.set('search', searchItem)
         } else {
-            currentUrl.delete('search')
+            isUrl.delete('search')
         }
 
         if (sortStore) {
-            currentUrl.set('sort', sortStore)
+            isUrl.set('sort', sortStore)
         } else {
-            currentUrl.delete('sort')
+            isUrl.delete('sort')
         }
         if (currentPage) {
-            currentUrl.set('page', String(currentPage))
+            isUrl.set('page', String(currentPage))
         } else {
-            currentUrl.delete('page')
+            isUrl.delete('page')
         }
         if (totalPages === undefined || currentPage > totalPages) {
             setCurrentPage(1)
         }
 
-        router.push(`${pathname}?${currentUrl.toString()}`)
+        router.push(`${pathname}?${isUrl.toString()}`)
         router.refresh()
         refetch()
 
-    }, [params, refetch, pathname, currentPage, totalPages, entriesPerPage, sortStore])
+    }, [params, refetch, pathname, currentPage, totalPages, entriesPerPage, sortStore, router, searchItem])
 
     return {
         isLoading,

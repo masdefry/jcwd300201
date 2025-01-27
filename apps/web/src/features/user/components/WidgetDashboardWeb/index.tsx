@@ -1,5 +1,5 @@
 import Link from "next/link"
-import NotificationUser from "../Notification"
+import NotificationUser from "../notificationCustom"
 
 export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWidgetDashboardWeb) {
     return (

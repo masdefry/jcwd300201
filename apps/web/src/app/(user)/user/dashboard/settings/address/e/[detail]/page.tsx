@@ -1,7 +1,7 @@
 'use client'
 
 import "leaflet/dist/leaflet.css";
-import ContentWebLayout from "@/components/core/WebSessionContent";
+import ContentWebLayout from "@/components/core/webSessionContent";
 import { instance } from "@/utils/axiosInstance";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ErrorMessage, Field, Form, Formik } from "formik";
@@ -9,8 +9,8 @@ import { use, useEffect, useMemo, useState } from "react";
 import { locationStore } from "@/zustand/locationStore";
 import axios from "axios";
 import L from 'leaflet'
-import ButtonCustom from "@/components/core/Button";
-import authStore from "@/zustand/authstore";
+import ButtonCustom from "@/components/core/buttonCustom";
+import authStore from "@/zustand/authStore";
 import { toast } from "@/components/hooks/use-toast";
 import { IAddressDetail, ICity, IProvince } from "./types";
 import { useRouter } from "next/navigation";
@@ -45,16 +45,6 @@ export default function Page({ params }: { params: Promise<any> }) {
         },
     })
 
-    const getLocation = async (): Promise<void> => {
-        try {
-            const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${isPosition?.lat?.toString()}&lon=${isPosition?.lng?.toString()}&format=json`)
-            setDataUser(response?.data)
-
-        } catch (error) {
-
-        }
-    }
-
     const { mutate: addUserAddress, isPending } = useMutation({
         mutationFn: async ({ addressName, addressDetail, province, city, zipCode, latitude, longitude }: IAddressDetail) => {
             return await instance.patch(`/user/address/${addressId}`, {
@@ -81,6 +71,16 @@ export default function Page({ params }: { params: Promise<any> }) {
     }, [latitudeGlobal, lngGlobal])
 
     useEffect(() => {
+        const getLocation = async (): Promise<void> => {
+                try {
+                    const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${isPosition?.lat?.toString()}&lon=${isPosition?.lng?.toString()}&format=json`)
+                    setDataUser(response?.data)
+        
+                } catch (error) {
+        
+                }
+            }
+
         if (isPosition.lat && isPosition.lng) {
             getLocation();
         }

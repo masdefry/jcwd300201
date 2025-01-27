@@ -1,7 +1,7 @@
 'use client'
 
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -124,32 +124,33 @@ const useProductLaundryHook = () => {
     }, 1000)
 
     useEffect(() => {
+        const isUrl = new URLSearchParams(params.toString())
         if (searchItem) {
-            currentUrl.set('search', searchItem)
+            isUrl.set('search', searchItem)
         } else {
-            currentUrl.delete('search')
+            isUrl.delete('search')
         }
 
         if (sortProduct) {
-            currentUrl.set('sort', sortProduct)
+            isUrl.set('sort', sortProduct)
         } else {
-            currentUrl.delete('sort')
+            isUrl.delete('sort')
         }
         if (currentPage) {
-            currentUrl.set('page', String(currentPage))
+            isUrl.set('page', String(currentPage))
         } else {
-            currentUrl.delete('page')
+            isUrl.delete('page')
         }
 
         if (totalPages === undefined || currentPage > totalPages) {
             setCurrentPage(1)
         }
 
-        router.push(`${pathname}?${currentUrl.toString()}`)
+        router.push(`${pathname}?${isUrl.toString()}`)
         router.refresh()
         refetch()
 
-    }, [params, refetch, pathname, currentPage, totalPages, entriesPerPage, sortProduct])
+    }, [params, refetch, pathname, currentPage, totalPages, entriesPerPage, sortProduct, router, searchItem])
 
     return {
         currentPage, setCurrentPage,

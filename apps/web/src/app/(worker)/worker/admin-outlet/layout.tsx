@@ -1,16 +1,16 @@
 'use client'
 
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { ReactNode, useState } from "react";
-import { FaDashcube, FaExclamationTriangle, FaHistory, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
+import { FaDashcube, FaExclamationTriangle, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 import { FaCreditCard, FaFileInvoice, FaTruck } from "react-icons/fa6";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 
@@ -99,7 +99,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                     <Link href='/worker/admin-outlet/delivery' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/delivery') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaTruck /> Pengiriman</Link>
                     <Link href='/worker/admin-outlet/order' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/order') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
-                        <FaHistory /> Riwayat</Link>
+                        <FaMoneyBillWave /> Pesanan</Link>
                     <Link href='/worker/admin-outlet/payment' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/payment') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>
                         <FaCreditCard /> Transaksi</Link>
                     <Link href='/worker/admin-outlet/report' className={`w-full flex ${pathname.startsWith('/worker/admin-outlet/report') ? 'bg-orange-500 text-white' : 'hover:text-white text-neutral-700 hover:bg-orange-500'} items-center gap-2 py-2 rounded-full px-4`}>

@@ -1,25 +1,25 @@
 'use client'
 
 import Image from "next/image";
-import ButtonCustom from "../Button";
+import ButtonCustom from "../buttonCustom";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { FaBurger, FaDashcube, FaSprayCan,  FaUserGear } from "react-icons/fa6";
 import { useState } from "react";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { instance } from "@/utils/axiosInstance";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { useMutation } from "@tanstack/react-query";
 import { FaHandHoldingWater, FaTimes, FaTshirt } from "react-icons/fa";
 import { BsGearFill } from "react-icons/bs";
-import MenuCustom from "../Menu";
 import { IoAlbumsOutline } from "react-icons/io5";
 import { LuContact } from "react-icons/lu";
-import { ConfirmAlert } from "../ConfirmAlert";
+import { ConfirmAlert } from "../confirmAlertCustom";
 import { MdArrowDropDown } from "react-icons/md";
 import { FiHelpCircle } from "react-icons/fi";
-import { Role } from "../Role";
+import { Role } from "../role";
+import MenuCustom from "../menu";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string
 export default function Header() {

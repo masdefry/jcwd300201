@@ -12,7 +12,7 @@ import {
 import { useQuery } from '@tanstack/react-query';
 import { instance } from '@/utils/axiosInstance';
 import { IMonthlyChartsProps, IMonthlyDataItem, IMonthlyStatistic } from './type';
-import Loading from '../../loading';
+import Loading from '../../loadingCustom';
 
 ChartJS.register(
     CategoryScale,

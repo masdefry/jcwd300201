@@ -1,23 +1,23 @@
 'use client'
 
-import ButtonCustom from "@/components/core/Button";
-import SearchInputCustom from "@/components/core/SearchBar";
+import ButtonCustom from "@/components/core/buttonCustom";
+import SearchInputCustom from "@/components/core/searchBarCustom";
 import { ChangeEvent } from "react";
 import { useProductLaundryHook } from "@/features/superAdmin/hooks/useProductLaundryHook";
-import DialogCreateProduct from "@/features/superAdmin/components/DialogCreateProductLaundry";
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import PaginationWebLayout from "@/components/core/PaginationWebLayout";
+import DialogCreateProduct from "@/features/superAdmin/components/dialogCreateProductLaundry";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import PaginationWebLayout from "@/components/core/paginationWebLayout";
 import { FaSearch } from "react-icons/fa";
-import Loading from "@/components/core/loading";
-import NoData from "@/components/core/NoData";
+import Loading from "@/components/core/loadingCustom";
+import NoData from "@/components/core/noDataCustom";
 import { FaCartArrowDown, FaEllipsisVertical, FaPlus } from "react-icons/fa6";
-import Pagination from "@/components/core/Pagination";
+import Pagination from "@/components/core/paginationCustom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { createProductLaundryValidationSchema } from "@/features/superAdmin/schemas/createProductLaundryValidationSchema";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import ProductMobile from "@/features/superAdmin/components/ProductMobile";
-import ProductWeb from "@/features/superAdmin/components/ProductWeb";
+import ProductMobile from "@/features/superAdmin/components/productMobile";
+import ProductWeb from "@/features/superAdmin/components/productWeb";
 import { IProduct } from "./type";
 
 export default function Page() {

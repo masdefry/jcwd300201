@@ -2,18 +2,18 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/Filter"
-import Pagination from "@/components/core/Pagination"
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import ButtonCustom from "@/components/core/Button";
-import NoData from "@/components/core/NoData"
-import Loading from "@/components/core/loading"
-import FilterWeb from "@/components/core/FilterWeb"
+import FilterWorker from "@/components/core/filterCustom"
+import Pagination from "@/components/core/paginationCustom"
+import ContentWebLayout from "@/components/core/webSessionContent";
+import ButtonCustom from "@/components/core/buttonCustom";
+import NoData from "@/components/core/noDataCustom"
+import Loading from "@/components/core/loadingCustom"
+import FilterWeb from "@/components/core/filterWeb"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import { useAdminOutletPaymentHook } from "@/features/adminOutlet/hooks/useAdminOutletPaymentHook"
-import TableHeaderWeb from "@/components/core/TableHeadWeb"
-import PaymentContentMobile from "@/features/adminOutlet/components/PaymentContentMobile"
-import PaymentContentWeb from "@/features/adminOutlet/components/PaymentContentWeb"
+import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import PaymentContentMobile from "@/features/adminOutlet/components/paymentContentMobile"
+import PaymentContentWeb from "@/features/adminOutlet/components/paymentContentWeb"
 import { IOrder } from "@/features/adminOutlet/types/type"
 
 

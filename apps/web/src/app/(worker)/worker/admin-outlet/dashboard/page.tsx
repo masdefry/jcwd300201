@@ -1,23 +1,22 @@
 'use client'
 
 import { FaExclamationTriangle } from "react-icons/fa";
-import ChartComponents from "@/components/core/chart/PieChartTrackingStatusOrder";
+import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
 import { FaDashcube, FaFileInvoice, FaMoneyBillWave, FaRegCreditCard, FaTruck } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
-import MonthlyCharts from "@/components/core/chart/ChartMonthlyStatistic";
-import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import TabTracking from "@/features/superAdmin/components/TabOrderTracking";
+import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
+import LoadingDashboardWeb from "@/components/core/loadingCustom/loadingDashboardWeb";
+import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import NotificationOutletAdmin from "@/features/adminOutlet/components/Notification";
-import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
-import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
-import WeatherMobile from "@/components/core/WeatherMobile";
-import WeatherWeb from "@/components/core/WeatherWeb";
+import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
+import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
+import WeatherMobile from "@/components/core/weatherMobile";
+import WeatherWeb from "@/components/core/weatherWeb";
 import { useAdminOutletDashboardHook } from "@/features/adminOutlet/hooks/useAdminOutletDashboardHook";
-import HeaderAdminDashboardWeb from "@/components/core/HeaderAdminDashboardWeb";
+import HeaderAdminDashboardWeb from "@/components/core/headerAdminDashboardWeb";
 import { IOrder } from "@/app/(admin)/admin/order/type";
-
+import NotificationOutletAdmin from "@/features/adminOutlet/components/notification";
 
 export default function Page() {
     const { lat,

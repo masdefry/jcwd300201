@@ -2,7 +2,7 @@
 
 import { toast } from "@/components/hooks/use-toast";
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { ICreateUserBody } from "./types";
 import { useState } from "react";

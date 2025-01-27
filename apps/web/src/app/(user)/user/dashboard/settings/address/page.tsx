@@ -1,24 +1,24 @@
 'use client'
 
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 import { FaSearch } from 'react-icons/fa';
 import Image from "next/image";
 import Link from "next/link";
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import SearchInputCustom from "@/components/core/SearchBar";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import SearchInputCustom from "@/components/core/searchBarCustom";
 import { ChangeEvent } from "react";
 import { FaAddressCard, FaPlus } from "react-icons/fa6";
 import { useUserAddressHook } from "@/features/user/hooks/useUserAddressHook";
-import SkeletonLoadingComponent from "@/features/user/components/SkeletonLoadingComponents";
-import PaginationWebLayout from "@/components/core/PaginationWebLayout";
-import TableAddressUser from "@/features/user/components/TableAddressUser";
-import TableHeadUserAddress from "@/features/user/components/TableHeadUserAddress";
+import SkeletonLoadingComponent from "@/features/user/components/skeletonLoadingComponents";
+import PaginationWebLayout from "@/components/core/paginationWebLayout";
+import TableAddressUser from "@/features/user/components/tableAddressUser";
+import TableHeadUserAddress from "@/features/user/components/tableHeadUserAddress";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 import { BsPencil, BsTrash } from "react-icons/bs";
-import NoData from "@/components/core/NoData";
+import NoData from "@/components/core/noDataCustom";
 import { IUserAddress } from "./type";
-import Loading from "@/components/core/loading";
+import Loading from "@/components/core/loadingCustom";
 
 export default function Page() {
     const { currentPage, entriesPerPage, debounce, getDataItem, isFetching, isPending, handleDeleteItem,

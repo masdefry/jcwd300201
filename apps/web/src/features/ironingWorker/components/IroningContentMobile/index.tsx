@@ -1,4 +1,4 @@
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 import { IIroningContentMobileProps } from "./type";
 
 export default function IroningContentMobile(

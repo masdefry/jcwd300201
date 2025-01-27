@@ -1,4 +1,4 @@
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 import { IOrderContentWeb } from "./type";
 import { FaArrowUpRightFromSquare, FaCheck, FaWhatsapp } from "react-icons/fa6";
 import Link from "next/link";

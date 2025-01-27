@@ -2,8 +2,6 @@ import { IoIosNotifications } from "react-icons/io";
 import { useState } from "react";
 import { INotificationProps } from "./type";
 
-
-
 export default function NotificationUser({ dataOrderNotif }: INotificationProps) {
     const [isDialogOpen, setIsDialogOpen] = useState(false);
 

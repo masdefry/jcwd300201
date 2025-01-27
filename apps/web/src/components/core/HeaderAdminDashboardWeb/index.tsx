@@ -1,4 +1,4 @@
-import NotificationOutletAdmin from "@/features/adminOutlet/components/Notification"
+import NotificationOutletAdmin from "@/features/adminOutlet/components/notification"
 import Image from "next/image"
 import { FaStore } from "react-icons/fa6"
 

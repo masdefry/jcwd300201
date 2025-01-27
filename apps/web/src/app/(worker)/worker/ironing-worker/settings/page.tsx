@@ -7,20 +7,20 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Formik } from 'formik';
-import ProfileSettings from '@/components/core/ProfileSettings';
-import ChangePassword from '@/components/core/ChangePassword';
+import ProfileSettings from '@/components/core/profileSettings';
+import ChangePassword from '@/components/core/changePassword';
 import { useIroningWorkerSettingsHook } from '@/features/ironingWorker/hooks/useIroningWorkerSettingsHook';
-import ContentWebLayout from '@/components/core/WebSessionContent';
+import ContentWebLayout from '@/components/core/webSessionContent';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ironingChangePasswordValidationSchema } from '@/features/ironingWorker/schemas/ironingChangePasswordValidationSchema';
-import ProfileSettingsMobile from '@/components/core/ProfileSettingsMobile';
+import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 import { ironingAccountValidationSchema } from '@/features/ironingWorker/schemas/ironingAccountValidationSchema';
 import { ironingAccountMobileValidationSchema } from '@/features/ironingWorker/schemas/ironingAccountMobileValidationSchema';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { FaGear } from 'react-icons/fa6';
-import ButtonCustom from '@/components/core/Button';
+import ButtonCustom from '@/components/core/buttonCustom';
 import { FaSignOutAlt } from 'react-icons/fa';
-import { ConfirmAlert } from '@/components/core/ConfirmAlert';
+import { ConfirmAlert } from '@/components/core/confirmAlertCustom';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''
 export default function Page() {

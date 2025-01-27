@@ -1,11 +1,11 @@
 'use client'
 
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
-import ContentWebLayout from "@/components/core/WebSessionContent";
+import ContentWebLayout from "@/components/core/webSessionContent";
 import { useCreateWorkerHook } from "@/features/superAdmin/hooks/useCreateWorkerHook";
 import 'react-phone-number-input/style.css'
-import FormikCreateWorkerMobile from "@/features/superAdmin/components/FormikCreateWorkerMobile";
-import FormikCreateWorkerWeb from "@/features/superAdmin/components/FormikCreateWorkerWeb";
+import FormikCreateWorkerMobile from "@/features/superAdmin/components/formikCreateWorkerMobile";
+import FormikCreateWorkerWeb from "@/features/superAdmin/components/formikCreateWorkerWeb";
 
 export default function Page() {
     const { getDataStore, handleCreateUser, isPending, isValuePhoneNumber, setIsValuePhoneNumber } = useCreateWorkerHook()

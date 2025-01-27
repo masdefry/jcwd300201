@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { IOrderTable } from "./type";
 
-
 export default function TableBodyContent({ order, page, limit, index }: IOrderTable) {
     return (
         <tr className="hover:bg-gray-100 border-b">

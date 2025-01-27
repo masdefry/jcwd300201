@@ -1,5 +1,5 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 import { IEditOutletWeb } from "./type";
 import { updateOutletValidationSchema } from "../../schemas/updateOutletValidationSchema";
 

@@ -5,7 +5,7 @@ import { locationStore } from '@/zustand/locationStore'
 import { useGeolocated } from "react-geolocated";
 import axios from 'axios'
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 
 export default function AuthProviders({ children }: { children: ReactNode }) {
     const setLocationUser = locationStore((state) => state?.setLocationUser)
@@ -22,48 +22,7 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
         userDecisionTimeout: 10000,
     });
 
-    const handleKeepAuth = async () => {
-        try {
-            const response = await instance.get('/auth/keep-auth', {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
 
-            if (response?.data?.data?.role == 'CUSTOMER') {
-                setKeepAuth({
-                    email: response?.data?.data?.email,
-                    firstName: response?.data?.data?.firstName,
-                    isDiscountUsed: response?.data?.data?.isDiscountUsed,
-                    isVerify: response?.data?.data?.isVerify,
-                    lastName: response?.data?.data?.lastName,
-                    profilePicture: response?.data?.data?.profilePicture,
-                    role: response?.data?.data?.role
-                })
-            } else if (response?.data?.data?.role == 'SUPER_ADMIN') {
-                setKeepAuth({
-                    firstName: response?.data?.data?.firstName,
-                    lastName: response?.data?.data?.lastName,
-                    profilePicture: response?.data?.data?.profilePicture,
-                    role: response?.data?.data?.role,
-                    totalWorker: response?.data?.data?.totalWorker,
-                    orders: response?.data?.data?.orders,
-                    email: response?.data?.data?.email,
-                    store: response?.data?.data?.store
-                })
-            } else {
-                setKeepAuth({
-                    firstName: response?.data?.data?.firstName,
-                    lastName: response?.data?.data?.lastName,
-                    profilePicture: response?.data?.data?.profilePicture,
-                    role: response?.data?.data?.role,
-                    email: response?.data?.data?.email,
-                    store: response?.data?.data?.store
-                })
-            }
-
-        } catch (error) {}
-    }
 
     useEffect(() => {
         if (navigator.geolocation) {
@@ -84,17 +43,60 @@ export default function AuthProviders({ children }: { children: ReactNode }) {
     }, [coords, setLocationUser])
 
     useEffect(() => {
+        const handleKeepAuth = async () => {
+            try {
+                const response = await instance.get('/auth/keep-auth', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                })
+
+                if (response?.data?.data?.role == 'CUSTOMER') {
+                    setKeepAuth({
+                        email: response?.data?.data?.email,
+                        firstName: response?.data?.data?.firstName,
+                        isDiscountUsed: response?.data?.data?.isDiscountUsed,
+                        isVerify: response?.data?.data?.isVerify,
+                        lastName: response?.data?.data?.lastName,
+                        profilePicture: response?.data?.data?.profilePicture,
+                        role: response?.data?.data?.role
+                    })
+                } else if (response?.data?.data?.role == 'SUPER_ADMIN') {
+                    setKeepAuth({
+                        firstName: response?.data?.data?.firstName,
+                        lastName: response?.data?.data?.lastName,
+                        profilePicture: response?.data?.data?.profilePicture,
+                        role: response?.data?.data?.role,
+                        totalWorker: response?.data?.data?.totalWorker,
+                        orders: response?.data?.data?.orders,
+                        email: response?.data?.data?.email,
+                        store: response?.data?.data?.store
+                    })
+                } else {
+                    setKeepAuth({
+                        firstName: response?.data?.data?.firstName,
+                        lastName: response?.data?.data?.lastName,
+                        profilePicture: response?.data?.data?.profilePicture,
+                        role: response?.data?.data?.role,
+                        email: response?.data?.data?.email,
+                        store: response?.data?.data?.store
+                    })
+                }
+
+            } catch (error) { }
+        }
+
         if (token) {
             handleKeepAuth()
         }
-    }, [token])
+    }, [token, setKeepAuth])
 
     useEffect(() => {
         const getLocation = async (): Promise<void> => {
             try {
                 const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${latitude?.toString()}&lon=${longitude?.toString()}&format=json`)
                 setDataUser(response?.data?.display_name)
-            } catch (error) {}
+            } catch (error) { }
         }
         if (latitude && longitude) {
             getLocation()

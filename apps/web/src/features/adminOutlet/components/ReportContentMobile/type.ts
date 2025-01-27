@@ -7,7 +7,7 @@ export interface IUser {
 export interface IOrderStatus {
     status: string;
 }
-type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
+export type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
 
 export interface IOrder {
     id: string;

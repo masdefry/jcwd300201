@@ -8,18 +8,18 @@ export interface IPickupContent {
     handleProcessOrderOutletPending?: boolean;
 }
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
     phoneNumber: string;
 }
 
-interface IOrderStatus {
+export interface IOrderStatus {
     status: string;
 }
 type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
 
-interface IOrder {
+export interface IOrder {
     id: string;
     isPaid: boolean;
     createdAt: string;
@@ -34,7 +34,7 @@ interface IOrder {
     isReqDelivery:boolean
 }
 
-interface IUserAddress{
+export interface IUserAddress{
     latitude: number;
     longitude:number
 }

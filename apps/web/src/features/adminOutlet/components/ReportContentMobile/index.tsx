@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/dialog"
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { notesSchema } from "../../schemas/notesSchema";
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 
 export default function ReportContentMobile(
     { order, handleLaundryProblem, isPending, isDisableSuccess }: IReportContent

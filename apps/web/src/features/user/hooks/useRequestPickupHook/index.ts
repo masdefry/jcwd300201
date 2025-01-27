@@ -5,7 +5,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { useToast } from '@/components/hooks/use-toast';
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { IAddress, IOrderType, IRequestPickup } from './type';
 
 export const useRequestPickupHook = () => {
@@ -101,7 +101,7 @@ export const useRequestPickupHook = () => {
         }
         router.push(`${pathname}?${currentUrl.toString()}`);
         refetch()
-    }, [userAddress, refetch, pathname]);
+    }, [userAddress, router, refetch, pathname]);
 
     return {
         selectedAddress,

@@ -1,4 +1,4 @@
-import ButtonCustom from "@/components/core/Button"
+import ButtonCustom from "@/components/core/buttonCustom"
 import Image from "next/image"
 import { FaWallet } from "react-icons/fa6"
 import { RiBankCardFill } from "react-icons/ri"

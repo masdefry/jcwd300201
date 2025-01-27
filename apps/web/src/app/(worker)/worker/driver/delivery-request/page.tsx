@@ -2,20 +2,20 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import ButtonCustom from "@/components/core/Button"
+import ButtonCustom from "@/components/core/buttonCustom"
 import { FaTruck } from "react-icons/fa6"
-import ContentWebLayout from "@/components/core/WebSessionContent"
-import Pagination from "@/components/core/Pagination"
-import FilterWorker from "@/components/core/Filter"
-import PaginationWebLayout from "@/components/core/PaginationWebLayout"
-import Loading from "@/components/core/loading"
-import NoData from "@/components/core/NoData"
+import ContentWebLayout from "@/components/core/webSessionContent"
+import Pagination from "@/components/core/paginationCustom"
+import FilterWorker from "@/components/core/filterCustom"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import Loading from "@/components/core/loadingCustom"
+import NoData from "@/components/core/noDataCustom"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
-import FilterWeb from "@/components/core/FilterWeb"
+import FilterWeb from "@/components/core/filterWeb"
 import { useDeliveryRequestHook } from "@/features/driver/hooks/useDeliveryRequestHook"
-import TableHeaderWeb from "@/components/core/TableHeadWeb";
-import DeliveryContentMobile from "@/features/driver/components/DeliveryContentMobile";
-import DeliveryContentWeb from "@/features/driver/components/DeliveryContentWeb";
+import TableHeaderWeb from "@/components/core/tableHeadWeb";
+import DeliveryContentMobile from "@/features/driver/components/deliveryContentMobile";
+import DeliveryContentWeb from "@/features/driver/components/deliveryContentWeb";
 import { IOrderDriver } from "@/features/driver/types/type"
 
 export default function DriverDelivery() {

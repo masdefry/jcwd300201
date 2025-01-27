@@ -1,10 +1,10 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import ButtonCustom from "@/components/core/Button";
+import InputDisplay from "@/features/adminOutlet/components/inputDisplayCustom";
+import ButtonCustom from "@/components/core/buttonCustom";
 import { IFormikPackingWebProps } from "./type";
 import { packingItemValidationSchema } from "../../schemas/packingItemValidationSchema";
 
-type Iitem = {
+export type Iitem = {
     id: number;
     itemName: string;
     laundryItemId: number;
@@ -51,15 +51,7 @@ export default function FormikPackingWeb({
                     if (isDataMatching) {
                         submitForm()
                     } else {
-                        const initialNotes = values.items
-                            .map((item: any) => {
-                                const itemDetails = dataItemName.find((data: any) => Number(data.id) === Number(item.itemName));
-                                return `Item: ${itemDetails?.itemName}, Quantity: ${item.quantity}`;
-                            })
-                            .join("\n");
-
-
-                        setDialogNotes(initialNotes);
+                        setDialogNotes("Catatan:");
                         setShowDialog(true);
                     }
                 }

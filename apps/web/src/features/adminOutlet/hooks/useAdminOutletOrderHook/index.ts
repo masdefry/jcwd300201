@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import authStore from "@/zustand/authstore"
+import authStore from "@/zustand/authStore"
 import { instance } from "@/utils/axiosInstance"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { useDebouncedCallback } from "use-debounce"
@@ -116,7 +116,7 @@ export const useAdminOutletOrderHook = () => {
 
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
+    }, [params, pathname, router, searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
 
 
     const totalPages = dataOrderList?.totalPage || 1;

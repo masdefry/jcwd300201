@@ -1,7 +1,7 @@
 import { FaWhatsapp } from "react-icons/fa6";
 import React from 'react';
 import Link from 'next/link';
-import Timeline from "@/components/core/Timeline";
+import Timeline from "@/components/core/timeline";
 
 export default function OrderDialogAdmin({ orderData }: IOrderDialogAdmin) {
     return (

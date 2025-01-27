@@ -1,4 +1,4 @@
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
@@ -26,7 +26,7 @@ export const useIroningDashboardHook = () => {
                 try {
                     const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${process.env.NEXT_PUBLIC_OPEN_WEITHER}&lang=id`)
                     setIsCurrentWeather(res?.data)
-                } catch (error) {}
+                } catch (error) { }
             }
 
             handleCurrentWeither()
@@ -47,7 +47,7 @@ export const useIroningDashboardHook = () => {
         },
     })
     const { data: dataOrderIroningNotif } = useQuery({
-        queryKey: ['get-order-ironing'],
+        queryKey: ['get-order-ironing-notif'],
         queryFn: async () => {
             const res = await instance.get(`/order/order-ironing`, {
                 params: { tab: 'belum-disetrika' },

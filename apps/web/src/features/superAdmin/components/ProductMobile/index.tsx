@@ -1,6 +1,6 @@
 import { IProductContent } from "./type";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
-import DialogUpdateProduct from "../DialogUpdateProductLaundry";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
+import DialogUpdateProduct from "../dialogUpdateProductLaundry";
 import { BsTrash } from "react-icons/bs";
 
 export default function ProductMobile(

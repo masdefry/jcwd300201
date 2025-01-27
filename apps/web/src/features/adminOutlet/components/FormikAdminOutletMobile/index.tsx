@@ -1,13 +1,13 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import ButtonCustom from "@/components/core/Button";
+import InputDisplay from "@/features/adminOutlet/components/inputDisplayCustom";
+import ButtonCustom from "@/components/core/buttonCustom";
 import { IFormikAdminOutletMobileProps } from "./type";
-import TableWeightComponent from "../TableWeightNotaOrder";
-import TotalWeightComponent from "../TotalWeightComponent";
-import TableProductNotFound from "../TableProductNotaNotFound";
-import TableHeadContentProduct from "../TableContentProductNotaOrder";
-import TableContentProduct from "../TableBodyContentProduct";
-import TableHeadLayout from "../TableHeadLayout";
+import TableWeightComponent from "../tableWeightNotaOrder";
+import TotalWeightComponent from "../totalWeightComponent";
+import TableProductNotFound from "../tableProductNotaNotFound";
+import TableHeadContentProduct from "../tableContentProductNotaOrder";
+import TableContentProduct from "../tableBodyContentProduct";
+import TableHeadLayout from "../tableHeadLayout";
 import { notaOrderValidationSchema } from "../../schemas/notaOrderValidationSchema";
 import { useEffect } from "react";
 
@@ -49,16 +49,17 @@ export default function FormikAdminOutletMobile({
             }}>
             {({ values, setFieldValue }) => {
 
-                const calculatePrice = () => {
-                    const pricePerKg = dataOrderNote[0].OrderType?.price || 0;
-                    const laundryPrice = values.totalWeight * pricePerKg;
-                    setFieldValue("laundryPrice", laundryPrice);
-                };
 
                 // eslint-disable-next-line react-hooks/rules-of-hooks
                 useEffect(() => {
+                    const calculatePrice = () => {
+                        const pricePerKg = dataOrderNote[0].OrderType?.price || 0;
+                        const laundryPrice = values.totalWeight * pricePerKg;
+                        setFieldValue("laundryPrice", laundryPrice);
+                    };
+
                     calculatePrice();
-                }, [values.totalWeight]);
+                }, [values.totalWeight, setFieldValue]);
 
                 return (
                     <Form className="min-h-fit pb-28 w-full space-y-4 gap-4">

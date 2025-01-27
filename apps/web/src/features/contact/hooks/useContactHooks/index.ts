@@ -1,7 +1,7 @@
 'use client'
 import { toast } from "@/components/hooks/use-toast";
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { useRouter } from 'next/navigation'

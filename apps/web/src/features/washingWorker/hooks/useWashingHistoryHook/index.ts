@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from "react"
-import authStore from "@/zustand/authstore"
+import authStore from "@/zustand/authStore"
 import { instance } from "@/utils/axiosInstance"
 import { useQuery } from "@tanstack/react-query"
 import { useDebouncedCallback } from "use-debounce"
@@ -77,7 +77,8 @@ export const useWashingHistoryHook = () => {
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
+        
+    }, [searchInput, page, router, params, pathname, sortOption, refetch, dateFrom, dateUntil]);
 
 
     const totalPages = dataOrderWashingProcess?.totalPage || 1;

@@ -1,6 +1,6 @@
 'use client'
 
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { useEffect, useState } from "react";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
@@ -48,7 +48,7 @@ export const useDriverDashboardHook = () => {
         queryKey: ['get-order-proses'],
         queryFn: async () => {
             const res = await instance.get(`/order/delivery`, {
-                params: { tab: 'proses' },
+                params: { tab: 'waiting-driver' },
                 headers: { Authorization: `Bearer ${token}` }
             });
 
@@ -73,7 +73,7 @@ export const useDriverDashboardHook = () => {
                     const res = await axios.get(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${process.env.NEXT_PUBLIC_OPEN_WEITHER}&lang=id`)
 
                     setIsCurrentWeather(res?.data)
-                } catch (error) {}
+                } catch (error) { }
             }
 
             handleCurrentWeither()

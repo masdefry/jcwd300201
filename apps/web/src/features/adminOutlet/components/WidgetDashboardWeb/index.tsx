@@ -1,5 +1,6 @@
-import Notification from "@/components/core/Notification"
+import Notification from "@/components/core/notificationCustom"
 import Link from "next/link"
+import { IWidgetDashboardWeb } from "./type"
 
 export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWidgetDashboardWeb) {
     return (

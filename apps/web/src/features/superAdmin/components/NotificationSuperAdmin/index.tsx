@@ -1,6 +1,6 @@
 import { IoIosNotifications } from "react-icons/io";
 import { useState } from "react";
-import { INotificationProps } from "./type";
+import { INotificationProps } from './type';
 
 
 

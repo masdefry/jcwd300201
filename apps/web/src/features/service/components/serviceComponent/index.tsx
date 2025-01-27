@@ -1,6 +1,6 @@
 'use client'
 
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 import Image from "next/image";
 import Link from "next/link";
 import { FaHandsWash } from "react-icons/fa";

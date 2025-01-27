@@ -5,16 +5,16 @@ import { FaHistory } from "react-icons/fa";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import Notification from "@/components/core/Notification";
+import LoadingDashboardWeb from "@/components/core/loadingCustom/loadingDashboardWeb";
+import Notification from "@/components/core/notificationCustom";
 import { useIroningDashboardHook } from "@/features/ironingWorker/hooks/useIroningDashboardHook";
-import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
-import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
-import WeatherMobile from "@/components/core/WeatherMobile";
-import HeaderDashboardWeb from "@/components/core/HeaderDashboardWeb";
-import WeatherWeb from "@/components/core/WeatherWeb";
-import WidgetDashboardWeb from "@/features/ironingWorker/components/WidgetDashboardWeb";
-import WidgetDashboardMobile from "@/features/ironingWorker/components/WidgetDashboardMobile";
+import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
+import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
+import WeatherMobile from "@/components/core/weatherMobile";
+import HeaderDashboardWeb from "@/components/core/headerDashboardWeb";
+import WeatherWeb from "@/components/core/weatherWeb";
+import WidgetDashboardWeb from "@/features/ironingWorker/components/widgetDashboardWeb";
+import WidgetDashboardMobile from "@/features/ironingWorker/components/widgetDashboardMobile";
 
 export default function Page() {
     const {

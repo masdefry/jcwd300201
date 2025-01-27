@@ -2,7 +2,7 @@
 
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
-import authStore from "@/zustand/authstore"
+import authStore from "@/zustand/authStore"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
 import { useToast } from "@/components/hooks/use-toast"
@@ -130,7 +130,7 @@ export const useDeliveryRequestHook = () => {
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
+    }, [searchInput, router, pathname, params, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
 
     const totalPages = dataOrderDelivery?.totalPage || 1;
 

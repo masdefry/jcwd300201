@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { IPaymentContent } from "./type";
 import { FaWhatsapp } from "react-icons/fa6";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
 import Image from "next/image";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 export default function PaymentContentMobile(
     { order, imageLoading, setImageLoading, handlConfirmPaymentPending, handleConfirmPayment }: IPaymentContent
 ) {

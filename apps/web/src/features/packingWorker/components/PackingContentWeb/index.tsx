@@ -1,4 +1,4 @@
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 import { IPackingContentWebProps } from "./type";
 
 export default function PackingContentWeb(

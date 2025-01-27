@@ -8,16 +8,16 @@ import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Formik } from 'formik';
 import * as Yup from 'yup'
-import ProfileSettings from '@/components/core/ProfileSettings';
-import ChangePassword from '@/components/core/ChangePassword';
+import ProfileSettings from '@/components/core/profileSettings';
+import ChangePassword from '@/components/core/changePassword';
 import { useWashingWorkerSettingsHook } from '@/features/washingWorker/hooks/useWashingWorkerSettingsHook';
-import ContentWebLayout from '@/components/core/WebSessionContent';
+import ContentWebLayout from '@/components/core/webSessionContent';
 import MobileSessionLayout from '@/components/core/mobileSessionLayout/subMenuLayout';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { washingChangePasswordValidationSchema } from '@/features/washingWorker/schemas/washingChangePasswordValidationSchema';
-import { ConfirmAlert } from '@/components/core/ConfirmAlert';
-import ButtonCustom from '@/components/core/Button';
-import ProfileSettingsMobile from '@/components/core/ProfileSettingsMobile';
+import { ConfirmAlert } from '@/components/core/confirmAlertCustom';
+import ButtonCustom from '@/components/core/buttonCustom';
+import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 import { washingAccountMobileValidationSchema } from '@/features/washingWorker/schemas/washingAccountMobileValidationSchema';
 import { washingAccountValidationSchema } from '@/features/washingWorker/schemas/washingAccountValidationSchema';
 

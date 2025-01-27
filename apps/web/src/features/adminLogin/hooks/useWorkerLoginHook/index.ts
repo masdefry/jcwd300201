@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { useToast } from "@/components/hooks/use-toast";
 import Cookies from 'js-cookie'
 import CryptoJS from 'crypto-js'

@@ -1,23 +1,23 @@
-interface IOrderStatus {
+export interface IOrderStatus {
     status: string;
 }
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
     phoneNumber: string;
 }
 
-interface IOrderStatus {
+export interface IOrderStatus {
     status: string;
 }
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
 }
 
-interface IOrderType {
+export interface IOrderType {
     id: number;
     type: string;
     price: number | null;
@@ -27,7 +27,7 @@ interface IOrderType {
     order: IOrder[];
 }
 
-interface IStore {
+export interface IStore {
     id: string;
     storeName: string;
     address: string;
@@ -41,7 +41,7 @@ interface IStore {
     updatedAt: string;
     deletedAt?: string;
 }
-type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
+export type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
 
 export interface IOrderPacking {
     id: string;

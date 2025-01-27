@@ -4,7 +4,7 @@ import { ErrorMessage, Field, Form, Formik } from "formik";
 import { createMessageValidation } from "../../schemas/createMessageValidation";
 import { useContactHook } from "../../hooks/useContactHooks";
 import PhoneInput from 'react-phone-number-input'
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 import 'react-phone-number-input/style.css'
 
 export default function SendMessageComponent() {

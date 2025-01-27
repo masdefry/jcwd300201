@@ -1,19 +1,19 @@
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
 }
 
-interface IOrderType {
+export interface IOrderType {
     type: string;
 }
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
     phoneNumber: string;
 }
 
-interface IOrderStatus {
+export interface IOrderStatus {
     status: string;
 }
 type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';

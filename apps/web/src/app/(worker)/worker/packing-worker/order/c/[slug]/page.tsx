@@ -1,14 +1,13 @@
 'use client'
 import React from 'react';
 import { Dialog, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import NotaHeader from "@/components/core/CreateNotaHeaders";
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import NotaCaptionContent from "@/features/adminOutlet/components/NotaCaptionContent";
+import NotaHeader from "@/components/core/createNotaHeaders";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionContent";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { UsePackingCheckHook } from "@/features/packingWorker/hooks/usePackingCheckHook";
-import FormikPackingMobile from "@/features/packingWorker/components/FormikPackingMobile";
-import FormikPackingWeb from "@/features/packingWorker/components/FormikPackingWeb";
-
+import FormikPackingMobile from "@/features/packingWorker/components/formikPackingMobile";
+import FormikPackingWeb from "@/features/packingWorker/components/formikPackingWeb";
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
     const { dataOrderNote,

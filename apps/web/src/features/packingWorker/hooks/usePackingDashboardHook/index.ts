@@ -1,4 +1,4 @@
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";
@@ -36,7 +36,7 @@ export const usePackingDashboardHook = () => {
         queryKey: ['get-order-packing'],
         queryFn: async () => {
             const res = await instance.get(`/order/order-packing`, {
-                params: { tab: '' },
+                params: { tab: 'packing-process' },
                 headers: { Authorization: `Bearer ${token}` }
             });
 

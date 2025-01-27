@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
-import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
-import ButtonCustom from "@/components/core/Button";
+import InputDisplay from "@/features/adminOutlet/components/inputDisplayCustom";
+import ButtonCustom from "@/components/core/buttonCustom";
 import { IFormikIroningWebProps } from "./type";
 import { ironingItemValidationSchema } from "../../schemas/ironingItemValidationSchema";
 
@@ -49,15 +49,7 @@ export default function FormikIroningWeb({
                     if (isDataMatching) {
                         submitForm()
                     } else {
-                        const initialNotes = values.items
-                            .map((item: any) => {
-                                const itemDetails = dataItemName.find((data: any) => Number(data.id) === Number(item.itemName));
-                                return `Item: ${itemDetails?.itemName}, Quantity: ${item.quantity}`;
-                            })
-                            .join("\n");
-
-
-                        setDialogNotes(initialNotes);
+                        setDialogNotes("Catatan:");
                         setShowDialog(true);
                     }
                 }

@@ -4,7 +4,7 @@ import { FaUser, FaStore, FaHome, FaQuestionCircle, FaShieldAlt, FaInfoCircle, F
 import { FaFileContract } from "react-icons/fa6";
 import { useMutation } from "@tanstack/react-query";
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { useState } from "react";

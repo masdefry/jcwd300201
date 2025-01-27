@@ -12,18 +12,18 @@ export interface IPickupContentWeb {
     refetch: () => Promise<QueryObserverResult<any, Error>>
 }
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
     phoneNumber: string;
 }
 
-interface IOrderStatus {
+export interface IOrderStatus {
     status: string;
 }
 type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
 
-interface IOrder {
+export interface IOrder {
     id: string;
     isPaid: boolean;
     createdAt: string;

@@ -1,12 +1,12 @@
 'use client'
 import React from 'react';
 import { Dialog, DialogTrigger, DialogContent, DialogHeader, DialogFooter, DialogTitle, DialogDescription } from "@/components/ui/dialog";
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import NotaCaptionContent from "@/features/adminOutlet/components/NotaCaptionContent";
-import NotaHeader from "@/components/core/CreateNotaHeaders";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import NotaCaptionContent from "@/features/adminOutlet/components/notaCaptionContent";
+import NotaHeader from "@/components/core/createNotaHeaders";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
-import FormikWashingMobile from "@/features/washingWorker/components/FormikWashingMobile";
-import FormikWashingWeb from "@/features/washingWorker/components/FormikWashingWeb";
+import FormikWashingMobile from "@/features/washingWorker/components/formikWashingMobile";
+import FormikWashingWeb from "@/features/washingWorker/components/formikWashingWeb";
 import { useWashingCheckHook } from "@/features/washingWorker/hooks/useWashingCheckHook";
 
 

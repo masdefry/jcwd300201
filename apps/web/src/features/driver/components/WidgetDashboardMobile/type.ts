@@ -1,13 +1,13 @@
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
 }
 
-interface IOrderType {
+export interface IOrderType {
     type: string;
 }
 
-interface IOrder {
+export interface IOrder {
     User: IUser;
     OrderType: IOrderType;
 }

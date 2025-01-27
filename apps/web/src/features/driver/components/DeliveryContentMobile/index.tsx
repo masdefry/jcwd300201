@@ -1,7 +1,8 @@
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa6";
 import { IDeliveryContent } from "./type";
+import { IoLocationSharp } from "react-icons/io5";
 
 export default function DeliveryContentMobile(
     { order,
@@ -101,6 +102,10 @@ export default function DeliveryContentMobile(
             )}
 
             <div className="flex gap-1">
+                <Link href={`https://www.google.com/maps/search/?api=1&query=${order?.UserAddress?.latitude},${order?.UserAddress?.longitude}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-yellow-500 hover:bg-yellow-600 text-white font-semibold rounded-lg">
+                    <IoLocationSharp />
+                </Link>
+
                 <Link href={`https://wa.me/${order?.User?.phoneNumber}`} className="flex items-center h-fit space-x-2 px-3 py-3 bg-green-500 hover:bg-green-600 text-white font-semibold rounded-lg">
                     <FaWhatsapp />
                 </Link>

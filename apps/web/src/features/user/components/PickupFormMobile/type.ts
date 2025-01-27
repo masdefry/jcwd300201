@@ -1,7 +1,7 @@
-import { IAddress } from "../AddressSection/type";
+import { IAddress } from "../addressSection/type";
 import { IOrderType } from "@/app/(admin)/admin/order/type";
 
-interface IStore {
+export interface IStore {
     id: string;
     storeName: string;
     address: string;

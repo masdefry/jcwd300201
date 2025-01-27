@@ -1,5 +1,5 @@
 import Link from "next/link"
-import { IOrder } from "./type"
+import { IWidgetDashboardMobile } from "./type"
 
 export default function WidgetDashboardMobile({ data, title }: IWidgetDashboardMobile) {
     return (

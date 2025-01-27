@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from 'react';
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
 }
 
-interface IOrder {
+export interface IOrder {
     id: string;
     isSolved: boolean;
     OrderType: IOrderType;
@@ -19,7 +19,7 @@ interface IOrder {
 export interface IOrderStatus {
     status: any;
 }
-interface IOrderType {
+export interface IOrderType {
     type: string
 }
 

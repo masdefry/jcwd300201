@@ -7,19 +7,19 @@ import TabContext from '@mui/lab/TabContext';
 import TabList from '@mui/lab/TabList';
 import TabPanel from '@mui/lab/TabPanel';
 import { Formik } from 'formik';
-import ProfileSettings from '@/components/core/ProfileSettings';
-import ChangePassword from '@/components/core/ChangePassword';
+import ProfileSettings from '@/components/core/profileSettings';
+import ChangePassword from '@/components/core/changePassword';
 import { usePackingWorkerSettingsHook } from '@/features/packingWorker/hooks/usePackingWorkerSettingsHook';
-import ContentWebLayout from '@/components/core/WebSessionContent';
+import ContentWebLayout from '@/components/core/webSessionContent';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { packingChangePasswordValidationSchema } from '@/features/packingWorker/schemas/packingChangePasswordValidationSchema';
-import ProfileSettingsMobile from '@/components/core/ProfileSettingsMobile';
+import ProfileSettingsMobile from '@/components/core/profileSettingsMobile';
 import { FaGear } from 'react-icons/fa6';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { packingAccountValidationSchema } from '@/features/packingWorker/schemas/packingAccountValidationSchema';
 import { packingAccountMobileValidationSchema } from '@/features/packingWorker/schemas/packingAccountMobileValidationSchema';
-import { ConfirmAlert } from '@/components/core/ConfirmAlert';
-import ButtonCustom from '@/components/core/Button';
+import { ConfirmAlert } from '@/components/core/confirmAlertCustom';
+import ButtonCustom from '@/components/core/buttonCustom';
 import { FaSignOutAlt } from 'react-icons/fa';
 
 const profilePict = process.env.NEXT_PUBLIC_PHOTO_PROFILE || ''

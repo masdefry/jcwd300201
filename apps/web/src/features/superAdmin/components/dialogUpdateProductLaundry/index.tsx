@@ -1,10 +1,10 @@
 'use client'
 
-import ButtonCustom from "@/components/core/Button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { createProductLaundryValidationSchema } from "@/features/superAdmin/schemas/createProductLaundryValidationSchema";
 import { BsPencil } from "react-icons/bs";
+import ButtonCustom from "@/components/core/buttonCustom";
 
 export default function DialogUpdateProduct({ product, handleUpdateItem, isPendingUpdate }: { product: any, handleUpdateItem: any, isPendingUpdate: boolean }) {
     return (

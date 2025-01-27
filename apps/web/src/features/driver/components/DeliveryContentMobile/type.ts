@@ -6,18 +6,18 @@ export interface IDeliveryContent {
     handleAcceptOrderDeliveryPending?: boolean;
 }
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
     phoneNumber: string;
 }
 
-interface IOrderStatus {
+export interface IOrderStatus {
     status: any;
 }
-type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
+export type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
 
-interface IOrder {
+export interface IOrder {
     id: string;
     isPaid: boolean;
     createdAt: string;
@@ -29,4 +29,5 @@ interface IOrder {
     isSolved: boolean
     orderTypeId?: number
     isReqDelivery?:boolean
+    UserAddress:any
 }

@@ -2,6 +2,7 @@ import { Dialog, DialogContent,DialogDescription, DialogFooter,DialogHeader, Dia
 import { Formik, Form, ErrorMessage } from "formik";
 import { paymentValidationSchema } from "../../schemas/paymentValidationSchema";
 import { Button } from "@/components/ui/button";
+import { IPaymentPopUpDialog } from "./type";
 
 export default function PaymentPopUpDialog({ isUploadDialogOpen, setIsUploadDialogOpen, isUploading, uploadPaymentProof }: IPaymentPopUpDialog) {
     return (

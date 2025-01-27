@@ -4,17 +4,17 @@ import { FaBox, FaCartShopping } from "react-icons/fa6";
 import { FaDashcube, FaSpaghettiMonsterFlying } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
-import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import TabTrackingUser from "@/features/user/components/TabUserTracking";
+import LoadingDashboardWeb from "@/components/core/loadingCustom/loadingDashboardWeb";
+import TabTrackingUser from "@/features/user/components/tabUserTracking";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
-import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
-import WeatherMobile from "@/components/core/WeatherMobile";
-import HeaderDashboardWeb from "@/components/core/HeaderDashboardWeb";
-import WeatherWeb from "@/components/core/WeatherWeb";
-import NotificationUser from "@/features/user/components/Notification";
-import WidgetDashboardMobile from "@/features/user/components/WidgetDashboardMobile";
-import WidgetDashboardWeb from "@/features/user/components/WidgetDashboardWeb";
+import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
+import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
+import WeatherMobile from "@/components/core/weatherMobile";
+import HeaderDashboardWeb from "@/components/core/headerDashboardWeb";
+import WeatherWeb from "@/components/core/weatherWeb";
+import NotificationUser from "@/features/user/components/notificationCustom";
+import WidgetDashboardMobile from "@/features/user/components/widgetDashboardMobile";
+import WidgetDashboardWeb from "@/features/user/components/widgetDashboardWeb";
 import { useUserDashboardHook } from "@/features/user/hooks/useUserDashboardHook";
 
 export default function Page() {

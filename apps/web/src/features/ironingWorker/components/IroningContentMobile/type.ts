@@ -1,11 +1,11 @@
 import { useRouter } from "next/navigation";
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
 }
 
-interface IOrder {
+export interface IOrder {
     id: string;
     isSolved: boolean;
     isProcessed: boolean;

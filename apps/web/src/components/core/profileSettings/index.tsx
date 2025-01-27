@@ -1,7 +1,7 @@
 import { ErrorMessage, Field, Form } from "formik"
 import Image from "next/image"
-import { ConfirmAlert } from "../ConfirmAlert"
-import ButtonCustom from "../Button"
+import { ConfirmAlert } from "../confirmAlertCustom"
+import ButtonCustom from "../buttonCustom"
 import { FaPhotoFilm, FaTrash } from "react-icons/fa6"
 
 export default function ProfileSettings({ tempProfilePict, getData, profilePict, isDisabledSucces, disabledProfilePhoto, disabledSubmitButton, setFieldValue, setTempProfilePict, handleDeleteProfilePicture }: any) {

@@ -2,7 +2,7 @@ import { Formik, Field, Form, ErrorMessage } from 'formik';
 import Link from 'next/link'
 import { MdInfoOutline } from "react-icons/md";
 import { FaLocationDot } from "react-icons/fa6";
-import ButtonCustom from '@/components/core/Button';
+import ButtonCustom from '@/components/core/buttonCustom';
 import { Tooltip } from 'react-tooltip'
 import { CiSquarePlus } from "react-icons/ci";
 import { IPickupFormProps } from './type';

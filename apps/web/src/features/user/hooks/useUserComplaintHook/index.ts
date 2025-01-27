@@ -5,7 +5,7 @@ import { instance } from "@/utils/axiosInstance"
 import React from 'react';
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 
 export const useUserComplaintHook = ({ params }: { params: Promise<{ slug: string }> }) => {
 

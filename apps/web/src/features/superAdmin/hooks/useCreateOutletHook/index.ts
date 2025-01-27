@@ -4,7 +4,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import L from 'leaflet'
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 import { toast } from "@/components/hooks/use-toast";
 
 export const useCreateOutletHook = () => {
@@ -30,14 +30,6 @@ export const useCreateOutletHook = () => {
             return res?.data?.data?.rajaongkir?.results
         },
     })
-
-    const getLocation = async (): Promise<void> => {
-        try {
-            const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${isPosition?.lat?.toString()}&lon=${isPosition?.lng?.toString()}&format=json`)
-            setDataUser(response?.data)
-
-        } catch (error) {}
-    }
 
     const { mutate: handleSubmitAddStore, isPending } = useMutation({
         mutationFn: async ({ storeName, address, city, province, zipCode, latitude, longitude }: any) => {
@@ -65,6 +57,14 @@ export const useCreateOutletHook = () => {
     }, [latitudeGlobal, lngGlobal])
 
     useEffect(() => {
+        const getLocation = async (): Promise<void> => {
+            try {
+                const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${isPosition?.lat?.toString()}&lon=${isPosition?.lng?.toString()}&format=json`)
+                setDataUser(response?.data)
+    
+            } catch (error) {}
+        }
+        
         if (isPosition.lat && isPosition.lng) {
             getLocation();
         }

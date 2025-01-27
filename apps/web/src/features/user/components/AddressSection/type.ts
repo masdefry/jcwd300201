@@ -21,7 +21,7 @@ export interface IAddress {
     zipCode: number
     User: IUser
 }
-interface IUser {
+export interface IUser {
     id: number;
     firstName: string;
     lastName: string;

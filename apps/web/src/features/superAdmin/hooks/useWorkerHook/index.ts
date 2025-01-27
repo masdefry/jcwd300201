@@ -6,7 +6,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { toast } from "@/components/hooks/use-toast";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authStore";
 
 const useWorkerHook = () => {
     const params = useSearchParams()
@@ -72,27 +72,29 @@ const useWorkerHook = () => {
     }, 1000)
 
     useEffect(() => {
+        const isUrl = new URLSearchParams(params.toString())
+
         if (searchWorker) {
-            currentParams.set('search', searchWorker)
+            isUrl.set('search', searchWorker)
         } else {
-            currentParams.delete('search')
+            isUrl.delete('search')
         }
 
         if (sortWorker) {
-            currentParams.set('sort', sortWorker)
+            isUrl.set('sort', sortWorker)
         } else {
-            currentParams.delete('sort')
+            isUrl.delete('sort')
         }
 
         if (totalPages === undefined || currentPage > totalPages) {
             setCurrentPage(1)
         }
 
-        router.push(`${pathname}?${currentParams.toString()}`)
+        router.push(`${pathname}?${isUrl.toString()}`)
         router.refresh()
         refetch()
 
-    }, [params, searchWorker, sortWorker, refetch, pathname, currentPage, totalPages, entriesPerPage])
+    }, [params, router, searchWorker, sortWorker, refetch, pathname, currentPage, totalPages, entriesPerPage])
 
     return {
         currentPage, setCurrentPage,

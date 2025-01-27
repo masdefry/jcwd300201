@@ -1,4 +1,4 @@
-type Iitem = {
+export type Iitem = {
     id: number;
     itemName: string;
     laundryItemId: number;

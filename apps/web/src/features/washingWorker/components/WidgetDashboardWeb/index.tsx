@@ -1,5 +1,5 @@
-import NoDataWidget from "@/components/core/NoDataWidget"
-import Notification from "@/components/core/Notification"
+import NoDataWidget from "@/components/core/noDataWidget"
+import Notification from "@/components/core/notificationCustom"
 import Link from "next/link"
 
 export default function WidgetDashboardWeb({ data, title, dataOrderNotif }: IWidgetDashboardWeb) {

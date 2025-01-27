@@ -1,11 +1,11 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import ButtonCustom from "@/components/core/Button";
-import HorizontalTimeline from "@/components/core/TimelineUser"
+import ButtonCustom from "@/components/core/buttonCustom";
+import HorizontalTimeline from "@/components/core/timelineUserCustom"
 import Link from "next/link";
 import { FaWhatsapp } from "react-icons/fa6";
-import Loading from "@/components/core/loading";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert"
-
+import Loading from "@/components/core/loadingCustom";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom"
+import { IOrderPopUpDialog } from "./type";
 
 export default function OrderPopUpDialog({ openDialog, orderData, setOpenDialog, router, handleOrderConfirmation, handleOrderConfirmationPending, handleSolveComplaint, handleSolveComplaintPending }: IOrderPopUpDialog) {
     return (
@@ -162,7 +162,7 @@ export default function OrderPopUpDialog({ openDialog, orderData, setOpenDialog,
                             </div>
                             : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof && orderData?.order?.paymentMethod === "TF_MANUAL" ?
                                 <div className="flex justify-center">
-                                    <ButtonCustom btnColor="bg-white" txtColor="text-black">Menunggu Verifikasi Admin</ButtonCustom>
+                                    <ButtonCustom btnColor="bg-white" txtColor="text-black">Pembayaran Menunggu Verifikasi Admin</ButtonCustom>
                                 </div>
                                 : orderData?.order?.isPaid === false && orderData?.order?.isConfirm === false && orderData?.order?.paymentProof && orderData?.order?.paymentMethod === "MIDTRANS" ?
                                     <div className="flex justify-center">

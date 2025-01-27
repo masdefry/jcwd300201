@@ -1,6 +1,6 @@
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import { userComplaintValidationSchema } from "../../schemas/userComplaintValidationSchema";
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 import { IFormikComplaintMobile } from "./type";
 
 export default function FormikComplaintMobile({ isPending, handleComplaint }: IFormikComplaintMobile) {

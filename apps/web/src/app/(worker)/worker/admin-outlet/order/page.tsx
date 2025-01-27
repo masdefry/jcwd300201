@@ -2,20 +2,20 @@
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/Filter"
-import Pagination from "@/components/core/Pagination"
+import FilterWorker from "@/components/core/filterCustom"
+import Pagination from "@/components/core/paginationCustom"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import ButtonCustom from "@/components/core/Button";
-import Loading from "@/components/core/loading"
-import NoData from "@/components/core/NoData"
-import FilterWeb from "@/components/core/FilterWeb"
+import ContentWebLayout from "@/components/core/webSessionContent";
+import ButtonCustom from "@/components/core/buttonCustom";
+import Loading from "@/components/core/loadingCustom"
+import NoData from "@/components/core/noDataCustom"
+import FilterWeb from "@/components/core/filterWeb"
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
 import { useAdminOutletOrderHook } from "@/features/adminOutlet/hooks/useAdminOutletOrderHook"
-import OrderContentMobile from "@/features/adminOutlet/components/OrderContentMobile"
-import OrderContentWeb from "@/features/adminOutlet/components/OrderContentWeb"
-import TableHeaderWeb from "@/components/core/TableHeadWeb"
-import OrderDialogAdminOutlet from "@/features/adminOutlet/components/OrderDialogAdminOutlet"
+import OrderContentMobile from "@/features/adminOutlet/components/orderContentMobile"
+import OrderContentWeb from "@/features/adminOutlet/components/orderContentWeb"
+import TableHeaderWeb from "@/components/core/tableHeadWeb"
+import OrderDialogAdminOutlet from "@/features/adminOutlet/components/orderDialogAdminOutlet"
 import { IOrder } from "@/features/adminOutlet/types/type"
 
 

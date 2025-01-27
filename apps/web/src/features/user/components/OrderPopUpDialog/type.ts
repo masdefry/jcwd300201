@@ -1,4 +1,4 @@
-interface IOrderData {
+export interface IOrderData {
     order: {
         id: string;
         createdAt: string;
@@ -25,7 +25,7 @@ interface IOrderData {
     }>;
 }
 
-interface IOrderPopUpDialog {
+export interface IOrderPopUpDialog {
     openDialog: boolean;
     orderData?: IOrderData;
     setOpenDialog: (isOpen: boolean) => void;

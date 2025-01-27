@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { IDeliveryContent } from "./type";
 import { FaWhatsapp } from "react-icons/fa6";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 
 export default function DeliveryContentMobile(
     { order, handleRequestDelivery }: IDeliveryContent
