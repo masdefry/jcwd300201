@@ -7,7 +7,7 @@ import {
     CarouselContent,
     CarouselItem,
 } from '@/components/ui/carousel';
-import ButtonCustom from '@/components/core/Button';
+import ButtonCustom from '@/components/core/buttonCustom';
 import Image from 'next/image';
 import { FaHome, FaInfoCircle,FaTshirt } from 'react-icons/fa';
 import { MdBusiness, MdContactMail, MdDesignServices, MdEmail } from 'react-icons/md';

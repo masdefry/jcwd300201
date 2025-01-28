@@ -1,8 +1,8 @@
 'use client'
 
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
-import LayoutDetailWorker from "@/features/superAdmin/components/LayoutDetailWorker";
+import LayoutDetailWorker from "@/features/superAdmin/components/layoutDetailWorker";
 import { useDetailWorkerHook } from "@/features/superAdmin/hooks/useDetailWorkerHook";
 import Image from "next/image";
 import { BsTrash3 } from "react-icons/bs";

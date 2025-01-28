@@ -3,21 +3,21 @@
 import { MdFeedback, MdWorkHistory } from "react-icons/md";
 import { FaCartArrowDown, FaDashcube, FaMoneyBillWave, FaSpaghettiMonsterFlying, FaStore } from "react-icons/fa6";
 import * as React from "react"
-import { Calendar } from "@/components/ui/calendar"
-import ChartComponents from "@/components/core/chart/PieChartTrackingStatusOrder";
-import MonthlyCharts from "@/components/core/chart/ChartMonthlyStatistic";
-import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import { RiProfileFill } from "react-icons/ri";
-import TabTracking from "@/features/superAdmin/components/TabOrderTracking";
-import NotificationSuperAdmin from "@/features/superAdmin/components/NotificationSuperAdmin";
-import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
-import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
-import MenuAdditionalDashboardMobile from "@/components/core/MenuAdditionalDashboardMobile";
-import WeatherMobile from "@/components/core/WeatherMobile";
-import HeaderAdminDashboardWeb from "@/components/core/HeaderAdminDashboardWeb";
-import WeatherWeb from "@/components/core/WeatherWeb";
 import { useAdminDashboardHook } from "@/features/superAdmin/hooks/useAdminDashboardHook";
+import LoadingDashboardWeb from "@/components/core/loadingCustom/loadingDashboardWeb";
+import { RiProfileFill } from "react-icons/ri";
+import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
+import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
+import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
+import MenuAdditionalDashboardMobile from "@/components/core/menuAdditionalDashboardMob"
+import MonthlyCharts from "@/components/core/chart/chartMonthlyStatistic";
+import TabTracking from "@/features/superAdmin/components/tabOrderTracking";
+import WeatherMobile from "@/components/core/weatherMobile";
+import ChartComponents from "@/components/core/chart/pieChartTrackingStatusOrder";
+import HeaderAdminDashboardWeb from "@/components/core/headerAdminDashboardComponent";
+import WeatherWeb from "@/components/core/weatherWeb";
+import { Calendar } from "@/components/ui/calendar";
+import NotificationSuperAdmin from "@/features/superAdmin/components/notificationSuperAdminComponent";
 
 export default function Page() {
     const {
@@ -70,7 +70,7 @@ export default function Page() {
     ]
 
     return (
-        <>
+        <React.Suspense fallback={<h1>loading...</h1>}>
             <ContentMobileLayout title="Dashboard" icon={<FaDashcube className="text-lg" />} notification={<NotificationSuperAdmin dataOrderNotif={dataOrderNotif} />}>
                 <main className="pb-28">
                     <HeaderDashboardMobile storeName={storeName} showStore={false} role={role} name={name} message={"Pantau data pekerja dan kelola produk laundry di satu tempat."} />
@@ -134,6 +134,6 @@ export default function Page() {
                     </div>
                 </section>
             </main>
-        </>
+        </React.Suspense>
     );
 }

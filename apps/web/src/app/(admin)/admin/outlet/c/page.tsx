@@ -2,18 +2,15 @@
 import { ErrorMessage, Field, Form, Formik } from "formik";
 import { createOutletValidationSchema } from "@/features/superAdmin/schemas/createOutletValidationSchema";
 import { MapContainer, TileLayer, } from "react-leaflet";
-import LocationPicker from "@/components/core/LocationPicker";
-import ButtonCustom from "@/components/core/Button";
+import LocationPicker from "@/components/core/locationPicker";
+import ButtonCustom from "@/components/core/buttonCustom";
 
 import "leaflet/dist/leaflet.css";
-import ContentWebLayout from "@/components/core/WebSessionContent";
+import ContentWebLayout from "@/components/core/webSessionContent";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
-import { useCreateOutletHook } from "@/features/superAdmin/hooks/useCreateOutletHook";
-// import CreateOutletMobile from "@/features/superAdmin/components/CreateOutletMobile";
-// import CreateOutletWeb from "@/features/superAdmin/components/CreateOutletMobile";
 import axios from "axios";
 import L from 'leaflet'
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { toast } from "@/components/hooks/use-toast";
 import { locationStore } from "@/zustand/locationStore";
 import { useEffect, useMemo, useState } from "react";
@@ -44,14 +41,6 @@ export default function Page() {
         },
     })
 
-    const getLocation = async (): Promise<void> => {
-        try {
-            const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${isPosition?.lat?.toString()}&lon=${isPosition?.lng?.toString()}&format=json`)
-            setDataUser(response?.data)
-
-        } catch (error) { }
-    }
-
     const { mutate: handleSubmitAddStore, isPending } = useMutation({
         mutationFn: async ({ storeName, address, city, province, zipCode, latitude, longitude }: any) => {
             return await instance.post('/store', {
@@ -78,6 +67,14 @@ export default function Page() {
     }, [latitudeGlobal, lngGlobal])
 
     useEffect(() => {
+        const getLocation = async (): Promise<void> => {
+            try {
+                const response = await axios.get(`https://nominatim.openstreetmap.org/reverse?lat=${isPosition?.lat?.toString()}&lon=${isPosition?.lng?.toString()}&format=json`)
+                setDataUser(response?.data)
+
+            } catch (error) { }
+        }
+
         if (isPosition.lat && isPosition.lng) {
             getLocation();
         }

@@ -1,21 +1,21 @@
 'use client'
 
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import ButtonCustom from "@/components/core/Button";
-import SearchInputCustom from "@/components/core/SearchBar";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import ButtonCustom from "@/components/core/buttonCustom";
+import SearchInputCustom from "@/components/core/searchBarCustom";
 import { ChangeEvent } from "react";
 import { BsPencil, BsTrash } from "react-icons/bs";
 import { FaEllipsisVertical, FaPlus, FaStore } from "react-icons/fa6";
 import { FaSearch } from 'react-icons/fa';
 import Image from "next/image";
 import Link from "next/link";
-import Loading from "@/components/core/loading";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
-import Pagination from "@/components/core/Pagination";
+import Loading from "@/components/core/loadingCustom";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
+import Pagination from "@/components/core/paginationCustom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { useAdminStoreHook } from "@/features/superAdmin/hooks/useAdminStoreHook";
-import NoData from "@/components/core/NoData";
+import NoData from "@/components/core/noDataCustom";
 import { IStore } from "./type";
 
 export default function Page() {

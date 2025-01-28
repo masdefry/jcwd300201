@@ -1,6 +1,6 @@
 'use client'
 
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { useEffect, useState } from "react";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
@@ -102,23 +102,22 @@ export const useAdminDashboardHook = () => {
     }, [])
 
     useEffect(() => {
+        const isUrl = new URLSearchParams(params?.toString())
         if (isMonthlyStatistic) {
-            currentUrl.set('outlet', isMonthlyStatistic)
+            isUrl.set('outlet', isMonthlyStatistic)
         } else {
-            currentUrl.delete('outlet')
+            isUrl.delete('outlet')
         }
 
-        router.push(`${pathname}?${currentUrl.toString()}`)
+        router.push(`${pathname}?${isUrl.toString()}`)
         router.refresh()
         refetch()
         refetchTab()
-    }, [refetch, refetchTab,pathname, router, isMonthlyStatistic, params])
+
+    }, [refetch, refetchTab, pathname, router, isMonthlyStatistic, params])
 
     const completedOrders = dataOrderList?.trackingOrder?.filter((order: IOrder) => order?.isConfirm);
     const pendingOrders = dataOrderList?.trackingOrder?.filter((order: IOrder) => !order?.isDone);
-
-
-
 
     return {
         completedOrders,

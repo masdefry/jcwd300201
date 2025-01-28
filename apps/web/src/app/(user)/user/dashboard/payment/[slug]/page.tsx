@@ -1,14 +1,14 @@
 'use client'
 
 import React from 'react';
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import NotaHeader from "@/components/core/CreateNotaHeaders";
-import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import NotaHeader from "@/components/core/createNotaHeaders";
+import InputDisplay from "@/features/adminOutlet/components/inputDisplayCustom";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { useUserPaymentHook } from "@/features/user/hooks/useUserPaymentHook";
-import PaymentPopUpDialog from "@/features/user/components/PaymentPopUpDialog";
-import PaymentMethodMobile from '@/features/user/components/PaymentMethodMobile';
-import PaymentMethodWeb from '@/features/user/components/PaymentMethodMobile';
+import PaymentPopUpDialog from "@/features/user/components/paymentDialogPopUp";
+import PaymentMethodMobile from '@/features/user/components/paymentMobileMethod';
+import PaymentMethodWeb from '@/features/user/components/paymentMobileMethod';
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
     const {

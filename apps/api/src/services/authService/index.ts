@@ -17,6 +17,8 @@ dotenv.config()
 const profilePict: string | undefined = process.env.PROFILE_PICTURE as string
 
 export const userRegisterService = async ({ id, email, firstName, lastName, phoneNumber, verifyCode }: IRegisterBody) => {
+    // const checkedEmail = await validate(email)
+    
     const checkedEmail = await validate({
         email,
         sender: email,

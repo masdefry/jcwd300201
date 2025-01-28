@@ -1,7 +1,7 @@
 'use client'
 
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -88,17 +88,18 @@ const useUserAddressHook = () => {
     })
 
     useEffect(() => {
+        const isCurrentUrl = new URLSearchParams(params?.toString())
         if (searchItem) {
-            currentUrl.set('search', searchItem)
+            isCurrentUrl.set('search', searchItem)
         } else {
-            currentUrl.delete('search')
+            isCurrentUrl.delete('search')
         }
 
-        router.push(`${pathname}?${currentUrl.toString()}`)
+        router.push(`${pathname}?${isCurrentUrl.toString()}`)
         router.refresh()
         refetch()
 
-    }, [params, pathname, refetch, searchItem])
+    }, [params, pathname, router, refetch, searchItem])
 
     const settingsItems = [
         { name: 'nama alamat', description: 'jl.rorojonggrang', icon: FaUser },

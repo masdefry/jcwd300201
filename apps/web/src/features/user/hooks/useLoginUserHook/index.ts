@@ -1,7 +1,7 @@
 'use client'
 
 import { useToast } from "@/components/hooks/use-toast";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { useMutation } from "@tanstack/react-query";
 import { useState } from "react";
 import { ILoginGoogleUser, ILoginUser } from "./type";

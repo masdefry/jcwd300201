@@ -7,10 +7,8 @@ import {
 } from "@/components/ui/select"
 import { IoMdRefresh } from "react-icons/io";
 import { IFilterPropsWeb } from "./type";
-import SearchInputCustom from "../SearchBar";
+import SearchInputCustom from "../searchBarCustom";
 import { ChangeEvent } from "react"
-
-
 
 export default function FilterWeb({ showTabOption = true, borderReset = 'border rounded-lg border-gray-500',
     isSearchValues, setIsSearchValues, options, showStoreSelect = false, activeTab, setActiveTab,

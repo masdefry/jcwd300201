@@ -1,8 +1,8 @@
 'use client'
 
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 import { FaUser, FaStore, FaCut, FaTruck, FaCashRegister, FaUsers, FaReceipt } from 'react-icons/fa';
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { instance } from "@/utils/axiosInstance";
@@ -10,8 +10,8 @@ import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
 import { useState } from "react";
 import { FaUserCheck } from "react-icons/fa6";
-import ListCustom from "@/components/core/ListSettings";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import ListCustom from "@/components/core/listSettings";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 
 const profilePict: string | undefined = process.env.NEXT_PUBLIC_PHOTO_PROFILE as string

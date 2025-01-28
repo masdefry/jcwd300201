@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import authStore from "@/zustand/authstore"
+import authStore from "@/zustand/authoStore"
 import { instance } from "@/utils/axiosInstance"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { useDebouncedCallback } from "use-debounce"
@@ -78,7 +78,8 @@ export const useIroningOrderHook = () => {
         setSearchInput(values)
         setPage(1)
     }, 500);
-
+    
+    const totalPages = dataOrderIroningProcess?.totalPage || 1;
     useEffect(() => {
         const currentUrl = new URLSearchParams(params.toString());
         if (searchInput) {
@@ -116,10 +117,9 @@ export const useIroningOrderHook = () => {
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
+    }, [searchInput, router, pathname, params, totalPages, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
 
 
-    const totalPages = dataOrderIroningProcess?.totalPage || 1;
 
 
     return {

@@ -3,19 +3,19 @@
 import { FaEdit, FaEye, FaSearch } from 'react-icons/fa';
 import Link from "next/link"
 import { FaEllipsisVertical, FaPlus } from "react-icons/fa6";
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 import { ChangeEvent } from "react";
-import SearchInputCustom from "@/components/core/SearchBar";
+import SearchInputCustom from "@/components/core/searchBarCustom";
 import { useWorkerHook } from "@/features/superAdmin/hooks/useWorkerHook";
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import PaginationWebLayout from "@/components/core/PaginationWebLayout";
-import Loading from "@/components/core/loading";
-import NoData from "@/components/core/NoData";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import PaginationWebLayout from "@/components/core/paginationWebLayout";
+import Loading from "@/components/core/loadingCustom";
+import NoData from "@/components/core/noDataCustom";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import Pagination from "@/components/core/Pagination";
+import Pagination from "@/components/core/paginationCustom";
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
 import { MdWorkHistory } from "react-icons/md";
-import { ConfirmAlert } from '@/components/core/ConfirmAlert';
+import { ConfirmAlert } from '@/components/core/confirmAlertCustom';
 import { BsTrash } from 'react-icons/bs';
 import { IWorker } from './type';
 

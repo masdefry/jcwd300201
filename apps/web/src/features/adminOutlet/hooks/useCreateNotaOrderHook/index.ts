@@ -1,6 +1,6 @@
 'use client'
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { useToast } from "@/components/hooks/use-toast";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import React, { useState } from 'react';

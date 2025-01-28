@@ -1,8 +1,8 @@
 'use client'
 
 import React from "react";
-import HeroSection from "@/components/core/HeroSection";
-import HeroSectionMobile from "../components/core/HeroSectionMobile";
+import HeroSection from "@/components/core/heroSection";
+import HeroSectionMobile from "../components/core/heroSectionMobile";
 import { useLandingHooks } from "@/features/landing/hooks/useLandingHooks";
 import LayananComponent from "@/features/landing/components/layanan";
 import PelangganComponent from "@/features/landing/components/pelanggan";

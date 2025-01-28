@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 import { instance } from "@/utils/axiosInstance"
-import authStore from "@/zustand/authstore"
+import authStore from "@/zustand/authoStore"
 import { useState, useEffect } from "react"
 import { useSearchParams, useRouter, usePathname } from "next/navigation"
 import { useDebouncedCallback } from "use-debounce"
@@ -75,7 +75,7 @@ const useNotaOrderHook = () => {
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
+    }, [searchInput, router, pathname, params, page, sortOption, refetch, dateFrom, dateUntil]);
 
 
     const totalPages = dataCreateOrder?.totalPage || 1;

@@ -8,7 +8,7 @@ export interface ITableAddress {
     onDeleteAddress: () => void
 }
 
-interface IUserAddress {
+export interface IUserAddress {
     id: number;
     addressName: string;
     addressDetail: string; 

@@ -1,10 +1,10 @@
 'use client'
 
-import ContentWebLayout from "@/components/core/WebSessionContent";
+import ContentWebLayout from "@/components/core/webSessionContent";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { useEditOutletHook } from "@/features/superAdmin/hooks/useEditOutletHook";
-import EditOutletMobile from "@/features/superAdmin/components/EditOutletMobile";
-import EditOutletWeb from "@/features/superAdmin/components/EditOutletWeb";
+import EditOutletMobile from "@/features/superAdmin/components/editOutletMobileComponent";
+import EditOutletWeb from "@/features/superAdmin/components/editOutletWebComponent";
 
 export default function Page({ params }: { params: Promise<{ detail: string }> }) {
     const {

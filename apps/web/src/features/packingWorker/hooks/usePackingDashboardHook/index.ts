@@ -1,4 +1,4 @@
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { locationStore } from "@/zustand/locationStore";

@@ -1,13 +1,13 @@
 'use client'
 
-import ContentWebLayout from '@/components/core/WebSessionContent';
+import ContentWebLayout from '@/components/core/webSessionContent';
 import ContentMobileLayout from '@/components/core/mobileSessionLayout/mainMenuLayout';
 import { FaTruck } from "react-icons/fa6";
 import { pickupValidationSchema } from '@/features/user/schemas/pickupValidationSchema';
 import { useRequestPickupHook } from '@/features/user/hooks/useRequestPickupHook';
-import { PickupForm } from '@/features/user/components/PickupFormMobile';
-import { AddressPopUpDialog } from '@/features/user/components/AddressSection';
-import { PickupFormWeb } from '@/features/user/components/pickupFormWeb';
+import { PickupForm } from '@/features/user/components/formPickupMobile';
+import { AddressPopUpDialog } from '@/features/user/components/addressSectionComponent';
+import { PickupFormWeb } from '@/features/user/components/formPickupWeb';
 
 export default function PickupLaundry() {
     const {

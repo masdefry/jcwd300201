@@ -1,4 +1,4 @@
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import React, { useState } from "react";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery, useMutation } from "@tanstack/react-query";

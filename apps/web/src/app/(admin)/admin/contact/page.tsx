@@ -1,11 +1,11 @@
-import ContentWebLayout from "@/components/core/WebSessionContent";
 import { formatDistanceToNow } from "date-fns/formatDistanceToNow";
 import { id } from 'date-fns/locale'
 import { cookies } from "next/headers";
-import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
-import ContactMobile from "@/features/superAdmin/components/ContactMobile";
-import ContactWeb from "@/features/superAdmin/components/ContactWeb";
 import { IMessage } from "./type";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
+import ContactWeb from "@/features/superAdmin/components/contactWebComponent";
+import ContactMobile from "@/features/superAdmin/components/contactMobileComponent";
 
 
 const getMessageCustomer = async () => {

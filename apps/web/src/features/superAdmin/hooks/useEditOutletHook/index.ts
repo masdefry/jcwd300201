@@ -2,7 +2,7 @@ import { locationStore } from "@/zustand/locationStore";
 import { instance } from "@/utils/axiosInstance";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { useEffect, use, useState } from "react";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { toast } from "@/components/hooks/use-toast";
 import { useRouter } from "next/navigation";
 

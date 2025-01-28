@@ -1,6 +1,6 @@
 import { useFormikContext, ErrorMessage, Field, Form } from "formik";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
-import ButtonCustom from "../Button";
+import ButtonCustom from "../buttonCustom";
 
 export default function ChangePassword({ oldPasswordVisible, passwordVisible, toggleConfirmPasswordVisibility,
     togglePasswordVisibility, toggleOldPasswordVisibility, isDisableSucces, confirmPasswordVisible, isPendingChangePassword

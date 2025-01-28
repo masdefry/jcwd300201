@@ -5,16 +5,16 @@ import { FaHistory } from "react-icons/fa";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import Notification from "@/components/core/Notification";
-import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
-import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
-import WeatherMobile from "@/components/core/WeatherMobile";
-import HeaderDashboardWeb from "@/components/core/HeaderDashboardWeb";
-import WeatherWeb from "@/components/core/WeatherWeb";
+import LoadingDashboardWeb from "@/components/core/loadingCustom/loadingDashboardWeb";
+import Notification from "@/components/core/notificationCustom";
+import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
+import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
+import WeatherMobile from "@/components/core/weatherMobile";
+import HeaderDashboardWeb from "@/components/core/headerDashboardWeb";
+import WeatherWeb from "@/components/core/weatherWeb";
 import { usePackingDashboardHook } from "@/features/packingWorker/hooks/usePackingDashboardHook";
-import WidgetDashboardWeb from "@/features/packingWorker/components/WidgetDashboardWeb";
-import WidgetDashboardMobile from "@/features/packingWorker/components/WidgetDashboardMobile";
+import WidgetDashboardWeb from "@/features/packingWorker/components/widgetWebDashboard";
+import WidgetDashboardMobile from "@/features/packingWorker/components/widgetMobileDashboard";
 
 export default function Page() {
     const {

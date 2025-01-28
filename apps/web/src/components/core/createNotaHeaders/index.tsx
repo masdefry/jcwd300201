@@ -1,6 +1,6 @@
 import Image from "next/image";
 
-export default function NotaHeader({ email='clicknclick@indonesia' }: { email?: string }) {
+export default function NotaHeader({ email = 'clicknclick@indonesia' }: { email?: string }) {
     return (
         <div className="w-full flex flex-col sm:flex-row justify-between items-center border-b-2 px-5 py-2 bg-neutral-50">
             <div className="flex items-center space-x-2">

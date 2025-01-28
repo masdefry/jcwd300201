@@ -1,7 +1,7 @@
 'use client'
 import { toast } from '@/components/hooks/use-toast'
 import { instance } from '@/utils/axiosInstance'
-import authStore from '@/zustand/authstore'
+import authStore from '@/zustand/authoStore'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import * as React from 'react'
 import Cookies from 'js-cookie'

@@ -1,7 +1,7 @@
 'use client'
 
 import { instance } from "@/utils/axiosInstance";
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { useMutation } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,7 +10,7 @@ import { ReactNode, useState } from "react";
 import { FaDashcube, FaExclamationTriangle, FaMoneyBillWave, FaSignOutAlt, FaUserCheck } from "react-icons/fa";
 import Cookies from 'js-cookie'
 import { toast } from "@/components/hooks/use-toast";
-import { ConfirmAlert } from "@/components/core/ConfirmAlert";
+import { ConfirmAlert } from "@/components/core/confirmAlertCustom";
 import { FaCreditCard, FaFileInvoice, FaTruck } from "react-icons/fa6";
 import { GoSidebarCollapse, GoSidebarExpand } from "react-icons/go";
 

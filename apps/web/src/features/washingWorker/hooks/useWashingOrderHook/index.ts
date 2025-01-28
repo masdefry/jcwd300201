@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import authStore from "@/zustand/authstore"
+import authStore from "@/zustand/authoStore"
 import { instance } from "@/utils/axiosInstance"
 import { useQuery, useMutation } from "@tanstack/react-query"
 import { useDebouncedCallback } from "use-debounce"
@@ -75,6 +75,7 @@ export const useWashingOrderHook = () => {
         setSearchInput(values)
         setPage(1)
     }, 500);
+    const totalPages = dataOrderWashingProcess?.totalPage || 1;
 
     useEffect(() => {
         const currentUrl = new URLSearchParams(params.toString());
@@ -113,9 +114,9 @@ export const useWashingOrderHook = () => {
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
+        
+    }, [searchInput, totalPages, page, router, params, pathname, sortOption, activeTab, refetch, dateFrom, dateUntil]);
 
-    const totalPages = dataOrderWashingProcess?.totalPage || 1;
 
     return {
         params,

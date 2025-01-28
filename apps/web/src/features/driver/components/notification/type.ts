@@ -1,22 +1,22 @@
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
 }
 
-interface IOrderType {
+export interface IOrderType {
     type: string;
 }
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
     phoneNumber: string;
 }
 
-interface IOrderStatus {
+export interface IOrderStatus {
     status: string;
 }
-type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
+export type PaymentMethod = 'MIDTRANS' | 'TF_MANUAL';
 
 export interface IOrder {
     id: string;
@@ -33,7 +33,7 @@ export interface IOrder {
 }
 
 
-interface IDataOrderNotif {
+export interface IDataOrderNotif {
     orders: IOrder[];
 }
 

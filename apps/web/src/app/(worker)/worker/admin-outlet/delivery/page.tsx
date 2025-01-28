@@ -1,18 +1,18 @@
 'use client'
 
-import Loading from "@/components/core/loading"
-import NoData from "@/components/core/NoData"
+import Loading from "@/components/core/loadingCustom"
+import NoData from "@/components/core/noDataCustom"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import FilterWorker from "@/components/core/Filter"
-import Pagination from "@/components/core/Pagination"
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import ButtonCustom from "@/components/core/Button";
+import FilterWorker from "@/components/core/filterCustom"
+import Pagination from "@/components/core/paginationCustom"
+import ContentWebLayout from "@/components/core/webSessionContent";
+import ButtonCustom from "@/components/core/buttonCustom";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout"
-import FilterWeb from "@/components/core/FilterWeb";
-import DeliveryContentMobile from "@/features/adminOutlet/components/DeliveryContentMobile";
-import TableHeaderWeb from "@/components/core/TableHeadWeb";
-import DeliveryContentWeb from "@/features/adminOutlet/components/DeliveryContentWeb";
+import FilterWeb from "@/components/core/filterWeb";
+import DeliveryContentMobile from "@/features/adminOutlet/components/deliveryMobileContent";
+import TableHeaderWeb from "@/components/core/tableHeadWeb";
+import DeliveryContentWeb from "@/features/adminOutlet/components/deliveryWebContent";
 import { UseAdminOutletDeliveryHook } from "@/features/adminOutlet/hooks/useAdminOutletDeliveryHook";
 import { IOrder } from "@/features/adminOutlet/types/type"
 

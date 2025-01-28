@@ -1,23 +1,23 @@
-interface IOrderStatus {
+export interface IOrderStatus {
     status: string;
 }
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
     phoneNumber: string;
 }
 
-interface IOrderStatus {
+export interface IOrderStatus {
     status: string;
 }
 
-interface IUser {
+export interface IUser {
     firstName: string;
     lastName: string;
 }
 
-interface IOrderType {
+export interface IOrderType {
     id: number;
     type: string;
     price: number | null;

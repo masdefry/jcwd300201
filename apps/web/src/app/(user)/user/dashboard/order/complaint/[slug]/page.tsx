@@ -1,14 +1,13 @@
 'use client'
 
 import React from 'react';
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import NotaHeader from "@/components/core/CreateNotaHeaders";
-import InputDisplay from "@/features/adminOutlet/components/InputDisplay";
+import ContentWebLayout from "@/components/core/webSessionContent";
+import NotaHeader from "@/components/core/createNotaHeaders";
+import InputDisplay from "@/features/adminOutlet/components/inputDisplayCustom";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { useUserComplaintHook } from "@/features/user/hooks/useUserComplaintHook";
-import FormikComplaintMobile from "@/features/user/components/FormikComplaintMobile";
-import FormikComplaintWeb from "@/features/user/components/FormikComplaintWeb";
-
+import FormikComplaintMobile from "@/features/user/components/formikMobileComplaint";
+import FormikComplaintWeb from "@/features/user/components/formikWebComplaint";
 
 export default function Page({ params }: { params: Promise<{ slug: string }> }) {
 

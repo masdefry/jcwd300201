@@ -1,20 +1,20 @@
 'use client'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { CardContent } from "@/components/ui/card"
-import ButtonCustom from "@/components/core/Button"
+import ButtonCustom from "@/components/core/buttonCustom"
 import { FaBoxOpen } from "react-icons/fa6"
-import ContentWebLayout from "@/components/core/WebSessionContent"
-import Pagination from "@/components/core/Pagination"
-import FilterWorker from "@/components/core/Filter"
-import PaginationWebLayout from "@/components/core/PaginationWebLayout"
-import Loading from "@/components/core/loading"
-import NoData from "@/components/core/NoData"
-import FilterWeb from "@/components/core/FilterWeb"
+import ContentWebLayout from "@/components/core/webSessionContent"
+import Pagination from "@/components/core/paginationCustom"
+import FilterWorker from "@/components/core/filterCustom"
+import PaginationWebLayout from "@/components/core/paginationWebLayout"
+import Loading from "@/components/core/loadingCustom"
+import NoData from "@/components/core/noDataCustom"
+import FilterWeb from "@/components/core/filterWeb"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout"
 import { usePickupRequestHook } from "@/features/driver/hooks/usePickupRequestHook";
-import TableHeaderWeb from "@/components/core/TableHeadWeb";
-import PickupContentMobile from "@/features/driver/components/PickupContentMobile";
-import PickupContentWeb from "@/features/driver/components/PickupContentWeb";
+import TableHeaderWeb from "@/components/core/tableHeadWeb";
+import PickupContentMobile from "@/features/driver/components/pickupMobileContent";
+import PickupContentWeb from "@/features/driver/components/pickupWebContent";
 import { IOrderDriver } from "@/features/driver/types/type"
 
 export default function Page() {

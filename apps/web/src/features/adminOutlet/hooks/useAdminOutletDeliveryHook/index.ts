@@ -1,6 +1,6 @@
 'use client'
 
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { useEffect, useState } from "react";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery, useMutation } from "@tanstack/react-query";
@@ -107,8 +107,7 @@ export const UseAdminOutletDeliveryHook = () => {
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil]);
-
+    }, [searchInput, page, sortOption, activeTab, refetch, dateFrom, dateUntil, params, pathname, router]);
 
     const totalPages = dataOrderDelivery?.totalPage || 1;
 

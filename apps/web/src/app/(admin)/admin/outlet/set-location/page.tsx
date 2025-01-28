@@ -1,23 +1,20 @@
 'use client'
 
 import "leaflet/dist/leaflet.css";
-import LocationPicker from "@/components/core/LocationPicker";
-import ContentWebLayout from "@/components/core/WebSessionContent";
-import authStore from "@/zustand/authstore";
-import { locationStore } from "@/zustand/locationStore";
+import LocationPicker from "@/components/core/locationPicker";
+import ContentWebLayout from "@/components/core/webSessionContent";
 import { Form, Formik } from "formik";
-import { useEffect, useMemo, useState } from "react";
 import { MapContainer, TileLayer } from "react-leaflet";
-import L from 'leaflet'
-import ButtonCustom from "@/components/core/Button";
+import ButtonCustom from "@/components/core/buttonCustom";
 import { toast } from "@/components/hooks/use-toast";
-import { useRouter } from "next/navigation";
 import MobileSessionLayout from "@/components/core/mobileSessionLayout/subMenuLayout";
 import { useSetLocationHook } from "@/features/superAdmin/hooks/useSetLocationHook";
+import dynamic from "next/dynamic";
 
 export default function SetLocation() {
     const {
-        time, token, latitudeGlobal, lngGlobal, setIsPositionCheck, setLocation, pickLocationSuccess, setIsPickLocationSuccess, isPosition, setIsPosition, router
+        time, token, latitudeGlobal, lngGlobal, setIsPositionCheck, setLocation,
+        pickLocationSuccess, setIsPickLocationSuccess, isPosition, setIsPosition, router
     } = useSetLocationHook()
     return (
         <>

@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect } from "react"
-import authStore from "@/zustand/authstore"
+import authStore from "@/zustand/authoStore"
 import { instance } from "@/utils/axiosInstance"
 import { useQuery } from "@tanstack/react-query"
 import { useDebouncedCallback } from "use-debounce"
@@ -77,7 +77,7 @@ export const usePackingHistoryHook = () => {
         }
         router.push(`${pathname}?${currentUrl.toString()}`)
         refetch()
-    }, [searchInput, page, sortOption, refetch, dateFrom, dateUntil]);
+    }, [searchInput, page, router, pathname, params, sortOption, refetch, dateFrom, dateUntil]);
 
 
     const totalPages = dataOrderPackingProcess?.totalPage || 1;

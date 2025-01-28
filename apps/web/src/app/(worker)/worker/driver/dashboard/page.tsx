@@ -5,17 +5,16 @@ import { FaDashcube, FaBoxOpen, FaTruck } from "react-icons/fa6";
 import * as React from "react"
 import { Calendar } from "@/components/ui/calendar"
 import ContentMobileLayout from "@/components/core/mobileSessionLayout/mainMenuLayout";
-import LoadingDashboardWeb from "@/components/core/loading/loadingDashboardWeb";
-import NotificationDriver from "@/features/driver/components/Notification";
+import LoadingDashboardWeb from "@/components/core/loadingCustom/loadingDashboardWeb";
+import NotificationDriver from "@/features/driver/components/notification";
 import { useDriverDashboardHook } from "@/features/driver/hooks/useDriverDashboardHook";
-import HeaderDashboardMobile from "@/components/core/HeaderDashboardMobile";
-import WeatherMobile from "@/components/core/WeatherMobile";
-import IconMenuDashboardMobile from "@/components/core/IconMenuDashboardMobile";
-import HeaderDashboardWeb from "@/components/core/HeaderDashboardWeb";
-import WeatherWeb from "@/components/core/WeatherWeb";
-import WidgetDashboardMobile from "@/features/driver/components/WidgetDashboardMobile";
-import WidgetDashboardWeb from "@/features/driver/components/WidgetDashboardWeb";
-
+import HeaderDashboardMobile from "@/components/core/headerDashboardMobile";
+import WeatherMobile from "@/components/core/weatherMobile";
+import IconMenuDashboardMobile from "@/components/core/iconMenuDashboardMobile";
+import WeatherWeb from "@/components/core/weatherWeb";
+import WidgetDashboardMobile from "@/features/driver/components/widgetMobileDashboard";
+import WidgetDashboardWeb from "@/features/driver/components/widgetWebDashboard";
+import HeaderDashboardWeb from "@/components/core/headerDashboardWeb";
 
 export default function Page() {
     const {

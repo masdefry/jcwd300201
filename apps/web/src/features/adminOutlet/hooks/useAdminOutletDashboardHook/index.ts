@@ -1,6 +1,6 @@
 'use client'
 
-import authStore from "@/zustand/authstore";
+import authStore from "@/zustand/authoStore";
 import { useEffect, useState } from "react";
 import { instance } from "@/utils/axiosInstance";
 import { useQuery } from "@tanstack/react-query";
